@@ -7,6 +7,9 @@ import ServicesSection from "@/components/sections/ServicesSection"
 import CaseStudiesSection from "@/components/sections/CaseStudiesSection"
 import TestimonialsSection from "@/components/sections/TestimonialsSection"
 import CTASection from "@/components/sections/CTASection"
+import InteractiveFAQ from "@/components/faq/InteractiveFAQ"
+import AIChatbot from "@/components/chat/AIChatbot"
+import SmartCTA from "@/components/cta/SmartCTA"
 
 export const metadata: Metadata = {
   title: "법무법인 세중 | 전문 법률 서비스",
@@ -32,10 +35,13 @@ export default function HomePage() {
         <StatsSection />
         <ServicesSection />
         <CaseStudiesSection />
+        <InteractiveFAQ />
         <TestimonialsSection />
         <CTASection />
       </main>
       <Footer />
+      <AIChatbot />
+      <SmartCTA variant="floating" position="bottom-right" />
     </>
   )
 }

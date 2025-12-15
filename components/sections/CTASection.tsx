@@ -31,6 +31,16 @@ export default function CTASection() {
                 variant="secondary"
                 className="w-full sm:w-auto bg-white text-primary hover:bg-gray-100"
                 onClick={() => {
+                  window.location.href = `/${locale}/booking`
+                }}
+              >
+                온라인 예약하기
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto border-white text-white hover:bg-white/10"
+                onClick={() => {
                   window.location.href = `/${locale}/consultation`
                 }}
               >

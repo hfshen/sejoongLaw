@@ -111,6 +111,16 @@ export default function HeroSection() {
                 size="lg"
                 className="w-full sm:w-auto text-lg px-8 py-6"
                 onClick={() => {
+                  window.location.href = `/${locale}/booking`
+                }}
+              >
+                온라인 예약하기
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto text-lg px-8 py-6"
+                onClick={() => {
                   window.location.href = `/${locale}/consultation`
                 }}
               >

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { locales, type Locale } from "@/lib/i18n"
 import LocaleAttributes from "@/components/layout/LocaleAttributes"
 import { StructuredData } from "@/components/seo/StructuredData"
+import AnalyticsProvider from "@/components/analytics/AnalyticsProvider"
 import type { Metadata } from "next"
 
 export function generateStaticParams() {
@@ -109,10 +110,12 @@ export default async function LocaleLayout({
       <StructuredData type="Organization" locale={locale} />
       <StructuredData type="LegalService" locale={locale} />
       <StructuredData type="WebSite" locale={locale} />
-      <NextIntlClientProvider messages={messages}>
-        <LocaleAttributes />
-        {children}
-      </NextIntlClientProvider>
+      <AnalyticsProvider>
+        <NextIntlClientProvider messages={messages}>
+          <LocaleAttributes />
+          {children}
+        </NextIntlClientProvider>
+      </AnalyticsProvider>
     </>
   )
 }

@@ -1,4 +1,5 @@
 import createNextIntlPlugin from "next-intl/plugin"
+import { withSentryConfig } from "@sentry/nextjs"
 
 const withNextIntl = createNextIntlPlugin("./lib/i18n.ts")
 
@@ -17,5 +18,14 @@ const nextConfig = {
   },
 }
 
-export default withNextIntl(nextConfig)
+const sentryWebpackPluginOptions = {
+  silent: true,
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+}
+
+export default withSentryConfig(
+  withNextIntl(nextConfig),
+  sentryWebpackPluginOptions
+)
 

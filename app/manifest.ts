@@ -3,7 +3,7 @@ import { MetadataRoute } from "next"
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "법무법인 세중",
-    short_name: "세중",
+    short_name: "세중법무법인",
     description: "전문 법률 서비스를 제공하는 법무법인 세중",
     start_url: "/",
     display: "standalone",
@@ -21,6 +21,9 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
       },
     ],
+    categories: ["legal", "business"],
+    lang: "ko",
+    dir: "ltr",
+    orientation: "portrait-primary",
   }
 }
-
