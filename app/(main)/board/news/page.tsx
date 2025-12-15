@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 
 async function getNews() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from("news_articles")
     .select("*")

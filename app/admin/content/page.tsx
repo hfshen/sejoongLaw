@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 
 async function getPageContents() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from("page_contents")
     .select("*")

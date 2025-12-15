@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 
 async function getInquiries() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from("inquiries")
     .select("*, profiles(name, email)")
@@ -18,7 +18,7 @@ async function getInquiries() {
 }
 
 async function getBoardPosts() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from("board_posts")
     .select("*, profiles(name, email)")

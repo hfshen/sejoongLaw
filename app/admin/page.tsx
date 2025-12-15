@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 
 async function getStats() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const [
     { count: inquiriesCount },
     { count: postsCount },
