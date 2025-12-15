@@ -108,14 +108,15 @@ export default function SearchBar({ className }: { className?: string }) {
             ) : results.length > 0 ? (
               <div id="search-results" className="py-2" role="listbox">
                 {results.map((result, index) => (
-                  <a
-                    key={index}
-                    href={result.url}
-                    className="block px-4 py-3 hover:bg-gray-50 transition-colors focus-ring rounded"
-                    onClick={() => setIsOpen(false)}
-                    role="option"
-                    tabIndex={0}
-                  >
+                         <a
+                           key={index}
+                           href={result.url}
+                           className="block px-4 py-3 hover:bg-gray-50 transition-colors focus-ring rounded"
+                           onClick={() => setIsOpen(false)}
+                           role="option"
+                           aria-selected="false"
+                           tabIndex={0}
+                         >
                     <div className="font-semibold text-secondary mb-1">
                       {result.title}
                     </div>

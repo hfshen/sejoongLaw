@@ -66,7 +66,7 @@ export default function AdvancedSearch() {
         selectedCategory === "전체" || result.category === selectedCategory
       return matchesQuery && matchesCategory
     })
-  }, [query, selectedCategory, selectedRegion])
+  }, [query, selectedCategory])
 
   const saveSearch = () => {
     if (query && !savedSearches.includes(query)) {

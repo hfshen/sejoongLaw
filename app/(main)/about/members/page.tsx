@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import Image from "next/image"
 
 async function getMembers() {
   const supabase = await createClient()
@@ -34,15 +35,17 @@ export default async function MembersPage() {
               key={member.id}
               className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
             >
-              {member.profile_image_url && (
-                <div className="mb-4">
-                  <img
-                    src={member.profile_image_url}
-                    alt={member.name}
-                    className="w-32 h-32 rounded-full mx-auto object-cover"
-                  />
-                </div>
-              )}
+                    {member.profile_image_url && (
+                      <div className="mb-4">
+                        <Image
+                          src={member.profile_image_url}
+                          alt={member.name}
+                          width={128}
+                          height={128}
+                          className="w-32 h-32 rounded-full mx-auto object-cover"
+                        />
+                      </div>
+                    )}
               <h2 className="text-2xl font-bold text-secondary mb-2">
                 {member.name}
               </h2>
