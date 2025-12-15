@@ -77,13 +77,12 @@ export default function SmartCTA({
             무료 상담으로 시작하세요
           </p>
           <div className="flex flex-col gap-2">
-            <Button
-              size="sm"
-              className="w-full"
-              asChild
+            <Link
+              href={`/${locale}/consultation`}
+              className="premium-button px-4 py-2 text-sm w-full text-center"
             >
-              <Link href={`/${locale}/consultation`}>상담 신청하기</Link>
-            </Button>
+              상담 신청하기
+            </Link>
             <Button
               variant="outline"
               size="sm"
@@ -130,18 +129,20 @@ export default function SmartCTA({
               전문 변호사와의 무료 상담으로 법률 문제를 해결하세요.
             </p>
             <div className="space-y-3">
-              <Button className="w-full" asChild>
-                <Link href={`/${locale}/consultation`}>
-                  <Calendar className="w-5 h-5 mr-2" />
-                  무료 상담 신청
-                </Link>
-              </Button>
-              <Button variant="outline" className="w-full" asChild>
-                <a href="tel:025910372">
-                  <Phone className="w-5 h-5 mr-2" />
-                  전화 상담: 02) 591-0372
-                </a>
-              </Button>
+              <Link
+                href={`/${locale}/consultation`}
+                className="premium-button w-full text-center flex items-center justify-center"
+              >
+                <Calendar className="w-5 h-5 mr-2" />
+                무료 상담 신청
+              </Link>
+              <a
+                href="tel:025910372"
+                className="premium-button-outline w-full text-center flex items-center justify-center"
+              >
+                <Phone className="w-5 h-5 mr-2" />
+                전화 상담: 02) 591-0372
+              </a>
             </div>
           </motion.div>
         </motion.div>

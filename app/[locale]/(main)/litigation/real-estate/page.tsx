@@ -179,14 +179,12 @@ export default async function RealEstatePage() {
             <p className="text-xl mb-8 opacity-90">
               부동산 분쟁 전문 변호사가 직접 상담해드립니다.
             </p>
-            <Button
-              variant="secondary"
-              size="lg"
-              className="bg-white text-primary hover:bg-gray-100"
-              asChild
+            <Link
+              href="/consultation"
+              className="premium-button-secondary px-8 py-4 text-lg bg-white text-primary hover:bg-gray-100"
             >
-              <Link href="/consultation">무료 상담 신청</Link>
-            </Button>
+              무료 상담 신청
+            </Link>
           </div>
         </section>
       </main>
