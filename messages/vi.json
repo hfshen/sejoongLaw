@@ -1,0 +1,69 @@
+{
+  "common": {
+    "title": "Văn phòng Luật Sejoong",
+    "subtitle": "SEJOONG LAW FIRM",
+    "phone": "02) 591-0372",
+    "address": "Tầng 10, 272 Seocho-daero, Seocho-gu, Seoul (Tòa nhà Korea IBS)",
+    "readMore": "Đọc thêm",
+    "contact": "Liên hệ",
+    "close": "Đóng"
+  },
+  "nav": {
+    "about": "Giới thiệu",
+    "litigation": "Tranh tụng",
+    "corporate": "Tư vấn Doanh nghiệp",
+    "immigration": "Di trú",
+    "foreigner": "Trung tâm Người nước ngoài",
+    "board": "Bảng Tư vấn"
+  },
+  "about": {
+    "greeting": "Lời chào",
+    "members": "Thành viên",
+    "location": "Vị trí"
+  },
+  "litigation": {
+    "realEstate": "Tranh chấp Bất động sản",
+    "divorce": "Ly hôn/Ly hôn Quốc tế",
+    "inheritance": "Tranh chấp Thừa kế",
+    "traffic": "Tai nạn Giao thông",
+    "industrial": "Tai nạn Lao động",
+    "insurance": "Kiện Bảo hiểm",
+    "tax": "Kiện Thuế",
+    "general": "Gia đình/Dân sự/Hình sự/Hành chính"
+  },
+  "corporate": {
+    "advisory": "Tư vấn Doanh nghiệp",
+    "mna": "Sáp nhập & Mua lại (M&A)",
+    "overseas": "Đầu tư Nước ngoài",
+    "finance": "Tài chính Bất động sản",
+    "indirect": "Đầu tư Bất động sản Gián tiếp"
+  },
+  "immigration": {
+    "visa": "Thị thực/Nhập cư",
+    "nonImmigrant": "Thị thực Không định cư",
+    "immigrant": "Thị thực Định cư",
+    "refusal": "Từ chối Thị thực",
+    "waiver": "Đơn Miễn trừ",
+    "success": "Câu chuyện Thành công về Thị thực"
+  },
+  "foreigner": {
+    "visa": "Thị thực (VISA)",
+    "certificate": "Giấy chứng nhận Cấp Thị thực",
+    "types": "Đối tượng theo Loại Thị thực",
+    "stay": "Gia hạn/Thay đổi Giấy phép Lưu trú",
+    "immigration": "Dịch vụ Liên quan Văn phòng Quản lý Xuất nhập cảnh",
+    "investment": "Đầu tư Nước ngoài",
+    "overseasKorean": "Hỗ trợ Pháp lý cho Người Hàn Quốc ở Nước ngoài"
+  },
+  "board": {
+    "cases": "Vụ việc Gần đây",
+    "qa": "Tư vấn Trực tuyến Q/A",
+    "column": "Chuyên mục Sejoong",
+    "news": "Tin tức Mới nhất"
+  },
+  "branches": {
+    "headquarter": "Trụ sở chính",
+    "uijeongbu": "Chi nhánh Uijeongbu",
+    "ansan": "Chi nhánh Ansan"
+  }
+}

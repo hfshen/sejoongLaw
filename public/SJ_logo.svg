@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_레이어_1" data-name="레이어 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1129.52 332.63">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #5a5959;
+        font-size: 22.29px;
+      }
+
+      .cls-1, .cls-2 {
+        font-family: ArialMT, Arial;
+      }
+
+      .cls-3 {
+        font-size: 75.61px;
+        isolation: isolate;
+      }
+
+      .cls-3, .cls-4 {
+        fill: #2f2f2f;
+        font-family: KoreanSJSR-B, KoreanSJSRB;
+      }
+
+      .cls-5, .cls-2 {
+        fill: #ccc;
+      }
+
+      .cls-6 {
+        fill: #bb271a;
+      }
+
+      .cls-4 {
+        font-size: 178.04px;
+      }
+
+      .cls-2 {
+        font-size: 29.87px;
+      }
+
+      .cls-7 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-8 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-9 {
+        letter-spacing: -.04em;
+      }
+
+      .cls-10 {
+        letter-spacing: -.04em;
+      }
+
+      .cls-11 {
+        letter-spacing: .02em;
+      }
+
+      .cls-12 {
+        fill: #999;
+      }
+    </style>
+  </defs>
+  <path class="cls-6" d="M752.25,108.41c0-40.89-33.15-74.04-74.04-74.04s-74.04,33.15-74.04,74.04h31.73c0-23.37,18.94-42.31,42.31-42.31s42.31,18.94,42.31,42.31h31.73Z"/>
+  <text class="cls-3" transform="translate(339.35 173.31) scale(1.13 1)"><tspan x="0" y="0">법무법인</tspan></text>
+  <text class="cls-2" transform="translate(344.7 220.11)"><tspan class="cls-11" x="0" y="0">GLOBA</tspan><tspan class="cls-7" x="105.75" y="0">L</tspan><tspan class="cls-11" x="121.82" y="0" xml:space="preserve"> L</tspan><tspan class="cls-8" x="147.87" y="0">A</tspan><tspan class="cls-11" x="167.25" y="0">W CENTER</tspan></text>
+  <rect class="cls-12" x="65.84" y="71.38" width="110.93" height="110.93"/>
+  <rect class="cls-5" x="182.79" y="71.38" width="110.93" height="110.93"/>
+  <rect class="cls-5" x="65.84" y="187.34" width="110.93" height="110.93"/>
+  <rect class="cls-6" x="182.79" y="187.34" width="110.93" height="110.93"/>
+  <text class="cls-1" transform="translate(196.17 108.23) scale(.89 1)"><tspan x="0" y="0">GLOBA</tspan><tspan class="cls-9" x="76.82" y="0">L</tspan><tspan x="0" y="26.75">L</tspan><tspan class="cls-10" x="12.4" y="26.75">A</tspan><tspan x="26.44" y="26.75">W</tspan><tspan x="0" y="53.5">CENTER</tspan></text>
+  <text class="cls-4" transform="translate(691.37 243.8)"><tspan x="0" y="0">세중</tspan></text>
+</svg>

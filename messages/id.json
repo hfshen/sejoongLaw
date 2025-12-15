@@ -1,0 +1,69 @@
+{
+  "common": {
+    "title": "Kantor Hukum Sejoong",
+    "subtitle": "SEJOONG LAW FIRM",
+    "phone": "02) 591-0372",
+    "address": "Lantai 10, 272 Seocho-daero, Seocho-gu, Seoul (Gedung Korea IBS)",
+    "readMore": "Baca Selengkapnya",
+    "contact": "Hubungi",
+    "close": "Tutup"
+  },
+  "nav": {
+    "about": "Tentang Kami",
+    "litigation": "Litigasi",
+    "corporate": "Konsultasi Perusahaan",
+    "immigration": "Imigrasi",
+    "foreigner": "Pusat Orang Asing",
+    "board": "Papan Konsultasi"
+  },
+  "about": {
+    "greeting": "Sambutan",
+    "members": "Anggota",
+    "location": "Lokasi"
+  },
+  "litigation": {
+    "realEstate": "Sengketa Properti",
+    "divorce": "Perceraian/Perceraian Internasional",
+    "inheritance": "Sengketa Warisan",
+    "traffic": "Kecelakaan Lalu Lintas",
+    "industrial": "Kecelakaan Industri",
+    "insurance": "Litigasi Asuransi",
+    "tax": "Litigasi Pajak",
+    "general": "Keluarga/Perdata/Pidana/Administratif"
+  },
+  "corporate": {
+    "advisory": "Konsultasi Perusahaan",
+    "mna": "Merger & Akuisisi (M&A)",
+    "overseas": "Investasi Luar Negeri",
+    "finance": "Keuangan Properti",
+    "indirect": "Investasi Properti Tidak Langsung"
+  },
+  "immigration": {
+    "visa": "Visa/Imigrasi",
+    "nonImmigrant": "Visa Non-Imigran",
+    "immigrant": "Visa Imigran",
+    "refusal": "Penolakan Visa",
+    "waiver": "Aplikasi Pembebasan",
+    "success": "Kisah Sukses Visa"
+  },
+  "foreigner": {
+    "visa": "Visa (VISA)",
+    "certificate": "Sertifikat Penerbitan Visa",
+    "types": "Kelayakan berdasarkan Jenis Visa",
+    "stay": "Perpanjangan/Perubahan Izin Tinggal",
+    "immigration": "Layanan Terkait Kantor Imigrasi",
+    "investment": "Investasi Asing",
+    "overseasKorean": "Dukungan Hukum untuk Warga Korea di Luar Negeri"
+  },
+  "board": {
+    "cases": "Kasus Terbaru",
+    "qa": "Konsultasi Online Q/A",
+    "column": "Kolom Sejoong",
+    "news": "Berita Terbaru"
+  },
+  "branches": {
+    "headquarter": "Kantor Pusat",
+    "uijeongbu": "Cabang Uijeongbu",
+    "ansan": "Cabang Ansan"
+  }
+}

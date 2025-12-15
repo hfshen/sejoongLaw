@@ -1,0 +1,69 @@
+{
+  "common": {
+    "title": "Bufete de Abogados Sejoong",
+    "subtitle": "SEJOONG LAW FIRM",
+    "phone": "02) 591-0372",
+    "address": "10º Piso, 272 Seocho-daero, Seocho-gu, Seúl (Edificio Korea IBS)",
+    "readMore": "Leer más",
+    "contact": "Contactar",
+    "close": "Cerrar"
+  },
+  "nav": {
+    "about": "Acerca de Nosotros",
+    "litigation": "Litigios",
+    "corporate": "Asesoría Corporativa",
+    "immigration": "Inmigración",
+    "foreigner": "Centro para Extranjeros",
+    "board": "Tablero de Consultas"
+  },
+  "about": {
+    "greeting": "Saludo",
+    "members": "Miembros",
+    "location": "Ubicación"
+  },
+  "litigation": {
+    "realEstate": "Disputas Inmobiliarias",
+    "divorce": "Divorcio/Divorcio Internacional",
+    "inheritance": "Disputas de Herencia",
+    "traffic": "Accidentes de Tráfico",
+    "industrial": "Accidentes Industriales",
+    "insurance": "Litigios de Seguros",
+    "tax": "Litigios Fiscales",
+    "general": "Familia/Civil/Penal/Administrativo"
+  },
+  "corporate": {
+    "advisory": "Asesoría Corporativa",
+    "mna": "Fusiones y Adquisiciones (M&A)",
+    "overseas": "Inversión en el Extranjero",
+    "finance": "Finanzas Inmobiliarias",
+    "indirect": "Inversión Inmobiliaria Indirecta"
+  },
+  "immigration": {
+    "visa": "Visa/Inmigración",
+    "nonImmigrant": "Visa de No Inmigrante",
+    "immigrant": "Visa de Inmigrante",
+    "refusal": "Rechazo de Visa",
+    "waiver": "Solicitud de Exención",
+    "success": "Historias de Éxito de Visa"
+  },
+  "foreigner": {
+    "visa": "Visa (VISA)",
+    "certificate": "Certificado de Emisión de Visa",
+    "types": "Elegibilidad por Tipo de Visa",
+    "stay": "Extensión/Cambio de Permiso de Permanencia",
+    "immigration": "Servicios Relacionados con la Oficina de Inmigración",
+    "investment": "Inversión Extranjera",
+    "overseasKorean": "Apoyo Legal para Coreanos en el Extranjero"
+  },
+  "board": {
+    "cases": "Casos Recientes",
+    "qa": "Consulta en Línea Q/A",
+    "column": "Columna Sejoong",
+    "news": "Últimas Noticias"
+  },
+  "branches": {
+    "headquarter": "Sede Central",
+    "uijeongbu": "Sucursal de Uijeongbu",
+    "ansan": "Sucursal de Ansan"
+  }
+}

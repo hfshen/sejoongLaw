@@ -1,0 +1,69 @@
+{
+  "common": {
+    "title": "Cabinet d'Avocats Sejoong",
+    "subtitle": "SEJOONG LAW FIRM",
+    "phone": "02) 591-0372",
+    "address": "10ème étage, 272 Seocho-daero, Seocho-gu, Séoul (Bâtiment Korea IBS)",
+    "readMore": "Lire la suite",
+    "contact": "Contacter",
+    "close": "Fermer"
+  },
+  "nav": {
+    "about": "À propos de nous",
+    "litigation": "Contentieux",
+    "corporate": "Conseil d'Entreprise",
+    "immigration": "Immigration",
+    "foreigner": "Centre pour Étrangers",
+    "board": "Tableau de Consultation"
+  },
+  "about": {
+    "greeting": "Salutation",
+    "members": "Membres",
+    "location": "Emplacement"
+  },
+  "litigation": {
+    "realEstate": "Litiges Immobiliers",
+    "divorce": "Divorce/Divorce International",
+    "inheritance": "Litiges de Succession",
+    "traffic": "Accidents de la Route",
+    "industrial": "Accidents Industriels",
+    "insurance": "Contentieux d'Assurance",
+    "tax": "Contentieux Fiscal",
+    "general": "Famille/Civil/Pénal/Administratif"
+  },
+  "corporate": {
+    "advisory": "Conseil d'Entreprise",
+    "mna": "Fusions et Acquisitions (M&A)",
+    "overseas": "Investissement à l'Étranger",
+    "finance": "Finance Immobilière",
+    "indirect": "Investissement Immobilier Indirect"
+  },
+  "immigration": {
+    "visa": "Visa/Immigration",
+    "nonImmigrant": "Visa de Non-Immigrant",
+    "immigrant": "Visa d'Immigrant",
+    "refusal": "Refus de Visa",
+    "waiver": "Demande de Dispense",
+    "success": "Histoires de Succès de Visa"
+  },
+  "foreigner": {
+    "visa": "Visa (VISA)",
+    "certificate": "Certificat d'Émission de Visa",
+    "types": "Éligibilité par Type de Visa",
+    "stay": "Prolongation/Changement de Permis de Séjour",
+    "immigration": "Services Liés au Bureau de l'Immigration",
+    "investment": "Investissement Étranger",
+    "overseasKorean": "Soutien Juridique pour les Coréens à l'Étranger"
+  },
+  "board": {
+    "cases": "Cas Récents",
+    "qa": "Consultation en Ligne Q/A",
+    "column": "Colonne Sejoong",
+    "news": "Dernières Nouvelles"
+  },
+  "branches": {
+    "headquarter": "Siège Social",
+    "uijeongbu": "Succursale d'Uijeongbu",
+    "ansan": "Succursale d'Ansan"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "common": {
+    "title": "법무법인 세중",
+    "subtitle": "SEJOONG LAW FIRM",
+    "phone": "02) 591-0372",
+    "address": "서울시 서초구 서초대로 272, 10층 (서초동, 한국아이비에스빌딩)",
+    "readMore": "자세히 보기",
+    "contact": "연락하기",
+    "close": "닫기"
+  },
+  "nav": {
+    "about": "법인소개",
+    "litigation": "소송업무",
+    "corporate": "기업자문",
+    "immigration": "해외이주",
+    "foreigner": "외국인센터",
+    "board": "상담게시판"
+  },
+  "about": {
+    "greeting": "인사말",
+    "members": "구성원소개",
+    "location": "오시는 길"
+  },
+  "litigation": {
+    "realEstate": "부동산분쟁",
+    "divorce": "이혼/국제이혼",
+    "inheritance": "상속분쟁",
+    "traffic": "교통사고",
+    "industrial": "산업재해",
+    "insurance": "보험소송",
+    "tax": "조세소송",
+    "general": "가사/민사/형사/행정"
+  },
+  "corporate": {
+    "advisory": "기업자문 안내",
+    "mna": "기업인수합병(M&A)",
+    "overseas": "해외투자",
+    "finance": "부동산금융",
+    "indirect": "부동산간접투자"
+  },
+  "immigration": {
+    "visa": "비자/이민",
+    "nonImmigrant": "비이민비자",
+    "immigrant": "이민비자",
+    "refusal": "비자거절",
+    "waiver": "웨이버(Waiver)신청",
+    "success": "비자 성공사례"
+  },
+  "foreigner": {
+    "visa": "사증(VISA)",
+    "certificate": "사증발급인정서",
+    "types": "사증종류별 대상자",
+    "stay": "체류허가 연장/변경",
+    "immigration": "출입국관리사무소 관련업무",
+    "investment": "외국인투자",
+    "overseasKorean": "재외동포법률지원"
+  },
+  "board": {
+    "cases": "최근업무사례",
+    "qa": "온라인상담 Q/A",
+    "column": "세중 칼럼",
+    "news": "최신뉴스"
+  },
+  "branches": {
+    "headquarter": "본사",
+    "uijeongbu": "의정부 지점",
+    "ansan": "안산 지점"
+  }
+}
+

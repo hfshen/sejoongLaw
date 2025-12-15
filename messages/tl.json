@@ -1,0 +1,69 @@
+{
+  "common": {
+    "title": "Sejoong Law Firm",
+    "subtitle": "SEJOONG LAW FIRM",
+    "phone": "02) 591-0372",
+    "address": "10th Floor, 272 Seocho-daero, Seocho-gu, Seoul (Korea IBS Building)",
+    "readMore": "Magbasa Pa",
+    "contact": "Makipag-ugnayan",
+    "close": "Isara"
+  },
+  "nav": {
+    "about": "Tungkol sa Amin",
+    "litigation": "Litigasyon",
+    "corporate": "Payo sa Korporasyon",
+    "immigration": "Imigrasyon",
+    "foreigner": "Sentro ng Dayuhan",
+    "board": "Board ng Konsultasyon"
+  },
+  "about": {
+    "greeting": "Pagbati",
+    "members": "Mga Miyembro",
+    "location": "Lokasyon"
+  },
+  "litigation": {
+    "realEstate": "Mga Alitan sa Real Estate",
+    "divorce": "Diborsyo/Internasyonal na Diborsyo",
+    "inheritance": "Mga Alitan sa Pamana",
+    "traffic": "Mga Aksidente sa Trapiko",
+    "industrial": "Mga Aksidente sa Industriya",
+    "insurance": "Litigasyon sa Insurance",
+    "tax": "Litigasyon sa Buwis",
+    "general": "Pamilya/Sibil/Kriminal/Administratibo"
+  },
+  "corporate": {
+    "advisory": "Payo sa Korporasyon",
+    "mna": "Merger & Acquisition (M&A)",
+    "overseas": "Pamumuhunan sa Ibang Bansa",
+    "finance": "Pananalapi sa Real Estate",
+    "indirect": "Hindi Direktang Pamumuhunan sa Real Estate"
+  },
+  "immigration": {
+    "visa": "Visa/Imigrasyon",
+    "nonImmigrant": "Non-Immigrant Visa",
+    "immigrant": "Immigrant Visa",
+    "refusal": "Pagtanggi sa Visa",
+    "waiver": "Aplikasyon ng Waiver",
+    "success": "Mga Kwento ng Tagumpay sa Visa"
+  },
+  "foreigner": {
+    "visa": "Visa (VISA)",
+    "certificate": "Sertipiko ng Pag-isyu ng Visa",
+    "types": "Kwalipikasyon ayon sa Uri ng Visa",
+    "stay": "Pagpapahaba/Pagbabago ng Permit sa Pananatili",
+    "immigration": "Mga Serbisyong May Kaugnayan sa Opisina ng Imigrasyon",
+    "investment": "Pamumuhunan ng Dayuhan",
+    "overseasKorean": "Suporta sa Legal para sa mga Koreano sa Ibang Bansa"
+  },
+  "board": {
+    "cases": "Mga Kamakailang Kaso",
+    "qa": "Online na Konsultasyon Q/A",
+    "column": "Sejoong Column",
+    "news": "Pinakabagong Balita"
+  },
+  "branches": {
+    "headquarter": "Punong Tanggapan",
+    "uijeongbu": "Sangay ng Uijeongbu",
+    "ansan": "Sangay ng Ansan"
+  }
+}

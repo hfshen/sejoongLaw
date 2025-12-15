@@ -1,0 +1,70 @@
+{
+  "common": {
+    "title": "Sejoong Law Firm",
+    "subtitle": "SEJOONG LAW FIRM",
+    "phone": "02) 591-0372",
+    "address": "10th Floor, 272 Seocho-daero, Seocho-gu, Seoul (Korea IBS Building)",
+    "readMore": "Read More",
+    "contact": "Contact",
+    "close": "Close"
+  },
+  "nav": {
+    "about": "About Us",
+    "litigation": "Litigation",
+    "corporate": "Corporate Advisory",
+    "immigration": "Immigration",
+    "foreigner": "Foreigner Center",
+    "board": "Consultation Board"
+  },
+  "about": {
+    "greeting": "Greeting",
+    "members": "Members",
+    "location": "Location"
+  },
+  "litigation": {
+    "realEstate": "Real Estate Disputes",
+    "divorce": "Divorce/International Divorce",
+    "inheritance": "Inheritance Disputes",
+    "traffic": "Traffic Accidents",
+    "industrial": "Industrial Accidents",
+    "insurance": "Insurance Litigation",
+    "tax": "Tax Litigation",
+    "general": "Family/Civil/Criminal/Administrative"
+  },
+  "corporate": {
+    "advisory": "Corporate Advisory",
+    "mna": "Mergers & Acquisitions (M&A)",
+    "overseas": "Overseas Investment",
+    "finance": "Real Estate Finance",
+    "indirect": "Indirect Real Estate Investment"
+  },
+  "immigration": {
+    "visa": "Visa/Immigration",
+    "nonImmigrant": "Non-Immigrant Visa",
+    "immigrant": "Immigrant Visa",
+    "refusal": "Visa Refusal",
+    "waiver": "Waiver Application",
+    "success": "Visa Success Stories"
+  },
+  "foreigner": {
+    "visa": "Visa (VISA)",
+    "certificate": "Certificate of Visa Issuance",
+    "types": "Eligibility by Visa Type",
+    "stay": "Extension/Change of Stay Permit",
+    "immigration": "Immigration Office Related Services",
+    "investment": "Foreign Investment",
+    "overseasKorean": "Legal Support for Overseas Koreans"
+  },
+  "board": {
+    "cases": "Recent Cases",
+    "qa": "Online Consultation Q/A",
+    "column": "Sejoong Column",
+    "news": "Latest News"
+  },
+  "branches": {
+    "headquarter": "Headquarters",
+    "uijeongbu": "Uijeongbu Branch",
+    "ansan": "Ansan Branch"
+  }
+}
+

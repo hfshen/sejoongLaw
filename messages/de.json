@@ -1,0 +1,69 @@
+{
+  "common": {
+    "title": "Kanzlei Sejoong",
+    "subtitle": "SEJOONG LAW FIRM",
+    "phone": "02) 591-0372",
+    "address": "10. Stock, 272 Seocho-daero, Seocho-gu, Seoul (Korea IBS Gebäude)",
+    "readMore": "Weiterlesen",
+    "contact": "Kontaktieren",
+    "close": "Schließen"
+  },
+  "nav": {
+    "about": "Über uns",
+    "litigation": "Rechtsstreitigkeiten",
+    "corporate": "Unternehmensberatung",
+    "immigration": "Einwanderung",
+    "foreigner": "Zentrum für Ausländer",
+    "board": "Beratungsbrett"
+  },
+  "about": {
+    "greeting": "Begrüßung",
+    "members": "Mitglieder",
+    "location": "Standort"
+  },
+  "litigation": {
+    "realEstate": "Immobilienstreitigkeiten",
+    "divorce": "Scheidung/Internationale Scheidung",
+    "inheritance": "Erbstreitigkeiten",
+    "traffic": "Verkehrsunfälle",
+    "industrial": "Arbeitsunfälle",
+    "insurance": "Versicherungsstreitigkeiten",
+    "tax": "Steuerstreitigkeiten",
+    "general": "Familie/Zivil/Straf/Verwaltungsrecht"
+  },
+  "corporate": {
+    "advisory": "Unternehmensberatung",
+    "mna": "Fusionen & Übernahmen (M&A)",
+    "overseas": "Auslandsinvestitionen",
+    "finance": "Immobilienfinanzierung",
+    "indirect": "Indirekte Immobilieninvestitionen"
+  },
+  "immigration": {
+    "visa": "Visum/Einwanderung",
+    "nonImmigrant": "Nicht-Einwanderungsvisum",
+    "immigrant": "Einwanderungsvisum",
+    "refusal": "Visumverweigerung",
+    "waiver": "Befreiungsantrag",
+    "success": "Visum-Erfolgsgeschichten"
+  },
+  "foreigner": {
+    "visa": "Visum (VISA)",
+    "certificate": "Visumausstellungszertifikat",
+    "types": "Berechtigung nach Visumtyp",
+    "stay": "Verlängerung/Änderung des Aufenthaltserlaubnis",
+    "immigration": "Dienstleistungen im Zusammenhang mit der Einwanderungsbehörde",
+    "investment": "Auslandsinvestitionen",
+    "overseasKorean": "Rechtliche Unterstützung für Auslandskoreaner"
+  },
+  "board": {
+    "cases": "Aktuelle Fälle",
+    "qa": "Online-Beratung Q/A",
+    "column": "Sejoong-Spalte",
+    "news": "Neueste Nachrichten"
+  },
+  "branches": {
+    "headquarter": "Hauptsitz",
+    "uijeongbu": "Niederlassung Uijeongbu",
+    "ansan": "Niederlassung Ansan"
+  }
+}

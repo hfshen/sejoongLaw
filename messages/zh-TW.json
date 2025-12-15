@@ -1,0 +1,69 @@
+{
+  "common": {
+    "title": "世中律師事務所",
+    "subtitle": "SEJOONG LAW FIRM",
+    "phone": "02) 591-0372",
+    "address": "首爾市瑞草區瑞草大路272號10層（韓國IBS大廈）",
+    "readMore": "了解更多",
+    "contact": "聯絡我們",
+    "close": "關閉"
+  },
+  "nav": {
+    "about": "關於我們",
+    "litigation": "訴訟業務",
+    "corporate": "企業諮詢",
+    "immigration": "海外移民",
+    "foreigner": "外國人中心",
+    "board": "諮詢公告板"
+  },
+  "about": {
+    "greeting": "致辭",
+    "members": "成員介紹",
+    "location": "位置"
+  },
+  "litigation": {
+    "realEstate": "房地產糾紛",
+    "divorce": "離婚/國際離婚",
+    "inheritance": "繼承糾紛",
+    "traffic": "交通事故",
+    "industrial": "工傷事故",
+    "insurance": "保險訴訟",
+    "tax": "稅務訴訟",
+    "general": "家事/民事/刑事/行政"
+  },
+  "corporate": {
+    "advisory": "企業諮詢",
+    "mna": "企業併購(M&A)",
+    "overseas": "海外投資",
+    "finance": "房地產金融",
+    "indirect": "間接房地產投資"
+  },
+  "immigration": {
+    "visa": "簽證/移民",
+    "nonImmigrant": "非移民簽證",
+    "immigrant": "移民簽證",
+    "refusal": "簽證拒簽",
+    "waiver": "豁免申請",
+    "success": "簽證成功案例"
+  },
+  "foreigner": {
+    "visa": "簽證(VISA)",
+    "certificate": "簽證簽發認定書",
+    "types": "按簽證類型的資格",
+    "stay": "居留許可延期/變更",
+    "immigration": "出入境管理事務所相關業務",
+    "investment": "外國人投資",
+    "overseasKorean": "海外同胞法律支持"
+  },
+  "board": {
+    "cases": "最近業務案例",
+    "qa": "在線諮詢Q/A",
+    "column": "世中專欄",
+    "news": "最新新聞"
+  },
+  "branches": {
+    "headquarter": "總部",
+    "uijeongbu": "議政府分所",
+    "ansan": "安山分所"
+  }
+}

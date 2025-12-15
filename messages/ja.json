@@ -1,0 +1,69 @@
+{
+  "common": {
+    "title": "世中法律事務所",
+    "subtitle": "SEJOONG LAW FIRM",
+    "phone": "02) 591-0372",
+    "address": "ソウル市瑞草区瑞草大路272、10階（韓国IBSビル）",
+    "readMore": "詳細を見る",
+    "contact": "お問い合わせ",
+    "close": "閉じる"
+  },
+  "nav": {
+    "about": "事務所紹介",
+    "litigation": "訴訟業務",
+    "corporate": "企業相談",
+    "immigration": "海外移住",
+    "foreigner": "外国人センター",
+    "board": "相談掲示板"
+  },
+  "about": {
+    "greeting": "ご挨拶",
+    "members": "メンバー紹介",
+    "location": "アクセス"
+  },
+  "litigation": {
+    "realEstate": "不動産紛争",
+    "divorce": "離婚/国際離婚",
+    "inheritance": "相続紛争",
+    "traffic": "交通事故",
+    "industrial": "労災事故",
+    "insurance": "保険訴訟",
+    "tax": "税務訴訟",
+    "general": "家事/民事/刑事/行政"
+  },
+  "corporate": {
+    "advisory": "企業相談",
+    "mna": "企業買収・合併(M&A)",
+    "overseas": "海外投資",
+    "finance": "不動産金融",
+    "indirect": "間接不動産投資"
+  },
+  "immigration": {
+    "visa": "ビザ/移民",
+    "nonImmigrant": "非移民ビザ",
+    "immigrant": "移民ビザ",
+    "refusal": "ビザ拒否",
+    "waiver": "免除申請",
+    "success": "ビザ成功事例"
+  },
+  "foreigner": {
+    "visa": "ビザ(VISA)",
+    "certificate": "ビザ発給認定書",
+    "types": "ビザ種類別対象者",
+    "stay": "滞在許可延長/変更",
+    "immigration": "出入国管理事務所関連業務",
+    "investment": "外国人投資",
+    "overseasKorean": "在外同胞法律支援"
+  },
+  "board": {
+    "cases": "最近の業務事例",
+    "qa": "オンライン相談Q/A",
+    "column": "世中コラム",
+    "news": "最新ニュース"
+  },
+  "branches": {
+    "headquarter": "本社",
+    "uijeongbu": "議政府支店",
+    "ansan": "安山支店"
+  }
+}
