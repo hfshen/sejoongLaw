@@ -63,7 +63,7 @@ export default async function MembersPage() {
                 <div className="mt-4">
                   <h3 className="font-semibold text-secondary mb-2">전문분야</h3>
                   <ul className="list-disc list-inside text-text-secondary">
-                    {member.specialties.map((specialty: string, index) => (
+                    {member.specialties.map((specialty: string, index: number) => (
                       <li key={index}>{specialty}</li>
                     ))}
                   </ul>
