@@ -4,7 +4,7 @@ import { NextResponse } from "next/server"
 export async function GET(request: Request) {
   const supabase = await createClient()
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "kakao",
+    provider: "kakao" as any,
     options: {
       redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/auth/callback`,
     },
