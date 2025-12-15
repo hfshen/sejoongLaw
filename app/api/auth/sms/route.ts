@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
       to: phone,
       from: process.env.COOLSMS_SENDER_PHONE!,
       text: `[법무법인 세중] 인증번호는 ${code}입니다.`,
+      autoTypeDetect: true,
     })
 
     return response
