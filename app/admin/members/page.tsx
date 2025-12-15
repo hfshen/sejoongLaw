@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
+import Image from "next/image"
 
 async function getMembers() {
   const supabase = await createClient()
@@ -38,9 +39,11 @@ export default async function AdminMembersPage() {
           >
             {member.profile_image_url && (
               <div className="mb-4">
-                <img
+                <Image
                   src={member.profile_image_url}
                   alt={member.name}
+                  width={96}
+                  height={96}
                   className="w-24 h-24 rounded-full mx-auto object-cover"
                 />
               </div>

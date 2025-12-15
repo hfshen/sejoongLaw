@@ -4,7 +4,7 @@ import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Search, ChevronDown, Video, ThumbsUp, ThumbsDown } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/Card"
-import Badge from "@/components/ui/Badge"
+import { Badge } from "@/components/ui/Badge"
 import { cn } from "@/lib/utils"
 
 interface FAQ {
