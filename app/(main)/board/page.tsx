@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 
+export const dynamic = 'force-dynamic'
+
 async function getBoardPosts() {
   const supabase = await createClient()
   const { data, error } = await supabase

@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server"
 import Image from "next/image"
 
+export const dynamic = 'force-dynamic'
+
 async function getMembers() {
   const supabase = await createClient()
   const { data, error } = await supabase
