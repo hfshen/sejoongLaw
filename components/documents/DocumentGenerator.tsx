@@ -15,7 +15,7 @@ const documentSchema = z.object({
   name: z.string().min(2, "이름을 입력해주세요"),
   email: z.string().email("올바른 이메일을 입력해주세요"),
   phone: z.string().min(10, "연락처를 입력해주세요"),
-  details: z.record(z.string()),
+  details: z.record(z.string(), z.string()),
 })
 
 type DocumentFormData = z.infer<typeof documentSchema>

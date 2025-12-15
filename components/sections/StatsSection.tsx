@@ -2,9 +2,7 @@
 
 import { motion } from "framer-motion"
 import { StatCard } from "@/components/ui/StatCard"
-import { useInView } from "react-intersection-observer"
 import { Award, Users, Briefcase, TrendingUp } from "lucide-react"
-import { useEffect, useState } from "react"
 
 interface Stat {
   value: number
@@ -40,41 +38,6 @@ const stats: Stat[] = [
   },
 ]
 
-function AnimatedNumber({ value, suffix }: { value: number; suffix?: string }) {
-  const [displayValue, setDisplayValue] = useState(0)
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.5 })
-
-  useEffect(() => {
-    if (!inView) return
-
-    const duration = 2000
-    const steps = 60
-    const increment = value / steps
-    let current = 0
-    let step = 0
-
-    const timer = setInterval(() => {
-      step++
-      current = Math.min(value, increment * step)
-      setDisplayValue(Math.floor(current))
-
-      if (step >= steps) {
-        setDisplayValue(value)
-        clearInterval(timer)
-      }
-    }, duration / steps)
-
-    return () => clearInterval(timer)
-  }, [inView, value])
-
-  return (
-    <span ref={ref}>
-      {displayValue.toLocaleString()}
-      {suffix}
-    </span>
-  )
-}
-
 export default function StatsSection() {
   return (
     <section className="section-padding bg-background-alt">
@@ -96,10 +59,12 @@ export default function StatsSection() {
           {stats.map((stat, index) => (
             <div key={index}>
               <StatCard
-                value={<AnimatedNumber value={stat.value} suffix={stat.suffix} />}
+                value={stat.value}
+                suffix={stat.suffix}
                 label={stat.label}
                 icon={stat.icon}
                 delay={index * 0.1}
+                animate={true}
               />
             </div>
           ))}

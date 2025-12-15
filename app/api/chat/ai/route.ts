@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
 import OpenAI from "openai"
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+const getOpenAIClient = () => {
+  if (!process.env.OPENAI_API_KEY) {
+    return null
+  }
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  })
+}
 
 const SYSTEM_PROMPT = `당신은 법무법인 세중의 전문 법률 상담 AI 어시스턴트입니다.
 
@@ -51,6 +56,14 @@ export async function POST(request: NextRequest) {
     ]
 
     // OpenAI API 호출
+    const openai = getOpenAIClient()
+    if (!openai) {
+      return NextResponse.json({
+        response:
+          "죄송합니다. 현재 AI 상담 서비스를 이용할 수 없습니다. 전화(02) 591-0372)로 문의해주시거나 온라인 상담을 신청해주세요.",
+      })
+    }
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // 비용 효율적인 모델 사용
       messages: messages,

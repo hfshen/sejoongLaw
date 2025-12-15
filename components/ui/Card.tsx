@@ -2,9 +2,9 @@
 
 import { HTMLAttributes, ReactNode } from "react"
 import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
+import { motion, HTMLMotionProps } from "framer-motion"
 
-interface CardProps extends HTMLAttributes<HTMLDivElement> {
+interface CardProps extends Omit<HTMLMotionProps<"div">, "onDrag" | "onDragStart" | "onDragEnd"> {
   children: ReactNode
   hover?: boolean
   gradient?: boolean

@@ -28,43 +28,37 @@ export const trackConversion = (conversionType: string, value?: number) => {
 // Hotjar (히트맵)
 export const initializeHotjar = () => {
   if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_HOTJAR_ID) {
-    ;(function (h: any, o: any, t: any, j: any, a: any, r: any) {
-      h.hj =
-        h.hj ||
-        function () {
-          ;(h.hj.q = h.hj.q || []).push(arguments)
-        }
-      h._hjSettings = { hjid: parseInt(process.env.NEXT_PUBLIC_HOTJAR_ID!), hjsv: 6 }
-      a = o.getElementsByTagName("head")[0]
-      r = o.createElement("script")
-      r.async = 1
-      r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv
-      a.appendChild(r)
-    })(
-      window,
-      document,
-      "https://static.hotjar.com/c/hotjar-",
-      ".js?sv=",
-      process.env.NEXT_PUBLIC_HOTJAR_ID
-    )
+    const h = window as any
+    const o = document
+    h.hj =
+      h.hj ||
+      function () {
+        ;(h.hj.q = h.hj.q || []).push(arguments)
+      }
+    h._hjSettings = { hjid: parseInt(process.env.NEXT_PUBLIC_HOTJAR_ID!), hjsv: 6 }
+    const a = o.getElementsByTagName("head")[0]
+    const r = o.createElement("script")
+    r.async = true
+    r.src = `https://static.hotjar.com/c/hotjar-${h._hjSettings.hjid}.js?sv=${h._hjSettings.hjsv}`
+    a.appendChild(r)
   }
 }
 
 // Microsoft Clarity
 export const initializeClarity = () => {
   if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_CLARITY_ID) {
-    ;(function (c: any, l: any, a: any, r: any, i: any, t: any, y: any) {
-      c[a] =
-        c[a] ||
-        function () {
-          ;(c[a].q = c[a].q || []).push(arguments)
-        }
-      t = l.createElement(r)
-      t.async = 1
-      t.src = "https://www.clarity.ms/tag/" + i
-      y = l.getElementsByTagName(r)[0]
-      y.parentNode.insertBefore(t, y)
-    })(window, document, "clarity", "script", process.env.NEXT_PUBLIC_CLARITY_ID)
+    const c = window as any
+    const l = document
+    c.clarity =
+      c.clarity ||
+      function () {
+        ;(c.clarity.q = c.clarity.q || []).push(arguments)
+      }
+    const t = l.createElement("script")
+    t.async = true
+    t.src = `https://www.clarity.ms/tag/${process.env.NEXT_PUBLIC_CLARITY_ID}`
+    const y = l.getElementsByTagName("script")[0]
+    y.parentNode?.insertBefore(t, y)
   }
 }
 
