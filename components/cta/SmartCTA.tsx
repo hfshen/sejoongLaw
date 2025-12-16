@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { usePathname } from "next/navigation"
 import { useLocale } from "next-intl"
@@ -13,41 +13,103 @@ interface SmartCTAProps {
   position?: "bottom-right" | "bottom-center" | "top"
 }
 
+const STORAGE_KEY = "smart-cta-dismissed"
+const DISMISS_DURATION = 10 * 60 * 1000 // 10분
+
 export default function SmartCTA({
   variant = "floating",
   position = "bottom-right",
 }: SmartCTAProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [showExitIntent, setShowExitIntent] = useState(false)
+  const scrollTimerRef = useRef<NodeJS.Timeout | null>(null)
   const pathname = usePathname()
   const locale = useLocale()
 
+  // 닫은 상태 확인
+  const isDismissed = () => {
+    if (typeof window === "undefined") return false
+    const dismissed = localStorage.getItem(STORAGE_KEY)
+    if (!dismissed) return false
+    
+    const dismissedTime = parseInt(dismissed, 10)
+    const now = Date.now()
+    
+    // 10분이 지나면 다시 표시 가능
+    return now - dismissedTime < DISMISS_DURATION
+  }
+
+  // 닫기 처리
+  const handleClose = () => {
+    setIsVisible(false)
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, Date.now().toString())
+    }
+  }
+
   useEffect(() => {
+    // 이미 닫혀있으면 표시하지 않음
+    if (isDismissed()) {
+      return
+    }
+
     // 페이지 로드 후 3초 대기 후 스크롤 감지 시작
     const timer = setTimeout(() => {
-      // 스크롤 위치 기반 표시
+      // 스크롤이 멈췄는지 감지하는 타이머
+      let scrollEndTimer: NodeJS.Timeout | null = null
+      
       const handleScroll = () => {
+        // 이미 표시되어 있거나 닫혀있으면 무시
+        if (isVisible || isDismissed()) {
+          return
+        }
+
         const scrollPercentage =
           (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) *
           100
-        if (scrollPercentage > 30 && !isVisible) {
-          setIsVisible(true)
+        
+        // 스크롤이 30% 이상이면 스크롤 종료 감지 시작
+        if (scrollPercentage > 30) {
+          // 기존 타이머들 취소
+          if (scrollEndTimer) {
+            clearTimeout(scrollEndTimer)
+          }
+          if (scrollTimerRef.current) {
+            clearTimeout(scrollTimerRef.current)
+          }
+          
+          // 스크롤이 멈춘 후 5초 뒤에 표시
+          scrollEndTimer = setTimeout(() => {
+            if (!isDismissed() && !isVisible) {
+              scrollTimerRef.current = setTimeout(() => {
+                if (!isDismissed() && !isVisible) {
+                  setIsVisible(true)
+                }
+              }, 5000) // 스크롤 멈춘 후 5초 지연
+            }
+          }, 200) // 스크롤이 200ms 멈추면 스크롤 종료로 간주
         }
       }
 
-      window.addEventListener("scroll", handleScroll)
+      window.addEventListener("scroll", handleScroll, { passive: true })
       
       // 초기 체크
       handleScroll()
 
       return () => {
         window.removeEventListener("scroll", handleScroll)
+        if (scrollTimerRef.current) {
+          clearTimeout(scrollTimerRef.current)
+        }
+        if (scrollEndTimer) {
+          clearTimeout(scrollEndTimer)
+        }
       }
     }, 3000) // 3초 대기
 
     // 출구 인텐트 감지
     const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && !showExitIntent) {
+      if (e.clientY <= 0 && !showExitIntent && !isDismissed()) {
         setShowExitIntent(true)
       }
     }
@@ -57,6 +119,9 @@ export default function SmartCTA({
     return () => {
       clearTimeout(timer)
       document.removeEventListener("mouseleave", handleMouseLeave)
+      if (scrollTimerRef.current) {
+        clearTimeout(scrollTimerRef.current)
+      }
     }
   }, [isVisible, showExitIntent])
 
@@ -83,7 +148,7 @@ export default function SmartCTA({
         >
           <div className="bg-white rounded-lg shadow-premium-lg border border-gray-200 p-4 md:p-5 max-w-[280px] md:max-w-sm relative">
             <button
-              onClick={() => setIsVisible(false)}
+              onClick={handleClose}
               className="absolute top-2 right-2 text-text-secondary hover:text-secondary transition-colors"
               aria-label="닫기"
             >
@@ -99,7 +164,7 @@ export default function SmartCTA({
               <Link
                 href={`/${locale}/consultation`}
                 className="premium-button px-3 py-2 text-xs md:text-sm w-full text-center"
-                onClick={() => setIsVisible(false)}
+                onClick={handleClose}
               >
                 상담 신청하기
               </Link>
@@ -134,10 +199,15 @@ export default function SmartCTA({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-xl shadow-premium-lg p-8 max-w-md w-full"
+            className="bg-white rounded-xl shadow-premium-lg p-8 max-w-md w-full relative"
           >
             <button
-              onClick={() => setShowExitIntent(false)}
+              onClick={() => {
+                setShowExitIntent(false)
+                if (typeof window !== "undefined") {
+                  localStorage.setItem(STORAGE_KEY, Date.now().toString())
+                }
+              }}
               className="absolute top-4 right-4 text-text-secondary hover:text-secondary"
               aria-label="닫기"
             >
