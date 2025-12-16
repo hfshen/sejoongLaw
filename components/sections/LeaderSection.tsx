@@ -65,7 +65,7 @@ export default function LeaderSection() {
                 
                 {/* CEO MESSAGE 인용구 */}
                 <blockquote className="text-2xl md:text-3xl font-bold text-primary mb-8 leading-relaxed border-l-4 border-primary pl-6">
-                  "{t("leader.ceoMessage")}"
+                  &ldquo;{t("leader.ceoMessage")}&rdquo;
                 </blockquote>
 
                 {/* 메시지 본문 */}

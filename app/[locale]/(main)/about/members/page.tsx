@@ -3,6 +3,7 @@ import { Metadata } from "next"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
 import { Award, GraduationCap, Briefcase, BookOpen } from "lucide-react"
+import Image from "next/image"
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -112,9 +113,11 @@ export default async function MembersPage() {
                 <CardHeader>
                   <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 mx-auto mb-6 flex items-center justify-center relative">
                     {member.image ? (
-                      <img
+                      <Image
                         src={member.image}
                         alt={member.name}
+                        width={128}
+                        height={128}
                         className="w-full h-full rounded-full object-cover"
                       />
                     ) : (

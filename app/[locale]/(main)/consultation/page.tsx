@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server"
 import ConsultationForm from "@/components/consultation/ConsultationForm"
 import { Card, CardContent } from "@/components/ui/Card"
 import { Phone, Mail, Clock, CheckCircle } from "lucide-react"
+import Header from "@/components/layout/Header"
 
 export async function generateMetadata() {
   const t = await getTranslations()

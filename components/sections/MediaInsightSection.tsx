@@ -178,7 +178,7 @@ export default function MediaInsightSection() {
                               ? "primary"
                               : article.type === "case"
                               ? "success"
-                              : "info"
+                              : "default"
                           }
                           className="text-xs"
                         >

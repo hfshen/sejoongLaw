@@ -21,6 +21,8 @@ export default async function LocationPage() {
       address: "서울시 서초구 서초대로 272, 10층",
       addressDetail: "(서초동, 한국아이비에스빌딩)",
       phone: "02) 591-0372",
+      lat: 37.4836,
+      lng: 127.0329,
       subway: [
         "지하철 2호선 서초역 3번 출구 도보 5분",
         "지하철 2호선 강남역 7번 출구 도보 10분",
@@ -151,7 +153,8 @@ export default async function LocationPage() {
                         <h3 className="font-semibold text-secondary mb-4">지도</h3>
                         <div className="w-full h-96 rounded-lg overflow-hidden shadow-lg">
                           <KakaoMap
-                            address={location.address}
+                            lat={location.lat}
+                            lng={location.lng}
                             name={location.name}
                           />
                         </div>

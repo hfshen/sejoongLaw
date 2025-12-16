@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
 import Link from "next/link"
-import { Users, Briefcase, GraduationCap, Heart, Plane, FileText } from "lucide-react"
+import { Users, Briefcase, GraduationCap, Heart, Plane, FileText, CheckCircle } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
   return {

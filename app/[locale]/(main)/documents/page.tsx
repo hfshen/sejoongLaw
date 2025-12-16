@@ -2,6 +2,8 @@ import { getTranslations } from "next-intl/server"
 import DocumentGenerator from "@/components/documents/DocumentGenerator"
 import { Card, CardContent } from "@/components/ui/Card"
 import { FileText, CheckCircle, Download, Mail } from "lucide-react"
+import Header from "@/components/layout/Header"
+import Footer from "@/components/layout/Footer"
 
 export async function generateMetadata() {
   const t = await getTranslations()
