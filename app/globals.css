@@ -96,11 +96,11 @@
   }
 
   .section-padding {
-    @apply py-16 md:py-24 lg:py-32;
+    @apply py-8 md:py-16 lg:py-24;
   }
 
   .section-padding-sm {
-    @apply py-12 md:py-16 lg:py-20;
+    @apply py-6 md:py-12 lg:py-16;
   }
 
   .container-padding {
@@ -141,19 +141,19 @@
   }
 
   .section-title {
-    @apply text-3xl sm:text-4xl md:text-5xl font-bold text-secondary mb-6;
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-secondary mb-4 md:mb-6;
   }
 
   .subsection-title {
-    @apply text-2xl sm:text-3xl font-bold text-secondary mb-4;
+    @apply text-xl sm:text-2xl md:text-3xl font-bold text-secondary mb-3 md:mb-4;
   }
 
   .card-title {
-    @apply text-xl sm:text-2xl font-bold text-secondary mb-2;
+    @apply text-lg sm:text-xl md:text-2xl font-bold text-secondary mb-2;
   }
 
   .body-text {
-    @apply text-base sm:text-lg text-text-secondary leading-relaxed;
+    @apply text-sm sm:text-base md:text-lg text-text-secondary leading-relaxed;
   }
 
   .link-hover {

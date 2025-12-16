@@ -1,6 +1,4 @@
 import { getTranslations } from "next-intl/server"
-import Header from "@/components/layout/Header"
-import Footer from "@/components/layout/Footer"
 import BookingCalendar from "@/components/booking/BookingCalendar"
 import { Card, CardContent } from "@/components/ui/Card"
 import { CheckCircle, Clock, Calendar, Video } from "lucide-react"
@@ -42,7 +40,6 @@ export default async function BookingPage() {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-background section-padding">
         <div className="container-max">
           <div className="max-w-5xl mx-auto">
@@ -98,7 +95,6 @@ export default async function BookingPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </>
   )
 }

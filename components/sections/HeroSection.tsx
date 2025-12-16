@@ -17,9 +17,12 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background with gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/5" />
-      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background/80 to-accent/10" />
+        {/* Placeholder for background image - 법전 서재 또는 공항/도시 이미지 */}
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1920&q=80')] bg-cover bg-center opacity-20" />
+      </div>
       
       {/* Decorative elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
@@ -68,36 +71,24 @@ export default function HeroSection() {
               </div>
             </motion.div>
 
-            {/* Main Title */}
+            {/* Main Copy - 기획안의 메인 카피 */}
             <motion.h1
-              className="hero-title gradient-text mb-6"
+              className="hero-title gradient-text mb-4 md:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight px-2"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              {t("common.title")}
+              {t("hero.mainCopy")}
             </motion.h1>
             
-            {/* Subtitle */}
+            {/* Sub Copy - 기획안의 서브 카피 */}
             <motion.p
-              className="text-xl md:text-2xl lg:text-3xl text-text-secondary mb-4 font-light"
+              className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-text-secondary mb-8 md:mb-12 max-w-4xl mx-auto leading-relaxed px-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              {t("common.subtitle")}
-            </motion.p>
-            
-            {/* Description */}
-            <motion.p
-              className="body-text text-lg md:text-xl mb-12 max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-            >
-              전문성과 신뢰로 고객의 권리를 보호하는 법무법인 세중입니다.
-              <br />
-              다양한 법률 분야에서 풍부한 경험과 노하우를 바탕으로 최상의 서비스를 제공합니다.
+              {t("hero.subCopy")}
             </motion.p>
             
             {/* CTA Buttons */}
@@ -105,34 +96,29 @@ export default function HeroSection() {
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.9 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
             >
               <Button
+                size="lg"
+                className="w-full sm:w-auto text-lg px-8 py-6"
+                onClick={() => {
+                  const servicesSection = document.getElementById("services")
+                  if (servicesSection) {
+                    servicesSection.scrollIntoView({ behavior: "smooth" })
+                  }
+                }}
+              >
+                {t("hero.ctaPractice")}
+              </Button>
+              <Button
+                variant="outline"
                 size="lg"
                 className="w-full sm:w-auto text-lg px-8 py-6"
                 onClick={() => {
                   window.location.href = `/${locale}/booking`
                 }}
               >
-                온라인 예약하기
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto text-lg px-8 py-6"
-                onClick={() => {
-                  window.location.href = `/${locale}/consultation`
-                }}
-              >
-                무료 상담 신청
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto text-lg px-8 py-6"
-                onClick={scrollToNext}
-              >
-                서비스 알아보기
+                {t("hero.ctaConsultation")}
               </Button>
             </motion.div>
           </motion.div>

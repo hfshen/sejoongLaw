@@ -1,6 +1,4 @@
 import { getTranslations } from "next-intl/server"
-import Header from "@/components/layout/Header"
-import Footer from "@/components/layout/Footer"
 import ConsultationForm from "@/components/consultation/ConsultationForm"
 import { Card, CardContent } from "@/components/ui/Card"
 import { Phone, Mail, Clock, CheckCircle } from "lucide-react"
@@ -111,7 +109,6 @@ export default async function ConsultationPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </>
   )
 }

@@ -36,15 +36,15 @@ export default function TestimonialsSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-8 md:mb-16"
         >
           <h2 className="section-title">고객 후기</h2>
-          <p className="body-text max-w-2xl mx-auto">
+          <p className="body-text max-w-2xl mx-auto px-4">
             법무법인 세중을 이용하신 고객들의 생생한 후기를 확인해보세요.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {testimonials.map((testimonial, index) => (
             <TestimonialCard
               key={index}

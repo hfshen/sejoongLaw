@@ -6,7 +6,8 @@
     "address": "ソウル市瑞草区瑞草大路272、10階（韓国IBSビル）",
     "readMore": "詳細を見る",
     "contact": "お問い合わせ",
-    "close": "閉じる"
+    "close": "閉じる",
+    "viewAll": "すべて見る"
   },
   "nav": {
     "about": "事務所紹介",
@@ -65,5 +66,74 @@
     "headquarter": "本社",
     "uijeongbu": "議政府支店",
     "ansan": "安山支店"
+  },
+  "hero": {
+    "mainCopy": "大韓民国出入国管理法の教科書、世中法律事務所がその基準を作ります。",
+    "subCopy": "理論と実務を兼備した李相国代表弁護士と各分野の専門家が、最も複雑な移民行政から手強い民・刑事紛争まで、明確な解答を提示します。",
+    "ctaPractice": "専門分野を詳しく見る",
+    "ctaConsultation": "弁護士直接相談"
+  },
+  "whySejoong": {
+    "title": "世中法律事務所の競争力",
+    "authority": {
+      "title": "01. 権威性",
+      "description": "《出入国管理法》著者、法学博士李相国代表弁護士が直接率いる行政・移民訴訟のメッカです。"
+    },
+    "triNetwork": {
+      "title": "02. トライネットワーク",
+      "description": "ソウル本社（コントロールタワー）、議政府（不動産・家事）、安山（外国人・労働）の3角編隊で地域特化ソリューションを提供します。"
+    },
+    "globalStandard": {
+      "title": "03. グローバルスタンダード",
+      "description": "言語の壁を越えるコミュニケーションとグローバル企業相談、ビザ手続きまでワンストップ法律サービスを実現します。"
+    }
+  },
+  "leader": {
+    "title": "代表弁護士",
+    "ceoMessage": "法律は人に向かうべきです。特に国境の上では、なおさらそうです。",
+    "message": "数十年間出入国管理法と外国人政策を研究してきた学者であり実務家として約束します。不当な強制退去、手強いビザ問題、そして私たちの隣人の複雑な財産紛争まで。世中法律事務所はあなたの権利を守る最も頼もしい盾になります。",
+    "name": "代表弁護士 / 法学博士 李 相 国"
+  },
+  "network": {
+    "title": "アクセス",
+    "seoul": {
+      "name": "SEOUL HEADQUARTERS",
+      "nameKo": "ソウル主事務所",
+      "address": "ソウル特別市瑞草区法院路2街15、キルドビル303号",
+      "focus": "企業法務、高難度行政訴訟、大法院上告審",
+      "phone": "02-536-XXXX"
+    },
+    "uijeongbu": {
+      "name": "UIJEONGBU BRANCH",
+      "nameKo": "議政府分事務所",
+      "address": "京畿道議政府市緑楊路34街30、406号（裁判所前）",
+      "focus": "不動産、民事、家事、京畿北部一般訴訟",
+      "phone": "031-XXX-XXXX"
+    },
+    "ansan": {
+      "name": "ANSAN BRANCH",
+      "nameKo": "安山分事務所",
+      "address": "京畿道安山市檀園区元谷洞748-6、世中ビル2階",
+      "focus": "外国人事件、出入国違反、労災/労働",
+      "phone": "031-XXX-XXXX"
+    }
+  },
+  "media": {
+    "title": "メディア＆インサイト",
+    "column": "コラム",
+    "case": "成功事例",
+    "news": "ニュース",
+    "readMore": "詳しく見る",
+    "noArticles": "コンテンツがありません。"
+  },
+  "footer": {
+    "firmName": "世中法律事務所",
+    "representative": "代表弁護士：李相国",
+    "businessNumber": "事業者登録番号：XXX-XX-XXXXX",
+    "phone": "代表電話：02-536-XXXX",
+    "fax": "ファックス：02-536-XXXX",
+    "privacyPolicy": "個人情報処理方針",
+    "emailRejection": "メール無断収集拒否",
+    "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."
   }
 }

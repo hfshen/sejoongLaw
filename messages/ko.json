@@ -6,7 +6,8 @@
     "address": "서울시 서초구 서초대로 272, 10층 (서초동, 한국아이비에스빌딩)",
     "readMore": "자세히 보기",
     "contact": "연락하기",
-    "close": "닫기"
+    "close": "닫기",
+    "viewAll": "전체 보기"
   },
   "nav": {
     "about": "법인소개",
@@ -65,6 +66,126 @@
     "headquarter": "본사",
     "uijeongbu": "의정부 지점",
     "ansan": "안산 지점"
+  },
+  "hero": {
+    "mainCopy": "대한민국 출입국관리법의 교과서, 법무법인 세중이 그 기준을 만듭니다.",
+    "subCopy": "이론과 실무를 겸비한 이상국 대표변호사와 각 분야 전문가들이 가장 복잡한 이민 행정부터 까다로운 민·형사 분쟁까지, 명쾌한 해답을 제시합니다.",
+    "ctaPractice": "전문 분야 자세히 보기",
+    "ctaConsultation": "변호사 직접 상담하기"
+  },
+  "whySejoong": {
+    "title": "Law Firm Sejoong's Competence",
+    "authority": {
+      "title": "01. The Authority",
+      "description": "《출입국관리법》 저자, 법학박사 이상국 대표변호사가 직접 이끄는 행정·이민 소송의 메카입니다."
+    },
+    "triNetwork": {
+      "title": "02. Tri-Network",
+      "description": "서울 본사(컨트롤타워), 의정부(부동산·가사), 안산(외국인·노동)의 3각 편대로 지역 특화 솔루션을 제공합니다."
+    },
+    "globalStandard": {
+      "title": "03. Global Standard",
+      "description": "언어의 장벽을 넘는 소통과 글로벌 기업 자문, 비자 수속까지 원스톱 법률 서비스를 실현합니다."
+    }
+  },
+  "leader": {
+    "title": "대표 변호사",
+    "ceoMessage": "법률은 사람을 향해야 합니다. 특히 국경 위에서는 더욱 그렇습니다.",
+    "message": "수십 년간 출입국 관리법과 외국인 정책을 연구해온 학자이자 실무가로서 약속드립니다. 억울한 강제 퇴거, 까다로운 비자 문제, 그리고 우리 이웃의 복잡한 재산 분쟁까지. 법무법인 세중은 당신의 권리를 지키는 가장 든든한 방패가 되겠습니다.",
+    "name": "대표변호사 / 법학박사 이 상 국"
+  },
+  "network": {
+    "title": "오시는 길",
+    "seoul": {
+      "name": "SEOUL HEADQUARTERS",
+      "nameKo": "서울 주사무소",
+      "address": "서울특별시 서초구 법원로2길 15, 길도빌딩 303호",
+      "focus": "기업법무, 고난도 행정소송, 대법원 상고심",
+      "phone": "02-536-XXXX"
+    },
+    "uijeongbu": {
+      "name": "UIJEONGBU BRANCH",
+      "nameKo": "의정부 분사무소",
+      "address": "경기도 의정부시 녹양로 34번길 30, 406호 (법원 앞)",
+      "focus": "부동산, 민사, 가사, 경기북부 일반송무",
+      "phone": "031-XXX-XXXX"
+    },
+    "ansan": {
+      "name": "ANSAN BRANCH",
+      "nameKo": "안산 분사무소",
+      "address": "경기도 안산시 단원구 원곡동 748-6, 세중빌딩 2층",
+      "focus": "외국인 사건, 출입국 사범, 산재/노동",
+      "phone": "031-XXX-XXXX"
+    }
+  },
+  "media": {
+    "title": "미디어 & 인사이트",
+    "column": "칼럼",
+    "case": "성공사례",
+    "news": "뉴스",
+    "readMore": "자세히 보기",
+    "noArticles": "콘텐츠가 없습니다."
+  },
+  "services": {
+    "title": "업무 분야",
+    "description": "다양한 법률 분야에서 전문적인 서비스를 제공하여 고객의 권리를 보호하고 최상의 결과를 만들어냅니다.",
+    "specialized": "특화",
+    "practiceAreas": {
+      "immigration": {
+        "title": "출입국·행정·이민",
+        "description": "비자 신청, 이민 상담, 행정 심판 등",
+        "details": [
+          "강제퇴거 취소 소송",
+          "난민/비자 행정 심판",
+          "국적 회복 및 귀화",
+          "비자 거절 대응",
+          "체류허가 연장/변경"
+        ]
+      },
+      "realEstate": {
+        "title": "부동산·건설",
+        "description": "부동산 분쟁, 건설 소송, 재개발 등",
+        "details": [
+          "명도/임대차 소송",
+          "재개발/재건축 분쟁",
+          "경매 및 강제집행",
+          "부동산 분쟁 조정",
+          "건설 하자 소송"
+        ]
+      },
+      "corporate": {
+        "title": "기업법무·노동",
+        "description": "기업 자문, M&A, 노동 분쟁 등",
+        "details": [
+          "기업 자문 및 M&A",
+          "부당해고 구제",
+          "외국인 근로자 산재",
+          "기업 인수합병",
+          "해외투자 자문"
+        ]
+      },
+      "familyCriminal": {
+        "title": "가사·형사",
+        "description": "이혼, 상속, 형사 방어 등",
+        "details": [
+          "이혼/상속/유류분",
+          "성범죄/경제범죄",
+          "외국인 형사 방어",
+          "가사 조정",
+          "형사 변호"
+        ]
+      }
+    }
+  },
+  "footer": {
+    "firmName": "법무법인 세중",
+    "representative": "대표변호사: 이상국",
+    "businessNumber": "사업자등록번호: XXX-XX-XXXXX",
+    "phone": "대표전화: 02-536-XXXX",
+    "fax": "팩스: 02-536-XXXX",
+    "privacyPolicy": "개인정보처리방침",
+    "emailRejection": "이메일무단수집거부",
+    "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."
   }
 }
 

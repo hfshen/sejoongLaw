@@ -1,6 +1,4 @@
 import { getTranslations } from "next-intl/server"
-import Header from "@/components/layout/Header"
-import Footer from "@/components/layout/Footer"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
@@ -91,7 +89,6 @@ export default async function RealEstatePage() {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="section-padding-sm bg-gradient-to-br from-primary/10 to-accent/5">
@@ -188,7 +185,6 @@ export default async function RealEstatePage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   )
 }

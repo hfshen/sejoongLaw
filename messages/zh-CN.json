@@ -6,7 +6,8 @@
     "address": "首尔市瑞草区瑞草大路272号10层（韩国IBS大厦）",
     "readMore": "了解更多",
     "contact": "联系我们",
-    "close": "关闭"
+    "close": "关闭",
+    "viewAll": "查看全部"
   },
   "nav": {
     "about": "关于我们",
@@ -65,5 +66,73 @@
     "headquarter": "总部",
     "uijeongbu": "议政府分所",
     "ansan": "安山分所"
+  },
+  "hero": {
+    "mainCopy": "韩国出入境管理法的教科书，世中律师事务所制定标准。",
+    "subCopy": "拥有理论与实践经验的李相国代表律师和各领域专家，从最复杂的移民行政到棘手的民·刑事案件，提供明确的解决方案。",
+    "ctaPractice": "查看专业领域",
+    "ctaConsultation": "直接咨询律师"
+  },
+  "whySejoong": {
+    "title": "世中律师事务所的核心竞争力",
+    "authority": {
+      "title": "01. 权威性",
+      "description": "《出入境管理法》作者、法学博士李相国代表律师直接领导的行政·移民诉讼中心。"
+    },
+    "triNetwork": {
+      "title": "02. 三角网络",
+      "description": "首尔总部（控制塔）、议政府（房地产·家事）、安山（外国人·劳动）的三角编队，提供地区特色解决方案。"
+    },
+    "globalStandard": {
+      "title": "03. 全球标准",
+      "description": "超越语言障碍的沟通、全球企业咨询、签证手续等一站式法律服务。"
+    }
+  },
+  "leader": {
+    "title": "代表律师",
+    "ceoMessage": "法律必须面向人。特别是在国境线上更是如此。",
+    "message": "作为研究出入境管理法和外国人政策数十年的学者和实务家，我向您承诺。从冤屈的强制遣返、棘手的签证问题，到我们邻居复杂的财产纠纷。世中律师事务所将成为保护您权利的最坚实的盾牌。",
+    "name": "代表律师 / 法学博士 李 相 国"
+  },
+  "network": {
+    "title": "联系方式",
+    "seoul": {
+      "name": "SEOUL HEADQUARTERS",
+      "nameKo": "首尔主事务所",
+      "address": "首尔特别市瑞草区法院路2街15号，吉道大厦303号",
+      "focus": "企业法务、高难度行政诉讼、最高法院上诉",
+      "phone": "02-536-XXXX"
+    },
+    "uijeongbu": {
+      "name": "UIJEONGBU BRANCH",
+      "nameKo": "议政府分事务所",
+      "address": "京畿道议政府市绿杨路34街30号，406号（法院前）",
+      "focus": "房地产、民事、家事、京畿北部一般诉讼",
+      "phone": "031-XXX-XXXX"
+    },
+    "ansan": {
+      "name": "ANSAN BRANCH",
+      "nameKo": "安山分事务所",
+      "address": "京畿道安山市檀园区元谷洞748-6，世中大厦2层",
+      "focus": "外国人案件、出入境违法、工伤/劳动",
+      "phone": "031-XXX-XXXX"
+    }
+  },
+  "media": {
+    "title": "媒体与洞察",
+    "column": "专栏",
+    "case": "成功案例",
+    "news": "新闻",
+    "readMore": "了解更多"
+  },
+  "footer": {
+    "firmName": "世中律师事务所",
+    "representative": "代表律师：李相国",
+    "businessNumber": "营业执照号：XXX-XX-XXXXX",
+    "phone": "代表电话：02-536-XXXX",
+    "fax": "传真：02-536-XXXX",
+    "privacyPolicy": "隐私政策",
+    "emailRejection": "拒绝邮件收集",
+    "copyright": "版权所有 © 世中律师事务所。保留所有权利。"
   }
 }

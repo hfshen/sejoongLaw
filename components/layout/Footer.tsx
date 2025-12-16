@@ -11,19 +11,21 @@ export default function Footer() {
   return (
     <footer className="bg-secondary text-white" role="contentinfo">
       <FadeIn>
-        <div className="max-w-7xl mx-auto container-padding py-16">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div>
-              <h3 className="text-2xl font-bold mb-4">{t("common.title")}</h3>
-              <p className="text-sm text-gray-300">{t("common.subtitle")}</p>
-              <div className="mt-4 space-y-2">
-                <p className="text-sm text-gray-300">{t("common.address")}</p>
-                <p className="text-sm text-gray-300">{t("common.phone")}</p>
+        <div className="max-w-7xl mx-auto container-padding py-6 md:py-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+            <div className="col-span-2 md:col-span-1">
+              <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3">{t("footer.firmName")}</h3>
+              <p className="text-xs md:text-sm text-gray-300 mb-1.5">{t("footer.representative")}</p>
+              <div className="mt-2 md:mt-3 space-y-1">
+                <p className="text-xs text-gray-300 leading-tight">{t("common.address")}</p>
+                <p className="text-xs text-gray-300">{t("footer.phone")}</p>
+                <p className="text-xs text-gray-300">{t("footer.fax")}</p>
+                <p className="text-xs text-gray-300">{t("footer.businessNumber")}</p>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-lg">{t("nav.about")}</h4>
-              <ul className="space-y-3 text-sm">
+              <h4 className="font-semibold mb-2 md:mb-3 text-sm md:text-base">{t("nav.about")}</h4>
+              <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm">
                 <li>
                   <Link
                     href={`/${locale}/about/greeting`}
@@ -51,16 +53,18 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-lg">{t("common.contact")}</h4>
-              <p className="text-sm text-gray-300 leading-relaxed">
+              <h4 className="font-semibold mb-2 md:mb-3 text-sm md:text-base">{t("common.contact")}</h4>
+              <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
                 {t("common.address")}
                 <br />
-                {t("common.phone")}
+                {t("footer.phone")}
+                <br />
+                {t("footer.fax")}
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4 text-lg">Links</h4>
-              <ul className="space-y-3 text-sm">
+              <h4 className="font-semibold mb-2 md:mb-3 text-sm md:text-base">Links</h4>
+              <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm">
                 <li>
                   <Link
                     href={`/${locale}/board`}
@@ -70,22 +74,33 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-accent transition-colors">
-                    Privacy Policy
-                  </a>
+                  <Link
+                    href={`/${locale}/privacy-policy`}
+                    className="hover:text-accent transition-colors"
+                  >
+                    {t("footer.privacyPolicy")}
+                  </Link>
                 </li>
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
-                    Copyright Policy
+                    {t("footer.emailRejection")}
                   </a>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-gray-700 text-center text-sm text-gray-300">
-            <p>
-              Copyright SEJOONG LAW FIRM, 10th floor, korea IBS Bldg, 272,
-              Seocho-daero, Seocho-gu, Seoul, Korea All rights reserved.
+          <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-700 text-center">
+            <p className="text-xs md:text-sm text-gray-300 mb-2">{t("footer.copyright")}</p>
+            <p className="text-xs text-gray-400">
+              Powered by{" "}
+              <a
+                href="https://lolovely.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent transition-colors underline"
+              >
+                lolovely
+              </a>
             </p>
           </div>
         </div>

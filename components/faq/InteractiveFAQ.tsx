@@ -100,35 +100,35 @@ export default function InteractiveFAQ() {
   return (
     <section className="section-padding bg-background">
       <div className="container-max">
-        <div className="text-center mb-12">
-          <h2 className="section-title">자주 묻는 질문</h2>
-          <p className="body-text max-w-2xl mx-auto">
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-secondary mb-3 md:mb-6">자주 묻는 질문</h2>
+          <p className="text-sm md:text-base text-text-secondary max-w-2xl mx-auto">
             법무법인 세중에 대해 자주 묻는 질문과 답변을 확인하세요.
           </p>
         </div>
 
         {/* Search */}
-        <div className="max-w-2xl mx-auto mb-8">
+        <div className="max-w-2xl mx-auto mb-6 md:mb-8">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
+            <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-text-secondary" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="질문을 검색하세요..."
-              className="w-full pl-12 pr-4 py-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full pl-10 md:pl-12 pr-4 py-2.5 md:py-4 text-sm md:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
         </div>
 
         {/* Categories */}
-        <div className="flex flex-wrap gap-3 justify-center mb-8">
+        <div className="flex flex-wrap gap-2 md:gap-3 justify-center mb-6 md:mb-8">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
               className={cn(
-                "px-6 py-2 rounded-full font-medium transition-all",
+                "px-3 md:px-6 py-1.5 md:py-2 text-xs md:text-sm rounded-full font-medium transition-all",
                 selectedCategory === category
                   ? "bg-primary text-white"
                   : "bg-gray-100 text-text-secondary hover:bg-gray-200"
@@ -140,7 +140,7 @@ export default function InteractiveFAQ() {
         </div>
 
         {/* FAQ List */}
-        <div className="max-w-4xl mx-auto space-y-4">
+        <div className="max-w-4xl mx-auto space-y-3 md:space-y-4">
           <AnimatePresence>
             {filteredFAQs.map((faq, index) => (
               <motion.div
@@ -151,33 +151,33 @@ export default function InteractiveFAQ() {
                 transition={{ duration: 0.3, delay: index * 0.05 }}
               >
                 <Card>
-                  <CardContent className="p-6">
+                  <CardContent className="p-4 md:p-6">
                     <button
                       onClick={() =>
                         setOpenFAQ(openFAQ === faq.id ? null : faq.id)
                       }
                       className="w-full text-left"
                     >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <Badge variant="default">{faq.category}</Badge>
+                      <div className="flex items-start justify-between gap-2 md:gap-4">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 md:gap-3 mb-1.5 md:mb-2 flex-wrap">
+                            <Badge variant="default" className="text-xs">{faq.category}</Badge>
                             {faq.tags.map((tag) => (
                               <span
                                 key={tag}
-                                className="text-xs text-text-secondary bg-gray-100 px-2 py-1 rounded"
+                                className="text-xs text-text-secondary bg-gray-100 px-1.5 md:px-2 py-0.5 md:py-1 rounded"
                               >
                                 #{tag}
                               </span>
                             ))}
                           </div>
-                          <h3 className="font-bold text-lg text-secondary mb-2">
+                          <h3 className="font-bold text-sm md:text-base lg:text-lg text-secondary mb-1 md:mb-2">
                             {faq.question}
                           </h3>
                         </div>
                         <ChevronDown
                           className={cn(
-                            "w-5 h-5 text-text-secondary transition-transform flex-shrink-0",
+                            "w-4 h-4 md:w-5 md:h-5 text-text-secondary transition-transform flex-shrink-0 mt-1",
                             openFAQ === faq.id && "transform rotate-180"
                           )}
                         />
@@ -193,49 +193,49 @@ export default function InteractiveFAQ() {
                           transition={{ duration: 0.3 }}
                           className="overflow-hidden"
                         >
-                          <div className="pt-4 border-t border-gray-200 mt-4">
-                            <p className="body-text mb-4">{faq.answer}</p>
+                          <div className="pt-3 md:pt-4 border-t border-gray-200 mt-3 md:mt-4">
+                            <p className="text-sm md:text-base text-text-secondary mb-3 md:mb-4 leading-relaxed">{faq.answer}</p>
                             {faq.videoUrl && (
-                              <div className="mb-4">
+                              <div className="mb-3 md:mb-4">
                                 <a
                                   href={faq.videoUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-2 text-primary hover:underline"
+                                  className="inline-flex items-center gap-2 text-sm md:text-base text-primary hover:underline"
                                 >
-                                  <Video className="w-4 h-4" />
+                                  <Video className="w-3 h-3 md:w-4 md:h-4" />
                                   관련 영상 보기
                                 </a>
                               </div>
                             )}
-                            <div className="flex items-center gap-4 pt-4 border-t border-gray-100">
-                              <span className="text-sm text-text-secondary">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 pt-3 md:pt-4 border-t border-gray-100">
+                              <span className="text-xs md:text-sm text-text-secondary">
                                 이 답변이 도움이 되셨나요?
                               </span>
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => handleHelpful(faq.id, true)}
                                   className={cn(
-                                    "p-2 rounded-lg transition-colors",
+                                    "p-1.5 md:p-2 rounded-lg transition-colors",
                                     helpfulFeedback[faq.id] === true
                                       ? "bg-green-100 text-green-700"
                                       : "bg-gray-100 text-text-secondary hover:bg-gray-200"
                                   )}
                                   aria-label="도움됨"
                                 >
-                                  <ThumbsUp className="w-4 h-4" />
+                                  <ThumbsUp className="w-3 h-3 md:w-4 md:h-4" />
                                 </button>
                                 <button
                                   onClick={() => handleHelpful(faq.id, false)}
                                   className={cn(
-                                    "p-2 rounded-lg transition-colors",
+                                    "p-1.5 md:p-2 rounded-lg transition-colors",
                                     helpfulFeedback[faq.id] === false
                                       ? "bg-red-100 text-red-700"
                                       : "bg-gray-100 text-text-secondary hover:bg-gray-200"
                                   )}
                                   aria-label="도움 안됨"
                                 >
-                                  <ThumbsDown className="w-4 h-4" />
+                                  <ThumbsDown className="w-3 h-3 md:w-4 md:h-4" />
                                 </button>
                               </div>
                             </div>

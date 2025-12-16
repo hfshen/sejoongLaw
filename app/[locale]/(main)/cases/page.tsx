@@ -1,11 +1,8 @@
-import Header from "@/components/layout/Header"
-import Footer from "@/components/layout/Footer"
 import CaseStudiesSection from "@/components/sections/CaseStudiesSection"
 
 export default function CasesPage() {
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-background">
         <div className="section-padding-sm bg-gradient-to-br from-primary/5 to-accent/5">
           <div className="container-max text-center">
@@ -17,7 +14,6 @@ export default function CasesPage() {
         </div>
         <CaseStudiesSection />
       </main>
-      <Footer />
     </>
   )
 }

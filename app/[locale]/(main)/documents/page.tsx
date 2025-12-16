@@ -1,6 +1,4 @@
 import { getTranslations } from "next-intl/server"
-import Header from "@/components/layout/Header"
-import Footer from "@/components/layout/Footer"
 import DocumentGenerator from "@/components/documents/DocumentGenerator"
 import { Card, CardContent } from "@/components/ui/Card"
 import { FileText, CheckCircle, Download, Mail } from "lucide-react"

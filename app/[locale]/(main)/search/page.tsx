@@ -2,8 +2,6 @@
 
 import { useSearchParams } from "next/navigation"
 import { useState, useEffect } from "react"
-import Header from "@/components/layout/Header"
-import Footer from "@/components/layout/Footer"
 import { Card, CardContent } from "@/components/ui/Card"
 import SearchBar from "@/components/search/SearchBar"
 
@@ -26,7 +24,6 @@ export default function SearchPage() {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-background section-padding">
         <div className="container-max">
           <div className="max-w-4xl mx-auto">
@@ -79,7 +76,6 @@ export default function SearchPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </>
   )
 }

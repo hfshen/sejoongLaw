@@ -6,7 +6,8 @@
     "address": "10th Floor, 272 Seocho-daero, Seocho-gu, Seoul (Korea IBS Building)",
     "readMore": "Read More",
     "contact": "Contact",
-    "close": "Close"
+    "close": "Close",
+    "viewAll": "View All"
   },
   "nav": {
     "about": "About Us",
@@ -65,6 +66,126 @@
     "headquarter": "Headquarters",
     "uijeongbu": "Uijeongbu Branch",
     "ansan": "Ansan Branch"
+  },
+  "hero": {
+    "mainCopy": "The Textbook of Korea's Immigration Control Act, Sejoong Law Firm Sets the Standard.",
+    "subCopy": "Led by Managing Partner Lee Sang-guk, Ph.D., who combines theory and practice, along with experts in each field, we provide clear solutions from the most complex immigration administration to challenging civil and criminal disputes.",
+    "ctaPractice": "View Practice Areas",
+    "ctaConsultation": "Direct Consultation with Attorney"
+  },
+  "whySejoong": {
+    "title": "Law Firm Sejoong's Competence",
+    "authority": {
+      "title": "01. The Authority",
+      "description": "Led by Managing Partner Lee Sang-guk, Ph.D., author of 《Immigration Control Act》, we are the mecca of administrative and immigration litigation."
+    },
+    "triNetwork": {
+      "title": "02. Tri-Network",
+      "description": "With a strategic three-point network of Seoul Headquarters (Control Tower), Uijeongbu (Real Estate & Family), and Ansan (Foreigners & Labor), we provide region-specific solutions."
+    },
+    "globalStandard": {
+      "title": "03. Global Standard",
+      "description": "We realize one-stop legal services from communication beyond language barriers to global corporate advisory and visa procedures."
+    }
+  },
+  "leader": {
+    "title": "Managing Partner",
+    "ceoMessage": "Law must serve people. Especially at borders, this is even more true.",
+    "message": "As a scholar and practitioner who has researched immigration control law and foreign policy for decades, I promise you this. From unjust forced deportation, difficult visa issues, to complex property disputes of our neighbors. Sejoong Law Firm will be your strongest shield protecting your rights.",
+    "name": "Managing Partner / Ph.D. in Law Lee Sang-guk"
+  },
+  "network": {
+    "title": "Network",
+    "seoul": {
+      "name": "SEOUL HEADQUARTERS",
+      "nameKo": "Seoul Main Office",
+      "address": "303, Gildo Building, 15 Beopwon-ro 2-gil, Seocho-gu, Seoul",
+      "focus": "Corporate Law, High-Difficulty Administrative Litigation, Supreme Court Appeals",
+      "phone": "02-536-XXXX"
+    },
+    "uijeongbu": {
+      "name": "UIJEONGBU BRANCH",
+      "nameKo": "Uijeongbu Branch Office",
+      "address": "406, 30 Nogyang-ro 34beon-gil, Uijeongbu-si, Gyeonggi-do (In front of the court)",
+      "focus": "Real Estate, Civil, Family, General Litigation in Northern Gyeonggi",
+      "phone": "031-XXX-XXXX"
+    },
+    "ansan": {
+      "name": "ANSAN BRANCH",
+      "nameKo": "Ansan Branch Office",
+      "address": "2F, Sejoong Building, 748-6 Wongok-dong, Danwon-gu, Ansan-si, Gyeonggi-do",
+      "focus": "Foreigner Cases, Immigration Violations, Industrial Accidents/Labor",
+      "phone": "031-XXX-XXXX"
+    }
+  },
+  "media": {
+    "title": "Media & Insight",
+    "column": "Column",
+    "case": "Success Stories",
+    "news": "News",
+    "readMore": "Read More",
+    "noArticles": "No content available."
+  },
+  "services": {
+    "title": "Practice Areas",
+    "description": "We provide professional services across various legal fields to protect our clients' rights and achieve the best outcomes.",
+    "specialized": "Specialized",
+    "practiceAreas": {
+      "immigration": {
+        "title": "Immigration & Administrative",
+        "description": "Visa applications, immigration consultation, administrative appeals, etc.",
+        "details": [
+          "Deportation cancellation lawsuits",
+          "Refugee/visa administrative appeals",
+          "Nationality recovery and naturalization",
+          "Visa refusal responses",
+          "Stay permit extension/change"
+        ]
+      },
+      "realEstate": {
+        "title": "Real Estate & Construction",
+        "description": "Real estate disputes, construction litigation, redevelopment, etc.",
+        "details": [
+          "Eviction/lease lawsuits",
+          "Redevelopment/reconstruction disputes",
+          "Auction and forced execution",
+          "Real estate dispute mediation",
+          "Construction defect lawsuits"
+        ]
+      },
+      "corporate": {
+        "title": "Corporate & Labor",
+        "description": "Corporate advisory, M&A, labor disputes, etc.",
+        "details": [
+          "Corporate advisory and M&A",
+          "Unfair dismissal relief",
+          "Foreign worker industrial accidents",
+          "Corporate mergers and acquisitions",
+          "Overseas investment advisory"
+        ]
+      },
+      "familyCriminal": {
+        "title": "Family & Criminal",
+        "description": "Divorce, inheritance, criminal defense, etc.",
+        "details": [
+          "Divorce/inheritance/forced share",
+          "Sex crimes/economic crimes",
+          "Foreigner criminal defense",
+          "Family mediation",
+          "Criminal defense"
+        ]
+      }
+    }
+  },
+  "footer": {
+    "firmName": "Sejoong Law Firm",
+    "representative": "Managing Partner: Lee Sang-guk",
+    "businessNumber": "Business Registration: XXX-XX-XXXXX",
+    "phone": "Main Phone: 02-536-XXXX",
+    "fax": "Fax: 02-536-XXXX",
+    "privacyPolicy": "Privacy Policy",
+    "emailRejection": "Email Collection Rejection",
+    "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."
   }
 }
 

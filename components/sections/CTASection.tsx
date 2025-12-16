@@ -10,22 +10,21 @@ export default function CTASection() {
 
   return (
     <section className="section-padding bg-gradient-to-br from-primary via-primary-light to-accent text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
       <div className="container-max relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-3 md:mb-4">
               지금 바로 상담받으세요
             </h2>
-            <p className="text-xl md:text-2xl mb-12 opacity-90">
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl mb-6 md:mb-8 opacity-90">
               전문 변호사가 직접 상담해드립니다. 무료 상담으로 시작하세요.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <div className="flex flex-col sm:flex-row gap-2.5 md:gap-3 justify-center items-center mb-6 md:mb-8">
               <Button
                 size="lg"
                 variant="secondary"
@@ -58,13 +57,13 @@ export default function CTASection() {
                 02) 591-0372
               </Button>
             </div>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center text-lg">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-6 justify-center items-center text-sm md:text-base lg:text-lg">
               <div className="flex items-center gap-2">
-                <Mail className="w-5 h-5" />
+                <Mail className="w-4 h-4 md:w-5 md:h-5" />
                 <span>consult@sejoonglaw.com</span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="w-5 h-5" />
+                <Phone className="w-4 h-4 md:w-5 md:h-5" />
                 <span>02) 591-0372</span>
               </div>
             </div>

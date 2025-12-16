@@ -47,26 +47,25 @@ export default function StatsSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-8 md:mb-16"
         >
           <h2 className="section-title">법무법인 세중의 성과</h2>
-          <p className="body-text max-w-2xl mx-auto">
+          <p className="body-text max-w-2xl mx-auto px-4">
             오랜 경험과 전문성을 바탕으로 고객의 권리를 보호하고 최상의 결과를 만들어냅니다.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
           {stats.map((stat, index) => (
-            <div key={index}>
-              <StatCard
-                value={stat.value}
-                suffix={stat.suffix}
-                label={stat.label}
-                icon={stat.icon}
-                delay={index * 0.1}
-                animate={true}
-              />
-            </div>
+            <StatCard
+              key={index}
+              value={stat.value}
+              suffix={stat.suffix}
+              label={stat.label}
+              icon={stat.icon}
+              delay={index * 0.1}
+              animate={true}
+            />
           ))}
         </div>
       </div>

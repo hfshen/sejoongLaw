@@ -1,9 +1,11 @@
 import { Metadata } from "next"
-import Header from "@/components/layout/Header"
-import Footer from "@/components/layout/Footer"
 import HeroSection from "@/components/sections/HeroSection"
+import WhySejoongSection from "@/components/sections/WhySejoongSection"
+import LeaderSection from "@/components/sections/LeaderSection"
 import StatsSection from "@/components/sections/StatsSection"
 import ServicesSection from "@/components/sections/ServicesSection"
+import NetworkSection from "@/components/sections/NetworkSection"
+import MediaInsightSection from "@/components/sections/MediaInsightSection"
 import CaseStudiesSection from "@/components/sections/CaseStudiesSection"
 import TestimonialsSection from "@/components/sections/TestimonialsSection"
 import CTASection from "@/components/sections/CTASection"
@@ -29,19 +31,20 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-background">
-        <HeroSection />
-        <StatsSection />
-        <ServicesSection />
-        <CaseStudiesSection />
-        <InteractiveFAQ />
-        <TestimonialsSection />
-        <CTASection />
-      </main>
-      <Footer />
+      <HeroSection />
+      <WhySejoongSection />
+      <LeaderSection />
+      <StatsSection />
+      <ServicesSection />
+      <NetworkSection />
+      <MediaInsightSection />
+      <CaseStudiesSection />
+      <InteractiveFAQ />
+      <TestimonialsSection />
+      <CTASection />
       <AIChatbot />
       <SmartCTA variant="floating" position="bottom-right" />
     </>
   )
 }
+
