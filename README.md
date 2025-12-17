@@ -22,12 +22,46 @@ npm install
 
 `.env.local` 파일을 생성하고 다음 변수들을 설정하세요:
 
+#### 필수 환경 변수
+
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+# Supabase 설정 (필수)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# 사이트 URL (필수)
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
+
+#### 선택 환경 변수
+
+```env
+# 카카오 맵 API (지도 기능 사용 시)
+NEXT_PUBLIC_KAKAO_MAP_API_KEY=your_kakao_map_api_key
+
+# SMS 인증 (CoolSMS)
+COOLSMS_API_KEY=your_coolsms_api_key
+COOLSMS_API_SECRET=your_coolsms_api_secret
+COOLSMS_SENDER_PHONE=01012345678
+
+# Google Analytics
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+
+# Google Search Console
+GOOGLE_VERIFICATION=your_google_verification_code
+
+# OpenAI API (AI 챗봇 기능 사용 시)
+OPENAI_API_KEY=your_openai_api_key
+
+# Sentry (에러 모니터링)
+NEXT_PUBLIC_SENTRY_DSN=your_sentry_dsn
+```
+
+**참고**: 
+- Supabase 설정은 Supabase 대시보드 > Settings > API에서 확인할 수 있습니다.
+- 각 서비스의 API 키는 해당 서비스의 개발자 콘솔에서 발급받을 수 있습니다.
+- 선택 환경 변수는 해당 기능을 사용하지 않으면 설정하지 않아도 됩니다.
 
 ### 3. Supabase 데이터베이스 설정
 
