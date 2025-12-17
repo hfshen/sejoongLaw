@@ -8,6 +8,18 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
+        disallow: [
+          "/api/",
+          "/admin/",
+          "/_next/",
+          "/_vercel/",
+          "/sw.js",
+          "/manifest.webmanifest",
+        ],
+      },
+      {
+        userAgent: "Googlebot",
+        allow: "/",
         disallow: ["/api/", "/admin/", "/_next/"],
       },
     ],
