@@ -33,60 +33,14 @@ export default function Navigation(props?: NavigationProps) {
     {
       path: `/${locale}/about`,
       label: t("nav.about"),
-      children: [
-        { path: `/${locale}/about/greeting`, label: t("about.greeting") },
-        { path: `/${locale}/about/members`, label: t("about.members") },
-        { path: `/${locale}/about/location`, label: t("about.location") },
-      ],
     },
     {
       path: `/${locale}/litigation`,
       label: t("nav.litigation"),
-      children: [
-        {
-          path: `/${locale}/litigation/real-estate`,
-          label: t("litigation.realEstate"),
-        },
-        { path: `/${locale}/litigation/divorce`, label: t("litigation.divorce") },
-        {
-          path: `/${locale}/litigation/inheritance`,
-          label: t("litigation.inheritance"),
-        },
-        { path: `/${locale}/litigation/traffic`, label: t("litigation.traffic") },
-        {
-          path: `/${locale}/litigation/industrial`,
-          label: t("litigation.industrial"),
-        },
-        {
-          path: `/${locale}/litigation/insurance`,
-          label: t("litigation.insurance"),
-        },
-        { path: `/${locale}/litigation/tax`, label: t("litigation.tax") },
-        {
-          path: `/${locale}/litigation/general`,
-          label: t("litigation.general"),
-        },
-      ],
     },
     {
       path: `/${locale}/corporate`,
       label: t("nav.corporate"),
-      children: [
-        {
-          path: `/${locale}/corporate/advisory`,
-          label: t("corporate.advisory"),
-        },
-        { path: `/${locale}/corporate/m-a`, label: t("corporate.mna") },
-        {
-          path: `/${locale}/corporate/overseas`,
-          label: t("corporate.overseas"),
-        },
-        { path: `/${locale}/corporate/finance`, label: t("corporate.finance") },
-        {
-          path: `/${locale}/corporate/indirect`,
-          label: t("corporate.indirect"),
-        },
-      ],
     },
     {
       path: `/${locale}/immigration`,
@@ -173,75 +127,16 @@ export default function Navigation(props?: NavigationProps) {
           <div className="flex items-center space-x-1">
             {menuStructure.map((menu) => (
               <div key={menu.path} className="relative group">
-                <button
-                  onClick={() => handleMenuToggle(menu.path)}
+                <Link
+                  href={menu.path}
                   className={`px-4 py-2 text-sm font-semibold transition-all duration-200 rounded-lg focus-ring ${
                     isActive(menu.path)
                       ? "text-primary bg-primary/10"
                       : "text-secondary hover:text-primary hover:bg-gray-50"
                   }`}
-                  aria-expanded={openMenu === menu.path}
-                  aria-haspopup={menu.children ? "true" : "false"}
                 >
                   {menu.label}
-                </button>
-                {menu.children && (
-                  <div
-                    className={`absolute left-0 mt-2 w-64 rounded-xl shadow-premium bg-white/95 backdrop-blur-sm border border-gray-100 z-50 overflow-hidden ${
-                      openMenu === menu.path ? "block" : "hidden group-hover:block"
-                    }`}
-                    onMouseLeave={() => setOpenMenu(null)}
-                  >
-                    <div className="py-2">
-                      {menu.children.map((child) => (
-                        <div key={child.path}>
-                          {child.children ? (
-                            <div className="relative group/submenu">
-                              <Link
-                                href={child.path}
-                                className={`block px-4 py-3 text-sm transition-colors ${
-                                  isActive(child.path)
-                                    ? "text-primary bg-primary/10 font-semibold"
-                                    : "text-secondary hover:text-primary hover:bg-gray-50"
-                                }`}
-                              >
-                                {child.label}
-                              </Link>
-                              <div className="absolute left-full top-0 ml-2 w-64 rounded-xl shadow-premium bg-white/95 backdrop-blur-sm border border-gray-100 hidden group-hover/submenu:block">
-                                <div className="py-2">
-                                  {child.children.map((subChild) => (
-                                    <Link
-                                      key={subChild.path}
-                                      href={subChild.path}
-                                      className={`block px-4 py-3 text-sm transition-colors ${
-                                        isActive(subChild.path)
-                                          ? "text-primary bg-primary/10 font-semibold"
-                                          : "text-secondary hover:text-primary hover:bg-gray-50"
-                                      }`}
-                                    >
-                                      {subChild.label}
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            <Link
-                              href={child.path}
-                              className={`block px-4 py-3 text-sm transition-colors ${
-                                isActive(child.path)
-                                  ? "text-primary bg-primary/10 font-semibold"
-                                  : "text-secondary hover:text-primary hover:bg-gray-50"
-                              }`}
-                            >
-                              {child.label}
-                            </Link>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                </Link>
               </div>
             ))}
           </div>
