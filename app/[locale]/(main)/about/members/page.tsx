@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Metadata } from "next"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
 import { Modal } from "@/components/ui/Modal"
