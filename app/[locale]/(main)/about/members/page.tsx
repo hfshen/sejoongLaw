@@ -287,12 +287,15 @@ export default function MembersPage() {
         <div className="container-max">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {members.map((member) => (
-              <Card
+              <div
                 key={member.id}
-                hover
-                className="text-center h-full cursor-pointer transition-all hover:shadow-xl"
                 onClick={() => setSelectedMember(member)}
+                className="cursor-pointer"
               >
+                <Card
+                  hover
+                  className="text-center h-full transition-all hover:shadow-xl"
+                >
                 <CardHeader>
                   <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 mx-auto mb-6 flex items-center justify-center relative">
                     {member.image ? (
@@ -354,6 +357,7 @@ export default function MembersPage() {
                   </div>
                 </CardContent>
               </Card>
+              </div>
             ))}
           </div>
         </div>
