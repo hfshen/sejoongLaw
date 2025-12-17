@@ -43,9 +43,11 @@ export function Modal({
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                 className={cn(
                   "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
-                  "bg-white rounded-xl shadow-premium-lg p-6",
-                  "w-full max-w-lg max-h-[90vh] overflow-y-auto",
-                  "z-50 focus:outline-none",
+                  "bg-white rounded-xl shadow-premium-lg p-4 md:p-8",
+                  "w-[95vw] sm:w-[90vw] md:w-full max-w-3xl",
+                  "max-h-[90vh] overflow-y-auto",
+                  "z-[100] focus:outline-none",
+                  "mx-2 my-2",
                   className
                 )}
               >
