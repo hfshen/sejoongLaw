@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/Badge"
 import { FileText, MessageSquare, Newspaper, Award, ArrowRight, Calendar } from "lucide-react"
 import Button from "@/components/ui/Button"
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: "상담게시판 | 법무법인 세중",
   description: "최근업무사례, 온라인상담 Q/A, 세중 칼럼, 최신뉴스를 확인하세요.",
