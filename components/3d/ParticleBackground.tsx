@@ -35,8 +35,12 @@ function Particles({ count = 2000 }: { count?: number }) {
     ref.current.geometry.attributes.position.needsUpdate = true
   })
 
+  const positions = useMemo(() => {
+    return new Float32Array(particles.flatMap((p) => [p.x, p.y, p.z]))
+  }, [particles])
+
   return (
-    <Points ref={ref} positions={particles.map((p) => [p.x, p.y, p.z]).flat()} stride={3} frustumCulled={false}>
+    <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
         color="#bb271a"
