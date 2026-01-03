@@ -1,13 +1,21 @@
-import { Resend } from "resend"
-import * as smtpEmail from "./email-smtp"
-
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+import nodemailer from "nodemailer"
 
 const RECIPIENT_EMAIL = "sejoonglaw@gmail.com"
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "noreply@sejoonglaw.com"
 
-// 이메일 전송 방식 선택: 'resend' 또는 'smtp' (기본값: smtp)
-const EMAIL_PROVIDER = process.env.EMAIL_PROVIDER || "smtp"
+// Gmail SMTP 설정
+const createTransporter = () => {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    return null
+  }
+
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USER, // Gmail 주소 (예: sejoonglaw@gmail.com)
+      pass: process.env.GMAIL_APP_PASSWORD, // Gmail 앱 비밀번호
+    },
+  })
+}
 
 export interface ConsultationEmailData {
   name: string
@@ -33,20 +41,15 @@ export interface BookingEmailData {
  * 상담 요청 알림 이메일 전송 (법무법인으로)
  */
 export async function sendConsultationNotificationEmail(data: ConsultationEmailData) {
-  // SMTP를 사용하는 경우
-  if (EMAIL_PROVIDER === "smtp") {
-    return smtpEmail.sendConsultationNotificationEmail(data)
-  }
-
-  // Resend를 사용하는 경우
   try {
-    if (!resend || !process.env.RESEND_API_KEY) {
-      console.warn("RESEND_API_KEY is not set. Email will not be sent.")
+    const transporter = createTransporter()
+    if (!transporter) {
+      console.warn("Gmail SMTP is not configured. Email will not be sent.")
       return { success: false, error: "Email service not configured" }
     }
 
-    const { error } = await resend.emails.send({
-      from: FROM_EMAIL,
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
       to: RECIPIENT_EMAIL,
       subject: `[상담 요청] ${data.subject || data.service}`,
       html: `
@@ -77,11 +80,6 @@ export async function sendConsultationNotificationEmail(data: ConsultationEmailD
       `,
     })
 
-    if (error) {
-      console.error("Resend error:", error)
-      return { success: false, error: error.message }
-    }
-
     return { success: true }
   } catch (error: any) {
     console.error("Email sending error:", error)
@@ -93,19 +91,14 @@ export async function sendConsultationNotificationEmail(data: ConsultationEmailD
  * 상담 요청 확인 이메일 전송 (고객에게)
  */
 export async function sendConsultationConfirmationEmail(data: ConsultationEmailData) {
-  // SMTP를 사용하는 경우
-  if (EMAIL_PROVIDER === "smtp") {
-    return smtpEmail.sendConsultationConfirmationEmail(data)
-  }
-
-  // Resend를 사용하는 경우
   try {
-    if (!resend || !process.env.RESEND_API_KEY) {
+    const transporter = createTransporter()
+    if (!transporter) {
       return { success: false, error: "Email service not configured" }
     }
 
-    const { error } = await resend.emails.send({
-      from: FROM_EMAIL,
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
       to: data.email,
       subject: "[법무법인 세중] 상담 요청이 접수되었습니다",
       html: `
@@ -141,11 +134,6 @@ export async function sendConsultationConfirmationEmail(data: ConsultationEmailD
       `,
     })
 
-    if (error) {
-      console.error("Resend error:", error)
-      return { success: false, error: error.message }
-    }
-
     return { success: true }
   } catch (error: any) {
     console.error("Email sending error:", error)
@@ -157,20 +145,15 @@ export async function sendConsultationConfirmationEmail(data: ConsultationEmailD
  * 예약 알림 이메일 전송 (법무법인으로)
  */
 export async function sendBookingNotificationEmail(data: BookingEmailData) {
-  // SMTP를 사용하는 경우
-  if (EMAIL_PROVIDER === "smtp") {
-    return smtpEmail.sendBookingNotificationEmail(data)
-  }
-
-  // Resend를 사용하는 경우
   try {
-    if (!resend || !process.env.RESEND_API_KEY) {
-      console.warn("RESEND_API_KEY is not set. Email will not be sent.")
+    const transporter = createTransporter()
+    if (!transporter) {
+      console.warn("Gmail SMTP is not configured. Email will not be sent.")
       return { success: false, error: "Email service not configured" }
     }
 
-    const { error } = await resend.emails.send({
-      from: FROM_EMAIL,
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
       to: RECIPIENT_EMAIL,
       subject: `[예약 요청] ${data.name}님 - ${data.date} ${data.time}`,
       html: `
@@ -203,11 +186,6 @@ export async function sendBookingNotificationEmail(data: BookingEmailData) {
       `,
     })
 
-    if (error) {
-      console.error("Resend error:", error)
-      return { success: false, error: error.message }
-    }
-
     return { success: true }
   } catch (error: any) {
     console.error("Email sending error:", error)
@@ -219,19 +197,14 @@ export async function sendBookingNotificationEmail(data: BookingEmailData) {
  * 예약 확인 이메일 전송 (고객에게)
  */
 export async function sendBookingConfirmationEmail(data: BookingEmailData) {
-  // SMTP를 사용하는 경우
-  if (EMAIL_PROVIDER === "smtp") {
-    return smtpEmail.sendBookingConfirmationEmail(data)
-  }
-
-  // Resend를 사용하는 경우
   try {
-    if (!resend || !process.env.RESEND_API_KEY) {
+    const transporter = createTransporter()
+    if (!transporter) {
       return { success: false, error: "Email service not configured" }
     }
 
-    const { error } = await resend.emails.send({
-      from: FROM_EMAIL,
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
       to: data.email,
       subject: "[법무법인 세중] 예약이 접수되었습니다",
       html: `
@@ -275,11 +248,6 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData) {
         </div>
       `,
     })
-
-    if (error) {
-      console.error("Resend error:", error)
-      return { success: false, error: error.message }
-    }
 
     return { success: true }
   } catch (error: any) {
