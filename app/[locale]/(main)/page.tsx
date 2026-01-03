@@ -5,7 +5,6 @@ import LeaderSection from "@/components/sections/LeaderSection"
 import StatsSection from "@/components/sections/StatsSection"
 import ServicesSection from "@/components/sections/ServicesSection"
 import NetworkSection from "@/components/sections/NetworkSection"
-import MediaInsightSection from "@/components/sections/MediaInsightSection"
 import CaseStudiesSection from "@/components/sections/CaseStudiesSection"
 import TestimonialsSection from "@/components/sections/TestimonialsSection"
 import CTASection from "@/components/sections/CTASection"
@@ -37,7 +36,6 @@ export default function HomePage() {
       <StatsSection />
       <ServicesSection />
       <NetworkSection />
-      <MediaInsightSection />
       <CaseStudiesSection />
       <InteractiveFAQ />
       <TestimonialsSection />

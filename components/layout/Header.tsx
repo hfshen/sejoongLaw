@@ -43,10 +43,10 @@ export default function Header() {
             <div className="flex items-center space-x-2 md:space-x-4">
               {/* 데스크톱: 전화번호 */}
               <a
-                href="tel:025910372"
+                href="tel:03180448805"
                 className="text-secondary hover:text-primary font-semibold transition-colors text-sm md:text-base hidden lg:block"
               >
-                02) 591-0372
+                031-8044-8805
               </a>
               
               {/* 언어 선택기 */}

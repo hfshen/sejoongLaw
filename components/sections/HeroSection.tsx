@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl"
 import Button from "@/components/ui/Button"
 import { ChevronDown } from "lucide-react"
 import Image from "next/image"
+import ParticleBackground from "@/components/3d/ParticleBackground"
 
 export default function HeroSection() {
   const t = useTranslations()
@@ -17,11 +18,19 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* 3D Particle Background */}
+      <ParticleBackground />
+      
       {/* Background Image */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background/80 to-accent/10" />
-        {/* Placeholder for background image - 법전 서재 또는 공항/도시 이미지 */}
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1920&q=80')] bg-cover bg-center opacity-20" />
+        <Image
+          src="/images/hero/background-law.svg"
+          alt="법전 서재 배경"
+          fill
+          className="object-cover opacity-30"
+          priority
+        />
       </div>
       
       {/* Decorative elements */}
@@ -35,18 +44,23 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            {/* Logo Section */}
+            {/* Logo Section with 3D Effect */}
             <motion.div
               className="mb-8 flex justify-center"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.1 }}
             >
-              <div className="relative">
+              <div className="relative perspective-1000">
                 <motion.div
                   className="relative w-64 h-20 md:w-80 md:h-24 lg:w-96 lg:h-28"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    rotateY: 5,
+                    rotateX: -5,
+                  }}
                   transition={{ duration: 0.3 }}
+                  style={{ transformStyle: "preserve-3d" }}
                 >
                   <Image
                     src="/SJ_logo.svg"
@@ -64,6 +78,19 @@ export default function HeroSection() {
                   }}
                   transition={{
                     duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+                {/* 3D Glow Effect */}
+                <motion.div
+                  className="absolute -inset-8 bg-primary/20 rounded-3xl blur-2xl -z-20"
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.2, 0.4, 0.2],
+                  }}
+                  transition={{
+                    duration: 4,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}

@@ -1,0 +1,18 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="realestateGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4af37;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#e5c55a;stop-opacity:0.7" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#realestateGradient)"/>
+  <!-- 집 -->
+  <path d="M 300 400 L 400 300 L 500 400 L 500 500 L 300 500 Z" fill="#ffffff" opacity="0.3"/>
+  <rect x="350" y="450" width="100" height="50" fill="#ffffff" opacity="0.4"/>
+  <rect x="320" y="420" width="30" height="40" fill="#ffffff" opacity="0.4"/>
+  <rect x="450" y="420" width="30" height="40" fill="#ffffff" opacity="0.4"/>
+  <!-- 열쇠 -->
+  <circle cx="600" cy="350" r="20" fill="#ffffff" opacity="0.5"/>
+  <rect x="600" y="350" width="40" height="8" fill="#ffffff" opacity="0.5"/>
+</svg>
+

@@ -48,3 +48,4 @@ export default function Tabs({ tabs, defaultTab, className }: TabsProps) {
   )
 }
 
+

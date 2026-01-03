@@ -172,7 +172,7 @@ export default function SmartCTA({
                 variant="outline"
                 size="sm"
                 className="w-full text-xs md:text-sm"
-                onClick={() => (window.location.href = "tel:025910372")}
+                onClick={() => (window.location.href = "tel:03180448805")}
               >
                 <Phone className="w-3 h-3 md:w-4 md:h-4 mr-1.5" />
                 전화 상담
@@ -228,11 +228,11 @@ export default function SmartCTA({
                 무료 상담 신청
               </Link>
               <a
-                href="tel:025910372"
+                href="tel:03180448805"
                 className="premium-button-outline w-full text-center flex items-center justify-center"
               >
                 <Phone className="w-5 h-5 mr-2" />
-                전화 상담: 02) 591-0372
+                전화 상담: 031-8044-8805
               </a>
             </div>
           </motion.div>

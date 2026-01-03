@@ -1,0 +1,19 @@
+<svg width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="video3Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#video3Gradient)"/>
+  <!-- 재생 버튼 -->
+  <circle cx="640" cy="360" r="80" fill="#ffffff" opacity="0.3"/>
+  <path d="M 620 340 L 620 380 L 660 360 Z" fill="#ffffff" opacity="0.8"/>
+  <!-- 문서/법전 -->
+  <rect x="400" y="250" width="480" height="220" fill="#ffffff" opacity="0.15" rx="8"/>
+  <rect x="450" y="280" width="400" height="30" fill="#ffffff" opacity="0.2"/>
+  <rect x="450" y="330" width="400" height="20" fill="#ffffff" opacity="0.15"/>
+  <rect x="450" y="370" width="350" height="20" fill="#ffffff" opacity="0.15"/>
+  <rect x="450" y="410" width="380" height="20" fill="#ffffff" opacity="0.15"/>
+</svg>
+

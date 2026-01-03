@@ -1,0 +1,18 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="corporateGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:0.7" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#corporateGradient)"/>
+  <!-- 건물들 -->
+  <rect x="200" y="300" width="120" height="200" fill="#ffffff" opacity="0.3"/>
+  <rect x="340" y="250" width="120" height="250" fill="#ffffff" opacity="0.35"/>
+  <rect x="480" y="280" width="120" height="220" fill="#ffffff" opacity="0.3"/>
+  <!-- 창문들 -->
+  <rect x="220" y="330" width="25" height="30" fill="#ffffff" opacity="0.5"/>
+  <rect x="260" y="330" width="25" height="30" fill="#ffffff" opacity="0.5"/>
+  <rect x="300" y="330" width="25" height="30" fill="#ffffff" opacity="0.5"/>
+</svg>
+

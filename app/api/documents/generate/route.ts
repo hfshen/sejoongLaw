@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       align: "center",
     })
     yPos += 5
-    doc.text("전화: 02) 591-0372 | 이메일: info@sejoonglaw.com", 105, yPos, {
+    doc.text("전화: 031-8044-8805 | 이메일: info@sejoonglaw.com", 105, yPos, {
       align: "center",
     })
 

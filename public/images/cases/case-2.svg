@@ -1,0 +1,17 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="case2Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4af37;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#e5c55a;stop-opacity:0.5" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#case2Gradient)"/>
+  <!-- 하트와 균형 -->
+  <circle cx="400" cy="250" r="80" fill="#ffffff" opacity="0.3"/>
+  <path d="M 400 200 Q 400 180 420 180 Q 440 180 440 200 Q 440 220 400 280 Q 360 220 360 200 Q 360 180 380 180 Q 400 180 400 200" fill="#ffffff" opacity="0.4"/>
+  <!-- 균형 저울 -->
+  <line x1="200" y1="400" x2="600" y2="400" stroke="#ffffff" stroke-width="4" opacity="0.5"/>
+  <circle cx="200" cy="400" r="30" fill="#ffffff" opacity="0.3"/>
+  <circle cx="600" cy="400" r="30" fill="#ffffff" opacity="0.3"/>
+</svg>
+

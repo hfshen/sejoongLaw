@@ -1,0 +1,18 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="case1Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#bb271a;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#d43a2a;stop-opacity:0.6" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#case1Gradient)"/>
+  <!-- 건물 실루엣 -->
+  <rect x="200" y="200" width="400" height="300" fill="#ffffff" opacity="0.2" rx="8"/>
+  <rect x="250" y="250" width="80" height="120" fill="#ffffff" opacity="0.3"/>
+  <rect x="350" y="250" width="80" height="120" fill="#ffffff" opacity="0.3"/>
+  <rect x="450" y="250" width="80" height="120" fill="#ffffff" opacity="0.3"/>
+  <!-- 성공 표시 -->
+  <circle cx="650" cy="150" r="50" fill="#d4af37" opacity="0.4"/>
+  <path d="M 630 150 L 645 165 L 670 140" stroke="#ffffff" stroke-width="6" fill="none" stroke-linecap="round"/>
+</svg>
+

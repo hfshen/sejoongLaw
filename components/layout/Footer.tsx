@@ -15,12 +15,9 @@ export default function Footer() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
             <div className="col-span-2 md:col-span-1">
               <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3">{t("footer.firmName")}</h3>
-              <p className="text-xs md:text-sm text-gray-300 mb-1.5">{t("footer.representative")}</p>
               <div className="mt-2 md:mt-3 space-y-1">
                 <p className="text-xs text-gray-300 leading-tight">{t("common.address")}</p>
                 <p className="text-xs text-gray-300">{t("footer.phone")}</p>
-                <p className="text-xs text-gray-300">{t("footer.fax")}</p>
-                <p className="text-xs text-gray-300">{t("footer.businessNumber")}</p>
               </div>
             </div>
             <div>
@@ -53,14 +50,21 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-2 md:mb-3 text-sm md:text-base">{t("common.contact")}</h4>
-              <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
-                {t("common.address")}
-                <br />
-                {t("footer.phone")}
-                <br />
-                {t("footer.fax")}
-              </p>
+              <h4 className="font-semibold mb-2 md:mb-3 text-sm md:text-base">{t("network.title")}</h4>
+              <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm">
+                <li>
+                  <span className="text-gray-300 font-semibold">서울 주사무소</span>
+                  <p className="text-gray-400 text-xs mt-1">서울특별시 서초구 법원로2길 15, 길도빌딩 303호</p>
+                </li>
+                <li>
+                  <span className="text-gray-300 font-semibold">의정부 분사무소</span>
+                  <p className="text-gray-400 text-xs mt-1">경기도 의정부시 녹양로 34번길 30, 406호 (법원 앞)</p>
+                </li>
+                <li>
+                  <span className="text-gray-300 font-semibold">안산 분사무소</span>
+                  <p className="text-gray-400 text-xs mt-1">경기도 안산시 단원구 원곡로 45 세중빌딩 2층</p>
+                </li>
+              </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-2 md:mb-3 text-sm md:text-base">Links</h4>

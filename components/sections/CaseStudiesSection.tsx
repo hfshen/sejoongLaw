@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/Badge"
 import { useLocale } from "next-intl"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+import Image from "next/image"
+import { Card3DLight } from "@/components/3d/Card3D"
 
 interface CaseStudy {
   id: string
@@ -24,6 +26,7 @@ const caseStudies: CaseStudy[] = [
     category: "부동산",
     description: "복잡한 부동산 계약 분쟁에서 고객의 권리를 보호하고 승소를 이끌어냈습니다.",
     result: "배상금 50% 증가, 소송 기간 30% 단축",
+    image: "/images/cases/case-1.svg",
   },
   {
     id: "2",
@@ -31,6 +34,7 @@ const caseStudies: CaseStudy[] = [
     category: "이혼",
     description: "공정한 재산분할을 통해 고객의 권익을 최대한 보호했습니다.",
     result: "고객 만족도 95%, 재산분할 합의 성공",
+    image: "/images/cases/case-2.svg",
   },
   {
     id: "3",
@@ -38,6 +42,7 @@ const caseStudies: CaseStudy[] = [
     category: "비자",
     description: "비자 거절 후 재신청을 통해 성공적으로 비자를 발급받았습니다.",
     result: "재신청 성공률 100%, 처리 기간 단축",
+    image: "/images/cases/case-3.svg",
   },
   {
     id: "4",
@@ -45,6 +50,7 @@ const caseStudies: CaseStudy[] = [
     category: "기업자문",
     description: "대규모 기업 인수합병(M&A) 과정에서 전문적인 법률 자문을 제공했습니다.",
     result: "거래 성공, 법적 리스크 최소화",
+    image: "/images/cases/case-4.svg",
   },
 ]
 
@@ -100,32 +106,46 @@ export default function CaseStudiesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <Link href={`/${locale}/cases/${caseStudy.id}`}>
-                <Card hover className="h-full flex flex-col">
-                  <CardHeader>
-                    <Badge variant="primary" className="mb-3">
-                      {caseStudy.category}
-                    </Badge>
-                    <CardTitle className="text-xl">{caseStudy.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <CardDescription className="mb-4">
-                      {caseStudy.description}
-                    </CardDescription>
-                    <div className="bg-primary/5 p-3 rounded-lg">
-                      <p className="text-sm font-semibold text-primary">
-                        {caseStudy.result}
-                      </p>
+              <Card3DLight className="h-full">
+                <Link href={`/${locale}/cases/${caseStudy.id}`}>
+                  <Card hover className="h-full flex flex-col overflow-hidden">
+                    {/* Image */}
+                    {caseStudy.image && (
+                      <div className="relative w-full h-48 overflow-hidden">
+                        <Image
+                          src={caseStudy.image}
+                          alt={caseStudy.title}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                      </div>
+                    )}
+                    <CardHeader>
+                      <Badge variant="primary" className="mb-3">
+                        {caseStudy.category}
+                      </Badge>
+                      <CardTitle className="text-xl">{caseStudy.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                      <CardDescription className="mb-4">
+                        {caseStudy.description}
+                      </CardDescription>
+                      <div className="bg-primary/5 p-3 rounded-lg">
+                        <p className="text-sm font-semibold text-primary">
+                          {caseStudy.result}
+                        </p>
+                      </div>
+                    </CardContent>
+                    <div className="p-6 pt-0">
+                      <div className="flex items-center text-primary font-semibold">
+                        자세히 보기
+                        <ArrowRight className="ml-2 w-4 h-4" />
+                      </div>
                     </div>
-                  </CardContent>
-                  <div className="p-6 pt-0">
-                    <div className="flex items-center text-primary font-semibold">
-                      자세히 보기
-                      <ArrowRight className="ml-2 w-4 h-4" />
-                    </div>
-                  </div>
-                </Card>
-              </Link>
+                  </Card>
+                </Link>
+              </Card3DLight>
             </motion.div>
           ))}
         </div>

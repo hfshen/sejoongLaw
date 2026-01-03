@@ -17,7 +17,7 @@ export function StructuredData({ type, locale = "ko" }: StructuredDataProps) {
     logo: `${baseUrl}/SJ_logo.svg`,
     contactPoint: {
       "@type": "ContactPoint",
-      telephone: "+82-2-591-0372",
+      telephone: "+82-31-8044-8805",
       contactType: "customer service",
       areaServed: "KR",
       availableLanguage: locales,

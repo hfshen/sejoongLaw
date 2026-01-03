@@ -16,7 +16,7 @@ const members: Member[] = [
     name: "이상국",
     position: "대표변호사",
     specialties: ["민사", "형사", "가사소송", "출입국관리법", "이민 행정"],
-    phone: "02-591-0372",
+    phone: "031-8044-8805",
     email: "lskesq@withvisa.com",
     description:
       "법무법인 세중의 대표 변호사로서 민사, 형사, 가사소송 업무를 총괄하고 있습니다. 중앙대학교 법학전문대학원 겸임교수이며 중앙대학교 산학협력 선도대학(LINC)육성사업단 자문변호사로도 활발히 활동하고 있습니다. 최고의 실력과 경쟁력을 갖춘 법무법인 세중이 고객 여러분의 목소리에 귀 기울이겠습니다.",
@@ -60,7 +60,7 @@ const members: Member[] = [
     name: "최종인",
     position: "변호사",
     specialties: ["일반 민·형사", "손해배상(산업재해, 교통사고 등)", "건설·부동산", "가사", "행정", "기업일반"],
-    phone: "02-591-0372",
+    phone: "031-8044-8805",
     email: "jichoi@withvisa.com",
     education: [
       "배명고등학교 졸업",

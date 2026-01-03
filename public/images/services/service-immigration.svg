@@ -1,0 +1,17 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="immigrationGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.7" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#immigrationGradient)"/>
+  <!-- 비행기 -->
+  <path d="M 200 300 L 400 250 L 600 300 L 550 320 L 400 280 L 250 320 Z" fill="#ffffff" opacity="0.4"/>
+  <!-- 지구본 -->
+  <circle cx="400" cy="400" r="100" fill="none" stroke="#ffffff" stroke-width="4" opacity="0.3"/>
+  <circle cx="400" cy="400" r="80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.2"/>
+  <line x1="300" y1="400" x2="500" y2="400" stroke="#ffffff" stroke-width="2" opacity="0.2"/>
+  <line x1="400" y1="300" x2="400" y2="500" stroke="#ffffff" stroke-width="2" opacity="0.2"/>
+</svg>
+

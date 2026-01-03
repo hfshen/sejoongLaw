@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react"
+import { Card3DLight } from "@/components/3d/Card3D"
 
 interface PracticeArea {
   title: string
@@ -116,12 +117,13 @@ export default function ServicesSection() {
               onMouseLeave={() => setHoveredIndex(null)}
               className="relative group"
             >
-              <motion.div
-                whileHover={{ y: -8 }}
-                transition={{ duration: 0.3 }}
-                className="h-full"
-              >
-                <Card className="h-full relative overflow-hidden border-2 border-transparent group-hover:border-primary/20 transition-all duration-300 bg-white shadow-lg group-hover:shadow-2xl">
+              <Card3DLight className="h-full">
+                <motion.div
+                  whileHover={{ y: -8 }}
+                  transition={{ duration: 0.3 }}
+                  className="h-full"
+                >
+                  <Card className="h-full relative overflow-hidden border-2 border-transparent group-hover:border-primary/20 transition-all duration-300 bg-white shadow-lg group-hover:shadow-2xl">
                   {/* Gradient background overlay */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${area.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                   
@@ -209,8 +211,9 @@ export default function ServicesSection() {
                       </Link>
                     </motion.div>
                   </CardContent>
-                </Card>
-              </motion.div>
+                  </Card>
+                </motion.div>
+              </Card3DLight>
             </motion.div>
           ))}
         </div>

@@ -53,9 +53,38 @@ export default function WhySejoongSection() {
               <Card hover className="h-full transition-all duration-300 hover:shadow-xl">
                 <CardContent className="p-6 md:p-8 lg:p-10 text-center">
                   <div className="flex justify-center mb-5 md:mb-6 text-primary">
-                    <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 flex items-center justify-center bg-primary/10 rounded-full">
-                      {competency.icon}
-                    </div>
+                    <motion.div
+                      className="relative perspective-1000"
+                      whileHover={{
+                        rotateY: 360,
+                        rotateX: 15,
+                        scale: 1.1,
+                      }}
+                      transition={{
+                        rotateY: { duration: 0.8, ease: "easeInOut" },
+                        rotateX: { duration: 0.3 },
+                        scale: { duration: 0.3 },
+                      }}
+                      style={{ transformStyle: "preserve-3d" }}
+                    >
+                      <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 flex items-center justify-center bg-primary/10 rounded-full relative">
+                        <motion.div
+                          animate={{
+                            rotateY: [0, 360],
+                          }}
+                          transition={{
+                            duration: 20,
+                            repeat: Infinity,
+                            ease: "linear",
+                          }}
+                          style={{ transformStyle: "preserve-3d" }}
+                          className="absolute inset-0 flex items-center justify-center"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-xl opacity-50" />
+                        </motion.div>
+                        <div className="relative z-10">{competency.icon}</div>
+                      </div>
+                    </motion.div>
                   </div>
                   <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-secondary mb-4 md:mb-5">
                     {competency.title}

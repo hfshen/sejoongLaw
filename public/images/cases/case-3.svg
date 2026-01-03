@@ -1,0 +1,18 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="case3Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.6" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#case3Gradient)"/>
+  <!-- 비자/여권 -->
+  <rect x="250" y="150" width="300" height="200" fill="#ffffff" opacity="0.3" rx="8"/>
+  <rect x="280" y="180" width="240" height="30" fill="#ffffff" opacity="0.4"/>
+  <rect x="280" y="230" width="180" height="20" fill="#ffffff" opacity="0.3"/>
+  <rect x="280" y="260" width="200" height="20" fill="#ffffff" opacity="0.3"/>
+  <!-- 스탬프 -->
+  <circle cx="500" cy="300" r="40" fill="#d4af37" opacity="0.5"/>
+  <text x="500" y="310" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="bold" opacity="0.8">승인</text>
+</svg>
+

@@ -58,16 +58,25 @@ export default function BookingCalendar() {
         try {
           const dateStr = format(selectedDate, "yyyy-MM-dd")
           const response = await fetch(`/api/booking?date=${dateStr}`)
+          const data = await response.json()
+          
           if (response.ok) {
-            const data = await response.json()
             setBookedSlots(data.bookedTimes || [])
             // 예약된 시간 제외
             setAvailableSlots(
-              timeSlots.filter((slot) => !data.bookedTimes?.includes(slot))
+              timeSlots.filter((slot) => !(data.bookedTimes || []).includes(slot))
             )
+          } else {
+            // 에러가 발생해도 빈 배열로 처리하여 캘린더가 작동하도록 함
+            console.warn("Failed to fetch booked slots:", data.error)
+            setBookedSlots([])
+            setAvailableSlots(timeSlots)
           }
         } catch (error) {
           console.error("Failed to fetch booked slots:", error)
+          // 에러 발생 시 모든 시간을 사용 가능한 것으로 표시
+          setBookedSlots([])
+          setAvailableSlots(timeSlots)
         }
       }
     }
@@ -109,17 +118,18 @@ export default function BookingCalendar() {
 
       const result = await response.json()
 
-      if (response.ok) {
+      if (response.ok && result.success) {
         alert(
           `예약이 완료되었습니다!\n\n예약 정보:\n- 날짜: ${format(data.date, "yyyy년 MM월 dd일", { locale: ko })}\n- 시간: ${data.time}\n- 상담 방식: ${data.consultationType === "in-person" ? "방문 상담" : "온라인 상담"}\n\n확인 이메일을 발송했습니다.`
         )
         window.location.reload()
       } else {
-        throw new Error(result.error || "예약에 실패했습니다.")
+        const errorMessage = result.error || "예약에 실패했습니다."
+        throw new Error(errorMessage)
       }
     } catch (error: any) {
       console.error("Booking error:", error)
-      alert(`예약 중 오류가 발생했습니다: ${error.message || "알 수 없는 오류"}\n\n전화로 직접 예약하시려면 02) 591-0372로 연락주세요.`)
+      alert(`예약 중 오류가 발생했습니다: ${error.message || "알 수 없는 오류"}\n\n전화로 직접 예약하시려면 031-8044-8805로 연락주세요.`)
     }
   }
 

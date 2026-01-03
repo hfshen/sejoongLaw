@@ -50,11 +50,11 @@ export default function CTASection() {
                 variant="outline"
                 className="w-full sm:w-auto border-white text-white hover:bg-white/10"
                 onClick={() => {
-                  window.location.href = "tel:025910372"
+                  window.location.href = "tel:03180448805"
                 }}
               >
                 <Phone className="w-5 h-5 mr-2" />
-                02) 591-0372
+                031-8044-8805
               </Button>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-6 justify-center items-center text-sm md:text-base lg:text-lg">
@@ -64,7 +64,7 @@ export default function CTASection() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 md:w-5 md:h-5" />
-                <span>02) 591-0372</span>
+                <span>031-8044-8805</span>
               </div>
             </div>
           </motion.div>

@@ -87,10 +87,10 @@ export default async function ConsultationPage() {
                       <div className="flex items-center gap-3">
                         <Phone className="w-5 h-5 text-primary" />
                         <a
-                          href="tel:025910372"
+                          href="tel:03180448805"
                           className="link-hover font-medium"
                         >
-                          02) 591-0372
+                          031-8044-8805
                         </a>
                       </div>
                       <div className="flex items-center gap-3">

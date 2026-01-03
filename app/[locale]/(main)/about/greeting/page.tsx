@@ -138,9 +138,9 @@ export default async function GreetingPage() {
                 무료 상담 신청
               </Button>
             </Link>
-            <Link href="tel:025910372">
+            <Link href="tel:03180448805">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                전화 상담: 02) 591-0372
+                전화 상담: 031-8044-8805
               </Button>
             </Link>
           </div>

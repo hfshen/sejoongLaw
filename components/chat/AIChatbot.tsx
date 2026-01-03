@@ -80,7 +80,7 @@ export default function AIChatbot() {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: error.message || "오류가 발생했습니다. 잠시 후 다시 시도해주세요. 전화 상담도 가능합니다: 02) 591-0372",
+        content: error.message || "오류가 발생했습니다. 잠시 후 다시 시도해주세요. 전화 상담도 가능합니다: 031-8044-8805",
         timestamp: new Date(),
       }
       setMessages((prev) => [...prev, errorMessage])
@@ -244,7 +244,7 @@ export default function AIChatbot() {
                 </button>
               </div>
               <p className="text-xs text-text-secondary mt-2 text-center">
-                실시간 상담이 필요하시면 전화로 연락주세요: 02) 591-0372
+                실시간 상담이 필요하시면 전화로 연락주세요: 031-8044-8805
               </p>
             </div>
           </motion.div>

@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { Play, Youtube } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/Card"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
 
 interface Video {
   id: string
@@ -21,7 +22,7 @@ const videos: Video[] = [
     id: "1",
     title: "법무법인 세중 소개",
     description: "법무법인 세중의 전문성과 서비스를 소개합니다.",
-    thumbnail: "/video-thumbnail-1.jpg",
+    thumbnail: "/videos/thumbnails/video-1.svg",
     videoUrl: "https://www.youtube.com/watch?v=example1",
     duration: "3:24",
     category: "소개",
@@ -30,7 +31,7 @@ const videos: Video[] = [
     id: "2",
     title: "부동산 분쟁 해결 사례",
     description: "성공적인 부동산 분쟁 해결 사례를 소개합니다.",
-    thumbnail: "/video-thumbnail-2.jpg",
+    thumbnail: "/videos/thumbnails/video-2.svg",
     videoUrl: "https://www.youtube.com/watch?v=example2",
     duration: "5:12",
     category: "사례",
@@ -39,7 +40,7 @@ const videos: Video[] = [
     id: "3",
     title: "이혼 소송 절차 안내",
     description: "이혼 소송의 전반적인 절차를 안내합니다.",
-    thumbnail: "/video-thumbnail-3.jpg",
+    thumbnail: "/videos/thumbnails/video-3.svg",
     videoUrl: "https://www.youtube.com/watch?v=example3",
     duration: "4:38",
     category: "안내",
@@ -69,14 +70,20 @@ export default function VideoSection() {
             >
               <Card hover>
                 <CardContent className="p-0">
-                  <div className="relative aspect-video bg-gray-200 rounded-t-lg overflow-hidden group cursor-pointer">
+                  <div className="relative aspect-video rounded-t-lg overflow-hidden group cursor-pointer">
+                    <Image
+                      src={video.thumbnail}
+                      alt={video.title}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => setSelectedVideo(video)}
-                        className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white shadow-lg"
+                        className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white shadow-lg z-10"
                       >
                         <Play className="w-8 h-8 ml-1" />
                       </motion.button>
