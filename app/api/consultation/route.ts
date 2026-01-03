@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import {
+  sendConsultationNotificationEmail,
+  sendConsultationConfirmationEmail,
+} from "@/lib/email/email"
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,8 +43,31 @@ export async function POST(request: NextRequest) {
       // Implementation depends on your storage setup
     }
 
-    // Send email notification (implement with your email service)
-    // await sendEmailNotification(consultation)
+    // Send email notifications
+    try {
+      // 법무법인으로 알림 이메일 전송
+      await sendConsultationNotificationEmail({
+        name: consultation.name,
+        email: consultation.email,
+        phone: consultation.phone,
+        service: consultation.service,
+        subject: consultation.subject,
+        message: consultation.message,
+      })
+
+      // 고객에게 확인 이메일 전송
+      await sendConsultationConfirmationEmail({
+        name: consultation.name,
+        email: consultation.email,
+        phone: consultation.phone,
+        service: consultation.service,
+        subject: consultation.subject,
+        message: consultation.message,
+      })
+    } catch (emailError) {
+      // 이메일 전송 실패해도 상담 요청은 저장되도록 함
+      console.error("Email sending error:", emailError)
+    }
 
     return NextResponse.json(
       { success: true, id: data.id },

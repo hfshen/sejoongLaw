@@ -18,6 +18,7 @@ export function StructuredData({ type, locale = "ko" }: StructuredDataProps) {
     contactPoint: {
       "@type": "ContactPoint",
       telephone: "+82-31-8044-8805",
+      email: "sejoonglaw@gmail.com",
       contactType: "customer service",
       areaServed: "KR",
       availableLanguage: locales,

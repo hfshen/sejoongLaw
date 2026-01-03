@@ -60,7 +60,7 @@ export default function CTASection() {
             <div className="flex flex-col sm:flex-row gap-3 md:gap-6 justify-center items-center text-sm md:text-base lg:text-lg">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 md:w-5 md:h-5" />
-                <span>consult@sejoonglaw.com</span>
+                <span>sejoonglaw@gmail.com</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 md:w-5 md:h-5" />

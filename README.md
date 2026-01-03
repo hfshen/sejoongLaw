@@ -45,6 +45,10 @@ COOLSMS_API_KEY=your_coolsms_api_key
 COOLSMS_API_SECRET=your_coolsms_api_secret
 COOLSMS_SENDER_PHONE=01012345678
 
+# 이메일 전송 (Resend) - 상담/예약 알림용
+RESEND_API_KEY=your_resend_api_key
+RESEND_FROM_EMAIL=noreply@sejoonglaw.com
+
 # Google Analytics
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 
@@ -62,6 +66,7 @@ NEXT_PUBLIC_SENTRY_DSN=your_sentry_dsn
 - Supabase 설정은 Supabase 대시보드 > Settings > API에서 확인할 수 있습니다.
 - 각 서비스의 API 키는 해당 서비스의 개발자 콘솔에서 발급받을 수 있습니다.
 - 선택 환경 변수는 해당 기능을 사용하지 않으면 설정하지 않아도 됩니다.
+- **이메일 전송**: Resend API 키는 [Resend](https://resend.com)에서 발급받을 수 있습니다. 상담 요청과 예약 요청은 `sejoonglaw@gmail.com`으로 자동 전송됩니다.
 
 ### 3. Supabase 데이터베이스 설정
 

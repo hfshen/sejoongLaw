@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import {
+  sendBookingNotificationEmail,
+  sendBookingConfirmationEmail,
+} from "@/lib/email/email"
 
 export async function POST(request: NextRequest) {
   try {
@@ -63,8 +67,35 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Send confirmation email (implement with your email service)
-    // await sendBookingConfirmationEmail(booking)
+    // Send email notifications
+    try {
+      // 법무법인으로 알림 이메일 전송
+      await sendBookingNotificationEmail({
+        name: booking.name,
+        email: booking.email,
+        phone: booking.phone,
+        date: bookingDate,
+        time: booking.time,
+        service: booking.service,
+        consultationType: booking.consultation_type,
+        message: booking.message || undefined,
+      })
+
+      // 고객에게 확인 이메일 전송
+      await sendBookingConfirmationEmail({
+        name: booking.name,
+        email: booking.email,
+        phone: booking.phone,
+        date: bookingDate,
+        time: booking.time,
+        service: booking.service,
+        consultationType: booking.consultation_type,
+        message: booking.message || undefined,
+      })
+    } catch (emailError) {
+      // 이메일 전송 실패해도 예약은 저장되도록 함
+      console.error("Email sending error:", emailError)
+    }
 
     // Send SMS notification (optional)
     // await sendSMSNotification(booking.phone, `예약이 완료되었습니다: ${data.date} ${data.time}`)
