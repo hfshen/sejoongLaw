@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
+import { isAdminAuthenticated } from "@/lib/admin/auth"
+import { redirect } from "next/navigation"
 import Link from "next/link"
 
 async function getInquiries() {
@@ -10,7 +12,6 @@ async function getInquiries() {
     .limit(50)
 
   if (error) {
-    console.error("Error fetching inquiries:", error)
     return []
   }
 
@@ -26,7 +27,6 @@ async function getBoardPosts() {
     .limit(50)
 
   if (error) {
-    console.error("Error fetching board posts:", error)
     return []
   }
 
@@ -34,6 +34,11 @@ async function getBoardPosts() {
 }
 
 export default async function AdminBoardPage() {
+  const isAdmin = await isAdminAuthenticated()
+  
+  if (!isAdmin) {
+    redirect("/admin/login")
+  }
   const inquiries = await getInquiries()
   const posts = await getBoardPosts()
 

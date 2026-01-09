@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
+import { isAdminAuthenticated } from "@/lib/admin/auth"
+import { redirect } from "next/navigation"
 import Link from "next/link"
 
 async function getPageContents() {
@@ -18,6 +20,11 @@ async function getPageContents() {
 }
 
 export default async function AdminContentPage() {
+  const isAdmin = await isAdminAuthenticated()
+  
+  if (!isAdmin) {
+    redirect("/admin/login")
+  }
   const contents = await getPageContents()
 
   return (

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
-import { inter, playfair } from "@/lib/fonts"
+import { inter, playfair, notoSansKR } from "@/lib/fonts"
+import PasswordResetRedirect from "@/components/auth/PasswordResetRedirect"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -26,9 +27,10 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${playfair.variable} antialiased`}
+        className={`${inter.variable} ${playfair.variable} ${notoSansKR.variable} antialiased`}
         suppressHydrationWarning
       >
+        <PasswordResetRedirect />
         {children}
       </body>
     </html>

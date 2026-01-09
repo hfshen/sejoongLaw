@@ -42,8 +42,22 @@ function rateLimit(req: NextRequest): NextResponse | null {
 }
 
 export default function middleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname
+
+  // Admin 경로는 locale 라우팅에서 제외
+  if (pathname.startsWith("/admin")) {
+    // Rate limiting만 적용
+    if (pathname.startsWith("/api")) {
+      const rateLimitResult = rateLimit(req)
+      if (rateLimitResult) {
+        return rateLimitResult
+      }
+    }
+    return NextResponse.next()
+  }
+
   // Rate limiting for API routes
-  if (req.nextUrl.pathname.startsWith("/api")) {
+  if (pathname.startsWith("/api")) {
     const rateLimitResult = rateLimit(req)
     if (rateLimitResult) {
       return rateLimitResult

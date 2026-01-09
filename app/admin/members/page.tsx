@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
+import { isAdminAuthenticated } from "@/lib/admin/auth"
+import { redirect } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 
@@ -10,7 +12,6 @@ async function getMembers() {
     .order("order_index", { ascending: true })
 
   if (error) {
-    console.error("Error fetching members:", error)
     return []
   }
 
@@ -18,6 +19,11 @@ async function getMembers() {
 }
 
 export default async function AdminMembersPage() {
+  const isAdmin = await isAdminAuthenticated()
+  
+  if (!isAdmin) {
+    redirect("/admin/login")
+  }
   const members = await getMembers()
 
   return (

@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       console.error("Supabase environment variables not set")
       return NextResponse.json(
-        { error: "Server configuration error" },
+        { error: "서버 설정 오류가 발생했습니다. 관리자에게 문의해주세요." },
         { status: 500 }
       )
     }
@@ -115,13 +115,10 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // 환경 변수 확인
+    // 환경 변수 확인 - 없으면 빈 배열 반환 (캘린더가 작동하도록)
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      console.error("Supabase environment variables not set")
-      return NextResponse.json(
-        { error: "Server configuration error", bookedTimes: [] },
-        { status: 500 }
-      )
+      console.warn("Supabase environment variables not set, returning empty booked times")
+      return NextResponse.json({ bookedTimes: [] }, { status: 200 })
     }
 
     const supabase = await createClient()

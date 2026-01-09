@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { isAdminAuthenticated } from "@/lib/admin/auth"
 import { redirect } from "next/navigation"
 import Header from "@/components/layout/Header"
 import Footer from "@/components/layout/Footer"
@@ -23,6 +24,11 @@ async function getConsultations() {
 }
 
 export default async function ConsultationsPage() {
+  const isAdmin = await isAdminAuthenticated()
+  
+  if (!isAdmin) {
+    redirect("/admin/login")
+  }
   const supabase = await createClient()
   const {
     data: { user },

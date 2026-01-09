@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { isAdminAuthenticated } from "@/lib/admin/auth"
 import Header from "@/components/layout/Header"
 import Footer from "@/components/layout/Footer"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
@@ -28,12 +29,9 @@ async function getStats() {
 }
 
 export default async function AdminDashboard() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
+  const isAdmin = await isAdminAuthenticated()
+  
+  if (!isAdmin) {
     redirect("/admin/login")
   }
 

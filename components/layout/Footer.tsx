@@ -3,6 +3,7 @@
 import { useTranslations, useLocale } from "next-intl"
 import Link from "next/link"
 import { FadeIn } from "@/components/ui/animations"
+import { Lock } from "lucide-react"
 
 export default function Footer() {
   const t = useTranslations()
@@ -95,17 +96,32 @@ export default function Footer() {
           </div>
           <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-700 text-center">
             <p className="text-xs md:text-sm text-gray-300 mb-2">{t("footer.copyright")}</p>
-            <p className="text-xs text-gray-400">
-              Powered by{" "}
+            <div className="text-xs text-gray-400 flex items-center justify-center gap-2">
+              <span>Powered by</span>
               <a
                 href="https://lolovely.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-accent transition-colors underline"
+                onClick={(e) => e.stopPropagation()}
               >
                 lolovely
               </a>
-            </p>
+              <span className="mx-1">|</span>
+              <a
+                href="/admin/login"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  // 즉시 페이지 이동
+                  window.location.assign("/admin/login")
+                }}
+                className="hover:text-accent transition-colors inline-flex items-center"
+                aria-label="Admin Login"
+              >
+                <Lock className="w-4 h-4" />
+              </a>
+            </div>
           </div>
         </div>
       </FadeIn>
