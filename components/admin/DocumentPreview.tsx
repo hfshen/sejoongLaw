@@ -120,7 +120,7 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
           maxHeight: "1123px",
           height: "1123px",
           padding: "25px 35px",
-          fontSize: "12px",
+          fontSize: "18px",
           lineHeight: "1.5",
           position: "relative",
           overflow: "hidden",
@@ -143,15 +143,15 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
       {/* 문서 콘텐츠 */}
       <div style={{ position: "relative", zIndex: 1 }}>
       {/* 제목 */}
-      <h1 style={{ textAlign: "center", fontWeight: "bold", marginBottom: "16px", fontSize: "22px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{title}</h1>
+      <h1 style={{ textAlign: "center", fontWeight: "bold", marginBottom: "16px", fontSize: "33px", lineHeight: "1.4", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{title}</h1>
 
       {/* 서문 */}
-      <p style={{ marginBottom: "20px", fontSize: "11px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{intro}</p>
+      <p style={{ marginBottom: "20px", fontSize: "17px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{intro}</p>
 
       {/* 갑 정보 */}
-      <div style={{ marginBottom: "16px" }}>
-        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "14px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? '"갑" 유가족 대표' : locale === "en" ? '"Party A" Family Representative' : '"甲方" 家属代表'}</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+      <div style={{ marginBottom: "20px" }}>
+        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "21px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? '"갑" 유가족 대표' : locale === "en" ? '"Party A" Family Representative' : '"甲方" 家属代表'}</h2>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "12%", minWidth: "12%", maxWidth: "12%" }} />
             <col style={{ width: "18%", minWidth: "18%", maxWidth: "18%" }} />
@@ -162,17 +162,17 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
           </colgroup>
           <tbody>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "국적" : locale === "en" ? "Nationality" : "国籍"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_a_nationality")}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "성명" : locale === "en" ? "Name" : "姓名"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_a_name")}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "생년월일" : locale === "en" ? "Date of Birth" : "出生日期"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{formatDate(getValue("party_a_birthdate"))}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "국적" : locale === "en" ? "Nationality" : "国籍"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_a_nationality")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "성명" : locale === "en" ? "Name" : "姓名"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_a_name")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "생년월일" : locale === "en" ? "Date of Birth" : "出生日期"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{formatDate(getValue("party_a_birthdate"))}</td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "연락처" : locale === "en" ? "Contact" : "联系方式"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_a_contact")}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "관계" : locale === "en" ? "Relation" : "关系"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "연락처" : locale === "en" ? "Contact" : "联系方式"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_a_contact")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "관계" : locale === "en" ? "Relation" : "关系"}</td>
               <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }} colSpan={3}>
                 {getValue("party_a_relation") === "기타" ? getValue("party_a_relation_other") : getValue("party_a_relation")}
               </td>
@@ -191,8 +191,8 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 을 정보 */}
       <div style={{ marginBottom: "16px" }}>
-        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "14px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? '"을" 회사측 대표' : locale === "en" ? '"Party B" Company Representative' : '"乙方" 公司代表'}</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "21px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? '"을" 회사측 대표' : locale === "en" ? '"Party B" Company Representative' : '"乙方" 公司代表'}</h2>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "18%", minWidth: "18%", maxWidth: "18%" }} />
             <col style={{ width: "32%", minWidth: "32%", maxWidth: "32%" }} />
@@ -201,19 +201,19 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
           </colgroup>
           <tbody>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "상호" : locale === "en" ? "Company Name" : "公司名称"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_b_company_name")}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "대표자 성명" : locale === "en" ? "Representative Name" : "代表姓名"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_b_representative")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "상호" : locale === "en" ? "Company Name" : "公司名称"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_b_company_name")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "대표자 성명" : locale === "en" ? "Representative Name" : "代表姓名"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_b_representative")}</td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "사업자등록번호" : locale === "en" ? "Business Registration Number" : "营业执照号"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_b_registration")}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "연락처" : locale === "en" ? "Contact" : "联系方式"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_b_contact")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "사업자등록번호" : locale === "en" ? "Business Registration Number" : "营业执照号"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_b_registration")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "연락처" : locale === "en" ? "Contact" : "联系方式"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("party_b_contact")}</td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "주소" : locale === "en" ? "Address" : "地址"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "주소" : locale === "en" ? "Address" : "地址"}</td>
               <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }} colSpan={3}>{getValue("party_b_address")}</td>
             </tr>
           </tbody>
@@ -222,8 +222,8 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 고인 정보 */}
       <div style={{ marginBottom: "16px" }}>
-        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "14px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "고인(망인)" : locale === "en" ? "Deceased" : "死者"}</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "21px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "고인(망인)" : locale === "en" ? "Deceased" : "死者"}</h2>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "18%", minWidth: "18%", maxWidth: "18%" }} />
             <col style={{ width: "32%", minWidth: "32%", maxWidth: "32%" }} />
@@ -232,23 +232,23 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
           </colgroup>
           <tbody>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "성명" : locale === "en" ? "Name" : "姓名"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("deceased_name")}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "외국인등록번호" : locale === "en" ? "Foreigner Registration Number" : "外国人登记号"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("deceased_foreigner_id")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "성명" : locale === "en" ? "Name" : "姓名"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("deceased_name")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "외국인등록번호" : locale === "en" ? "Foreigner Registration Number" : "外国人登记号"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("deceased_foreigner_id")}</td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "생년월일" : locale === "en" ? "Date of Birth" : "出生日期"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{formatDate(getValue("deceased_birthdate"))}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "주소지" : locale === "en" ? "Address" : "地址"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("deceased_address")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "생년월일" : locale === "en" ? "Date of Birth" : "出生日期"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{formatDate(getValue("deceased_birthdate"))}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "주소지" : locale === "en" ? "Address" : "地址"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("deceased_address")}</td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "사건발생위치" : locale === "en" ? "Incident Location" : "事件发生地点"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "사건발생위치" : locale === "en" ? "Incident Location" : "事件发生地点"}</td>
               <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }} colSpan={3}>{getValue("incident_location")}</td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "사건발생시간" : locale === "en" ? "Incident Time" : "事件发生时间"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "사건발생시간" : locale === "en" ? "Incident Time" : "事件发生时间"}</td>
               <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }} colSpan={3}>{getValue("incident_time")}</td>
             </tr>
           </tbody>
@@ -257,8 +257,8 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 합의 내용 */}
       <div style={{ marginBottom: "16px" }}>
-        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "14px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "합의 내용" : locale === "en" ? "Agreement Terms" : "协议内容"}</h2>
-        <div className="space-y-2 leading-relaxed" style={{ fontSize: "10px" }}>
+        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "21px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "합의 내용" : locale === "en" ? "Agreement Terms" : "协议内容"}</h2>
+        <div className="space-y-2 leading-relaxed" style={{ fontSize: "15px" }}>
           <p>1. {locale === "ko" ? "갑과 을은 본 사건(망인의 사망 관련 건)에 관하여 상호 원만히 합의하였고, 본 합의서 체결로써 본 사건과 관련된 분쟁이 종결되었음을 확인한다." : locale === "en" ? "Party A and Party B have amicably agreed regarding this case (related to the death of the deceased), and confirm that all disputes related to this case are resolved by the execution of this agreement." : "甲方和乙方就本案（与死者死亡相关）已友好达成协议，并确认通过签署本协议，与本案相关的所有争议已解决。"}</p>
           <p>2. {locale === "ko" ? "갑은 본 사건과 관련하여 향후 을 및 을의 대표자, 사업장에 대하여 민사·형사·행정(산재 등 포함) 기타 일체의 사항에 관하여 어떠한 이의도 제기하지 아니하며, 추가로 어떠한 청구나 권리 주장도 하지 아니한다." : locale === "en" ? "Party A shall not raise any objections or make any additional claims or assertions of rights against Party B, its representative, or the workplace regarding civil, criminal, administrative (including industrial accidents) or any other matters related to this case." : "甲方就本案相关事宜，今后不对乙方及其代表、工作场所提出任何民事、刑事、行政（包括工伤等）或其他任何异议，也不提出任何追加请求或权利主张。"}</p>
           <p>3. {locale === "ko" ? "갑은 본 사건과 관련하여 을의 대표자에 대한 처벌을 원하지 아니한다. 갑은 위의사를 표시한 처벌불원서를 본 합의서와 함께 제출한다." : locale === "en" ? "Party A does not wish for the punishment of Party B's representative in relation to this case. Party A shall submit a non-prosecution request expressing this intention together with this agreement." : "甲方不希望就本案对乙方代表进行处罚。甲方应提交表示此意的免予起诉书，与本协议一起提交。"}</p>
@@ -268,11 +268,11 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 서명란 */}
       <div style={{ marginTop: "24px" }}>
-        <p style={{ marginBottom: "12px", fontSize: "10px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "본 합의서는 2부 작성하여 갑과 을이 각각 서명(또는 기명) 날인 후 각 1부씩 보관한다." : locale === "en" ? "This agreement is prepared in duplicate, with Party A and Party B each signing (or initialing) and sealing, and each party keeping one copy." : "本协议一式两份，甲方和乙方各自签名（或署名）盖章后，各保存一份。"}</p>
+        <p style={{ marginBottom: "12px", fontSize: "15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "본 합의서는 2부 작성하여 갑과 을이 각각 서명(또는 기명) 날인 후 각 1부씩 보관한다." : locale === "en" ? "This agreement is prepared in duplicate, with Party A and Party B each signing (or initialing) and sealing, and each party keeping one copy." : "本协议一式两份，甲方和乙方各自签名（或署名）盖章后，各保存一份。"}</p>
         <div style={{ marginTop: "16px" }}>
-          <p style={{ marginBottom: "8px", fontSize: "11px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "일자" : locale === "en" ? "Date" : "日期"}: {formatDate(getValue("signature_date") || getValue("agreement_date") || getValue("date"))}</p>
-          <p style={{ marginBottom: "8px", fontSize: "11px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "갑(유가족 대표) 성명:" : locale === "en" ? "Party A (Family Representative) Name:" : "甲方（家属代表）姓名："}</p>
-          <p style={{ marginBottom: "8px", fontSize: "11px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "을(사업장 대표) 성명:" : locale === "en" ? "Party B (Company Representative) Name:" : "乙方（公司代表）姓名："}</p>
+          <p style={{ marginBottom: "8px", fontSize: "17px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "일자" : locale === "en" ? "Date" : "日期"}: {formatDate(getValue("signature_date") || getValue("agreement_date") || getValue("date"))}</p>
+          <p style={{ marginBottom: "8px", fontSize: "17px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "갑(유가족 대표) 성명:" : locale === "en" ? "Party A (Family Representative) Name:" : "甲方（家属代表）姓名："}</p>
+          <p style={{ marginBottom: "8px", fontSize: "17px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "을(사업장 대표) 성명:" : locale === "en" ? "Party B (Company Representative) Name:" : "乙方（公司代表）姓名："}</p>
         </div>
       </div>
       </div>
@@ -283,17 +283,17 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
         style={{
           backgroundImage: "url('/SJ_logo.svg')",
           backgroundRepeat: "repeat",
-          backgroundSize: "400px auto",
+          backgroundSize: "450px auto",
           backgroundPosition: "0 0",
-          opacity: 0.08,
+          opacity: 0.15,
           zIndex: 10,
           backgroundColor: "transparent",
           transform: "rotate(-30deg)",
           transformOrigin: "center center",
-          width: "150%",
-          height: "150%",
-          left: "-25%",
-          top: "-25%"
+          width: "180%",
+          height: "180%",
+          left: "-40%",
+          top: "-40%"
         }}
       />
       
@@ -303,8 +303,11 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
           <img 
             src="/SJ_logo.svg" 
             alt="법무법인 세중" 
+            onError={(e) => {
+              console.error("Footer logo failed to load:", e)
+            }}
             style={{ 
-              height: "32px", 
+              height: "40px", 
               width: "auto", 
               objectFit: "contain",
               maxWidth: "100%",
@@ -313,11 +316,13 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
               visibility: "visible",
               opacity: "1",
               zIndex: 22,
-              position: "relative"
+              position: "relative",
+              filter: "none",
+              pointerEvents: "none"
             }} 
           />
         </div>
-        <div className="text-center" style={{ fontSize: "8px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>
+        <div className="text-center" style={{ fontSize: "12px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif", backgroundColor: "transparent" }}>
           {locale === "ko"
             ? "법무법인 세중 | 경기도 안산시 단원구 원곡로 45 세중빌딩 2층 | 전화: 031-8044-8805 | 이메일: sejoonglaw@gmail.com"
             : locale === "en"
@@ -332,17 +337,17 @@ const AgreementPreview = forwardRef<HTMLDivElement, any>(
         style={{
           backgroundImage: "url('/SJ_logo.svg')",
           backgroundRepeat: "repeat",
-          backgroundSize: "400px auto",
+          backgroundSize: "450px auto",
           backgroundPosition: "0 0",
-          opacity: 0.06,
+          opacity: 0.15,
           zIndex: 10,
           backgroundColor: "transparent",
           transform: "rotate(-30deg)",
           transformOrigin: "center center",
-          width: "400%",
-          height: "400%",
-          left: "-150%",
-          top: "-150%"
+          width: "180%",
+          height: "180%",
+          left: "-40%",
+          top: "-40%"
         }}
       />
       </div>
@@ -366,7 +371,7 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
           maxHeight: "1123px",
           height: "1123px",
           padding: "25px 35px",
-          fontSize: "12px",
+          fontSize: "18px",
           lineHeight: "1.5",
           position: "relative",
           overflow: "hidden",
@@ -388,12 +393,12 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
       
       {/* 문서 콘텐츠 */}
       <div style={{ position: "relative", zIndex: 1 }}>
-      <h1 style={{ textAlign: "center", fontWeight: "bold", marginBottom: "16px", fontSize: "22px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{title}</h1>
+      <h1 style={{ textAlign: "center", fontWeight: "bold", marginBottom: "16px", fontSize: "33px", lineHeight: "1.4", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{title}</h1>
 
       {/* 위임인 */}
-      <div style={{ marginBottom: "16px" }}>
-        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "14px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "1. 위임인" : locale === "en" ? "1. Principal" : "1. 委托人"}</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+      <div style={{ marginBottom: "20px" }}>
+        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "21px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "1. 위임인" : locale === "en" ? "1. Principal" : "1. 委托人"}</h2>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "18%", minWidth: "18%", maxWidth: "18%" }} />
             <col style={{ width: "32%", minWidth: "32%", maxWidth: "32%" }} />
@@ -402,19 +407,19 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
           </colgroup>
           <tbody>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "성명" : locale === "en" ? "Name" : "姓名"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("principal_name")}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "생년월일" : locale === "en" ? "Date of Birth" : "出生日期"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{formatDate(getValue("principal_birthdate"))}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "성명" : locale === "en" ? "Name" : "姓名"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("principal_name")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "생년월일" : locale === "en" ? "Date of Birth" : "出生日期"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{formatDate(getValue("principal_birthdate"))}</td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "여권번호" : locale === "en" ? "Passport Number" : "护照号"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("principal_passport")}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "본국신분증번호" : locale === "en" ? "ID Number" : "本国身份证号"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("principal_id_number")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "여권번호" : locale === "en" ? "Passport Number" : "护照号"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("principal_passport")}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "본국신분증번호" : locale === "en" ? "ID Number" : "本国身份证号"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{getValue("principal_id_number")}</td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "본국주소" : locale === "en" ? "Home Address" : "本国地址"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "본국주소" : locale === "en" ? "Home Address" : "本国地址"}</td>
               <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }} colSpan={3}>{getValue("principal_address")}</td>
             </tr>
           </tbody>
@@ -423,8 +428,8 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 수임인 */}
       <div className="mb-4">
-        <h2 className="font-bold mb-3" style={{ fontSize: "14px" }}>{locale === "ko" ? "2. 수임인" : locale === "en" ? "2. Attorney" : "2. 受托人"}</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+        <h2 className="font-bold mb-3" style={{ fontSize: "21px" }}>{locale === "ko" ? "2. 수임인" : locale === "en" ? "2. Attorney" : "2. 受托人"}</h2>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "18%", minWidth: "18%", maxWidth: "18%" }} />
             <col style={{ width: "32%", minWidth: "32%", maxWidth: "32%" }} />
@@ -434,21 +439,21 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
           <tbody>
             <tr>
               <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "성명" : locale === "en" ? "Name" : "姓名"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "변호사 이택기" : locale === "en" ? "Attorney Lee Taek-gi" : "律师 李택기"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "변호사 이택기" : locale === "en" ? "Attorney Lee Taek-gi" : "律师 李택기"}</td>
               <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "주민등록번호" : locale === "en" ? "Registration Number" : "登记号"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>710409-1******</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>710409-1******</td>
             </tr>
             <tr>
               <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "사업장명" : locale === "en" ? "Office Name" : "事务所名称"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "법률사무소 세중" : locale === "en" ? "Sejoong Law Office" : "世中律师事务所"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "법률사무소 세중" : locale === "en" ? "Sejoong Law Office" : "世中律师事务所"}</td>
               <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "사업자등록번호" : locale === "en" ? "Business Registration Number" : "营业执照号"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>214-09-16365</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>214-09-16365</td>
             </tr>
             <tr>
               <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "직위" : locale === "en" ? "Position" : "职位"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "대표 변호사" : locale === "en" ? "Managing Attorney" : "代表律师"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "대표 변호사" : locale === "en" ? "Managing Attorney" : "代表律师"}</td>
               <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "연락처" : locale === "en" ? "Contact" : "联系方式"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>031-8044-8805</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>031-8044-8805</td>
             </tr>
             <tr>
               <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "주소" : locale === "en" ? "Address" : "地址"}</td>
@@ -460,8 +465,8 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 복 대리인 */}
       <div style={{ marginBottom: "16px" }}>
-        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "14px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "3. 수임인 복 대리인" : locale === "en" ? "3. Sub-Attorney" : "3. 复代理人"}</h2>
-          <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "21px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "3. 수임인 복 대리인" : locale === "en" ? "3. Sub-Attorney" : "3. 复代理人"}</h2>
+          <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
             <colgroup>
             <col style={{ width: "18%", minWidth: "18%", maxWidth: "18%" }} />
             <col style={{ width: "32%", minWidth: "32%", maxWidth: "32%" }} />
@@ -471,15 +476,15 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
             <tbody>
               <tr>
                 <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "성명" : locale === "en" ? "Name" : "姓名"}</td>
-                <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "주성규" : locale === "en" ? "Joo Seong-gyu" : "朱성규"}</td>
+                <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "주성규" : locale === "en" ? "Joo Seong-gyu" : "朱성규"}</td>
                 <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "주민등록번호" : locale === "en" ? "Registration Number" : "登记号"}</td>
-                <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>620613-1******</td>
+                <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>620613-1******</td>
               </tr>
               <tr>
                 <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "직위" : locale === "en" ? "Position" : "职位"}</td>
-                <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "국장" : locale === "en" ? "Director" : "局长"}</td>
+                <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "국장" : locale === "en" ? "Director" : "局长"}</td>
                 <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "연락처" : locale === "en" ? "Contact" : "联系方式"}</td>
-                <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>010-7152-7094</td>
+                <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>010-7152-7094</td>
               </tr>
               <tr>
                 <td className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center">{locale === "ko" ? "주소" : locale === "en" ? "Address" : "地址"}</td>
@@ -491,8 +496,8 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 위임업무 */}
       <div className="mb-4">
-        <h2 className="font-bold mb-3" style={{ fontSize: "14px" }}>{locale === "ko" ? "위임업무" : locale === "en" ? "Authorized Tasks" : "委托业务"}</h2>
-        <div className="grid grid-cols-2 gap-2" style={{ fontSize: "10px" }}>
+        <h2 className="font-bold mb-3" style={{ fontSize: "21px" }}>{locale === "ko" ? "위임업무" : locale === "en" ? "Authorized Tasks" : "委托业务"}</h2>
+        <div className="grid grid-cols-2 gap-2" style={{ fontSize: "15px" }}>
           {[
             { key: "civil_criminal", label: { ko: "민·형사소송 위임", en: "Civil/Criminal Litigation", "zh-CN": "民事/刑事诉讼委托" } },
             { key: "labor_complaint", label: { ko: "노동부진정서 위임", en: "Labor Complaint", "zh-CN": "劳动部申诉委托" } },
@@ -519,12 +524,12 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 서명란 */}
       <div className="mt-6">
-        <p className="mb-3" style={{ fontSize: "11px" }}>{locale === "ko" ? "위 위임인은 수임인 및 복 대리인에게 위와 같이 위임 업무를 위임 합니다." : locale === "en" ? "The above principal hereby delegates the above tasks to the attorney and sub-attorney." : "上述委托人特此将上述委托业务委托给受托人及复代理人。"}</p>
+        <p className="mb-3" style={{ fontSize: "17px" }}>{locale === "ko" ? "위 위임인은 수임인 및 복 대리인에게 위와 같이 위임 업무를 위임 합니다." : locale === "en" ? "The above principal hereby delegates the above tasks to the attorney and sub-attorney." : "上述委托人特此将上述委托业务委托给受托人及复代理人。"}</p>
         <div className="mt-4 space-y-2">
-          <p style={{ fontSize: "11px" }}>{locale === "ko" ? "일자" : locale === "en" ? "Date" : "日期"}: {formatDate(getValue("power_date"))}</p>
-          <p style={{ fontSize: "11px" }}>{locale === "ko" ? "위임인(외국인 부/모):" : locale === "en" ? "Principal (Foreign Parent):" : "委托人（外国人父/母）："}</p>
-          <p style={{ fontSize: "11px" }}>{locale === "ko" ? "수임인 변호사 이택기 (인)" : locale === "en" ? "Attorney Lee Taek-gi (Seal)" : "受托人 律师 李택기（印）"}</p>
-          <p style={{ fontSize: "11px" }}>{locale === "ko" ? "수임인 복 대리인 주성규(인)" : locale === "en" ? "Sub-Attorney Joo Seong-gyu (Seal)" : "复代理人 周성규（印）"}</p>
+          <p style={{ fontSize: "17px" }}>{locale === "ko" ? "일자" : locale === "en" ? "Date" : "日期"}: {formatDate(getValue("power_date"))}</p>
+          <p style={{ fontSize: "17px" }}>{locale === "ko" ? "위임인(외국인 부/모):" : locale === "en" ? "Principal (Foreign Parent):" : "委托人（外国人父/母）："}</p>
+          <p style={{ fontSize: "17px" }}>{locale === "ko" ? "수임인 변호사 이택기 (인)" : locale === "en" ? "Attorney Lee Taek-gi (Seal)" : "受托人 律师 李택기（印）"}</p>
+          <p style={{ fontSize: "17px" }}>{locale === "ko" ? "수임인 복 대리인 주성규(인)" : locale === "en" ? "Sub-Attorney Joo Seong-gyu (Seal)" : "复代理人 周성규（印）"}</p>
         </div>
       </div>
       </div>
@@ -535,17 +540,17 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
         style={{
           backgroundImage: "url('/SJ_logo.svg')",
           backgroundRepeat: "repeat",
-          backgroundSize: "400px auto",
+          backgroundSize: "450px auto",
           backgroundPosition: "0 0",
-          opacity: 0.08,
+          opacity: 0.15,
           zIndex: 10,
           backgroundColor: "transparent",
           transform: "rotate(-30deg)",
           transformOrigin: "center center",
-          width: "150%",
-          height: "150%",
-          left: "-25%",
-          top: "-25%"
+          width: "180%",
+          height: "180%",
+          left: "-40%",
+          top: "-40%"
         }}
       />
       
@@ -555,8 +560,11 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
           <img 
             src="/SJ_logo.svg" 
             alt="법무법인 세중" 
+            onError={(e) => {
+              console.error("Footer logo failed to load:", e)
+            }}
             style={{ 
-              height: "32px", 
+              height: "40px", 
               width: "auto", 
               objectFit: "contain",
               maxWidth: "100%",
@@ -565,11 +573,13 @@ const PowerOfAttorneyPreview = forwardRef<HTMLDivElement, any>(
               visibility: "visible",
               opacity: "1",
               zIndex: 22,
-              position: "relative"
+              position: "relative",
+              filter: "none",
+              pointerEvents: "none"
             }} 
           />
         </div>
-        <div className="text-center" style={{ fontSize: "8px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>
+        <div className="text-center" style={{ fontSize: "12px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif", backgroundColor: "transparent" }}>
           {locale === "ko"
             ? "법무법인 세중 | 경기도 안산시 단원구 원곡로 45 세중빌딩 2층 | 전화: 031-8044-8805 | 이메일: sejoonglaw@gmail.com"
             : locale === "en"
@@ -598,7 +608,7 @@ const AttorneyAppointmentPreview = forwardRef<HTMLDivElement, any>(
           maxHeight: "1123px",
           height: "1123px",
           padding: "25px 35px",
-          fontSize: "12px",
+          fontSize: "18px",
           lineHeight: "1.5",
           position: "relative",
           overflow: "hidden",
@@ -620,11 +630,11 @@ const AttorneyAppointmentPreview = forwardRef<HTMLDivElement, any>(
       
       {/* 문서 콘텐츠 */}
       <div style={{ position: "relative", zIndex: 1 }}>
-      <h1 className="text-center font-bold mb-4" style={{ fontSize: "22px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{title}</h1>
+      <h1 className="text-center font-bold mb-4" style={{ fontSize: "33px", lineHeight: "1.4", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{title}</h1>
 
       {/* 사건 정보 */}
       <div className="mb-4">
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "18%", minWidth: "18%", maxWidth: "18%" }} />
             <col style={{ width: "82%", minWidth: "82%", maxWidth: "82%" }} />
@@ -643,7 +653,7 @@ const AttorneyAppointmentPreview = forwardRef<HTMLDivElement, any>(
       </div>
 
       {/* 서문 */}
-      <p className="mb-4 leading-relaxed" style={{ fontSize: "11px" }}>
+      <p className="mb-4 leading-relaxed" style={{ fontSize: "17px" }}>
         {locale === "ko"
           ? "위 사건에 관하여 아래와 같이 변호인을 선임하였음으로 이이 변호인 선임서를 제출합니다."
           : locale === "en"
@@ -653,8 +663,8 @@ const AttorneyAppointmentPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 선임인 정보 */}
       <div className="mb-4">
-        <h2 className="font-bold mb-3" style={{ fontSize: "14px" }}>{locale === "ko" ? "선임인 가족대표자" : locale === "en" ? "Appointer's Family Representative" : "任命人家属代表"}</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+        <h2 className="font-bold mb-3" style={{ fontSize: "21px" }}>{locale === "ko" ? "선임인 가족대표자" : locale === "en" ? "Appointer's Family Representative" : "任命人家属代表"}</h2>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "18%", minWidth: "18%", maxWidth: "18%" }} />
             <col style={{ width: "82%", minWidth: "82%", maxWidth: "82%" }} />
@@ -681,8 +691,8 @@ const AttorneyAppointmentPreview = forwardRef<HTMLDivElement, any>(
       {/* 변호인 정보 */}
       <div className="mb-4">
         <div className="flex">
-          <div className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center" style={{ fontSize: "10px", width: "18%" }}>{locale === "ko" ? "변호인" : locale === "en" ? "Counsel" : "律师"}</div>
-          <div className="border border-gray-400 px-3 py-2" style={{ fontSize: "10px", width: "82%" }}>
+          <div className="border border-gray-400 px-3 py-2 bg-gray-100 font-semibold text-center" style={{ fontSize: "15px", width: "18%" }}>{locale === "ko" ? "변호인" : locale === "en" ? "Counsel" : "律师"}</div>
+          <div className="border border-gray-400 px-3 py-2" style={{ fontSize: "15px", width: "82%" }}>
             <p style={{ fontWeight: "600", marginBottom: "4px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "법률사무소 세중" : locale === "en" ? "Sejoong Law Office" : "世中律师事务所"}</p>
             <p style={{ fontWeight: "600", marginBottom: "4px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "변호사 이택기" : locale === "en" ? "Attorney Lee Taek-gi" : "律师 李택기"}</p>
             <p style={{ marginBottom: "4px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "안산시 단원구 원곡로 45, 세중빌딩 2층" : locale === "en" ? "2F Sejoong Building, 45 Wonkok-ro, Danwon-gu, Ansan-si" : "安山市檀园区元谷路45号世中大厦2层"}</p>
@@ -693,8 +703,8 @@ const AttorneyAppointmentPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 일자 및 수신처 */}
       <div className="mt-6">
-        <p className="mb-3" style={{ fontSize: "11px" }}>{locale === "ko" ? "일자" : locale === "en" ? "Date" : "日期"}: {formatDate(getValue("appointment_date"))}</p>
-        <p className="text-center mt-4" style={{ fontSize: "11px" }}>{getValue("court") || "의정부지방법원"} {locale === "ko" ? "귀중" : locale === "en" ? "" : "收"}</p>
+        <p className="mb-3" style={{ fontSize: "17px" }}>{locale === "ko" ? "일자" : locale === "en" ? "Date" : "日期"}: {formatDate(getValue("appointment_date"))}</p>
+        <p className="text-center mt-4" style={{ fontSize: "17px" }}>{getValue("court") || "의정부지방법원"} {locale === "ko" ? "귀중" : locale === "en" ? "" : "收"}</p>
       </div>
       </div>
       
@@ -704,17 +714,17 @@ const AttorneyAppointmentPreview = forwardRef<HTMLDivElement, any>(
         style={{
           backgroundImage: "url('/SJ_logo.svg')",
           backgroundRepeat: "repeat",
-          backgroundSize: "400px auto",
+          backgroundSize: "450px auto",
           backgroundPosition: "0 0",
-          opacity: 0.08,
+          opacity: 0.15,
           zIndex: 10,
           backgroundColor: "transparent",
           transform: "rotate(-30deg)",
           transformOrigin: "center center",
-          width: "150%",
-          height: "150%",
-          left: "-25%",
-          top: "-25%"
+          width: "180%",
+          height: "180%",
+          left: "-40%",
+          top: "-40%"
         }}
       />
       
@@ -724,8 +734,11 @@ const AttorneyAppointmentPreview = forwardRef<HTMLDivElement, any>(
           <img 
             src="/SJ_logo.svg" 
             alt="법무법인 세중" 
+            onError={(e) => {
+              console.error("Footer logo failed to load:", e)
+            }}
             style={{ 
-              height: "32px", 
+              height: "40px", 
               width: "auto", 
               objectFit: "contain",
               maxWidth: "100%",
@@ -734,11 +747,13 @@ const AttorneyAppointmentPreview = forwardRef<HTMLDivElement, any>(
               visibility: "visible",
               opacity: "1",
               zIndex: 22,
-              position: "relative"
+              position: "relative",
+              filter: "none",
+              pointerEvents: "none"
             }} 
           />
         </div>
-        <div className="text-center" style={{ fontSize: "8px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>
+        <div className="text-center" style={{ fontSize: "12px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif", backgroundColor: "transparent" }}>
           {locale === "ko"
             ? "법무법인 세중 | 경기도 안산시 단원구 원곡로 45 세중빌딩 2층 | 전화: 031-8044-8805 | 이메일: sejoonglaw@gmail.com"
             : locale === "en"
@@ -767,7 +782,7 @@ const LitigationPowerPreview = forwardRef<HTMLDivElement, any>(
           maxHeight: "1123px",
           height: "1123px",
           padding: "25px 35px",
-          fontSize: "12px",
+          fontSize: "18px",
           lineHeight: "1.5",
           position: "relative",
           overflow: "hidden",
@@ -789,11 +804,11 @@ const LitigationPowerPreview = forwardRef<HTMLDivElement, any>(
       
       {/* 문서 콘텐츠 */}
       <div style={{ position: "relative", zIndex: 1 }}>
-      <h1 className="text-center font-bold mb-4" style={{ fontSize: "22px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{title}</h1>
+      <h1 className="text-center font-bold mb-4" style={{ fontSize: "33px", lineHeight: "1.4", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{title}</h1>
 
       {/* 사건 정보 */}
       <div className="mb-4">
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "18%", minWidth: "18%", maxWidth: "18%" }} />
             <col style={{ width: "82%", minWidth: "82%", maxWidth: "82%" }} />
@@ -816,7 +831,7 @@ const LitigationPowerPreview = forwardRef<HTMLDivElement, any>(
       </div>
 
       {/* 서문 */}
-      <p className="mb-4 leading-relaxed" style={{ fontSize: "11px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>
+      <p className="mb-4 leading-relaxed" style={{ fontSize: "17px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>
         {locale === "ko"
           ? "위 사건에 관하여 아래의 수임인을 원고의 소송대리인으로 선임하고, 아래와 같은 권한을 수여합니다."
           : locale === "en"
@@ -853,7 +868,7 @@ const LitigationPowerPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 기타 특별수권사항 */}
       <div style={{ marginBottom: "16px" }}>
-        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "14px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "기타 특별수권사항" : locale === "en" ? "Special Authority" : "其他特别授权事项"}</h2>
+        <h2 style={{ fontWeight: "bold", marginBottom: "12px", fontSize: "21px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "기타 특별수권사항" : locale === "en" ? "Special Authority" : "其他特别授权事项"}</h2>
         <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "12px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "80%", minWidth: "80%", maxWidth: "80%" }} />
@@ -861,8 +876,8 @@ const LitigationPowerPreview = forwardRef<HTMLDivElement, any>(
           </colgroup>
           <thead>
             <tr>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "수권사항" : locale === "en" ? "Granted Powers" : "授权事项"}</td>
-              <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "수권여부" : locale === "en" ? "Grant Status" : "授权与否"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "수권사항" : locale === "en" ? "Granted Powers" : "授权事项"}</td>
+              <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", backgroundColor: "#f3f4f6", fontWeight: "600", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>{locale === "ko" ? "수권여부" : locale === "en" ? "Grant Status" : "授权与否"}</td>
             </tr>
           </thead>
           <tbody>
@@ -912,10 +927,10 @@ const LitigationPowerPreview = forwardRef<HTMLDivElement, any>(
               const value = getValue(`special_authority.${item.key}`)
               return (
                 <tr key={item.key}>
-                  <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>
+                  <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>
                     {item.label[locale as keyof typeof item.label]}
                   </td>
-                  <td style={{ border: "1px solid #9ca3af", padding: "8px 12px", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif", fontSize: "14px", fontWeight: "bold" }}>
+                  <td style={{ border: "1px solid #9ca3af", padding: "10px 15px", textAlign: "center", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif", fontSize: "21px", fontWeight: "bold" }}>
                     {value === "O" || value === "o" ? "○" : "×"}
                   </td>
                 </tr>
@@ -923,7 +938,7 @@ const LitigationPowerPreview = forwardRef<HTMLDivElement, any>(
             })}
           </tbody>
         </table>
-        <p style={{ marginTop: "8px", fontSize: "10px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>
+        <p style={{ marginTop: "8px", fontSize: "15px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>
           * {locale === "ko" ? "기타특별수권사항(권한을 부여하면 O표시, 보류하면 X표시)" : locale === "en" ? "Other special granted powers (mark O if granted, X if reserved)" : "其他特别授权事项（授权则标记○，保留则标记×）"}
         </p>
       </div>
@@ -949,17 +964,17 @@ const LitigationPowerPreview = forwardRef<HTMLDivElement, any>(
         style={{
           backgroundImage: "url('/SJ_logo.svg')",
           backgroundRepeat: "repeat",
-          backgroundSize: "400px auto",
+          backgroundSize: "450px auto",
           backgroundPosition: "0 0",
-          opacity: 0.08,
+          opacity: 0.15,
           zIndex: 10,
           backgroundColor: "transparent",
           transform: "rotate(-30deg)",
           transformOrigin: "center center",
-          width: "150%",
-          height: "150%",
-          left: "-25%",
-          top: "-25%"
+          width: "180%",
+          height: "180%",
+          left: "-40%",
+          top: "-40%"
         }}
       />
       
@@ -969,8 +984,11 @@ const LitigationPowerPreview = forwardRef<HTMLDivElement, any>(
           <img 
             src="/SJ_logo.svg" 
             alt="법무법인 세중" 
+            onError={(e) => {
+              console.error("Footer logo failed to load:", e)
+            }}
             style={{ 
-              height: "32px", 
+              height: "40px", 
               width: "auto", 
               objectFit: "contain",
               maxWidth: "100%",
@@ -979,11 +997,13 @@ const LitigationPowerPreview = forwardRef<HTMLDivElement, any>(
               visibility: "visible",
               opacity: "1",
               zIndex: 22,
-              position: "relative"
+              position: "relative",
+              filter: "none",
+              pointerEvents: "none"
             }} 
           />
         </div>
-        <div className="text-center" style={{ fontSize: "8px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>
+        <div className="text-center" style={{ fontSize: "12px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif", backgroundColor: "transparent" }}>
           {locale === "ko"
             ? "법무법인 세중 | 경기도 안산시 단원구 원곡로 45 세중빌딩 2층 | 전화: 031-8044-8805 | 이메일: sejoonglaw@gmail.com"
             : locale === "en"
@@ -1016,7 +1036,7 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, any>(
           maxHeight: "1123px",
           height: "1123px",
           padding: "25px 35px",
-          fontSize: "12px",
+          fontSize: "18px",
           lineHeight: "1.5",
           position: "relative",
           overflow: "hidden",
@@ -1042,7 +1062,7 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 수신/발신 정보 */}
       <div className="mb-4">
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "18%", minWidth: "18%", maxWidth: "18%" }} />
             <col style={{ width: "82%", minWidth: "82%", maxWidth: "82%" }} />
@@ -1070,8 +1090,8 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 고인 정보 */}
       <div className="mb-4">
-        <h2 className="font-bold mb-3" style={{ fontSize: "14px" }}>{locale === "ko" ? "고인 (피보험자)" : locale === "en" ? "Deceased (Insured Person)" : "死者（被保险人）"}</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+        <h2 className="font-bold mb-3" style={{ fontSize: "21px" }}>{locale === "ko" ? "고인 (피보험자)" : locale === "en" ? "Deceased (Insured Person)" : "死者（被保险人）"}</h2>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "18%", minWidth: "18%", maxWidth: "18%" }} />
             <col style={{ width: "82%", minWidth: "82%", maxWidth: "82%" }} />
@@ -1103,8 +1123,8 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 보험계약 정보 */}
       <div className="mb-4">
-        <h2 className="font-bold mb-3" style={{ fontSize: "14px" }}>{locale === "ko" ? "보험계약사항" : locale === "en" ? "Insurance Contract Details" : "保险合同事项"}</h2>
-        <div className="space-y-2" style={{ fontSize: "10px" }}>
+        <h2 className="font-bold mb-3" style={{ fontSize: "21px" }}>{locale === "ko" ? "보험계약사항" : locale === "en" ? "Insurance Contract Details" : "保险合同事项"}</h2>
+        <div className="space-y-2" style={{ fontSize: "15px" }}>
           <p><strong>{locale === "ko" ? "가. 보험상품명:" : locale === "en" ? "a. Insurance Product Name:" : "a. 保险产品名称："}</strong> {getValue("insurance_product")}</p>
           <p><strong>{locale === "ko" ? "나. 보험계약자:" : locale === "en" ? "b. Policyholder:" : "b. 投保人："}</strong> {getValue("policyholder")}</p>
           <p><strong>{locale === "ko" ? "다. 피보험자:" : locale === "en" ? "c. Insured Person:" : "c. 被保险人："}</strong> {getValue("insured_name")}</p>
@@ -1114,8 +1134,8 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 법정상속인 */}
       <div className="mb-4">
-        <h2 className="font-bold mb-3" style={{ fontSize: "14px" }}>{locale === "ko" ? "법정상속인" : locale === "en" ? "Legal Heirs" : "法定继承人"}</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "10px", tableLayout: "fixed", borderSpacing: "0" }}>
+        <h2 className="font-bold mb-3" style={{ fontSize: "21px" }}>{locale === "ko" ? "법정상속인" : locale === "en" ? "Legal Heirs" : "法定继承人"}</h2>
+        <table style={{ width: "100%", borderCollapse: "collapse", border: "1px solid #9ca3af", marginBottom: "12px", fontSize: "15px", tableLayout: "fixed", borderSpacing: "0" }}>
           <colgroup>
             <col style={{ width: "33%", minWidth: "33%", maxWidth: "33%" }} />
             <col style={{ width: "34%", minWidth: "34%", maxWidth: "34%" }} />
@@ -1145,8 +1165,8 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, any>(
 
       {/* 일자 및 수신처 */}
       <div style={{ marginTop: "auto", paddingTop: "16px" }}>
-        <p className="mb-3" style={{ fontSize: "11px" }}>{locale === "ko" ? "일자" : locale === "en" ? "Date" : "日期"}: {formatDate(getValue("consent_date"))}</p>
-        <p className="text-center mt-4" style={{ fontSize: "11px" }}>{getValue("recipient_company") || "삼성화재해상보험주식회사"} {locale === "ko" ? "귀하" : locale === "en" ? "" : "收"}</p>
+        <p className="mb-3" style={{ fontSize: "17px" }}>{locale === "ko" ? "일자" : locale === "en" ? "Date" : "日期"}: {formatDate(getValue("consent_date"))}</p>
+        <p className="text-center mt-4" style={{ fontSize: "17px" }}>{getValue("recipient_company") || "삼성화재해상보험주식회사"} {locale === "ko" ? "귀하" : locale === "en" ? "" : "收"}</p>
       </div>
       </div>
       
@@ -1156,17 +1176,17 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, any>(
         style={{
           backgroundImage: "url('/SJ_logo.svg')",
           backgroundRepeat: "repeat",
-          backgroundSize: "400px auto",
+          backgroundSize: "450px auto",
           backgroundPosition: "0 0",
-          opacity: 0.08,
+          opacity: 0.15,
           zIndex: 10,
           backgroundColor: "transparent",
           transform: "rotate(-30deg)",
           transformOrigin: "center center",
-          width: "150%",
-          height: "150%",
-          left: "-25%",
-          top: "-25%"
+          width: "180%",
+          height: "180%",
+          left: "-40%",
+          top: "-40%"
         }}
       />
       
@@ -1176,8 +1196,11 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, any>(
           <img 
             src="/SJ_logo.svg" 
             alt="법무법인 세중" 
+            onError={(e) => {
+              console.error("Footer logo failed to load:", e)
+            }}
             style={{ 
-              height: "32px", 
+              height: "40px", 
               width: "auto", 
               objectFit: "contain",
               maxWidth: "100%",
@@ -1186,11 +1209,13 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, any>(
               visibility: "visible",
               opacity: "1",
               zIndex: 22,
-              position: "relative"
+              position: "relative",
+              filter: "none",
+              pointerEvents: "none"
             }} 
           />
         </div>
-        <div className="text-center" style={{ fontSize: "8px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif" }}>
+        <div className="text-center" style={{ fontSize: "12px", color: "#666", lineHeight: "1.5", fontFamily: locale === "ko" ? '"Noto Sans KR", sans-serif' : locale === "zh-CN" ? '"FangSong", "STFangsong", serif' : "system-ui, sans-serif", backgroundColor: "transparent" }}>
           {locale === "ko"
             ? "법무법인 세중 | 경기도 안산시 단원구 원곡로 45 세중빌딩 2층 | 전화: 031-8044-8805 | 이메일: sejoonglaw@gmail.com"
             : locale === "en"

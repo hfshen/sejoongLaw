@@ -6,9 +6,11 @@ import Link from "next/link"
 import CaseForm, { type CaseFormData } from "@/components/admin/CaseForm"
 import Button from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
-import { ArrowLeft, Edit, Download, Trash2 } from "lucide-react"
+import { ArrowLeft, Edit, Download, Trash2, FileArchive } from "lucide-react"
 import { getDocumentTypeLabel, type DocumentType } from "@/lib/documents/templates"
 import { toast } from "@/components/ui/Toast"
+import JSZip from "jszip"
+import html2canvas from "html2canvas"
 
 interface Case {
   id: string
@@ -39,6 +41,7 @@ export default function CaseDetailPage() {
   const [error, setError] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isDownloadingZip, setIsDownloadingZip] = useState(false)
 
   useEffect(() => {
     if (caseId) {
@@ -164,6 +167,167 @@ export default function CaseDetailPage() {
       }
     } catch (error) {
       toast.error("서류 생성 중 오류가 발생했습니다.")
+    }
+  }
+
+  const generateDocumentImage = async (
+    docData: any,
+    docType: DocumentType,
+    locale: "ko" | "en" | "zh-CN"
+  ): Promise<Blob | null> => {
+    try {
+      // 임시 컨테이너 생성
+      const tempContainer = document.createElement("div")
+      tempContainer.style.position = "absolute"
+      tempContainer.style.left = "-9999px"
+      tempContainer.style.top = "0"
+      tempContainer.style.width = "794px"
+      tempContainer.style.height = "1123px"
+      tempContainer.style.backgroundColor = "#ffffff"
+      tempContainer.setAttribute("data-preview-id", "document-preview")
+      document.body.appendChild(tempContainer)
+
+      // React를 사용하여 DocumentPreview 렌더링
+      const { createRoot } = await import("react-dom/client")
+      const React = await import("react")
+      const DocumentPreview = (await import("@/components/admin/DocumentPreview")).default
+
+      const root = createRoot(tempContainer)
+      await new Promise<void>((resolve) => {
+        root.render(
+          React.createElement(DocumentPreview, {
+            documentType: docType,
+            data: docData,
+            locale: locale,
+          })
+        )
+        // 렌더링 완료 대기
+        setTimeout(resolve, 1000)
+      })
+
+      // 폰트 로딩 대기
+      await document.fonts.ready
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      // 이미지 로딩 대기
+      const images = tempContainer.querySelectorAll("img")
+      await Promise.all(
+        Array.from(images).map(
+          (img) =>
+            new Promise((resolve) => {
+              if (img.complete) {
+                resolve(null)
+              } else {
+                img.onload = () => resolve(null)
+                img.onerror = () => resolve(null)
+                setTimeout(() => resolve(null), 5000)
+              }
+            })
+        )
+      )
+
+      // html2canvas로 캡처
+      const canvas = await html2canvas(tempContainer, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: "#ffffff",
+        width: 794,
+        height: 1123,
+      })
+
+      // Canvas를 Blob으로 변환
+      return new Promise((resolve) => {
+        canvas.toBlob(
+          (blob) => {
+            root.unmount()
+            document.body.removeChild(tempContainer)
+            resolve(blob)
+          },
+          "image/jpeg",
+          1.0
+        )
+      })
+    } catch (error) {
+      console.error("Error generating document image:", error)
+      return null
+    }
+  }
+
+  const handleDownloadAllDocuments = async () => {
+    if (documents.length === 0) {
+      toast.error("다운로드할 서류가 없습니다.")
+      return
+    }
+
+    try {
+      setIsDownloadingZip(true)
+      toast.success("서류 이미지를 생성 중입니다. 잠시만 기다려주세요...")
+
+      const zip = new JSZip()
+      const locales: ("ko" | "en" | "zh-CN")[] = ["ko", "en", "zh-CN"]
+      const localeNames = { ko: "한국어", en: "English", "zh-CN": "中文" }
+
+      let processedCount = 0
+      const totalCount = documents.length * locales.length
+
+      // 각 문서에 대해
+      for (const doc of documents) {
+        // 각 언어에 대해
+        for (const locale of locales) {
+          try {
+            // 문서 데이터 가져오기
+            const docResponse = await fetch(`/api/documents/${doc.id}`)
+            if (!docResponse.ok) {
+              processedCount++
+              continue
+            }
+
+            const docData = await docResponse.json()
+            if (!docData.document) {
+              processedCount++
+              continue
+            }
+
+            // 이미지 생성
+            const imageBlob = await generateDocumentImage(
+              docData.document.data || {},
+              doc.document_type,
+              locale
+            )
+
+            if (imageBlob) {
+              const docTypeLabel = getDocumentTypeLabel(doc.document_type, "ko")
+              const fileName = `${docTypeLabel}_${localeNames[locale]}.jpg`
+              zip.file(fileName, imageBlob)
+            }
+
+            processedCount++
+            toast.success(`진행 중... (${processedCount}/${totalCount})`)
+          } catch (error) {
+            console.error(`Error generating image for document ${doc.id} (${locale}):`, error)
+            processedCount++
+          }
+        }
+      }
+
+      // ZIP 파일 생성 및 다운로드
+      const zipBlob = await zip.generateAsync({ type: "blob" })
+      const url = window.URL.createObjectURL(zipBlob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = `${caseData.case_name || "case"}_documents_${new Date().toISOString().split("T")[0]}.zip`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+
+      toast.success("모든 서류가 ZIP 파일로 다운로드되었습니다.")
+    } catch (error) {
+      console.error("ZIP 다운로드 오류:", error)
+      toast.error("ZIP 다운로드 중 오류가 발생했습니다.")
+    } finally {
+      setIsDownloadingZip(false)
     }
   }
 
@@ -293,7 +457,19 @@ export default function CaseDetailPage() {
             {/* 연결된 서류 목록 */}
             <Card>
               <CardHeader>
-                <CardTitle>연결된 서류 ({documents.length}개)</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle>연결된 서류 ({documents.length}개)</CardTitle>
+                  {documents.length > 0 && (
+                    <Button
+                      onClick={handleDownloadAllDocuments}
+                      disabled={isDownloadingZip}
+                      className="flex items-center gap-2"
+                    >
+                      <FileArchive className="w-4 h-4" />
+                      {isDownloadingZip ? "생성 중..." : "모든 서류 ZIP 다운로드"}
+                    </Button>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
                 {documents.length === 0 ? (

@@ -312,7 +312,7 @@ export default function DocumentForm({
             }
           }
           
-          // 워터마크 보존 및 비율 유지 (가로 400px, 세로는 자동, 30도 회전)
+          // 워터마크 보존 및 비율 유지 (가로 500px, 세로는 자동, 30도 회전, 간격 넓게)
           const watermarkElements = clonedDoc.querySelectorAll('[style*="backgroundImage"], [style*="background-image"]')
           watermarkElements.forEach((wm) => {
             const htmlWm = wm as HTMLElement
@@ -321,19 +321,19 @@ export default function DocumentForm({
             if (bgImage && bgImage.includes('SJ_logo')) {
               // 워터마크 스타일 명시적으로 설정
               htmlWm.style.backgroundImage = computed.backgroundImage || "url('/SJ_logo.svg')"
-              htmlWm.style.backgroundSize = "400px auto"
+              htmlWm.style.backgroundSize = "450px auto"
               htmlWm.style.backgroundRepeat = "repeat"
               htmlWm.style.backgroundPosition = "0 0"
-              htmlWm.style.opacity = "0.06"
+              htmlWm.style.opacity = "0.15"
               htmlWm.style.backgroundColor = "transparent"
               htmlWm.style.zIndex = "10"
               htmlWm.style.position = "absolute"
               htmlWm.style.transform = "rotate(-30deg)"
               htmlWm.style.transformOrigin = "center center"
-              htmlWm.style.width = "400%"
-              htmlWm.style.height = "400%"
-              htmlWm.style.left = "-150%"
-              htmlWm.style.top = "-150%"
+              htmlWm.style.width = "180%"
+              htmlWm.style.height = "180%"
+              htmlWm.style.left = "-40%"
+              htmlWm.style.top = "-40%"
               htmlWm.style.pointerEvents = "none"
             }
           })
@@ -390,7 +390,7 @@ export default function DocumentForm({
             }
             
             // 이미지 스타일 항상 적용
-            htmlImg.style.height = "32px"
+            htmlImg.style.height = "40px"
             htmlImg.style.width = "auto"
             htmlImg.style.objectFit = "contain"
             htmlImg.style.maxWidth = "100%"
@@ -434,6 +434,27 @@ export default function DocumentForm({
             }
           })
           
+          // 모든 텍스트 요소의 스타일 보존 (fontSize, fontFamily, lineHeight)
+          const textElements = clonedDoc.querySelectorAll('h1, h2, h3, p, span, td, th, div, li')
+          textElements.forEach((el) => {
+            const htmlEl = el as HTMLElement
+            if (!htmlEl) return
+            
+            const computed = window.getComputedStyle(htmlEl)
+            // fontSize 보존
+            if (computed.fontSize) {
+              htmlEl.style.fontSize = computed.fontSize
+            }
+            // fontFamily 보존
+            if (computed.fontFamily) {
+              htmlEl.style.fontFamily = computed.fontFamily
+            }
+            // lineHeight 보존
+            if (computed.lineHeight) {
+              htmlEl.style.lineHeight = computed.lineHeight
+            }
+          })
+          
           // 모든 회색/투명 배경을 흰색으로 강제 설정 (워터마크 및 푸터 로고 제외)
           const allElements = clonedDoc.querySelectorAll('*')
           allElements.forEach((el) => {
@@ -446,22 +467,32 @@ export default function DocumentForm({
             const hasLogo = htmlEl.querySelector('img[src*="SJ_logo"]')
             
             const zIndexNum = parseInt(zIndex) || 0
-            if (zIndex === "20" || zIndex === "21" || zIndex === "22" || zIndexNum >= 20 || hasLogo) {
+            const isFooterContainer = htmlEl.textContent?.includes("법무법인 세중") || 
+                                     htmlEl.textContent?.includes("Sejoong Law Firm") || 
+                                     htmlEl.textContent?.includes("sejoonglaw@gmail.com") ||
+                                     htmlEl.textContent?.includes("031-8044-8805")
+            
+            if (zIndex === "20" || zIndex === "21" || zIndex === "22" || zIndexNum >= 20 || hasLogo || isFooterContainer) {
               // 푸터 로고 컨테이너와 모든 자식 요소는 투명 배경 유지
               htmlEl.style.backgroundColor = "transparent"
+              htmlEl.style.background = "transparent"
               const children = htmlEl.querySelectorAll('*')
               children.forEach((child) => {
                 const htmlChild = child as HTMLElement
                 if (htmlChild.tagName === 'IMG') {
                   // 이미지 요소는 특히 보이도록 설정
                   htmlChild.style.backgroundColor = "transparent"
+                  htmlChild.style.background = "transparent"
                   htmlChild.style.opacity = "1"
                   htmlChild.style.visibility = "visible"
                   htmlChild.style.display = "block"
                   htmlChild.style.zIndex = "22"
                   htmlChild.style.position = "relative"
+                  htmlChild.style.filter = "none"
                 } else {
+                  // 모든 텍스트 요소도 투명 배경
                   htmlChild.style.backgroundColor = "transparent"
+                  htmlChild.style.background = "transparent"
                 }
               })
               return
@@ -967,7 +998,7 @@ export default function DocumentForm({
                   margin: "0 auto"
                 }}
               >
-                <div style={{ transform: "scale(1)", transformOrigin: "top left", margin: "0", padding: "0" }}>
+                <div style={{ transform: "scale(0.7)", transformOrigin: "top center", margin: "0", padding: "0" }}>
                   <DocumentPreview
                     ref={previewRef}
                     documentType={documentType}
