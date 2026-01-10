@@ -5,6 +5,7 @@ import { locales, type Locale } from "@/lib/i18n"
 import LocaleAttributes from "@/components/layout/LocaleAttributes"
 import { StructuredData } from "@/components/seo/StructuredData"
 import AnalyticsProvider from "@/components/analytics/AnalyticsProvider"
+import { Analytics } from "@vercel/analytics/next"
 import type { Metadata } from "next"
 
 export function generateStaticParams() {
@@ -116,6 +117,7 @@ export default async function LocaleLayout({
           {children}
         </NextIntlClientProvider>
       </AnalyticsProvider>
+      <Analytics />
     </>
   )
 }
