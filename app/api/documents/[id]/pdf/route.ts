@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { isAdminAuthenticated } from "@/lib/admin/auth"
-import { generatePDF, type DocumentType } from "@/lib/documents/pdf-generator"
+import { generatePDF } from "@/lib/documents/pdf-generator"
+import { type DocumentType } from "@/lib/documents/templates"
 
 export async function GET(
   request: NextRequest,

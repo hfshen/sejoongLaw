@@ -7,6 +7,7 @@ import { Plus, Loader2 } from "lucide-react"
 import Link from "next/link"
 import Button from "@/components/ui/Button"
 import { type DocumentType } from "@/lib/documents/templates"
+import { toast } from "@/components/ui/Toast"
 
 interface Document {
   id: string

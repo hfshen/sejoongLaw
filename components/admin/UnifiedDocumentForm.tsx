@@ -127,9 +127,9 @@ export default function UnifiedDocumentForm({
                 ))}
               </select>
             )}
-            {errors[parentKey]?.[childKey] && (
+            {errors[parentKey] && typeof errors[parentKey] === 'object' && childKey in (errors[parentKey] as any) && (
               <p className="text-red-500 text-sm mt-1">
-                {errors[parentKey]?.[childKey]?.message as string}
+                {(errors[parentKey] as any)[childKey]?.message as string}
               </p>
             )}
           </div>

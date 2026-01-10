@@ -5,7 +5,7 @@ import { useState } from "react"
 import Button from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 
-interface CaseFormData {
+export interface CaseFormData {
   case_number?: string
   case_name: string
   // 사망자 정보

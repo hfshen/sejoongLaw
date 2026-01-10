@@ -17,6 +17,12 @@ import DocumentPreview from "./DocumentPreview"
 import html2canvas from "html2canvas"
 import { toast } from "@/components/ui/Toast"
 
+interface DocumentFormData {
+  name?: string
+  date?: string
+  [key: string]: any
+}
+
 interface DocumentFormProps {
   documentId?: string
   documentType: DocumentType

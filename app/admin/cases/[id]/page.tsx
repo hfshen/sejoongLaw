@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
-import CaseForm from "@/components/admin/CaseForm"
+import CaseForm, { type CaseFormData } from "@/components/admin/CaseForm"
 import Button from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { ArrowLeft, Edit, Download, Trash2 } from "lucide-react"
