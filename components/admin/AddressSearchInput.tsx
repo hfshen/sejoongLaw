@@ -13,8 +13,7 @@ type Props = {
 
 declare global {
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any
+    [key: string]: unknown
   }
 }
 
@@ -28,14 +27,14 @@ export function AddressSearchInput({ label, value, placeholder, onChange, confmK
       process.env.NEXT_PUBLIC_JUSO_CONFM_KEY ||
       "U01TX0FVVEgyMDI2MDExMTE2MTkwNzExNzQyMjg="
 
-    window[callbackName] = (payload: { roadAddrPart1?: string; roadAddrPart2?: string; addrDetail?: string; zipNo?: string }) => {
+    ;(window as Record<string, (payload: { roadAddrPart1?: string; roadAddrPart2?: string; addrDetail?: string; zipNo?: string }) => void>)[callbackName] = (payload: { roadAddrPart1?: string; roadAddrPart2?: string; addrDetail?: string; zipNo?: string }) => {
       const road = payload.roadAddrPart1 || ""
       const extra = payload.roadAddrPart2 || ""
       const detail = payload.addrDetail || ""
       const combined = [road, extra, detail].filter(Boolean).join(" ").trim()
       onChange(combined)
       try {
-        delete window[callbackName]
+        delete (window as Record<string, unknown>)[callbackName]
       } catch {
         // ignore
       }
