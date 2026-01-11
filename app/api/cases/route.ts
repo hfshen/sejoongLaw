@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { isAdminAuthenticated } from "@/lib/admin/auth"
+import { createNextErrorResponse, handleApiError } from "@/lib/utils/error-handler"
+import { createSuccessResponse } from "@/lib/utils/api-response"
+import logger from "@/lib/logger"
+import type { DocumentType } from "@/lib/documents/templates"
 
 export async function GET(request: NextRequest) {
   try {
@@ -37,19 +41,24 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query
 
     if (error) {
-      console.error("Supabase error:", error)
-      return NextResponse.json(
-        { error: "Failed to fetch cases" },
-        { status: 500 }
+      logger.error("Failed to fetch cases", { error })
+      return createNextErrorResponse(
+        NextResponse,
+        error,
+        "케이스 목록을 불러오는데 실패했습니다.",
+        500
       )
     }
 
-    return NextResponse.json({ cases: data || [] }, { status: 200 })
-  } catch (error: any) {
-    console.error("Cases API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    logger.info("Cases fetched successfully", { count: data?.length || 0 })
+    return createSuccessResponse({ cases: data || [] })
+  } catch (error) {
+    logger.error("Error fetching cases", { error })
+    return createNextErrorResponse(
+      NextResponse,
+      error,
+      "케이스 목록을 불러오는데 실패했습니다.",
+      500
     )
   }
 }
@@ -87,10 +96,12 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (caseError) {
-      console.error("Supabase error:", caseError)
-      return NextResponse.json(
-        { error: "Failed to create case" },
-        { status: 500 }
+      logger.error("Failed to create case", { error: caseError, case_name: body.case_name })
+      return createNextErrorResponse(
+        NextResponse,
+        caseError,
+        "케이스 생성에 실패했습니다.",
+        500
       )
     }
 
@@ -98,13 +109,12 @@ export async function POST(request: NextRequest) {
     if (document_types && Array.isArray(document_types) && document_types.length > 0) {
       const { mapCaseToDocument } = await import("@/lib/documents/case-mapper")
       
-      console.log("[Case Creation] Case data received:", JSON.stringify(case_data, null, 2))
-      console.log("[Case Creation] Document types to create:", document_types)
+      logger.info("Creating documents for case", { caseId: caseRecord.id, documentTypes: document_types })
       
       const documentsToInsert = document_types.map((docType: string) => {
         // 통합 폼에서 받은 데이터를 그대로 사용하되, mapCaseToDocument로 매핑 보완
         // 통합 폼 데이터에는 이미 모든 필드가 포함되어 있으므로, 매핑은 추가 필드(날짜 등)만 보완
-        const mappedData = mapCaseToDocument(case_data, docType as any, case_data)
+        const mappedData = mapCaseToDocument(case_data, docType as DocumentType, case_data)
         
         // 통합 폼 데이터와 매핑된 데이터 병합 (통합 폼 데이터 우선)
         const documentData = {
@@ -112,7 +122,7 @@ export async function POST(request: NextRequest) {
           ...case_data, // 통합 폼 데이터로 덮어쓰기
         }
         
-        console.log(`[Case Creation] Mapped data for ${docType}:`, JSON.stringify(documentData, null, 2))
+        logger.debug(`Mapped data for ${docType}`, { docType, dataKeys: Object.keys(documentData) })
         
         return {
           document_type: docType,
@@ -125,11 +135,10 @@ export async function POST(request: NextRequest) {
         }
       })
 
-      console.log("[Case Creation] Documents to insert:", JSON.stringify(documentsToInsert.map(d => ({ 
-        document_type: d.document_type, 
-        name: d.name,
-        data_keys: Object.keys(d.data)
-      })), null, 2))
+      logger.debug("Documents to insert", { 
+        count: documentsToInsert.length,
+        documentTypes: documentsToInsert.map(d => d.document_type)
+      })
 
       const { data: createdDocuments, error: docsError } = await supabase
         .from("documents")
@@ -137,29 +146,46 @@ export async function POST(request: NextRequest) {
         .select()
 
       if (docsError) {
-        console.error("[Case Creation] Failed to create documents:", docsError)
-        console.error("[Case Creation] Error details:", JSON.stringify(docsError, null, 2))
+        logger.warn("Case created but some documents failed", { 
+          caseId: caseRecord.id, 
+          error: docsError,
+          document_types 
+        })
         // 케이스는 생성되었지만 서류 생성 실패 - 케이스는 반환하되 경고 포함
         return NextResponse.json(
           { 
             case: caseRecord,
-            warning: "Case created but some documents failed to create",
-            error: docsError.message,
-            details: docsError
+            warning: "케이스는 생성되었지만 일부 서류 생성에 실패했습니다.",
+            error: handleApiError(docsError)
           },
           { status: 201 }
         )
       }
 
-      console.log("[Case Creation] Successfully created documents:", createdDocuments?.length || 0)
+      logger.info("Case and documents created successfully", { 
+        caseId: caseRecord.id, 
+        documentCount: createdDocuments?.length || 0 
+      })
+      
+      return createSuccessResponse(
+        { 
+          case: caseRecord,
+          documents: createdDocuments 
+        }, 
+        `케이스와 ${createdDocuments?.length || 0}개의 서류가 생성되었습니다.`, 
+        201
+      )
     }
 
-    return NextResponse.json({ case: caseRecord }, { status: 201 })
-  } catch (error: any) {
-    console.error("Cases API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    logger.info("Case created successfully", { caseId: caseRecord.id, case_name })
+    return createSuccessResponse({ case: caseRecord }, "케이스가 생성되었습니다.", 201)
+  } catch (error) {
+    logger.error("Error creating case", { error })
+    return createNextErrorResponse(
+      NextResponse,
+      error,
+      "케이스 생성에 실패했습니다.",
+      500
     )
   }
 }

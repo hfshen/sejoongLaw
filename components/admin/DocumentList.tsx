@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo, useCallback, useRef } from "react"
 import DocumentCard from "./DocumentCard"
 import DocumentFilters, { type FilterState } from "./DocumentFilters"
 import { Plus, Loader2 } from "lucide-react"
@@ -34,8 +34,26 @@ export default function DocumentList() {
     caseLinked: "all",
   })
   const [searchTerm, setSearchTerm] = useState("")
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("")
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  const fetchDocuments = async () => {
+  // 검색어 debounce (300ms)
+  useEffect(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    searchTimeoutRef.current = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm)
+    }, 300)
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [searchTerm])
+
+  const fetchDocuments = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
@@ -49,16 +67,20 @@ export default function DocumentList() {
       if (filters.caseLinked && filters.caseLinked !== "all") {
         params.append("case_linked", filters.caseLinked === "linked" ? "true" : "false")
       }
-      if (searchTerm) params.append("search", searchTerm)
+      if (debouncedSearchTerm) params.append("search", debouncedSearchTerm)
 
       const response = await fetch(`/api/documents?${params.toString()}`)
       const data = await response.json()
 
       if (response.ok) {
-        setDocuments(data.documents || [])
+        // 새로운 API 응답 형식 지원: { success: true, data: { documents: [...] } }
+        const documents = data.data?.documents || data.documents || []
+        setDocuments(documents)
       } else {
-        setError(data.error || "서류 목록을 불러오는데 실패했습니다.")
-        toast.error(data.error || "서류 목록을 불러오는데 실패했습니다.")
+        // 에러 응답 형식: { success: false, error: "..." } 또는 { error: "..." }
+        const errorMessage = data.error || data.data?.error || "서류 목록을 불러오는데 실패했습니다."
+        setError(errorMessage)
+        toast.error(errorMessage)
       }
     } catch (error) {
       const errorMessage = "서류 목록을 불러오는 중 오류가 발생했습니다."
@@ -67,20 +89,19 @@ export default function DocumentList() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filters, debouncedSearchTerm])
 
   useEffect(() => {
     fetchDocuments()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, searchTerm])
+  }, [fetchDocuments])
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-secondary mb-2">서류 관리</h1>
+          <h1 className="text-3xl font-bold text-secondary mb-2">문서함(전체)</h1>
           <p className="text-text-secondary">
-            총 {documents.length}개의 서류가 등록되어 있습니다.
+            총 {documents.length}개의 문서가 등록되어 있습니다.
           </p>
         </div>
         <Link href="/admin/documents/new">

@@ -26,6 +26,11 @@ const documentTypes: DocumentType[] = [
   "attorney_appointment",
   "litigation_power",
   "insurance_consent",
+  "agreement_old",
+  "power_of_attorney_old",
+  "attorney_appointment_old",
+  "litigation_power_old",
+  "insurance_consent_old",
 ]
 
 export default function DocumentFilters({

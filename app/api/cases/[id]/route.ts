@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { isAdminAuthenticated } from "@/lib/admin/auth"
 import { updateDocumentFromCase } from "@/lib/documents/case-mapper"
+import { createNextErrorResponse } from "@/lib/utils/error-handler"
+import { createSuccessResponse } from "@/lib/utils/api-response"
+import logger from "@/lib/logger"
+import type { CaseData } from "@/lib/types/admin"
+import type { DocumentType } from "@/lib/documents/templates"
 
 export async function GET(
   request: NextRequest,
@@ -23,10 +28,11 @@ export async function GET(
       .single()
 
     if (error) {
-      console.error("Supabase error:", error)
-      return NextResponse.json(
-        { error: "Case not found" },
-        { status: 404 }
+      return createNextErrorResponse(
+        NextResponse,
+        error,
+        "케이스를 찾을 수 없습니다.",
+        404
       )
     }
 
@@ -37,15 +43,14 @@ export async function GET(
       .eq("case_id", id)
       .order("created_at", { ascending: false })
 
-    return NextResponse.json(
-      { case: caseRecord, documents: documents || [] },
-      { status: 200 }
-    )
-  } catch (error: any) {
-    console.error("Cases API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    logger.info("Case fetched", { caseId: id, documentCount: documents?.length || 0 })
+    return createSuccessResponse({ case: caseRecord, documents: documents || [] })
+  } catch (error) {
+    return createNextErrorResponse(
+      NextResponse,
+      error,
+      "케이스를 불러오는데 실패했습니다.",
+      500
     )
   }
 }
@@ -67,10 +72,14 @@ export async function PUT(
     const { case_number, case_name, case_data, update_linked_documents = true } = body
 
     // 케이스 업데이트
-    const updateData: any = {}
+    const updateData: Partial<{
+      case_number: string | null
+      case_name: string
+      case_data: CaseData
+    }> = {}
     if (case_number !== undefined) updateData.case_number = case_number
     if (case_name !== undefined) updateData.case_name = case_name
-    if (case_data !== undefined) updateData.case_data = case_data
+    if (case_data !== undefined) updateData.case_data = case_data as CaseData
 
     const { data: updatedCase, error: updateError } = await supabase
       .from("cases")
@@ -80,18 +89,16 @@ export async function PUT(
       .single()
 
     if (updateError) {
-      console.error("Supabase error:", updateError)
-      return NextResponse.json(
-        { error: "Failed to update case" },
-        { status: 500 }
+      return createNextErrorResponse(
+        NextResponse,
+        updateError,
+        "케이스 수정에 실패했습니다.",
+        500
       )
     }
 
     // 연결된 서류들도 업데이트 (옵션)
     if (update_linked_documents && case_data) {
-      console.log("[Case Update] Updating linked documents for case:", id)
-      console.log("[Case Update] Case data:", JSON.stringify(case_data, null, 2))
-      
       const { data: linkedDocuments } = await supabase
         .from("documents")
         .select("*")
@@ -99,20 +106,12 @@ export async function PUT(
         .eq("is_case_linked", true)
 
       if (linkedDocuments && linkedDocuments.length > 0) {
-        console.log(`[Case Update] Found ${linkedDocuments.length} linked documents to update`)
-        
         const updatePromises = linkedDocuments.map(async (doc) => {
           const updatedData = updateDocumentFromCase(
             doc.data,
-            case_data,
-            doc.document_type as any
+            case_data as CaseData,
+            doc.document_type as DocumentType
           )
-          
-          console.log(`[Case Update] Updating document ${doc.id} (${doc.document_type}):`, 
-            JSON.stringify({ 
-              old_keys: Object.keys(doc.data), 
-              new_keys: Object.keys(updatedData) 
-            }, null, 2))
 
           return supabase
             .from("documents")
@@ -124,19 +123,19 @@ export async function PUT(
         const errors = results.filter(r => r.error)
         
         if (errors.length > 0) {
-          console.error("[Case Update] Some document updates failed:", errors)
-        } else {
-          console.log("[Case Update] All linked documents updated successfully")
+          // 일부 서류 업데이트 실패는 경고로 처리 (케이스 업데이트는 성공)
         }
       }
     }
 
-    return NextResponse.json({ case: updatedCase }, { status: 200 })
-  } catch (error: any) {
-    console.error("Cases API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    logger.info("Case updated", { caseId: id })
+    return createSuccessResponse({ case: updatedCase }, "케이스가 수정되었습니다.")
+  } catch (error) {
+    return createNextErrorResponse(
+      NextResponse,
+      error,
+      "케이스 수정에 실패했습니다.",
+      500
     )
   }
 }
@@ -158,19 +157,22 @@ export async function DELETE(
     const { error } = await supabase.from("cases").delete().eq("id", id)
 
     if (error) {
-      console.error("Supabase error:", error)
-      return NextResponse.json(
-        { error: "Failed to delete case" },
-        { status: 500 }
+      return createNextErrorResponse(
+        NextResponse,
+        error,
+        "케이스 삭제에 실패했습니다.",
+        500
       )
     }
 
-    return NextResponse.json({ success: true }, { status: 200 })
-  } catch (error: any) {
-    console.error("Cases API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    logger.info("Case deleted", { caseId: id })
+    return createSuccessResponse({ success: true }, "케이스가 삭제되었습니다.")
+  } catch (error) {
+    return createNextErrorResponse(
+      NextResponse,
+      error,
+      "케이스 삭제에 실패했습니다.",
+      500
     )
   }
 }

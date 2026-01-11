@@ -1,4 +1,4 @@
-import { Inter, Playfair_Display, Noto_Sans_KR } from "next/font/google"
+import { Inter, Playfair_Display, Noto_Sans_KR, Noto_Serif_SC } from "next/font/google"
 
 export const inter = Inter({
   subsets: ["latin"],
@@ -11,7 +11,7 @@ export const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
   display: "swap",
-  preload: true,
+  preload: false, // 사용되지 않을 수 있으므로 preload 비활성화
 })
 
 export const notoSansKR = Noto_Sans_KR({
@@ -22,6 +22,12 @@ export const notoSansKR = Noto_Sans_KR({
   preload: true,
 })
 
-// FangSong은 Google Fonts에 없으므로 CSS에서 직접 로드
-// 중국어 폰트는 CSS에서 @font-face로 로드
+// 중국어 폰트 (FangSong이 없는 환경에서는 Noto Serif SC로 안정적으로 표시)
+export const notoSerifSC = Noto_Serif_SC({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-noto-serif-sc",
+  display: "swap",
+  preload: true,
+})
 

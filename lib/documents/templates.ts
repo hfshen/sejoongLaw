@@ -6,6 +6,12 @@ export type DocumentType =
   | "attorney_appointment" // 변호인선임서
   | "litigation_power" // 소송위임장
   | "insurance_consent" // 사망보험금지급동의
+  // OLD-case (법원 제출용 원본 양식 기반)
+  | "agreement_old"
+  | "power_of_attorney_old"
+  | "attorney_appointment_old"
+  | "litigation_power_old"
+  | "insurance_consent_old"
 
 export interface DocumentTemplate {
   type: DocumentType
@@ -100,6 +106,12 @@ export const agreementTemplate: DocumentTemplate = {
       group: "party_a",
     },
     {
+      key: "party_a_relation_other",
+      label: { ko: "관계(기타)", en: "Relation (Other)", "zh-CN": "关系(其他)" },
+      type: "text",
+      group: "party_a",
+    },
+    {
       key: "party_a_id_number",
       label: { ko: "본국 신분증 번호", en: "ID Number", "zh-CN": "本国身份证号" },
       type: "text",
@@ -108,6 +120,43 @@ export const agreementTemplate: DocumentTemplate = {
     {
       key: "party_a_address",
       label: { ko: "본국 주소", en: "Home Address", "zh-CN": "本国地址" },
+      type: "text",
+      group: "party_a",
+    },
+
+    // 갑 (유가족 추가 1명: 부/모 등)
+    {
+      key: "party_a_2_name",
+      label: { ko: "추가 유가족 성명", en: "Additional Family Name", "zh-CN": "追加家属姓名" },
+      type: "text",
+      group: "party_a",
+    },
+    {
+      key: "party_a_2_relation",
+      label: { ko: "추가 유가족 관계", en: "Additional Relation", "zh-CN": "追加家属关系" },
+      type: "select",
+      options: [
+        { value: "부", label: { ko: "부", en: "Father", "zh-CN": "父" } },
+        { value: "모", label: { ko: "모", en: "Mother", "zh-CN": "母" } },
+        { value: "기타", label: { ko: "기타", en: "Other", "zh-CN": "其他" } },
+      ],
+      group: "party_a",
+    },
+    {
+      key: "party_a_2_relation_other",
+      label: { ko: "추가 유가족 관계(기타)", en: "Additional Relation (Other)", "zh-CN": "追加家属关系(其他)" },
+      type: "text",
+      group: "party_a",
+    },
+    {
+      key: "party_a_2_id_number",
+      label: { ko: "추가 유가족 본국 신분증 번호", en: "Additional ID Number", "zh-CN": "追加家属本国身份证号" },
+      type: "text",
+      group: "party_a",
+    },
+    {
+      key: "party_a_2_address",
+      label: { ko: "추가 유가족 본국 주소", en: "Additional Home Address", "zh-CN": "追加家属本国地址" },
       type: "text",
       group: "party_a",
     },
@@ -146,7 +195,6 @@ export const agreementTemplate: DocumentTemplate = {
       key: "agreement_date",
       label: { ko: "합의일자", en: "Agreement Date", "zh-CN": "协议日期" },
       type: "date",
-      required: true,
       group: "general",
     },
     {
@@ -156,6 +204,12 @@ export const agreementTemplate: DocumentTemplate = {
       group: "general",
     },
   ],
+}
+
+// OLD-case 템플릿: 1차는 기존 필드셋을 그대로 재사용(레이아웃은 별도 Preview로 원본 양식에 맞춤)
+export const agreementOldTemplate: DocumentTemplate = {
+  type: "agreement_old",
+  fields: agreementTemplate.fields,
 }
 
 // 위임장 (Power of Attorney)
@@ -221,9 +275,13 @@ export const powerOfAttorneyTemplate: DocumentTemplate = {
       key: "power_date",
       label: { ko: "위임일자", en: "Power Date", "zh-CN": "委托日期" },
       type: "date",
-      required: true,
     },
   ],
+}
+
+export const powerOfAttorneyOldTemplate: DocumentTemplate = {
+  type: "power_of_attorney_old",
+  fields: powerOfAttorneyTemplate.fields,
 }
 
 // 변호인선임서 (Attorney Appointment)
@@ -267,49 +325,22 @@ export const attorneyAppointmentTemplate: DocumentTemplate = {
       group: "appointer",
     },
     {
-      key: "attorney_name",
-      label: { ko: "변호인 성명", en: "Attorney Name", "zh-CN": "律师姓名" },
-      type: "text",
-      required: true,
-      group: "attorney",
-    },
-    {
-      key: "attorney_office",
-      label: { ko: "법률사무소", en: "Law Office", "zh-CN": "律师事务所" },
-      type: "text",
-      group: "attorney",
-    },
-    {
-      key: "attorney_address",
-      label: { ko: "주소", en: "Address", "zh-CN": "地址" },
-      type: "textarea",
-      group: "attorney",
-    },
-    {
-      key: "attorney_phone",
-      label: { ko: "전화", en: "Phone", "zh-CN": "电话" },
-      type: "text",
-      group: "attorney",
-    },
-    {
-      key: "attorney_fax",
-      label: { ko: "팩스", en: "Fax", "zh-CN": "传真" },
-      type: "text",
-      group: "attorney",
-    },
-    {
       key: "court",
       label: { ko: "법원", en: "Court", "zh-CN": "法院" },
       type: "text",
-      group: "attorney",
+      group: "case",
     },
     {
       key: "appointment_date",
       label: { ko: "선임일자", en: "Appointment Date", "zh-CN": "任命日期" },
       type: "date",
-      required: true,
     },
   ],
+}
+
+export const attorneyAppointmentOldTemplate: DocumentTemplate = {
+  type: "attorney_appointment_old",
+  fields: attorneyAppointmentTemplate.fields,
 }
 
 // 소송위임장 (Litigation Power)
@@ -407,9 +438,13 @@ export const litigationPowerTemplate: DocumentTemplate = {
       key: "power_date",
       label: { ko: "위임일자", en: "Power Date", "zh-CN": "委托日期" },
       type: "date",
-      required: true,
     },
   ],
+}
+
+export const litigationPowerOldTemplate: DocumentTemplate = {
+  type: "litigation_power_old",
+  fields: litigationPowerTemplate.fields,
 }
 
 // 사망보험금지급동의 (Insurance Consent)
@@ -418,7 +453,7 @@ export const insuranceConsentTemplate: DocumentTemplate = {
   fields: [
     {
       key: "recipient_company",
-      label: { ko: "수신 보험사", en: "Recipient Insurance Company", "zh-CN": "收件保险公司" },
+      label: { ko: "보험사 이름", en: "Recipient Insurance Company", "zh-CN": "收件保险公司" },
       type: "text",
       group: "recipient",
     },
@@ -495,13 +530,13 @@ export const insuranceConsentTemplate: DocumentTemplate = {
     },
     {
       key: "contract_date_1",
-      label: { ko: "계약일자 1", en: "Contract Date 1", "zh-CN": "合同日期1" },
+      label: { ko: "시작일", en: "Contract Date 1", "zh-CN": "合同日期1" },
       type: "date",
       group: "insurance",
     },
     {
       key: "contract_date_2",
-      label: { ko: "계약일자 2", en: "Contract Date 2", "zh-CN": "合同日期2" },
+      label: { ko: "종료일", en: "Contract Date 2", "zh-CN": "合同日期2" },
       type: "date",
       group: "insurance",
     },
@@ -557,9 +592,13 @@ export const insuranceConsentTemplate: DocumentTemplate = {
       key: "consent_date",
       label: { ko: "동의일자", en: "Consent Date", "zh-CN": "同意日期" },
       type: "date",
-      required: true,
     },
   ],
+}
+
+export const insuranceConsentOldTemplate: DocumentTemplate = {
+  type: "insurance_consent_old",
+  fields: insuranceConsentTemplate.fields,
 }
 
 export const documentTemplates: Record<DocumentType, DocumentTemplate> = {
@@ -568,6 +607,11 @@ export const documentTemplates: Record<DocumentType, DocumentTemplate> = {
   attorney_appointment: attorneyAppointmentTemplate,
   litigation_power: litigationPowerTemplate,
   insurance_consent: insuranceConsentTemplate,
+  agreement_old: agreementOldTemplate,
+  power_of_attorney_old: powerOfAttorneyOldTemplate,
+  attorney_appointment_old: attorneyAppointmentOldTemplate,
+  litigation_power_old: litigationPowerOldTemplate,
+  insurance_consent_old: insuranceConsentOldTemplate,
 }
 
 export function getTemplate(type: DocumentType): DocumentTemplate {
@@ -584,6 +628,11 @@ export function getDocumentTypeLabel(
     attorney_appointment: { ko: "변호인선임서", en: "Attorney Appointment", "zh-CN": "律师任命书" },
     litigation_power: { ko: "소송위임장", en: "Litigation Power", "zh-CN": "诉讼委托书" },
     insurance_consent: { ko: "사망보험금지급동의", en: "Insurance Consent", "zh-CN": "死亡保险金支付同意书" },
+    agreement_old: { ko: "합의서(OLD-case)", en: "Agreement (OLD-case)", "zh-CN": "协议（旧版）" },
+    power_of_attorney_old: { ko: "위임장(OLD-case)", en: "Power of Attorney (OLD-case)", "zh-CN": "委托书（旧版）" },
+    attorney_appointment_old: { ko: "변호인선임서(OLD-case)", en: "Attorney Appointment (OLD-case)", "zh-CN": "律师任命书（旧版）" },
+    litigation_power_old: { ko: "소송위임장(OLD-case)", en: "Litigation Power (OLD-case)", "zh-CN": "诉讼委托书（旧版）" },
+    insurance_consent_old: { ko: "사망보험금지급동의(OLD-case)", en: "Insurance Consent (OLD-case)", "zh-CN": "死亡保险金支付同意书（旧版）" },
   }
   return labels[type][locale]
 }

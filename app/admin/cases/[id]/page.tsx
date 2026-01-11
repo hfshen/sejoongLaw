@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter, useParams } from "next/navigation"
+import { useEffect, useState, useCallback } from "react"
+import { useRouter, useParams, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import CaseForm, { type CaseFormData } from "@/components/admin/CaseForm"
 import Button from "@/components/ui/Button"
@@ -10,7 +10,7 @@ import { ArrowLeft, Edit, Download, Trash2, FileArchive } from "lucide-react"
 import { getDocumentTypeLabel, type DocumentType } from "@/lib/documents/templates"
 import { toast } from "@/components/ui/Toast"
 import JSZip from "jszip"
-import html2canvas from "html2canvas"
+import { generateDocumentImage } from "@/lib/documents/image-generator"
 
 interface Case {
   id: string
@@ -33,6 +33,7 @@ interface Document {
 export default function CaseDetailPage() {
   const router = useRouter()
   const params = useParams()
+  const searchParams = useSearchParams()
   const caseId = params.id as string
 
   const [caseData, setCaseData] = useState<Case | null>(null)
@@ -43,21 +44,28 @@ export default function CaseDetailPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isDownloadingZip, setIsDownloadingZip] = useState(false)
 
-  useEffect(() => {
-    if (caseId) {
-      fetchCase()
-    }
-  }, [caseId])
+  type TabKey = "overview" | "documents" | "data"
+  const tabFromUrl = (searchParams.get("tab") as TabKey) || "overview"
+  const [activeTab, setActiveTab] = useState<TabKey>(tabFromUrl)
 
-  const fetchCase = async () => {
+  useEffect(() => {
+    const next = (searchParams.get("tab") as TabKey) || "overview"
+    setActiveTab(next)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
+
+  const fetchCase = useCallback(async () => {
+    if (!caseId) return
     try {
       setLoading(true)
       setError(null)
       const response = await fetch(`/api/cases/${caseId}`)
       const data = await response.json()
       if (response.ok) {
-        setCaseData(data.case)
-        setDocuments(data.documents || [])
+        // 새로운 API 응답 형식 지원: { success: true, data: { case: {...}, documents: [...] } }
+        const responseData = data.data || data
+        setCaseData(responseData.case)
+        setDocuments(responseData.documents || [])
       } else {
         const errorMessage = data.error || "케이스를 찾을 수 없습니다."
         setError(errorMessage)
@@ -72,7 +80,11 @@ export default function CaseDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [caseId, router])
+
+  useEffect(() => {
+    fetchCase()
+  }, [fetchCase])
 
   const handleUpdate = async (formData: CaseFormData) => {
     try {
@@ -116,10 +128,14 @@ export default function CaseDetailPage() {
       if (response.ok) {
         await fetchCase()
         setIsEditing(false)
+        setActiveTab("overview")
+        router.replace(`/admin/cases/${caseId}?tab=overview`, { scroll: false })
         toast.success("케이스 정보가 업데이트되었습니다. 연결된 서류들도 자동으로 업데이트되었습니다.")
       } else {
         const error = await response.json()
-        toast.error(`케이스 업데이트 실패: ${error.error || "알 수 없는 오류가 발생했습니다."}`)
+        // 에러 응답 형식: { success: false, error: "..." } 또는 { error: "..." }
+        const errorMessage = error.error || error.data?.error || "알 수 없는 오류가 발생했습니다."
+        toast.error(`케이스 업데이트 실패: ${errorMessage}`)
       }
     } catch (error) {
       toast.error("케이스 업데이트 중 오류가 발생했습니다.")
@@ -143,7 +159,9 @@ export default function CaseDetailPage() {
         router.push("/admin/cases")
       } else {
         const error = await response.json()
-        toast.error(`케이스 삭제 실패: ${error.error || "알 수 없는 오류가 발생했습니다."}`)
+        // 에러 응답 형식: { success: false, error: "..." } 또는 { error: "..." }
+        const errorMessage = error.error || error.data?.error || "알 수 없는 오류가 발생했습니다."
+        toast.error(`케이스 삭제 실패: ${errorMessage}`)
       }
     } catch (error) {
       toast.error("케이스 삭제 중 오류가 발생했습니다.")
@@ -163,96 +181,15 @@ export default function CaseDetailPage() {
         toast.success("서류가 생성되었습니다.")
       } else {
         const error = await response.json()
-        toast.error(`서류 생성 실패: ${error.error || "알 수 없는 오류가 발생했습니다."}`)
+        // 에러 응답 형식: { success: false, error: "..." } 또는 { error: "..." }
+        const errorMessage = error.error || error.data?.error || "알 수 없는 오류가 발생했습니다."
+        toast.error(`서류 생성 실패: ${errorMessage}`)
       }
     } catch (error) {
       toast.error("서류 생성 중 오류가 발생했습니다.")
     }
   }
 
-  const generateDocumentImage = async (
-    docData: any,
-    docType: DocumentType,
-    locale: "ko" | "en" | "zh-CN"
-  ): Promise<Blob | null> => {
-    try {
-      // 임시 컨테이너 생성
-      const tempContainer = document.createElement("div")
-      tempContainer.style.position = "absolute"
-      tempContainer.style.left = "-9999px"
-      tempContainer.style.top = "0"
-      tempContainer.style.width = "794px"
-      tempContainer.style.height = "1123px"
-      tempContainer.style.backgroundColor = "#ffffff"
-      tempContainer.setAttribute("data-preview-id", "document-preview")
-      document.body.appendChild(tempContainer)
-
-      // React를 사용하여 DocumentPreview 렌더링
-      const { createRoot } = await import("react-dom/client")
-      const React = await import("react")
-      const DocumentPreview = (await import("@/components/admin/DocumentPreview")).default
-
-      const root = createRoot(tempContainer)
-      await new Promise<void>((resolve) => {
-        root.render(
-          React.createElement(DocumentPreview, {
-            documentType: docType,
-            data: docData,
-            locale: locale,
-          })
-        )
-        // 렌더링 완료 대기
-        setTimeout(resolve, 1000)
-      })
-
-      // 폰트 로딩 대기
-      await document.fonts.ready
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      // 이미지 로딩 대기
-      const images = tempContainer.querySelectorAll("img")
-      await Promise.all(
-        Array.from(images).map(
-          (img) =>
-            new Promise((resolve) => {
-              if (img.complete) {
-                resolve(null)
-              } else {
-                img.onload = () => resolve(null)
-                img.onerror = () => resolve(null)
-                setTimeout(() => resolve(null), 5000)
-              }
-            })
-        )
-      )
-
-      // html2canvas로 캡처
-      const canvas = await html2canvas(tempContainer, {
-        scale: 3,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: "#ffffff",
-        width: 794,
-        height: 1123,
-      })
-
-      // Canvas를 Blob으로 변환
-      return new Promise((resolve) => {
-        canvas.toBlob(
-          (blob) => {
-            root.unmount()
-            document.body.removeChild(tempContainer)
-            resolve(blob)
-          },
-          "image/jpeg",
-          1.0
-        )
-      })
-    } catch (error) {
-      console.error("Error generating document image:", error)
-      return null
-    }
-  }
 
   const handleDownloadAllDocuments = async () => {
     if (documents.length === 0) {
@@ -270,6 +207,7 @@ export default function CaseDetailPage() {
 
       let processedCount = 0
       const totalCount = documents.length * locales.length
+      let addedCount = 0
 
       // 각 문서에 대해
       for (const doc of documents) {
@@ -283,15 +221,27 @@ export default function CaseDetailPage() {
               continue
             }
 
-            const docData = await docResponse.json()
-            if (!docData.document) {
+            const docJson = await docResponse.json()
+            // API 표준 응답: { success: true, data: { document: ... } }
+            // 레거시 응답도 방어: { document: ... }
+            const apiPayload = docJson?.data ?? docJson
+            const apiDocument = apiPayload?.document ?? docJson?.document
+
+            if (!apiDocument) {
               processedCount++
               continue
             }
 
+            // 문서 데이터 준비 (name, date 포함)
+            const documentData = {
+              name: apiDocument.name || "",
+              date: apiDocument.date || "",
+              ...(apiDocument.data || {}),
+            }
+
             // 이미지 생성
             const imageBlob = await generateDocumentImage(
-              docData.document.data || {},
+              documentData,
               doc.document_type,
               locale
             )
@@ -300,15 +250,21 @@ export default function CaseDetailPage() {
               const docTypeLabel = getDocumentTypeLabel(doc.document_type, "ko")
               const fileName = `${docTypeLabel}_${localeNames[locale]}.jpg`
               zip.file(fileName, imageBlob)
+              addedCount++
             }
 
             processedCount++
             toast.success(`진행 중... (${processedCount}/${totalCount})`)
           } catch (error) {
-            console.error(`Error generating image for document ${doc.id} (${locale}):`, error)
+            toast.error(`문서 이미지 생성 실패: ${doc.document_type} (${locale})`)
             processedCount++
           }
         }
+      }
+
+      if (addedCount === 0) {
+        toast.error("ZIP에 추가된 이미지가 없습니다. (서류 로딩/이미지 생성 실패)")
+        return
       }
 
       // ZIP 파일 생성 및 다운로드
@@ -316,7 +272,7 @@ export default function CaseDetailPage() {
       const url = window.URL.createObjectURL(zipBlob)
       const link = document.createElement("a")
       link.href = url
-      link.download = `${caseData.case_name || "case"}_documents_${new Date().toISOString().split("T")[0]}.zip`
+      link.download = `${caseData?.case_name || "case"}_documents_${new Date().toISOString().split("T")[0]}.zip`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -324,7 +280,6 @@ export default function CaseDetailPage() {
 
       toast.success("모든 서류가 ZIP 파일로 다운로드되었습니다.")
     } catch (error) {
-      console.error("ZIP 다운로드 오류:", error)
       toast.error("ZIP 다운로드 중 오류가 발생했습니다.")
     } finally {
       setIsDownloadingZip(false)
@@ -375,90 +330,124 @@ export default function CaseDetailPage() {
     defendant: caseData.case_data?.defendant || "",
   }
 
+  const goTab = (tab: TabKey) => {
+    setIsEditing(false)
+    setActiveTab(tab)
+    router.replace(`/admin/cases/${caseId}?tab=${tab}`, { scroll: false })
+  }
+
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              <Link href="/admin/cases">
-                <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                  <ArrowLeft className="w-4 h-4" />
-                  목록으로
-                </Button>
-              </Link>
-              <h2 className="text-xl font-bold text-secondary">{caseData.case_name}</h2>
-            </div>
-            <div className="flex items-center gap-2">
-              {!isEditing && (
-                <>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-2"
-                  >
-                    <Edit className="w-4 h-4" />
-                    수정
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleDelete}
-                    className="flex items-center gap-2 text-red-600 hover:text-red-700"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    삭제
-                  </Button>
-                </>
-              )}
-            </div>
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link href="/admin/cases">
+            <Button variant="ghost" size="sm" className="flex items-center gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              목록으로
+            </Button>
+          </Link>
+          <div className="min-w-0">
+            <h2 className="text-2xl font-bold text-secondary truncate">{caseData.case_name}</h2>
+            {caseData.case_number ? (
+              <p className="text-sm text-text-secondary truncate">사건번호: {caseData.case_number}</p>
+            ) : (
+              <p className="text-sm text-text-secondary truncate">사건번호: -</p>
+            )}
           </div>
         </div>
-      </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {isEditing ? (
-          <div className="space-y-6">
-            <CaseForm
-              initialData={initialFormData}
-              onSubmit={handleUpdate}
-              isSubmitting={isSubmitting}
-            />
-            <div className="flex justify-end gap-4">
-              <Button variant="outline" onClick={() => setIsEditing(false)}>
-                취소
+        <div className="flex items-center gap-2">
+          {!isEditing && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setIsEditing(true)
+                  goTab("data")
+                }}
+                className="flex items-center gap-2"
+              >
+                <Edit className="w-4 h-4" />
+                수정
               </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {/* 케이스 정보 표시 */}
-            <Card>
-              <CardHeader>
-                <CardTitle>케이스 정보</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-text-secondary">케이스 이름</p>
-                    <p className="font-semibold">{caseData.case_name}</p>
-                  </div>
-                  {caseData.case_number && (
-                    <div>
-                      <p className="text-sm text-text-secondary">사건번호</p>
-                      <p className="font-semibold">{caseData.case_number}</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDelete}
+                className="flex items-center gap-2 text-red-600 hover:text-red-700"
+              >
+                <Trash2 className="w-4 h-4" />
+                삭제
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
 
-            {/* 연결된 서류 목록 */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>연결된 서류 ({documents.length}개)</CardTitle>
+      {/* 탭 */}
+      <div className="mb-6 border-b border-gray-200">
+        <div className="flex gap-2">
+          {(
+            [
+              { key: "overview" as const, label: "개요" },
+              { key: "documents" as const, label: `서류 (${documents.length})` },
+              { key: "data" as const, label: "데이터/당사자" },
+            ] as const
+          ).map((t) => {
+            const active = activeTab === t.key
+            return (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => goTab(t.key)}
+                className={`px-4 py-2 -mb-px border-b-2 text-sm font-medium ${
+                  active
+                    ? "border-primary text-primary"
+                    : "border-transparent text-text-secondary hover:text-secondary"
+                }`}
+              >
+                {t.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* 탭 컨텐츠 */}
+      {activeTab === "overview" && !isEditing && (
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>케이스 개요</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <p className="text-sm text-text-secondary">케이스 이름</p>
+                  <p className="font-semibold">{caseData.case_name}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-text-secondary">사건번호</p>
+                  <p className="font-semibold">{caseData.case_number || "-"}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-text-secondary">생성된 서류</p>
+                  <p className="font-semibold">{documents.length}개</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {activeTab === "documents" && !isEditing && (
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>서류</CardTitle>
+                <div className="flex items-center gap-2">
                   {documents.length > 0 && (
                     <Button
                       onClick={handleDownloadAllDocuments}
@@ -470,40 +459,62 @@ export default function CaseDetailPage() {
                     </Button>
                   )}
                 </div>
-              </CardHeader>
-              <CardContent>
-                {documents.length === 0 ? (
-                  <p className="text-text-secondary">연결된 서류가 없습니다.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {documents.map((doc) => (
-                      <div
-                        key={doc.id}
-                        className="flex items-center justify-between p-3 border rounded-md hover:bg-gray-50"
-                      >
-                        <div>
-                          <p className="font-semibold">
-                            {getDocumentTypeLabel(doc.document_type, "ko")}
-                          </p>
-                          <p className="text-sm text-text-secondary">
-                            생성일: {new Date(doc.created_at).toLocaleDateString("ko-KR")}
-                          </p>
-                        </div>
-                        <Link href={`/admin/documents/${doc.id}`}>
-                          <Button variant="outline" size="sm" className="flex items-center gap-2">
-                            <Download className="w-4 h-4" />
-                            열기
-                          </Button>
-                        </Link>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {documents.length === 0 ? (
+                <p className="text-text-secondary">연결된 서류가 없습니다.</p>
+              ) : (
+                <div className="space-y-2">
+                  {documents.map((doc) => (
+                    <div
+                      key={doc.id}
+                      className="flex items-center justify-between p-3 border rounded-md hover:bg-gray-50"
+                    >
+                      <div>
+                        <p className="font-semibold">
+                          {getDocumentTypeLabel(doc.document_type, "ko")}
+                        </p>
+                        <p className="text-sm text-text-secondary">
+                          생성일: {new Date(doc.created_at).toLocaleDateString("ko-KR")}
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                      <Link href={`/admin/documents/${doc.id}`}>
+                        <Button variant="outline" size="sm" className="flex items-center gap-2">
+                          <Download className="w-4 h-4" />
+                          열기
+                        </Button>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {activeTab === "data" && (
+        <div className="space-y-6">
+          <CaseForm
+            initialData={initialFormData}
+            onSubmit={handleUpdate}
+            isSubmitting={isSubmitting}
+          />
+          <div className="flex justify-end gap-4">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsEditing(false)
+                goTab("overview")
+              }}
+              disabled={isSubmitting}
+            >
+              취소
+            </Button>
           </div>
-        )}
-      </main>
+        </div>
+      )}
     </div>
   )
 }

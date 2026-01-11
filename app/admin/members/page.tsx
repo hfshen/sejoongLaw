@@ -27,9 +27,9 @@ export default async function AdminMembersPage() {
   const members = await getMembers()
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-secondary">구성원 관리</h1>
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-secondary">구성원</h1>
         <Link
           href="/admin/members/new"
           className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90"

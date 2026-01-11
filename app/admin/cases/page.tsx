@@ -27,9 +27,12 @@ export default function CasesPage() {
       const response = await fetch("/api/cases")
       const data = await response.json()
       if (response.ok) {
-        setCases(data.cases || [])
+        // 새로운 API 응답 형식 지원: { success: true, data: { cases: [...] } }
+        const cases = data.data?.cases || data.cases || []
+        setCases(cases)
       } else {
-        const errorMessage = data.error || "케이스 목록을 불러오는데 실패했습니다."
+        // 에러 응답 형식: { success: false, error: "..." } 또는 { error: "..." }
+        const errorMessage = data.error || data.data?.error || "케이스 목록을 불러오는데 실패했습니다."
         setError(errorMessage)
         toast.error(errorMessage)
       }
@@ -61,22 +64,20 @@ export default function CasesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <h2 className="text-xl font-bold text-secondary">케이스 관리</h2>
-            <Link href="/admin/cases/new">
-              <Button className="flex items-center gap-2">
-                <Plus className="w-4 h-4" />
-                새 케이스
-              </Button>
-            </Link>
-          </div>
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-secondary">케이스</h2>
+          <p className="text-sm text-text-secondary">케이스를 검색/관리합니다.</p>
         </div>
-      </header>
+        <Link href="/admin/cases/new">
+          <Button className="flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            새 케이스
+          </Button>
+        </Link>
+      </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 검색 */}
         <div className="mb-6">
           <div className="relative">
@@ -156,7 +157,6 @@ export default function CasesPage() {
             ))}
           </div>
         )}
-      </main>
     </div>
   )
 }

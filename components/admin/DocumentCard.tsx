@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
-import { FileText, Calendar, User, Globe } from "lucide-react"
+import { FileText, Calendar, User, Globe, ArrowRight } from "lucide-react"
 import { getDocumentTypeLabel, type DocumentType } from "@/lib/documents/templates"
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
@@ -67,10 +67,22 @@ export default function DocumentCard({
             <span>생성일: {format(new Date(createdAt), "yyyy.MM.dd", { locale: ko })}</span>
             <div className="flex items-center gap-2">
               {isCaseLinked && (
-                <span className="text-primary flex items-center gap-1">
-                  <FileText className="w-3 h-3" />
-                  케이스 연결됨
-                </span>
+                <>
+                  <span className="text-primary flex items-center gap-1">
+                    <FileText className="w-3 h-3" />
+                    케이스 연결됨
+                  </span>
+                  {caseId && (
+                    <Link
+                      href={`/admin/cases/${caseId}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-primary hover:underline flex items-center gap-1"
+                    >
+                      케이스로
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  )}
+                </>
               )}
             </div>
           </div>

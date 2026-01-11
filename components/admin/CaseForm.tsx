@@ -1,9 +1,9 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { useState } from "react"
 import Button from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { AddressAutocomplete } from "@/components/admin/AddressAutocomplete"
 
 export interface CaseFormData {
   case_number?: string
@@ -41,7 +41,7 @@ interface CaseFormProps {
 }
 
 export default function CaseForm({ initialData, onSubmit, isSubmitting = false }: CaseFormProps) {
-  const { register, handleSubmit, formState: { errors } } = useForm<CaseFormData>({
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<CaseFormData>({
     defaultValues: initialData || {
       case_name: "",
     },
@@ -54,8 +54,8 @@ export default function CaseForm({ initialData, onSubmit, isSubmitting = false }
         <CardHeader>
           <CardTitle>기본 정보</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1">
               케이스 이름 <span className="text-red-500">*</span>
             </label>
@@ -84,54 +84,52 @@ export default function CaseForm({ initialData, onSubmit, isSubmitting = false }
         <CardHeader>
           <CardTitle>사망자 정보</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1">성명</label>
             <input
               {...register("deceased_name")}
               className="w-full px-3 py-2 border rounded-md"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">생년월일</label>
-              <input
-                {...register("deceased_birthdate")}
-                type="date"
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">외국인등록번호</label>
-              <input
-                {...register("deceased_foreigner_id")}
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
-          </div>
           <div>
-            <label className="block text-sm font-medium mb-1">주소지</label>
+            <label className="block text-sm font-medium mb-1">생년월일</label>
             <input
-              {...register("deceased_address")}
+              {...register("deceased_birthdate")}
+              type="date"
               className="w-full px-3 py-2 border rounded-md"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">사건발생위치</label>
-              <input
-                {...register("incident_location")}
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">사건발생시간</label>
-              <input
-                {...register("incident_time")}
-                className="w-full px-3 py-2 border rounded-md"
-                placeholder="예: 2024-01-15 14:30"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">외국인등록번호</label>
+            <input
+              {...register("deceased_foreigner_id")}
+              className="w-full px-3 py-2 border rounded-md"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-1">주소지</label>
+            <input type="hidden" {...register("deceased_address")} />
+            <AddressAutocomplete
+              label="주소지"
+              value={(watch("deceased_address") as string) || ""}
+              onChange={(next) => setValue("deceased_address", next, { shouldDirty: true, shouldTouch: true })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">사건발생위치</label>
+            <input
+              {...register("incident_location")}
+              className="w-full px-3 py-2 border rounded-md"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">사건발생시간</label>
+            <input
+              {...register("incident_time")}
+              className="w-full px-3 py-2 border rounded-md"
+              placeholder="예: 2024-01-15 14:30"
+            />
           </div>
         </CardContent>
       </Card>
@@ -141,30 +139,28 @@ export default function CaseForm({ initialData, onSubmit, isSubmitting = false }
         <CardHeader>
           <CardTitle>유가족 대표 정보 (갑)</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1">성명</label>
             <input
               {...register("party_a_name")}
               className="w-full px-3 py-2 border rounded-md"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">생년월일</label>
-              <input
-                {...register("party_a_birthdate")}
-                type="date"
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">국적</label>
-              <input
-                {...register("party_a_nationality")}
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">생년월일</label>
+            <input
+              {...register("party_a_birthdate")}
+              type="date"
+              className="w-full px-3 py-2 border rounded-md"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">국적</label>
+            <input
+              {...register("party_a_nationality")}
+              className="w-full px-3 py-2 border rounded-md"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">연락처</label>
@@ -192,11 +188,12 @@ export default function CaseForm({ initialData, onSubmit, isSubmitting = false }
               className="w-full px-3 py-2 border rounded-md"
             />
           </div>
-          <div>
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1">본국 주소</label>
             <input
               {...register("party_a_address")}
               className="w-full px-3 py-2 border rounded-md"
+              placeholder="본국 주소(자유 입력)"
             />
           </div>
         </CardContent>
@@ -207,8 +204,8 @@ export default function CaseForm({ initialData, onSubmit, isSubmitting = false }
         <CardHeader>
           <CardTitle>가해자 회사 정보 (을)</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1">상호</label>
             <input
               {...register("party_b_company_name")}
@@ -236,12 +233,13 @@ export default function CaseForm({ initialData, onSubmit, isSubmitting = false }
               className="w-full px-3 py-2 border rounded-md"
             />
           </div>
-          <div>
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1">주소</label>
-            <textarea
-              {...register("party_b_address")}
-              className="w-full px-3 py-2 border rounded-md"
-              rows={3}
+            <input type="hidden" {...register("party_b_address")} />
+            <AddressAutocomplete
+              label="주소"
+              value={(watch("party_b_address") as string) || ""}
+              onChange={(next) => setValue("party_b_address", next, { shouldDirty: true, shouldTouch: true })}
             />
           </div>
         </CardContent>
@@ -252,7 +250,7 @@ export default function CaseForm({ initialData, onSubmit, isSubmitting = false }
         <CardHeader>
           <CardTitle>사건 정보</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">원고</label>
             <input

@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { inter, playfair, notoSansKR } from "@/lib/fonts"
+import { inter, playfair, notoSansKR, notoSerifSC } from "@/lib/fonts"
 import PasswordResetRedirect from "@/components/auth/PasswordResetRedirect"
 import "./globals.css"
 
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${playfair.variable} ${notoSansKR.variable} antialiased`}
+        className={`${inter.variable} ${playfair.variable} ${notoSansKR.variable} ${notoSerifSC.variable} antialiased`}
         suppressHydrationWarning
       >
         <PasswordResetRedirect />

@@ -66,10 +66,14 @@ export default function NewCasePage() {
       if (response.ok) {
         const data = await response.json()
         toast.success("케이스가 성공적으로 생성되었습니다.")
-        router.push(`/admin/cases/${data.case.id}`)
+        // 새로운 API 응답 형식 지원: { success: true, data: { case: {...} } }
+        const caseData = data.data?.case || data.case
+        router.push(`/admin/cases/${caseData.id}`)
       } else {
         const error = await response.json()
-        toast.error(`케이스 생성 실패: ${error.error || "알 수 없는 오류가 발생했습니다."}`)
+        // 에러 응답 형식: { success: false, error: "..." } 또는 { error: "..." }
+        const errorMessage = error.error || error.data?.error || "알 수 없는 오류가 발생했습니다."
+        toast.error(`케이스 생성 실패: ${errorMessage}`)
       }
     } catch (error) {
       toast.error("케이스 생성 중 오류가 발생했습니다.")
@@ -83,24 +87,22 @@ export default function NewCasePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              <Link href="/admin/cases">
-                <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                  <ArrowLeft className="w-4 h-4" />
-                  목록으로
-                </Button>
-              </Link>
-              <h2 className="text-xl font-bold text-secondary">새 케이스 생성</h2>
-            </div>
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <Link href="/admin/cases">
+            <Button variant="ghost" size="sm" className="flex items-center gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              목록으로
+            </Button>
+          </Link>
+          <div>
+            <h2 className="text-2xl font-bold text-secondary">새 케이스 생성</h2>
+            <p className="text-sm text-text-secondary">케이스 생성 → 서류 선택 → 정보 입력</p>
           </div>
         </div>
-      </header>
+      </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 진행 단계 표시 */}
         <div className="mb-8">
           <div className="flex items-center justify-center gap-4">
@@ -165,7 +167,7 @@ export default function NewCasePage() {
 
         {/* Step 2: 서류 선택 */}
         {step === 2 && (
-          <div className="space-y-6">
+          <div className="space-y-6 pb-20">
             <Card>
               <CardContent className="p-6">
                 <DocumentSelector
@@ -174,22 +176,26 @@ export default function NewCasePage() {
                 />
               </CardContent>
             </Card>
-            <div className="flex justify-between">
-              <Button variant="outline" onClick={handleStep2Back}>
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                이전
-              </Button>
-              <Button onClick={handleStep2Next}>
-                다음
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
+
+            {/* 하단 고정 네비게이션 */}
+            <div className="sticky bottom-0 z-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 bg-background/95 backdrop-blur border-t border-gray-200">
+              <div className="flex justify-between">
+                <Button variant="outline" onClick={handleStep2Back}>
+                  <ChevronLeft className="w-4 h-4 mr-2" />
+                  이전
+                </Button>
+                <Button onClick={handleStep2Next}>
+                  다음
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
             </div>
           </div>
         )}
 
         {/* Step 3: 통합 입력 폼 */}
         {step === 3 && (
-          <div className="space-y-6">
+          <div className="space-y-6 pb-20">
             <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
               <p className="text-sm text-blue-800">
                 <strong>케이스 이름:</strong> {caseName}
@@ -206,17 +212,11 @@ export default function NewCasePage() {
             <UnifiedDocumentForm
               documentTypes={selectedDocumentTypes}
               onSubmit={handleUnifiedFormSubmit}
+              onCancel={handleStep3Back}
               isSubmitting={isSubmitting}
             />
-            <div className="flex justify-start">
-              <Button variant="outline" onClick={handleStep3Back} disabled={isSubmitting}>
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                이전
-              </Button>
-            </div>
           </div>
         )}
-      </main>
     </div>
   )
 }

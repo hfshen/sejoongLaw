@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { isAdminAuthenticated } from "@/lib/admin/auth"
+import { createNextErrorResponse } from "@/lib/utils/error-handler"
+import { createSuccessResponse } from "@/lib/utils/api-response"
+import logger from "@/lib/logger"
 
 export async function GET(
   request: NextRequest,
@@ -22,19 +25,22 @@ export async function GET(
       .single()
 
     if (error) {
-      console.error("Supabase error:", error)
-      return NextResponse.json(
-        { error: "Document not found" },
-        { status: 404 }
+      return createNextErrorResponse(
+        NextResponse,
+        error,
+        "서류를 찾을 수 없습니다.",
+        404
       )
     }
 
-    return NextResponse.json({ document: data }, { status: 200 })
-  } catch (error: any) {
-    console.error("Documents API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    logger.info("Document fetched", { documentId: id })
+    return createSuccessResponse({ document: data })
+  } catch (error) {
+    return createNextErrorResponse(
+      NextResponse,
+      error,
+      "서류를 불러오는데 실패했습니다.",
+      500
     )
   }
 }
@@ -55,9 +61,33 @@ export async function PUT(
 
     const { document_type, name, date, data, locale } = body
 
-    const updateData: any = {}
+    // 케이스 연결 문서는 name을 케이스명으로 강제 (클라이언트에서 잘못 보내도 서버가 보정)
+    let forcedCaseName: string | null = null
+    const { data: existingDoc } = await supabase
+      .from("documents")
+      .select("id, case_id, is_case_linked")
+      .eq("id", id)
+      .single()
+
+    if (existingDoc?.is_case_linked && existingDoc?.case_id) {
+      const { data: caseRecord } = await supabase
+        .from("cases")
+        .select("case_name")
+        .eq("id", existingDoc.case_id)
+        .single()
+      forcedCaseName = caseRecord?.case_name || null
+    }
+
+    const updateData: Partial<{
+      document_type: string
+      name: string
+      date: string
+      data: Record<string, any>
+      locale: string
+    }> = {}
     if (document_type) updateData.document_type = document_type
-    if (name) updateData.name = name
+    if (forcedCaseName) updateData.name = forcedCaseName
+    else if (name) updateData.name = name
     if (date) updateData.date = date
     if (data !== undefined) updateData.data = data
     if (locale) updateData.locale = locale
@@ -70,19 +100,22 @@ export async function PUT(
       .single()
 
     if (error) {
-      console.error("Supabase error:", error)
-      return NextResponse.json(
-        { error: "Failed to update document" },
-        { status: 500 }
+      return createNextErrorResponse(
+        NextResponse,
+        error,
+        "서류 수정에 실패했습니다.",
+        500
       )
     }
 
-    return NextResponse.json({ document }, { status: 200 })
-  } catch (error: any) {
-    console.error("Documents API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    logger.info("Document updated", { documentId: id })
+    return createSuccessResponse({ document }, "서류가 수정되었습니다.")
+  } catch (error) {
+    return createNextErrorResponse(
+      NextResponse,
+      error,
+      "서류 수정에 실패했습니다.",
+      500
     )
   }
 }
@@ -106,19 +139,22 @@ export async function DELETE(
       .eq("id", id)
 
     if (error) {
-      console.error("Supabase error:", error)
-      return NextResponse.json(
-        { error: "Failed to delete document" },
-        { status: 500 }
+      return createNextErrorResponse(
+        NextResponse,
+        error,
+        "서류 삭제에 실패했습니다.",
+        500
       )
     }
 
-    return NextResponse.json({ success: true }, { status: 200 })
-  } catch (error: any) {
-    console.error("Documents API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    logger.info("Document deleted", { documentId: id })
+    return createSuccessResponse({ success: true }, "서류가 삭제되었습니다.")
+  } catch (error) {
+    return createNextErrorResponse(
+      NextResponse,
+      error,
+      "서류 삭제에 실패했습니다.",
+      500
     )
   }
 }

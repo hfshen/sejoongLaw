@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { isAdminAuthenticated } from "@/lib/admin/auth"
+import { createNextErrorResponse } from "@/lib/utils/error-handler"
+import { createSuccessResponse } from "@/lib/utils/api-response"
+import logger from "@/lib/logger"
 
 export async function GET(request: NextRequest) {
   try {
@@ -49,19 +52,24 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query
 
     if (error) {
-      console.error("Supabase error:", error)
-      return NextResponse.json(
-        { error: "Failed to fetch documents" },
-        { status: 500 }
+      logger.error("Failed to fetch documents", { error, filters: { documentType, name, date, locale } })
+      return createNextErrorResponse(
+        NextResponse,
+        error,
+        "서류 목록을 불러오는데 실패했습니다.",
+        500
       )
     }
 
-    return NextResponse.json({ documents: data || [] }, { status: 200 })
-  } catch (error: any) {
-    console.error("Documents API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    logger.info("Documents fetched successfully", { count: data?.length || 0 })
+    return createSuccessResponse({ documents: data || [] })
+  } catch (error) {
+    logger.error("Error fetching documents", { error })
+    return createNextErrorResponse(
+      NextResponse,
+      error,
+      "서류 목록을 불러오는데 실패했습니다.",
+      500
     )
   }
 }
@@ -100,19 +108,24 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (error) {
-      console.error("Supabase error:", error)
-      return NextResponse.json(
-        { error: "Failed to create document" },
-        { status: 500 }
+      logger.error("Failed to create document", { error, document_type, name })
+      return createNextErrorResponse(
+        NextResponse,
+        error,
+        "서류 생성에 실패했습니다.",
+        500
       )
     }
 
-    return NextResponse.json({ document }, { status: 201 })
-  } catch (error: any) {
-    console.error("Documents API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    logger.info("Document created successfully", { documentId: document.id, document_type, name })
+    return createSuccessResponse({ document }, "서류가 생성되었습니다.", 201)
+  } catch (error) {
+    logger.error("Error creating document", { error })
+    return createNextErrorResponse(
+      NextResponse,
+      error,
+      "서류 생성에 실패했습니다.",
+      500
     )
   }
 }

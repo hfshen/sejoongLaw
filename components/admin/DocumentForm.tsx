@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback, useRef } from "react"
+import { useEffect, useState, useCallback, useRef, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { Save, ArrowLeft, Loader2, Globe, Image as ImageIcon } from "lucide-react"
@@ -14,8 +14,10 @@ import {
 } from "@/lib/documents/templates"
 import { format } from "date-fns"
 import DocumentPreview from "./DocumentPreview"
-import html2canvas from "html2canvas"
 import { toast } from "@/components/ui/Toast"
+import type { DocumentData } from "@/lib/types/documents"
+import { generateDocumentImage } from "@/lib/documents/image-generator"
+import { CourtAutocomplete } from "@/components/admin/CourtAutocomplete"
 
 interface DocumentFormData {
   name?: string
@@ -26,7 +28,13 @@ interface DocumentFormData {
 interface DocumentFormProps {
   documentId?: string
   documentType: DocumentType
-  initialData?: any
+  initialData?: {
+    name?: string
+    date?: string
+    data?: DocumentData
+  }
+  isCaseLinked?: boolean
+  caseName?: string
   locale: "ko" | "en" | "zh-CN"
   onLocaleChange: (locale: "ko" | "en" | "zh-CN") => void
 }
@@ -35,6 +43,8 @@ export default function DocumentForm({
   documentId,
   documentType,
   initialData,
+  isCaseLinked = false,
+  caseName,
   locale,
   onLocaleChange,
 }: DocumentFormProps) {
@@ -43,7 +53,10 @@ export default function DocumentForm({
   const [saving, setSaving] = useState(false)
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null)
   const previewRef = useRef<HTMLDivElement>(null)
-  const [previewScale, setPreviewScale] = useState(1)
+  const previewHostRef = useRef<HTMLDivElement | null>(null)
+  const [previewScale, setPreviewScale] = useState(0.7)
+  const A4_W = 794
+  const A4_H = 1123
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
     defaultValues: {
@@ -53,10 +66,30 @@ export default function DocumentForm({
     },
   })
 
-  // 미리보기 스케일 조정 - 더 이상 필요 없지만 호환성을 위해 유지 (항상 1)
+  // 케이스 연결 문서라면 name을 항상 케이스명으로 고정
   useEffect(() => {
-    setPreviewScale(1)
-  }, [])
+    if (!isCaseLinked) return
+    if (!caseName) return
+    setValue("name" as any, caseName, { shouldDirty: true, shouldValidate: true })
+  }, [caseName, isCaseLinked, setValue])
+
+  useEffect(() => {
+    const el = previewHostRef.current
+    if (!el) return
+
+    const update = () => {
+      const w = el.clientWidth
+      if (!w) return
+      // 카드 내부 폭에 맞춰 스케일(최대 1)로 줄여서 "PDF 미리보기" 카드 밖으로 나가지 않게 함
+      const s = Math.min(1, Math.max(0.2, w / A4_W))
+      setPreviewScale(Number(s.toFixed(4)))
+    }
+
+    update()
+    const ro = new ResizeObserver(() => update())
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [A4_W])
 
   // 자동 저장 (debounce) - watch()를 subscription으로 사용하여 무한 루프 방지
   useEffect(() => {
@@ -99,11 +132,12 @@ export default function DocumentForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentId]) // watch는 안정적인 함수이므로 의존성 배열에서 제외
 
-  const onSubmit = async (formData: DocumentFormData & Record<string, any>) => {
+  const onSubmit = async (formData: DocumentFormData) => {
     setSaving(true)
     try {
       // name과 date는 별도 필드로 처리
-      const name = formData.name || initialData?.name || "무제"
+      const name =
+        (isCaseLinked && caseName) ? caseName : (formData.name || initialData?.name || "무제")
       const date = formData.date || initialData?.date || new Date().toISOString().split("T")[0]
       
       // name과 date를 제외한 나머지 데이터
@@ -132,8 +166,10 @@ export default function DocumentForm({
           body: JSON.stringify(payload),
         })
         const result = await response.json()
-        if (result.document) {
-          router.push(`/admin/documents/${result.document.id}`)
+        // 새로운 API 응답 형식 지원: { success: true, data: { document: {...} } }
+        const createdDocument = result?.data?.document || result?.document
+        if (createdDocument?.id) {
+          router.push(`/admin/documents/${createdDocument.id}`)
           return
         }
       }
@@ -147,441 +183,76 @@ export default function DocumentForm({
   }
 
   const handleDownloadJPEG = async () => {
-    // 문서 요소만 직접 찾기 (preview-container 제외)
-    const documentElement = document.querySelector('[data-preview-id="document-preview"]') as HTMLElement
-    if (!documentElement) {
-      toast.error("미리보기를 찾을 수 없습니다.")
-      return
-    }
-
     try {
-      // 1. 폰트 로딩 대기
-      await document.fonts.ready
-      await new Promise(resolve => setTimeout(resolve, 500))
+      toast.success("이미지 생성 중입니다. 잠시만 기다려주세요...")
 
-      // 0. 푸터 로고 이미지를 절대 경로로 변환하고 미리 로드
-      const footerLogoImg = documentElement.querySelector('img[src*="SJ_logo"]') as HTMLImageElement
-      let footerLogoAbsoluteUrl: string | null = null
-      if (footerLogoImg) {
-        const originalSrc = footerLogoImg.src || footerLogoImg.getAttribute('src') || '/SJ_logo.svg'
-        // 절대 경로로 변환
-        footerLogoAbsoluteUrl = originalSrc.startsWith('http') 
-          ? originalSrc 
-          : originalSrc.startsWith('/') 
-            ? `${window.location.origin}${originalSrc}`
-            : `${window.location.origin}/${originalSrc}`
-        
-        // 이미지가 완전히 로드되었는지 확인하고 필요시 재로드
-        if (!footerLogoImg.complete || footerLogoImg.naturalWidth === 0) {
-          await new Promise((resolve) => {
-            const timeout = setTimeout(() => {
-              resolve(null)
-            }, 5000)
-            const img = new Image()
-            img.crossOrigin = "anonymous"
-            img.onload = () => {
-              clearTimeout(timeout)
-              if (footerLogoAbsoluteUrl) {
-                footerLogoImg.src = footerLogoAbsoluteUrl
-              }
-              resolve(null)
-            }
-            img.onerror = () => {
-              clearTimeout(timeout)
-              resolve(null)
-            }
-            if (footerLogoAbsoluteUrl) {
-              img.src = footerLogoAbsoluteUrl
-            }
-          })
-        } else {
-          // 이미 로드되었어도 절대 경로로 설정
-          if (footerLogoAbsoluteUrl) {
-            footerLogoImg.src = footerLogoAbsoluteUrl
-          }
-        }
+      const formData = watch()
+      // name/date는 메타데이터이므로 실제 문서 data에서 제외
+      const { name: _name, date: _date, ...docData } = formData as any
+
+      const blob = await generateDocumentImage(docData, documentType, locale)
+      if (!blob) {
+        toast.error("이미지 생성에 실패했습니다.")
+        return
       }
 
-      // 2. 이미지 로딩 대기 (특히 푸터 로고)
-      const images = documentElement.querySelectorAll("img")
-      const imagePromises = Array.from(images).map((img) => {
-        if (img.complete && img.naturalWidth > 0) return Promise.resolve()
-        return new Promise((resolve) => {
-          const timeout = setTimeout(() => {
-            resolve(null)
-          }, 5000)
-          img.onload = () => {
-            clearTimeout(timeout)
-            resolve(null)
-          }
-          img.onerror = () => {
-            clearTimeout(timeout)
-            resolve(null)
-          }
-          // 이미지가 이미 로드되었는지 다시 확인
-          if (img.complete && img.naturalWidth > 0) {
-            clearTimeout(timeout)
-            resolve(null)
-          }
-        })
-      })
-      await Promise.all(imagePromises)
-      
-      // 추가 대기 시간 (이미지 렌더링 안정화)
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.download = `${initialData?.name || "document"}_${locale}_${new Date().toISOString().split("T")[0]}.jpg`
+      link.href = url
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
 
-      // 3. 렌더링 안정화 대기
-      await new Promise(resolve => setTimeout(resolve, 500))
-
-      // 4. html2canvas로 문서 요소만 정확히 캡처 (A4 크기만)
-      const canvas = await html2canvas(documentElement, {
-        scale: 3, // A4 프린트 품질
-        useCORS: true,
-        allowTaint: false, // allowTaint를 false로 변경하여 CORS 문제 방지
-        backgroundColor: null, // 배경색을 null로 설정하여 투명하게 캡처
-        logging: true, // 디버깅을 위해 로깅 활성화
-        scrollX: 0,
-        scrollY: 0,
-        width: 794,
-        height: 1123,
-        x: 0,
-        y: 0,
-        imageTimeout: 15000, // 이미지 로딩 타임아웃 증가
-        onclone: (clonedDoc, element) => {
-          const clonedElement = element as HTMLElement
-          // footerLogoAbsoluteUrl을 클로저로 접근
-          const logoAbsoluteUrl = footerLogoAbsoluteUrl
-          
-          // 문서 요소만 정확히 A4 크기로 고정 (배경 투명)
-          clonedElement.style.backgroundColor = "transparent"
-          clonedElement.style.width = "794px"
-          clonedElement.style.height = "1123px"
-          clonedElement.style.maxWidth = "794px"
-          clonedElement.style.maxHeight = "1123px"
-          clonedElement.style.minWidth = "794px"
-          clonedElement.style.minHeight = "1123px"
-          clonedElement.style.overflow = "hidden"
-          clonedElement.style.position = "absolute"
-          clonedElement.style.top = "0"
-          clonedElement.style.left = "0"
-          clonedElement.style.display = "flex"
-          clonedElement.style.flexDirection = "column"
-          clonedElement.style.boxSizing = "border-box"
-          clonedElement.style.margin = "0"
-          clonedElement.style.padding = "25px 35px"
-          
-          // 흰색 배경 레이어 추가 (워터마크 아래)
-          const whiteBgLayer = clonedDoc.createElement('div')
-          whiteBgLayer.style.position = "absolute"
-          whiteBgLayer.style.inset = "0"
-          whiteBgLayer.style.backgroundColor = "#ffffff"
-          whiteBgLayer.style.zIndex = "0"
-          whiteBgLayer.style.pointerEvents = "none"
-          clonedElement.insertBefore(whiteBgLayer, clonedElement.firstChild)
-          
-          // body와 모든 부모 요소를 흰색 배경으로 설정
-          clonedDoc.body.style.backgroundColor = "#ffffff"
-          clonedDoc.body.style.margin = "0"
-          clonedDoc.body.style.padding = "0"
-          clonedDoc.documentElement.style.backgroundColor = "#ffffff"
-          
-          let parent = clonedElement.parentElement
-          while (parent && parent !== clonedDoc.body) {
-            parent.style.backgroundColor = "#ffffff"
-            parent.style.margin = "0"
-            parent.style.padding = "0"
-            parent.style.width = "794px"
-            parent.style.height = "1123px"
-            parent.style.overflow = "hidden"
-            parent.style.position = "relative"
-            parent = parent.parentElement
-          }
-          
-          // 흰색 배경 레이어 보존 (워터마크 아래) - 첫 번째 자식 요소가 흰색 배경 레이어
-          const firstChild = clonedElement.firstElementChild as HTMLElement
-          if (firstChild) {
-            const computed = window.getComputedStyle(firstChild)
-            const bgImage = computed.backgroundImage
-            // 워터마크가 아닌 경우 흰색 배경 레이어로 설정
-            if (!bgImage || !bgImage.includes('SJ_logo')) {
-              firstChild.style.backgroundColor = "#ffffff"
-              firstChild.style.zIndex = "0"
-              firstChild.style.position = "absolute"
-              firstChild.style.inset = "0"
-              firstChild.style.pointerEvents = "none"
-            }
-          }
-          
-          // 워터마크 보존 및 비율 유지 (가로 500px, 세로는 자동, 30도 회전, 간격 넓게)
-          const watermarkElements = clonedDoc.querySelectorAll('[style*="backgroundImage"], [style*="background-image"]')
-          watermarkElements.forEach((wm) => {
-            const htmlWm = wm as HTMLElement
-            const computed = window.getComputedStyle(htmlWm)
-            const bgImage = computed.backgroundImage || htmlWm.style.backgroundImage
-            if (bgImage && bgImage.includes('SJ_logo')) {
-              // 워터마크 스타일 명시적으로 설정
-              htmlWm.style.backgroundImage = computed.backgroundImage || "url('/SJ_logo.svg')"
-              htmlWm.style.backgroundSize = "450px auto"
-              htmlWm.style.backgroundRepeat = "repeat"
-              htmlWm.style.backgroundPosition = "0 0"
-              htmlWm.style.opacity = "0.15"
-              htmlWm.style.backgroundColor = "transparent"
-              htmlWm.style.zIndex = "10"
-              htmlWm.style.position = "absolute"
-              htmlWm.style.transform = "rotate(-30deg)"
-              htmlWm.style.transformOrigin = "center center"
-              htmlWm.style.width = "180%"
-              htmlWm.style.height = "180%"
-              htmlWm.style.left = "-40%"
-              htmlWm.style.top = "-40%"
-              htmlWm.style.pointerEvents = "none"
-            }
-          })
-          
-          // 로고 이미지 보존 및 비율 유지
-          const logoImages = clonedDoc.querySelectorAll('img[src*="SJ_logo"]')
-          logoImages.forEach((img) => {
-            const htmlImg = img as HTMLImageElement
-            // 푸터 로고 이미지인지 확인 (부모의 zIndex가 20 이상 또는 푸터 컨테이너)
-            const parent = htmlImg.parentElement
-            const parentComputed = parent ? window.getComputedStyle(parent) : null
-            const parentZIndex = parentComputed ? parseInt(parentComputed.zIndex) || 0 : 0
-            const isFooterLogo = parentComputed && (
-              parentZIndex >= 20 ||
-              parent?.style.zIndex === "20" ||
-              parent?.style.zIndex === "21" ||
-              parent?.style.zIndex === "22" ||
-              parent?.textContent?.includes("법무법인 세중") ||
-              parent?.textContent?.includes("Sejoong Law Firm") ||
-              parent?.textContent?.includes("sejoonglaw@gmail.com")
-            )
-            
-            // 푸터 로고인 경우 절대 경로 URL 사용
-            if (isFooterLogo && logoAbsoluteUrl) {
-              htmlImg.src = logoAbsoluteUrl
-            } else {
-              // 원본 문서에서 같은 이미지 찾아서 src 복사 (이미 로드된 이미지 사용)
-              const originalSrc = htmlImg.getAttribute('src') || htmlImg.src
-              if (originalSrc) {
-                const originalImg = document.querySelector(`img[src="${originalSrc}"], img[src*="SJ_logo"]`) as HTMLImageElement
-                if (originalImg && originalImg.src) {
-                  // 원본 이미지가 완전히 로드되었으면 그 src 사용
-                  if (originalImg.complete && originalImg.naturalWidth > 0) {
-                    htmlImg.src = originalImg.src
-                  } else {
-                    // 절대 경로로 변환
-                    const absoluteSrc = originalSrc.startsWith('http') 
-                      ? originalSrc 
-                      : originalSrc.startsWith('/') 
-                        ? `${window.location.origin}${originalSrc}`
-                        : `${window.location.origin}/${originalSrc}`
-                    htmlImg.src = absoluteSrc
-                  }
-                } else {
-                  // 절대 경로로 변환
-                  const absoluteSrc = originalSrc.startsWith('http') 
-                    ? originalSrc 
-                    : originalSrc.startsWith('/') 
-                      ? `${window.location.origin}${originalSrc}`
-                      : `${window.location.origin}/${originalSrc}`
-                  htmlImg.src = absoluteSrc
-                }
-              }
-            }
-            
-            // 이미지 스타일 항상 적용
-            htmlImg.style.height = "40px"
-            htmlImg.style.width = "auto"
-            htmlImg.style.objectFit = "contain"
-            htmlImg.style.maxWidth = "100%"
-            htmlImg.style.display = "block"
-            htmlImg.style.visibility = "visible"
-            htmlImg.style.opacity = "1"
-            htmlImg.style.position = "relative"
-            htmlImg.style.zIndex = "22"
-            htmlImg.style.backgroundColor = "transparent"
-            htmlImg.style.background = "transparent"
-            htmlImg.style.margin = "0"
-            htmlImg.style.padding = "0"
-            htmlImg.style.border = "none"
-            htmlImg.style.outline = "none"
-            
-            // 이미지가 로드되지 않았어도 스타일은 적용 (html2canvas가 처리)
-            // onclone 내에서는 비동기 이미지 로딩이 제대로 작동하지 않으므로
-            // 이미지 로딩은 html2canvas가 자동으로 처리하도록 함
-            
-            // 푸터 로고인 경우 부모 컨테이너와 모든 조상 요소도 투명 배경 유지
-            if (isFooterLogo && parent) {
-              parent.style.backgroundColor = "transparent"
-              parent.style.background = "transparent"
-              parent.style.position = "relative"
-              parent.style.zIndex = "20"
-              
-              // 부모의 부모도 확인
-              const grandParent = parent.parentElement
-              if (grandParent) {
-                grandParent.style.backgroundColor = "transparent"
-                grandParent.style.background = "transparent"
-              }
-              
-              // 모든 조상 요소도 투명 배경 유지
-              let ancestor = parent.parentElement
-              while (ancestor && ancestor !== clonedElement) {
-                ancestor.style.backgroundColor = "transparent"
-                ancestor.style.background = "transparent"
-                ancestor = ancestor.parentElement
-              }
-            }
-          })
-          
-          // 모든 텍스트 요소의 스타일 보존 (fontSize, fontFamily, lineHeight)
-          const textElements = clonedDoc.querySelectorAll('h1, h2, h3, p, span, td, th, div, li')
-          textElements.forEach((el) => {
-            const htmlEl = el as HTMLElement
-            if (!htmlEl) return
-            
-            const computed = window.getComputedStyle(htmlEl)
-            // fontSize 보존
-            if (computed.fontSize) {
-              htmlEl.style.fontSize = computed.fontSize
-            }
-            // fontFamily 보존
-            if (computed.fontFamily) {
-              htmlEl.style.fontFamily = computed.fontFamily
-            }
-            // lineHeight 보존
-            if (computed.lineHeight) {
-              htmlEl.style.lineHeight = computed.lineHeight
-            }
-          })
-          
-          // 모든 회색/투명 배경을 흰색으로 강제 설정 (워터마크 및 푸터 로고 제외)
-          const allElements = clonedDoc.querySelectorAll('*')
-          allElements.forEach((el) => {
-            const htmlEl = el as HTMLElement
-            if (!htmlEl || htmlEl === clonedElement) return
-            
-            // 푸터 로고 컨테이너는 제외 (zIndex가 11인 요소 또는 로고 이미지를 포함한 요소)
-            const computed = window.getComputedStyle(htmlEl)
-            const zIndex = computed.zIndex || htmlEl.style.zIndex
-            const hasLogo = htmlEl.querySelector('img[src*="SJ_logo"]')
-            
-            const zIndexNum = parseInt(zIndex) || 0
-            const isFooterContainer = htmlEl.textContent?.includes("법무법인 세중") || 
-                                     htmlEl.textContent?.includes("Sejoong Law Firm") || 
-                                     htmlEl.textContent?.includes("sejoonglaw@gmail.com") ||
-                                     htmlEl.textContent?.includes("031-8044-8805")
-            
-            if (zIndex === "20" || zIndex === "21" || zIndex === "22" || zIndexNum >= 20 || hasLogo || isFooterContainer) {
-              // 푸터 로고 컨테이너와 모든 자식 요소는 투명 배경 유지
-              htmlEl.style.backgroundColor = "transparent"
-              htmlEl.style.background = "transparent"
-              const children = htmlEl.querySelectorAll('*')
-              children.forEach((child) => {
-                const htmlChild = child as HTMLElement
-                if (htmlChild.tagName === 'IMG') {
-                  // 이미지 요소는 특히 보이도록 설정
-                  htmlChild.style.backgroundColor = "transparent"
-                  htmlChild.style.background = "transparent"
-                  htmlChild.style.opacity = "1"
-                  htmlChild.style.visibility = "visible"
-                  htmlChild.style.display = "block"
-                  htmlChild.style.zIndex = "22"
-                  htmlChild.style.position = "relative"
-                  htmlChild.style.filter = "none"
-                } else {
-                  // 모든 텍스트 요소도 투명 배경
-                  htmlChild.style.backgroundColor = "transparent"
-                  htmlChild.style.background = "transparent"
-                }
-              })
-              return
-            }
-            
-            const bgImage = computed.backgroundImage || htmlEl.style.backgroundImage
-            // 워터마크가 아닌 경우에만 배경을 흰색으로
-            if (!bgImage || !bgImage.includes('SJ_logo')) {
-              const bgColor = computed.backgroundColor
-              if (bgColor && (
-                bgColor === "rgba(0, 0, 0, 0)" || 
-                bgColor === "transparent" || 
-                bgColor.includes("f9fafb") || 
-                bgColor.includes("gray") || 
-                bgColor.includes("rgb(249") ||
-                bgColor.includes("rgb(240")
-              )) {
-                htmlEl.style.backgroundColor = "#ffffff"
-              }
-            }
-          })
-        },
-      })
-
-      // 5. 캔버스를 정확한 A4 크기로 자르고 흰색 배경 적용
-      const finalCanvas = document.createElement('canvas')
-      finalCanvas.width = 794 * 3
-      finalCanvas.height = 1123 * 3
-      const finalCtx = finalCanvas.getContext('2d')
-      
-      if (finalCtx) {
-        // 먼저 흰색 배경으로 전체를 채우기
-        finalCtx.fillStyle = "#ffffff"
-        finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height)
-        
-        // 원본 캔버스를 정확한 A4 크기로 그리기
-        const targetWidth = 794 * 3
-        const targetHeight = 1123 * 3
-        finalCtx.drawImage(
-          canvas, 
-          0, 0, 
-          Math.min(canvas.width, targetWidth), 
-          Math.min(canvas.height, targetHeight),
-          0, 0,
-          targetWidth,
-          targetHeight
-        )
-        
-        // JPEG로 변환 및 다운로드 (최고 품질)
-        const dataUrl = finalCanvas.toDataURL("image/jpeg", 1.0)
-        const link = document.createElement("a")
-        link.download = `${initialData?.name || "document"}_${locale}_${new Date().toISOString().split("T")[0]}.jpg`
-        link.href = dataUrl
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-      } else {
-        // fallback: 원본 캔버스 사용
-        const dataUrl = canvas.toDataURL("image/jpeg", 1.0)
-        const link = document.createElement("a")
-        link.download = `${initialData?.name || "document"}_${locale}_${new Date().toISOString().split("T")[0]}.jpg`
-        link.href = dataUrl
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-      }
+      toast.success("이미지 다운로드가 완료되었습니다.")
     } catch (error) {
+      console.error("Error downloading image:", error)
       toast.error("이미지 다운로드에 실패했습니다.")
     }
   }
 
-  const renderField = (field: FieldDefinition) => {
+  const renderField = useCallback((field: FieldDefinition) => {
     const fieldKey = field.key
     const label = field.label[locale]
     const isRequired = field.required
 
     switch (field.type) {
       case "text":
+        if (fieldKey === "court") {
+          const value = (watch(fieldKey as any) as string) || ""
+          const hasError = Boolean((errors as any)[fieldKey])
+          return (
+            <div key={fieldKey}>
+              <input
+                type="hidden"
+                {...register(fieldKey as any, { required: isRequired })}
+              />
+              <CourtAutocomplete
+                label={label}
+                required={isRequired}
+                locale={locale}
+                value={value}
+                placeholder={label}
+                errorText={hasError ? "필수 항목입니다." : undefined}
+                onChange={(next) => {
+                  setValue(fieldKey as any, next, { shouldDirty: true, shouldValidate: true, shouldTouch: true })
+                }}
+              />
+            </div>
+          )
+        }
         return (
           <div key={fieldKey} className="space-y-2">
             <label className="block text-sm font-medium text-secondary">
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
             <input
-              {...register(fieldKey, { required: isRequired })}
+              {...register(fieldKey as any, { required: isRequired })}
               type="text"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             />
-            {errors[fieldKey] && (
+            {(errors as any)[fieldKey] && (
               <p className="text-sm text-red-500">필수 항목입니다.</p>
             )}
           </div>
@@ -594,11 +265,11 @@ export default function DocumentForm({
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
             <textarea
-              {...register(fieldKey, { required: isRequired })}
+              {...register(fieldKey as any, { required: isRequired })}
               rows={3}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             />
-            {errors[fieldKey] && (
+            {(errors as any)[fieldKey] && (
               <p className="text-sm text-red-500">필수 항목입니다.</p>
             )}
           </div>
@@ -611,11 +282,11 @@ export default function DocumentForm({
               {label} {isRequired && <span className="text-red-500">*</span>}
             </label>
             <input
-              {...register(fieldKey, { required: isRequired })}
+              {...register(fieldKey as any, { required: isRequired })}
               type="date"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             />
-            {errors[fieldKey] && (
+            {(errors as any)[fieldKey] && (
               <p className="text-sm text-red-500">필수 항목입니다.</p>
             )}
           </div>
@@ -625,7 +296,7 @@ export default function DocumentForm({
         const isRelationField = fieldKey.includes("relation") && !fieldKey.includes("other")
         const isGenderField = fieldKey.includes("gender")
         const isSpecialAuthorityField = fieldKey.includes("special_authority")
-        const selectedValue = watch(fieldKey) || ""
+        const selectedValue = (watch(fieldKey as any) as string) || ""
         const showOtherInput = isRelationField && selectedValue === "기타"
         
         return (
@@ -646,7 +317,7 @@ export default function DocumentForm({
                         onClick={(e) => {
                           e.preventDefault()
                           e.stopPropagation()
-                          setValue(fieldKey, option.value, { shouldDirty: true, shouldValidate: true, shouldTouch: true })
+                          setValue(fieldKey as any, option.value, { shouldDirty: true, shouldValidate: true, shouldTouch: true })
                         }}
                         className={`px-3 py-1 rounded border-2 transition-all text-sm font-medium ${
                           isSelected
@@ -668,7 +339,7 @@ export default function DocumentForm({
                   <button
                     key={option.value}
                     type="button"
-                    onClick={() => setValue(fieldKey, option.value)}
+                    onClick={() => setValue(fieldKey as any, option.value)}
                     className={`flex-1 px-4 py-2 rounded-lg border-2 transition-all ${
                       selectedValue === option.value
                         ? "border-primary bg-primary text-white"
@@ -682,12 +353,12 @@ export default function DocumentForm({
             ) : !isSpecialAuthorityField ? (
               // 일반 Select (기타 특별수권사항이 아닌 경우)
               <select
-                {...register(fieldKey, { required: isRequired })}
+                {...register(fieldKey as any, { required: isRequired })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 onChange={(e) => {
-                  setValue(fieldKey, e.target.value)
+                  setValue(fieldKey as any, e.target.value)
                   if (!isRelationField || e.target.value !== "기타") {
-                    setValue(`${fieldKey}_other`, "")
+                    setValue(`${fieldKey}_other` as any, "")
                   }
                 }}
               >
@@ -701,13 +372,13 @@ export default function DocumentForm({
             ) : null}
             {showOtherInput && (
               <input
-                {...register(`${fieldKey}_other`)}
+                {...register(`${fieldKey}_other` as any)}
                 type="text"
                 placeholder={locale === "ko" ? "관계를 입력하세요" : locale === "en" ? "Enter relation" : "请输入关系"}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent mt-2"
               />
             )}
-            {errors[fieldKey] && (
+            {(errors as any)[fieldKey] && (
               <p className="text-sm text-red-500">필수 항목입니다.</p>
             )}
           </div>
@@ -717,7 +388,7 @@ export default function DocumentForm({
         const handleCheckAll = () => {
           field.options?.forEach((option) => {
             const optionKey = `${fieldKey}.${option.value}`
-            setValue(optionKey, true)
+            setValue(optionKey as any, true)
           })
         }
         
@@ -738,14 +409,15 @@ export default function DocumentForm({
             <div className="space-y-2 border border-gray-200 rounded-lg p-4">
               {field.options?.map((option) => {
                 const optionKey = `${fieldKey}.${option.value}`
-                const isChecked = watch(optionKey) === true || watch(optionKey) === "true" || watch(optionKey) === "on"
+                const watchedValue = watch(optionKey as any) as any
+                const isChecked = watchedValue === true || watchedValue === "true" || watchedValue === "on"
                 return (
                   <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={isChecked}
                       onChange={(e) => {
-                        setValue(optionKey, e.target.checked)
+                        setValue(optionKey as any, e.target.checked)
                       }}
                       className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                     />
@@ -760,17 +432,19 @@ export default function DocumentForm({
       default:
         return null
     }
-  }
+  }, [locale, register, watch, setValue, errors])
 
-  // 그룹별로 필드 정리
-  const groupedFields = template.fields.reduce((acc, field) => {
-    const group = field.group || "general"
-    if (!acc[group]) {
-      acc[group] = []
-    }
-    acc[group].push(field)
-    return acc
-  }, {} as Record<string, FieldDefinition[]>)
+  // 그룹별로 필드 정리 (메모이제이션)
+  const groupedFields = useMemo(() => {
+    return template.fields.reduce((acc, field) => {
+      const group = field.group || "general"
+      if (!acc[group]) {
+        acc[group] = []
+      }
+      acc[group].push(field)
+      return acc
+    }, {} as Record<string, FieldDefinition[]>)
+  }, [template.fields])
 
   const groupLabels: Record<string, Record<"ko" | "en" | "zh-CN", string>> = {
     deceased: { ko: "고인 정보", en: "Deceased Information", "zh-CN": "死者信息" },
@@ -792,15 +466,23 @@ export default function DocumentForm({
     general: { ko: "기본 정보", en: "General Information", "zh-CN": "基本信息" },
   }
 
+  const fieldSpanClass = (field: FieldDefinition) => {
+    if (field.type === "textarea") return "md:col-span-2"
+    if (field.type === "checkbox") return "md:col-span-2"
+    if (field.key === "court") return "md:col-span-2"
+    return ""
+  }
+
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="flex items-center justify-between">
+      <div className="sticky top-16 z-20 bg-background/95 backdrop-blur border-b border-gray-200 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button
             type="button"
             variant="outline"
-            onClick={() => router.back()}
+            onClick={() => router.push("/admin/documents")}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             뒤로
@@ -876,6 +558,7 @@ export default function DocumentForm({
             )}
           </Button>
         </div>
+        </div>
       </div>
 
       {/* 메인 레이아웃: 입력 폼과 미리보기 나란히 */}
@@ -889,16 +572,19 @@ export default function DocumentForm({
                 <CardTitle>기본 정보</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">
-                      이름 <span className="text-red-500">*</span>
+                      {isCaseLinked ? "케이스 이름" : "이름"} <span className="text-red-500">*</span>
                     </label>
                     <input
                       {...register("name", { required: true })}
                       type="text"
                       defaultValue={initialData?.name}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                      readOnly={isCaseLinked}
+                      className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
+                        isCaseLinked ? "bg-gray-50 text-gray-700" : ""
+                      }`}
                     />
                   </div>
                   <div>
@@ -924,7 +610,7 @@ export default function DocumentForm({
                 if (isSpecialGroup) {
                   fields.forEach((field) => {
                     if (field.type === "select") {
-                      setValue(field.key, "O")
+                      setValue(field.key as any, "O")
                     }
                   })
                 }
@@ -933,7 +619,7 @@ export default function DocumentForm({
                 if (isSpecialGroup) {
                   fields.forEach((field) => {
                     if (field.type === "select") {
-                      setValue(field.key, "X")
+                      setValue(field.key as any, "X")
                     }
                   })
                 }
@@ -967,8 +653,12 @@ export default function DocumentForm({
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 gap-4">
-                      {fields.map((field) => renderField(field))}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {fields.map((field) => (
+                        <div key={field.key} className={fieldSpanClass(field)}>
+                          {renderField(field)}
+                        </div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
@@ -983,29 +673,33 @@ export default function DocumentForm({
             <CardHeader>
               <CardTitle>PDF 미리보기</CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
-              <div 
-                id="preview-container"
-                className="bg-white" 
-                style={{ 
-                  overflow: "hidden", 
-                  display: "flex", 
-                  justifyContent: "center", 
-                  alignItems: "flex-start",
-                  width: "794px",
-                  height: "1123px",
-                  padding: "0",
-                  margin: "0 auto"
-                }}
-              >
-                <div style={{ transform: "scale(0.7)", transformOrigin: "top center", margin: "0", padding: "0" }}>
-                  <DocumentPreview
-                    ref={previewRef}
-                    documentType={documentType}
-                    data={watch()}
-                    locale={locale}
-                    data-preview-id="document-preview"
-                  />
+            <CardContent className="p-4 overflow-hidden">
+              <div ref={previewHostRef} className="w-full">
+                <div
+                  className="mx-auto bg-white border border-gray-200 shadow-sm"
+                  style={{
+                    width: `${Math.round(A4_W * previewScale)}px`,
+                    height: `${Math.round(A4_H * previewScale)}px`,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    id="preview-container"
+                    style={{
+                      width: `${A4_W}px`,
+                      height: `${A4_H}px`,
+                      transform: `scale(${previewScale})`,
+                      transformOrigin: "top left",
+                    }}
+                  >
+                    <DocumentPreview
+                      ref={previewRef}
+                      documentType={documentType}
+                      data={watch()}
+                      locale={locale}
+                      data-preview-id="document-preview"
+                    />
+                  </div>
                 </div>
               </div>
             </CardContent>

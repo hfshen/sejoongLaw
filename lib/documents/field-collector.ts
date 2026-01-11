@@ -11,6 +11,45 @@ export interface UnifiedField extends FieldDefinition {
   unifiedGroup?: string
 }
 
+const KEY_ALIASES: Record<string, string> = {
+  // 유가족(갑) = 위임인/선임인/원고(대리인) 등 동일 의미
+  principal_name: "party_a_name",
+  principal_birthdate: "party_a_birthdate",
+  principal_passport: "party_a_passport",
+  principal_id_number: "party_a_id_number",
+  principal_address: "party_a_address",
+
+  appointer_name: "party_a_name",
+  appointer_id_number: "party_a_id_number",
+  appointer_relation: "party_a_relation",
+
+  // 가해자(을) = 보험 동의서 발신 정보(sender_*)
+  sender_company: "party_b_company_name",
+  sender_registration: "party_b_registration",
+  sender_address: "party_b_address",
+}
+
+function normalizeFieldKey(key: string) {
+  return KEY_ALIASES[key] || key
+}
+
+function mergeFieldDefinition(existing: UnifiedField, next: FieldDefinition) {
+  // required가 하나라도 true면 required
+  if (next.required) existing.required = true
+
+  // textarea가 하나라도 있으면 textarea로 승격(주소 같은 필드)
+  if (existing.type !== next.type) {
+    if (existing.type === "textarea" || next.type === "textarea") {
+      existing.type = "textarea"
+    }
+  }
+
+  // options는 더 풍부한 쪽을 우선(없으면 채움)
+  if ((!existing.options || existing.options.length === 0) && next.options && next.options.length > 0) {
+    existing.options = next.options
+  }
+}
+
 /**
  * 선택한 서류 타입들에서 필요한 모든 필드를 수집하고 중복 제거
  */
@@ -29,22 +68,21 @@ export function collectFieldsFromDocumentTypes(
     const template = getTemplate(docType)
     
     template.fields.forEach((field) => {
-      const existingField = fieldMap.get(field.key)
+      const normalizedKey = normalizeFieldKey(field.key)
+      const existingField = fieldMap.get(normalizedKey)
       
       if (existingField) {
         // 이미 존재하는 필드면 usedIn에 추가
         if (!existingField.usedIn.includes(docType)) {
           existingField.usedIn.push(docType)
         }
-        // required가 하나라도 true면 required로 설정
-        if (field.required) {
-          existingField.required = true
-        }
+        mergeFieldDefinition(existingField, field)
       } else {
         // 새로운 필드면 추가
         const unifiedGroup = mapGroupToUnifiedGroup(field.group || "")
-        fieldMap.set(field.key, {
+        fieldMap.set(normalizedKey, {
           ...field,
+          key: normalizedKey,
           usedIn: [docType],
           unifiedGroup,
         })

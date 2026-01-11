@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/Card"
 import { getDocumentTypeLabel, type DocumentType } from "@/lib/documents/templates"
 import DocumentPreview from "./DocumentPreview"
+import Button from "@/components/ui/Button"
 
 interface DocumentSelectorProps {
   selectedTypes: DocumentType[]
@@ -15,6 +16,11 @@ const documentTypes: DocumentType[] = [
   "attorney_appointment",
   "litigation_power",
   "insurance_consent",
+  "agreement_old",
+  "power_of_attorney_old",
+  "attorney_appointment_old",
+  "litigation_power_old",
+  "insurance_consent_old",
 ]
 
 // 각 문서 타입별 샘플 데이터
@@ -71,6 +77,8 @@ export default function DocumentSelector({
   selectedTypes,
   onSelectionChange,
 }: DocumentSelectorProps) {
+  const allSelected = selectedTypes.length === documentTypes.length
+
   const toggleSelection = (type: DocumentType) => {
     if (selectedTypes.includes(type)) {
       onSelectionChange(selectedTypes.filter((t) => t !== type))
@@ -81,8 +89,21 @@ export default function DocumentSelector({
 
   return (
     <div>
-      <h3 className="text-lg font-semibold mb-4">생성할 서류 선택</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-lg font-semibold">생성할 서류 선택</h3>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => onSelectionChange(allSelected ? [] : [...documentTypes])}
+          >
+            {allSelected ? "전체 해제" : "모두 선택"}
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
         {documentTypes.map((type) => {
           const isSelected = selectedTypes.includes(type)
           return (
@@ -110,14 +131,15 @@ export default function DocumentSelector({
 
                 {/* 썸네일 미리보기 */}
                 <div
-                  className="bg-gray-50 p-4 border-b border-gray-200 relative"
-                  style={{ height: "200px", overflow: "hidden" }}
+                  className="bg-gray-50 border-b border-gray-200 relative overflow-hidden"
+                  style={{ aspectRatio: "794 / 1123" }}
                 >
                   <div
                     style={{
-                      transform: "scale(0.25)",
+                      transform: "scale(0.18)",
                       transformOrigin: "top left",
-                      width: "400%",
+                      width: "794px",
+                      height: "1123px",
                     }}
                   >
                     <DocumentPreview
@@ -129,11 +151,11 @@ export default function DocumentSelector({
                 </div>
 
                 {/* 서류 정보 */}
-                <div className="p-6">
-                  <h3 className="text-lg font-bold text-secondary mb-2">
+                <div className="p-3">
+                  <h3 className="text-sm font-bold text-secondary leading-snug">
                     {getDocumentTypeLabel(type, "ko")}
                   </h3>
-                  <p className="text-sm text-text-secondary">
+                  <p className="text-xs text-text-secondary mt-1">
                     {getDocumentTypeLabel(type, "en")}
                   </p>
                 </div>

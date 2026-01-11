@@ -21,6 +21,11 @@ export default function NewDocumentPage() {
     "attorney_appointment",
     "litigation_power",
     "insurance_consent",
+    "agreement_old",
+    "power_of_attorney_old",
+    "attorney_appointment_old",
+    "litigation_power_old",
+    "insurance_consent_old",
   ]
 
   // 각 문서 타입별 샘플 데이터
@@ -64,6 +69,42 @@ export default function NewDocumentPage() {
           insured_name: "홍길동",
           sender_company: "법무법인 세중",
         }
+      case "agreement_old":
+        return {
+          ...baseData,
+          deceased_name: "홍길동",
+          party_a_name: "김철수",
+          party_b_company_name: "ABC회사",
+        }
+      case "power_of_attorney_old":
+        return {
+          ...baseData,
+          principal_name: "김철수",
+          attorney_name: "이택기",
+        }
+      case "attorney_appointment_old":
+        return {
+          ...baseData,
+          appointer_name: "김철수",
+          case_number: "2024가단1234",
+          victim: "홍길동",
+          court: "의정부지방법원",
+        }
+      case "litigation_power_old":
+        return {
+          ...baseData,
+          case_number: "2024가단1234",
+          plaintiff: "김철수",
+          defendant: "ABC회사",
+          court: "의정부지방법원",
+        }
+      case "insurance_consent_old":
+        return {
+          ...baseData,
+          insured_name: "홍길동",
+          sender_company: "법무법인 세중",
+          recipient_company: "ABC보험",
+        }
       default:
         return baseData
     }
@@ -71,13 +112,7 @@ export default function NewDocumentPage() {
 
   if (documentType === null) {
     return (
-      <div className="min-h-screen bg-background">
-        <header className="bg-white border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <h2 className="text-xl font-bold text-secondary">서류 관리 시스템</h2>
-          </div>
-        </header>
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div>
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-secondary mb-2">서류 유형 선택</h1>
             <p className="text-text-secondary">작성할 서류의 유형을 선택하세요.</p>
@@ -113,29 +148,19 @@ export default function NewDocumentPage() {
               </Card>
             ))}
           </div>
-        </main>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <h2 className="text-xl font-bold text-secondary">서류 관리 시스템</h2>
-          </div>
-        </div>
-      </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {documentType && (
-          <DocumentForm
-            documentType={documentType}
-            locale={locale}
-            onLocaleChange={setLocale}
-          />
-        )}
-      </main>
+    <div>
+      {documentType && (
+        <DocumentForm
+          documentType={documentType}
+          locale={locale}
+          onLocaleChange={setLocale}
+        />
+      )}
     </div>
   )
 }

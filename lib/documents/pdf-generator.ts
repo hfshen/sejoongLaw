@@ -368,6 +368,21 @@ export function generateAttorneyAppointmentPDF(data: PDFData, locale: "ko" | "en
   const doc = new jsPDF()
   let yPos = 20
 
+  const counselOffice = locale === "ko" ? "법률사무소 세중" : locale === "en" ? "Sejoong Law Office" : "世中律师事务所"
+  const counselName = locale === "ko" ? "변호사 이택기" : locale === "en" ? "Attorney Lee Taek-gi" : "律师 李택기"
+  const counselAddress =
+    locale === "ko"
+      ? "안산시 단원구 원곡로 45, 세중빌딩 2층"
+      : locale === "en"
+        ? "2F Sejoong Building, 45 Wonkok-ro, Danwon-gu, Ansan-si"
+        : "安山市檀园区元谷路45号世中大厦2层"
+  const counselPhoneFax =
+    locale === "ko"
+      ? "전화: 031-8044-8805  팩스: 031-491-8817"
+      : locale === "en"
+        ? "Phone: 031-8044-8805  Fax: 031-491-8817"
+        : "电话: 031-8044-8805  传真: 031-491-8817"
+
   // 제목
   doc.setFontSize(18)
   const title = locale === "ko" ? "변호인선임서" : locale === "en" ? "Attorney Appointment" : "律师任命书"
@@ -381,11 +396,6 @@ export function generateAttorneyAppointmentPDF(data: PDFData, locale: "ko" | "en
     { key: "appointer_name", label: locale === "ko" ? "선임인 가족대표자 성명" : locale === "en" ? "Appointer Family Representative Name" : "任命人家属代表姓名" },
     { key: "appointer_id_number", label: locale === "ko" ? "본국신분증번호" : locale === "en" ? "ID Number" : "本国身份证号" },
     { key: "appointer_relation", label: locale === "ko" ? "관계" : locale === "en" ? "Relation" : "关系" },
-    { key: "attorney_name", label: locale === "ko" ? "변호인" : locale === "en" ? "Attorney" : "律师" },
-    { key: "attorney_office", label: locale === "ko" ? "법률사무소" : locale === "en" ? "Law Office" : "律师事务所" },
-    { key: "attorney_address", label: locale === "ko" ? "주소" : locale === "en" ? "Address" : "地址" },
-    { key: "attorney_phone", label: locale === "ko" ? "전화" : locale === "en" ? "Phone" : "电话" },
-    { key: "attorney_fax", label: locale === "ko" ? "팩스" : locale === "en" ? "Fax" : "传真" },
     { key: "court", label: locale === "ko" ? "법원" : locale === "en" ? "Court" : "法院" },
   ]
 
@@ -398,6 +408,20 @@ export function generateAttorneyAppointmentPDF(data: PDFData, locale: "ko" | "en
     doc.text(`${field.label}: ${value}`, 20, yPos)
     yPos += 7
   })
+
+  yPos += 6
+  doc.setFontSize(11)
+  const counselLabel = locale === "ko" ? "변호인" : locale === "en" ? "Counsel" : "律师"
+  doc.text(`${counselLabel}:`, 20, yPos)
+  yPos += 7
+  doc.setFontSize(10)
+  doc.text(`${counselOffice}`, 26, yPos)
+  yPos += 6
+  doc.text(`${counselName}`, 26, yPos)
+  yPos += 6
+  doc.text(`${counselAddress}`, 26, yPos)
+  yPos += 6
+  doc.text(`${counselPhoneFax}`, 26, yPos)
 
   yPos += 10
 
@@ -646,14 +670,19 @@ export function generatePDF(
 ): jsPDF {
   switch (documentType) {
     case "agreement":
+    case "agreement_old":
       return generateAgreementPDF(data, locale)
     case "power_of_attorney":
+    case "power_of_attorney_old":
       return generatePowerOfAttorneyPDF(data, locale)
     case "attorney_appointment":
+    case "attorney_appointment_old":
       return generateAttorneyAppointmentPDF(data, locale)
     case "litigation_power":
+    case "litigation_power_old":
       return generateLitigationPowerPDF(data, locale)
     case "insurance_consent":
+    case "insurance_consent_old":
       return generateInsuranceConsentPDF(data, locale)
     default:
       throw new Error(`Unknown document type: ${documentType}`)

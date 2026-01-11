@@ -28,9 +28,9 @@ export default async function AdminContentPage() {
   const contents = await getPageContents()
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-secondary">콘텐츠 관리</h1>
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-secondary">콘텐츠</h1>
         <Link
           href="/admin/content/new"
           className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90"

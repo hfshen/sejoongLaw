@@ -2,8 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* FangSong 폰트 로드 (중국어) - 시스템 폰트 우선 사용 */
-@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap");
+/* 중국어 폰트는 next/font로 self-host 제공 (다운로드 캡처에서 안정성 향상) */
 
 @layer base {
   :root {
@@ -35,7 +34,7 @@
   html[lang="zh-CN"] *,
   html[lang="zh-TW"] body,
   html[lang="zh-TW"] * {
-    font-family: "FangSong", "STFangsong", "Noto Serif SC", serif;
+    font-family: "FangSong", "STFangsong", var(--font-noto-serif-sc), serif;
   }
 
   html[dir="rtl"] {

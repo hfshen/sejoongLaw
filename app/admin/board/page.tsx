@@ -43,8 +43,8 @@ export default async function AdminBoardPage() {
   const posts = await getBoardPosts()
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-bold text-secondary mb-8">게시판 관리</h1>
+    <div>
+      <h1 className="text-2xl font-bold text-secondary mb-6">게시판</h1>
       <div className="space-y-8">
         <section>
           <h2 className="text-2xl font-bold text-secondary mb-4">문의사항</h2>

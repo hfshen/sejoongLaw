@@ -93,7 +93,7 @@ const config: Config = {
         serif: ["var(--font-playfair)", "Georgia", "serif"],
         display: ["var(--font-playfair)", "Georgia", "serif"],
         korean: ["var(--font-noto-sans-kr)", "sans-serif"],
-        chinese: ["FangSong", "STFangsong", "serif"],
+        chinese: ["FangSong", "STFangsong", "var(--font-noto-serif-sc)", "serif"],
       },
       fontSize: {
         "2xs": ["0.625rem", { lineHeight: "0.75rem" }],
