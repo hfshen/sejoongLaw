@@ -78,6 +78,7 @@ function DocumentFooter({ locale }: { locale: "ko" | "en" | "zh-CN" }) {
         className="flex items-center justify-center mb-1"
         style={{ backgroundColor: "transparent", position: "relative", zIndex: 25 }}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/SJ_logo.svg"
           alt="법무법인 세중"

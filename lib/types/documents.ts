@@ -191,7 +191,7 @@ export function isInsuranceConsentData(data: DocumentData): data is InsuranceCon
 }
 
 // 문서 타입에 따른 데이터 추출 헬퍼
-export function getDocumentData<T extends DocumentType>(
+export function getDocumentData<T extends keyof DocumentDataMap>(
   documentType: T,
   data: DocumentData
 ): DocumentDataMap[T] {

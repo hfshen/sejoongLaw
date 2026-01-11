@@ -86,10 +86,11 @@ export default function ParticleBackground() {
 
   // 페이지 전환 시 WebGL 컨텍스트 정리
   useEffect(() => {
+    const canvasElement = canvasRef.current
     return () => {
       // 컴포넌트 언마운트 시 정리
-      if (canvasRef.current) {
-        const canvas = canvasRef.current.querySelector("canvas")
+      if (canvasElement) {
+        const canvas = canvasElement.querySelector("canvas")
         if (canvas) {
           try {
             const gl = canvas.getContext("webgl") || canvas.getContext("webgl2")

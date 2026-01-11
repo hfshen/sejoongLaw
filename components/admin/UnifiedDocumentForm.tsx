@@ -124,7 +124,7 @@ export default function UnifiedDocumentForm({
       "heir_2_relation",
     ].includes(key)
 
-  const getValueByKey = (key: string) => {
+  const getValueByKey = useCallback((key: string) => {
     if (!key) return ""
     if (key.includes(".")) {
       const [p, c] = key.split(".")
@@ -132,15 +132,15 @@ export default function UnifiedDocumentForm({
       return obj?.[c] || ""
     }
     return (watchedValues as any)?.[key] || ""
-  }
+  }, [watchedValues])
 
-  const isFieldVisibleInForm = (groupName: string, f: UnifiedField) => {
+  const isFieldVisibleInForm = useCallback((groupName: string, f: UnifiedField) => {
     if (isFieldHidden(f.key)) return false
     if (groupName === "case") return f.key === "case_number" || f.key === "court"
     if (groupName === "insurance")
       return ["recipient_company", "insurance_product", "policyholder", "contract_date_1", "contract_date_2"].includes(f.key)
     return true
-  }
+  }, [])
 
   const requiredVisibleFields = useMemo(() => {
     const out: UnifiedField[] = []
@@ -152,14 +152,14 @@ export default function UnifiedDocumentForm({
       })
     })
     return out
-  }, [groupedFields])
+  }, [groupedFields, isFieldVisibleInForm])
 
   const missingRequired = useMemo(() => {
     return requiredVisibleFields.filter((f) => {
       const v = getValueByKey(f.key)
       return !String(v || "").trim()
     })
-  }, [requiredVisibleFields, watchedValues])
+  }, [requiredVisibleFields, getValueByKey])
 
   const filledRequiredCount = Math.max(0, requiredVisibleFields.length - missingRequired.length)
   const progressPct =
@@ -884,7 +884,7 @@ export default function UnifiedDocumentForm({
       default:
         return null
     }
-  }, [watchedValues, register, setValue, errors, checkboxStates, setCheckboxStates])
+  }, [watchedValues, register, setValue, errors, checkboxStates, setCheckboxStates, deceasedAddress, incidentLocation, incidentSame, partyA2AddressSame, partyAAddress, showPartyA2])
 
   // 그룹별 필드 렌더링 (메모이제이션)
   const renderGroup = useCallback((groupName: string, groupFields: UnifiedField[]) => {
