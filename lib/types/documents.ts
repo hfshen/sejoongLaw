@@ -161,6 +161,12 @@ export type DocumentDataMap = {
   attorney_appointment: AttorneyAppointmentData
   litigation_power: LitigationPowerData
   insurance_consent: InsuranceConsentData
+  // OLD-case 문서들은 동일한 데이터 타입 사용
+  agreement_old: AgreementData
+  power_of_attorney_old: PowerOfAttorneyData
+  attorney_appointment_old: AttorneyAppointmentData
+  litigation_power_old: LitigationPowerData
+  insurance_consent_old: InsuranceConsentData
 }
 
 // 타입 가드 함수들
