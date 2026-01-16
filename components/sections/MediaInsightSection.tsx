@@ -27,13 +27,16 @@ export default function MediaInsightSection() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let isMounted = true
+
     async function fetchArticles() {
       try {
         // 환경 변수 확인
         if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-          console.warn("Supabase credentials not configured")
-          setArticles([])
-          setLoading(false)
+          if (isMounted) {
+            setArticles([])
+            setLoading(false)
+          }
           return
         }
 
@@ -47,16 +50,22 @@ export default function MediaInsightSection() {
           .order("published_at", { ascending: false })
           .limit(6)
 
+        if (!isMounted) return
+
         if (articlesError) {
           console.error("Error fetching articles:", articlesError)
-          setArticles([])
-          setLoading(false)
+          if (isMounted) {
+            setArticles([])
+            setLoading(false)
+          }
           return
         }
 
         if (!articlesData || articlesData.length === 0) {
-          setArticles([])
-          setLoading(false)
+          if (isMounted) {
+            setArticles([])
+            setLoading(false)
+          }
           return
         }
 
@@ -68,10 +77,14 @@ export default function MediaInsightSection() {
           .in("article_id", articleIds)
           .eq("locale", locale)
 
+        if (!isMounted) return
+
         if (i18nError) {
           console.error("Error fetching i18n content:", i18nError)
-          setArticles([])
-          setLoading(false)
+          if (isMounted) {
+            setArticles([])
+            setLoading(false)
+          }
           return
         }
 
@@ -93,16 +106,25 @@ export default function MediaInsightSection() {
           }
         })
 
-        setArticles(transformedArticles)
-        setLoading(false)
+        if (isMounted) {
+          setArticles(transformedArticles)
+          setLoading(false)
+        }
       } catch (error) {
-        console.error("Error in fetchArticles:", error)
-        setArticles([])
-        setLoading(false)
+        if (isMounted) {
+          console.error("Error in fetchArticles:", error)
+          setArticles([])
+          setLoading(false)
+        }
       }
     }
 
+    setLoading(true)
     fetchArticles()
+
+    return () => {
+      isMounted = false
+    }
   }, [activeTab, locale])
 
   const tabs = [

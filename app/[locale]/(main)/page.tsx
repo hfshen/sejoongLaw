@@ -1,17 +1,19 @@
 import { Metadata } from "next"
-import { Suspense } from "react"
 import dynamic from "next/dynamic"
 
-// 섹션들을 동적으로 로드하여 초기 번들 크기 최적화
+// Hero 섹션만 동적 로드 (가장 큰 컴포넌트)
 const HeroSectionAnsan = dynamic(() => import("@/components/sections/ansan/HeroSectionAnsan"), {
   loading: () => <div className="min-h-screen flex items-center justify-center"><div className="animate-pulse text-secondary">Loading...</div></div>,
+  ssr: true, // SSR 활성화로 초기 로딩 개선
 })
-const IntroductionSection = dynamic(() => import("@/components/sections/ansan/IntroductionSection"))
-const ServicesGridSection = dynamic(() => import("@/components/sections/ansan/ServicesGridSection"))
-const PainPointsSection = dynamic(() => import("@/components/sections/ansan/PainPointsSection"))
-const DifferentiatorsSection = dynamic(() => import("@/components/sections/ansan/DifferentiatorsSection"))
-const ContactSectionAnsan = dynamic(() => import("@/components/sections/ansan/ContactSectionAnsan"))
-const CTASectionAnsan = dynamic(() => import("@/components/sections/ansan/CTASectionAnsan"))
+
+// 나머지 섹션들은 정적 import로 변경 (번들 크기가 작은 경우)
+import IntroductionSection from "@/components/sections/ansan/IntroductionSection"
+import ServicesGridSection from "@/components/sections/ansan/ServicesGridSection"
+import PainPointsSection from "@/components/sections/ansan/PainPointsSection"
+import DifferentiatorsSection from "@/components/sections/ansan/DifferentiatorsSection"
+import ContactSectionAnsan from "@/components/sections/ansan/ContactSectionAnsan"
+import CTASectionAnsan from "@/components/sections/ansan/CTASectionAnsan"
 
 export const metadata: Metadata = {
   title: "법률사무소 세중 안산지사 | 원스톱 법률 솔루션",
@@ -66,9 +68,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-pulse text-secondary">Loading...</div></div>}>
-        <HeroSectionAnsan />
-      </Suspense>
+      <HeroSectionAnsan />
       <IntroductionSection />
       <ServicesGridSection />
       <PainPointsSection />

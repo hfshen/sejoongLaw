@@ -63,6 +63,7 @@
     "news": "Berita Terbaru"
   },
   "branches": {
+    "title": "Cabang",
     "headquarter": "Kantor Pusat",
     "uijeongbu": "Cabang Uijeongbu",
     "ansan": "Cabang Ansan"

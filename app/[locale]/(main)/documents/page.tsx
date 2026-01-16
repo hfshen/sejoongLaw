@@ -2,8 +2,6 @@ import { getTranslations } from "next-intl/server"
 import DocumentGenerator from "@/components/documents/DocumentGenerator"
 import { Card, CardContent } from "@/components/ui/Card"
 import { FileText, CheckCircle, Download, Mail } from "lucide-react"
-import Header from "@/components/layout/Header"
-import Footer from "@/components/layout/Footer"
 
 export async function generateMetadata() {
   const t = await getTranslations()
@@ -41,9 +39,7 @@ export default async function DocumentsPage() {
   ]
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-background section-padding">
+    <main className="min-h-screen bg-background section-padding">
         <div className="container-max">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
@@ -98,9 +94,7 @@ export default async function DocumentsPage() {
             </div>
           </div>
         </div>
-      </main>
-      <Footer />
-    </>
+    </main>
   )
 }
 

@@ -63,6 +63,7 @@
     "news": "最新新聞"
   },
   "branches": {
+    "title": "分所",
     "headquarter": "總部",
     "uijeongbu": "議政府分所",
     "ansan": "安山分所"

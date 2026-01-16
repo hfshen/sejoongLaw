@@ -63,6 +63,7 @@
     "news": "Neueste Nachrichten"
   },
   "branches": {
+    "title": "Niederlassungen",
     "headquarter": "Hauptsitz",
     "uijeongbu": "Niederlassung Uijeongbu",
     "ansan": "Niederlassung Ansan"

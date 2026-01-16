@@ -63,6 +63,7 @@
     "news": "Últimas Noticias"
   },
   "branches": {
+    "title": "Sucursales",
     "headquarter": "Sede Central",
     "uijeongbu": "Sucursal de Uijeongbu",
     "ansan": "Sucursal de Ansan"

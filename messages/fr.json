@@ -63,6 +63,7 @@
     "news": "Dernières Nouvelles"
   },
   "branches": {
+    "title": "Succursales",
     "headquarter": "Siège Social",
     "uijeongbu": "Succursale d'Uijeongbu",
     "ansan": "Succursale d'Ansan"

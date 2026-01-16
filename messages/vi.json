@@ -63,6 +63,7 @@
     "news": "Tin tức Mới nhất"
   },
   "branches": {
+    "title": "Chi nhánh",
     "headquarter": "Trụ sở chính",
     "uijeongbu": "Chi nhánh Uijeongbu",
     "ansan": "Chi nhánh Ansan"

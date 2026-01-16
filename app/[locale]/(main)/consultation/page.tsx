@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server"
 import ConsultationForm from "@/components/consultation/ConsultationForm"
 import { Card, CardContent } from "@/components/ui/Card"
 import { Phone, Mail, Clock, CheckCircle } from "lucide-react"
-import Header from "@/components/layout/Header"
 
 export async function generateMetadata() {
   const t = await getTranslations()
@@ -39,9 +38,7 @@ export default async function ConsultationPage() {
   ]
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-background section-padding">
+    <main className="min-h-screen bg-background section-padding">
         <div className="container-max">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
@@ -109,8 +106,7 @@ export default async function ConsultationPage() {
             </div>
           </div>
         </div>
-      </main>
-    </>
+    </main>
   )
 }
 

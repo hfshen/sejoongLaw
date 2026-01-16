@@ -63,6 +63,7 @@
     "news": "最新ニュース"
   },
   "branches": {
+    "title": "支店",
     "headquarter": "本社",
     "uijeongbu": "議政府支店",
     "ansan": "安山支店"

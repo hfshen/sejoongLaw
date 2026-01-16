@@ -111,10 +111,11 @@ export default function Navigation(props?: NavigationProps) {
     },
     {
       path: `/${locale}`,
-      label: t("branches.title") || "지점",
+      label: t("branches.title"),
       children: [
         { path: `/${locale}/headquarter`, label: t("branches.headquarter") },
         { path: `/${locale}/uijeongbu`, label: t("branches.uijeongbu") },
+        { path: `/${locale}/ansan`, label: t("branches.ansan") },
       ],
     },
   ]
