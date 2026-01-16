@@ -1,6 +1,5 @@
 "use client"
 
-import { Metadata } from "next"
 import { Badge } from "@/components/ui/Badge"
 import Tabs from "@/components/ui/Tabs"
 import { Card, CardContent } from "@/components/ui/Card"

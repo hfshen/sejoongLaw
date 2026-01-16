@@ -10,6 +10,11 @@ export default function WeChatMeta() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sejoonglaw.com"
 
   useEffect(() => {
+    // 클라이언트 사이드에서만 실행
+    if (typeof window === "undefined" || typeof navigator === "undefined") {
+      return
+    }
+
     // WeChat User-Agent 감지
     const isWeChat = /MicroMessenger/i.test(navigator.userAgent)
     
@@ -51,7 +56,7 @@ export default function WeChatMeta() {
       })
 
       // WeChat 공유 설정 (WeChat JS-SDK가 로드된 경우)
-      if (typeof window !== "undefined" && (window as any).wx) {
+      if ((window as any).wx) {
         const wx = (window as any).wx
         wx.config({
           // WeChat JS-SDK 설정 (필요시 추가)
@@ -64,7 +69,8 @@ export default function WeChatMeta() {
     }
 
     return () => {
-      if (isWeChat) {
+      // Cleanup: WeChat 클래스 제거
+      if (typeof document !== "undefined") {
         document.documentElement.classList.remove("wechat-mini-program")
       }
     }
