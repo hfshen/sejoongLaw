@@ -1,13 +1,19 @@
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
 import { notFound } from "next/navigation"
+import { Suspense } from "react"
+import dynamic from "next/dynamic"
 import { locales, type Locale } from "@/lib/i18n"
 import LocaleAttributes from "@/components/layout/LocaleAttributes"
 import { StructuredData } from "@/components/seo/StructuredData"
-import WeChatMeta from "@/components/seo/WeChatMeta"
 import AnalyticsProvider from "@/components/analytics/AnalyticsProvider"
 import { Analytics } from "@vercel/analytics/next"
 import type { Metadata } from "next"
+
+// WeChatMeta를 동적으로 로드 (클라이언트 컴포넌트이므로)
+const WeChatMeta = dynamic(() => import("@/components/seo/WeChatMeta"), {
+  ssr: false,
+})
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
@@ -115,7 +121,9 @@ export default async function LocaleLayout({
       <StructuredData type="Organization" locale={locale} />
       <StructuredData type="LegalService" locale={locale} />
       <StructuredData type="WebSite" locale={locale} />
-      <WeChatMeta />
+      <Suspense fallback={null}>
+        <WeChatMeta />
+      </Suspense>
       <AnalyticsProvider>
         <NextIntlClientProvider messages={messages}>
           <LocaleAttributes />

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import { useLocale } from "next-intl"
 
@@ -8,10 +8,16 @@ export default function WeChatMeta() {
   const pathname = usePathname()
   const locale = useLocale()
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sejoonglaw.com"
+  const [mounted, setMounted] = useState(false)
+
+  // 클라이언트 사이드 마운트 확인
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
-    // 클라이언트 사이드에서만 실행
-    if (typeof window === "undefined" || typeof navigator === "undefined") {
+    // 마운트되지 않았거나 클라이언트 사이드가 아니면 실행하지 않음
+    if (!mounted || typeof window === "undefined" || typeof navigator === "undefined") {
       return
     }
 
@@ -74,7 +80,12 @@ export default function WeChatMeta() {
         document.documentElement.classList.remove("wechat-mini-program")
       }
     }
-  }, [pathname, baseUrl])
+  }, [mounted, pathname, baseUrl])
+
+  // 마운트되지 않았으면 아무것도 렌더링하지 않음
+  if (!mounted) {
+    return null
+  }
 
   return null
 }
