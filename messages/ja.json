@@ -136,5 +136,128 @@
     "privacyPolicy": "個人情報処理方針",
     "emailRejection": "メール無断収集拒否",
     "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."
+  },
+  "pages": {
+    "realEstate": {
+      "title": "不動産紛争",
+      "description": "不動産契約、所有権紛争、賃貸紛争など、様々な不動産関連の法的問題を専門的に解決します。",
+      "badge": "訴訟業務",
+      "mainServices": "主なサービス",
+      "process": "処理プロセス",
+      "faq": "よくある質問",
+      "ctaTitle": "今すぐ相談を受けてください",
+      "ctaDescription": "不動産紛争専門弁護士が直接相談いたします。",
+      "ctaButton": "無料相談申し込み",
+      "services": {
+        "contract": {
+          "title": "不動産契約紛争",
+          "description": "売買契約、全税契約、賃貸契約など不動産契約関連の紛争解決"
+        },
+        "ownership": {
+          "title": "所有権紛争",
+          "description": "登記簿謄本の誤り、名義信託、所有権移転など所有権関連の紛争"
+        },
+        "lease": {
+          "title": "賃貸紛争",
+          "description": "全税金返還、保証金返還、契約更新など賃貸関連の紛争"
+        },
+        "construction": {
+          "title": "建設紛争",
+          "description": "瑕疵補修、工事遅延、契約解除など建設関連の紛争"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "相談及び事件分析",
+          "description": "お客様との相談を通じて事件の全般的な状況を把握し分析します。"
+        },
+        "investigation": {
+          "title": "証拠収集及び調査",
+          "description": "関連書類、契約書、証拠資料を収集し法的検討を進めます。"
+        },
+        "strategy": {
+          "title": "法的検討及び戦略樹立",
+          "description": "収集した資料を基に法的検討を行い解決戦略を樹立します。"
+        },
+        "negotiation": {
+          "title": "交渉及び調停",
+          "description": "相手方との交渉を通じて調停の可能性を模索します。"
+        },
+        "litigation": {
+          "title": "訴訟進行（必要時）",
+          "description": "交渉が不可能な場合、訴訟を通じてお客様の権利を保護します。"
+        }
+      },
+      "faqs": {
+        "duration": {
+          "question": "不動産紛争訴訟期間はどのくらいかかりますか？",
+          "answer": "事件の複雑度によって異なりますが、一般的に6ヶ月から1年程度かかります。簡単な事件の場合はより早く解決できます。"
+        },
+        "free": {
+          "question": "不動産紛争相談は無料ですか？",
+          "answer": "はい、初期相談は無料で提供されます。相談を通じて事件の概要を把握し解決案を提示いたします。"
+        },
+        "types": {
+          "question": "どのような種類の不動産紛争を扱いますか？",
+          "answer": "不動産契約紛争、所有権紛争、賃貸紛争、建設紛争など、すべての不動産関連の法的問題を扱います。"
+        }
+      }
+    },
+    "consultation": {
+      "title": "無料相談申し込み",
+      "description": "世中法律事務所の専門弁護士が直接相談いたします。",
+      "subDescription": "以下のフォームにご記入いただければ、早急にご連絡いたします。",
+      "benefits": "相談特典",
+      "contact": "連絡先",
+      "benefitItems": {
+        "direct": {
+          "title": "専門弁護士直接相談",
+          "description": "経験豊富な専門弁護士が直接相談いたします。"
+        },
+        "fast": {
+          "title": "迅速な対応",
+          "description": "相談申し込み後24時間以内にご連絡いたします。"
+        },
+        "free": {
+          "title": "無料相談",
+          "description": "初期相談は無料で提供されます。"
+        },
+        "multiple": {
+          "title": "様々な連絡方法",
+          "description": "電話、メール、訪問相談すべて可能です。"
+        }
+      }
+    },
+    "documents": {
+      "title": "法律文書生成",
+      "description": "必要な法律文書を簡単に生成してください。",
+      "subDescription": "相談申込書、契約書検討依頼書、証明書依頼書などを自動で生成できます。",
+      "features": "主な機能",
+      "notice": "ご案内",
+      "featuresItems": {
+        "templates": {
+          "title": "様々な文書テンプレート",
+          "description": "相談申込書から契約書まで様々な法律文書を提供します。"
+        },
+        "download": {
+          "title": "即座のPDFダウンロード",
+          "description": "生成された文書を即座にPDFでダウンロードできます。"
+        },
+        "email": {
+          "title": "メール自動送信",
+          "description": "生成された文書が自動的にメールで送信されます。"
+        },
+        "review": {
+          "title": "法律専門家検討",
+          "description": "生成された文書は専門弁護士が検討します。"
+        }
+      },
+      "noticeItems": {
+        "review": "生成された文書は世中法律事務所で検討します。",
+        "pdf": "文書はPDF形式でダウンロードされます。",
+        "autoEmail": "メールでも自動送信されます。",
+        "modification": "追加修正が必要な場合は、相談を通じてご案内いたします。"
+      }
+    }
   }
 }

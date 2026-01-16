@@ -6,9 +6,8 @@ import { FileText, CheckCircle, Download, Mail } from "lucide-react"
 export async function generateMetadata() {
   const t = await getTranslations()
   return {
-    title: "법률 문서 생성 | 법무법인 세중",
-    description:
-      "상담 신청서, 계약서 검토 요청서, 증명서 요청서 등 필요한 법률 문서를 자동으로 생성하세요.",
+    title: `${t("pages.documents.title")} | ${t("common.title")}`,
+    description: t("pages.documents.description"),
   }
 }
 
@@ -18,23 +17,23 @@ export default async function DocumentsPage() {
   const features = [
     {
       icon: <FileText className="w-6 h-6" />,
-      title: "다양한 문서 템플릿",
-      description: "상담 신청서부터 계약서까지 다양한 법률 문서를 제공합니다.",
+      title: t("pages.documents.featuresItems.templates.title"),
+      description: t("pages.documents.featuresItems.templates.description"),
     },
     {
       icon: <Download className="w-6 h-6" />,
-      title: "즉시 PDF 다운로드",
-      description: "생성된 문서를 즉시 PDF로 다운로드할 수 있습니다.",
+      title: t("pages.documents.featuresItems.download.title"),
+      description: t("pages.documents.featuresItems.download.description"),
     },
     {
       icon: <Mail className="w-6 h-6" />,
-      title: "이메일 자동 발송",
-      description: "생성된 문서가 자동으로 이메일로 발송됩니다.",
+      title: t("pages.documents.featuresItems.email.title"),
+      description: t("pages.documents.featuresItems.email.description"),
     },
     {
       icon: <CheckCircle className="w-6 h-6" />,
-      title: "법률 전문가 검토",
-      description: "생성된 문서는 전문 변호사가 검토합니다.",
+      title: t("pages.documents.featuresItems.review.title"),
+      description: t("pages.documents.featuresItems.review.description"),
     },
   ]
 
@@ -43,12 +42,11 @@ export default async function DocumentsPage() {
         <div className="container-max">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
-              <h1 className="section-title">법률 문서 생성</h1>
+              <h1 className="section-title">{t("pages.documents.title")}</h1>
               <p className="body-text max-w-2xl mx-auto">
-                필요한 법률 문서를 간편하게 생성하세요.
+                {t("pages.documents.description")}
                 <br />
-                상담 신청서, 계약서 검토 요청서, 증명서 요청서 등을 자동으로
-                생성할 수 있습니다.
+                {t("pages.documents.subDescription")}
               </p>
             </div>
 
@@ -59,7 +57,7 @@ export default async function DocumentsPage() {
               <div className="space-y-6">
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="font-bold text-lg mb-4">주요 기능</h3>
+                    <h3 className="font-bold text-lg mb-4">{t("pages.documents.features")}</h3>
                     <div className="space-y-4">
                       {features.map((feature, index) => (
                         <div key={index} className="flex gap-3">
@@ -81,12 +79,12 @@ export default async function DocumentsPage() {
                 </Card>
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="font-bold text-lg mb-4">안내사항</h3>
+                    <h3 className="font-bold text-lg mb-4">{t("pages.documents.notice")}</h3>
                     <ul className="space-y-2 text-sm text-text-secondary">
-                      <li>• 생성된 문서는 법무법인 세중에서 검토합니다.</li>
-                      <li>• 문서는 PDF 형식으로 다운로드됩니다.</li>
-                      <li>• 이메일로도 자동 발송됩니다.</li>
-                      <li>• 추가 수정이 필요한 경우 상담을 통해 안내받으실 수 있습니다.</li>
+                      <li>• {t("pages.documents.noticeItems.review")}</li>
+                      <li>• {t("pages.documents.noticeItems.pdf")}</li>
+                      <li>• {t("pages.documents.noticeItems.autoEmail")}</li>
+                      <li>• {t("pages.documents.noticeItems.modification")}</li>
                     </ul>
                   </CardContent>
                 </Card>

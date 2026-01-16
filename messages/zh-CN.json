@@ -135,5 +135,128 @@
     "privacyPolicy": "隐私政策",
     "emailRejection": "拒绝邮件收集",
     "copyright": "版权所有 © 世中律师事务所。保留所有权利。"
+  },
+  "pages": {
+    "realEstate": {
+      "title": "房地产纠纷",
+      "description": "我们专业解决房地产合同、所有权纠纷、租赁纠纷等各种房地产相关的法律问题。",
+      "badge": "诉讼业务",
+      "mainServices": "主要服务",
+      "process": "处理流程",
+      "faq": "常见问题",
+      "ctaTitle": "立即咨询",
+      "ctaDescription": "房地产纠纷专业律师直接为您提供咨询。",
+      "ctaButton": "免费咨询申请",
+      "services": {
+        "contract": {
+          "title": "房地产合同纠纷",
+          "description": "解决买卖合同、全税合同、租赁合同等房地产合同相关纠纷"
+        },
+        "ownership": {
+          "title": "所有权纠纷",
+          "description": "登记簿错误、名义信托、所有权转移等所有权相关纠纷"
+        },
+        "lease": {
+          "title": "租赁纠纷",
+          "description": "全税返还、保证金返还、合同续签等租赁相关纠纷"
+        },
+        "construction": {
+          "title": "建设纠纷",
+          "description": "缺陷维修、工程延期、合同解除等建设相关纠纷"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "咨询及案件分析",
+          "description": "通过与客户咨询，了解和分析案件的整体情况。"
+        },
+        "investigation": {
+          "title": "证据收集及调查",
+          "description": "收集相关文件、合同、证据材料并进行法律审查。"
+        },
+        "strategy": {
+          "title": "法律审查及策略制定",
+          "description": "基于收集的材料进行法律审查并制定解决策略。"
+        },
+        "negotiation": {
+          "title": "协商及调解",
+          "description": "通过与对方协商寻求调解的可能性。"
+        },
+        "litigation": {
+          "title": "诉讼进行（如需要）",
+          "description": "如果协商不可能，通过诉讼保护客户的权益。"
+        }
+      },
+      "faqs": {
+        "duration": {
+          "question": "房地产纠纷诉讼需要多长时间？",
+          "answer": "根据案件的复杂程度而不同，一般需要6个月到1年左右。简单案件可以更快解决。"
+        },
+        "free": {
+          "question": "房地产纠纷咨询是免费的吗？",
+          "answer": "是的，初次咨询是免费提供的。通过咨询，我们了解案件概况并提供解决方案。"
+        },
+        "types": {
+          "question": "处理哪些类型的房地产纠纷？",
+          "answer": "我们处理所有房地产相关的法律问题，包括房地产合同纠纷、所有权纠纷、租赁纠纷和建设纠纷。"
+        }
+      }
+    },
+    "consultation": {
+      "title": "免费咨询申请",
+      "description": "世中律师事务所的专业律师直接为您提供咨询。",
+      "subDescription": "请填写下面的表格，我们将尽快与您联系。",
+      "benefits": "咨询优惠",
+      "contact": "联系方式",
+      "benefitItems": {
+        "direct": {
+          "title": "专业律师直接咨询",
+          "description": "经验丰富的专业律师直接为您提供咨询。"
+        },
+        "fast": {
+          "title": "快速响应",
+          "description": "咨询申请后24小时内与您联系。"
+        },
+        "free": {
+          "title": "免费咨询",
+          "description": "初次咨询免费提供。"
+        },
+        "multiple": {
+          "title": "多种联系方式",
+          "description": "电话、电子邮件、访问咨询均可。"
+        }
+      }
+    },
+    "documents": {
+      "title": "法律文件生成",
+      "description": "轻松生成所需的法律文件。",
+      "subDescription": "可以自动生成咨询申请表、合同审查请求书、证明书请求书等。",
+      "features": "主要功能",
+      "notice": "注意事项",
+      "featuresItems": {
+        "templates": {
+          "title": "多种文件模板",
+          "description": "提供从咨询申请表到合同的各种法律文件。"
+        },
+        "download": {
+          "title": "即时PDF下载",
+          "description": "可以立即将生成的文件下载为PDF格式。"
+        },
+        "email": {
+          "title": "自动邮件发送",
+          "description": "生成的文件会自动通过邮件发送。"
+        },
+        "review": {
+          "title": "法律专家审查",
+          "description": "生成的文件由专业律师审查。"
+        }
+      },
+      "noticeItems": {
+        "review": "生成的文件由世中律师事务所审查。",
+        "pdf": "文件以PDF格式下载。",
+        "autoEmail": "也会自动通过邮件发送。",
+        "modification": "如需额外修改，可通过咨询获得指导。"
+      }
+    }
   }
 }

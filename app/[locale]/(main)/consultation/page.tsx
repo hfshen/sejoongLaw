@@ -6,8 +6,8 @@ import { Phone, Mail, Clock, CheckCircle } from "lucide-react"
 export async function generateMetadata() {
   const t = await getTranslations()
   return {
-    title: "무료 상담 신청 | 법무법인 세중",
-    description: "전문 변호사가 직접 상담해드립니다. 무료 상담으로 시작하세요.",
+    title: `${t("pages.consultation.title")} | ${t("common.title")}`,
+    description: t("pages.consultation.description"),
   }
 }
 
@@ -17,23 +17,23 @@ export default async function ConsultationPage() {
   const benefits = [
     {
       icon: <CheckCircle className="w-6 h-6" />,
-      title: "전문 변호사 직접 상담",
-      description: "경험이 풍부한 전문 변호사가 직접 상담해드립니다.",
+      title: t("pages.consultation.benefitItems.direct.title"),
+      description: t("pages.consultation.benefitItems.direct.description"),
     },
     {
       icon: <Clock className="w-6 h-6" />,
-      title: "빠른 응답",
-      description: "상담 신청 후 24시간 이내에 연락드립니다.",
+      title: t("pages.consultation.benefitItems.fast.title"),
+      description: t("pages.consultation.benefitItems.fast.description"),
     },
     {
       icon: <CheckCircle className="w-6 h-6" />,
-      title: "무료 상담",
-      description: "초기 상담은 무료로 제공됩니다.",
+      title: t("pages.consultation.benefitItems.free.title"),
+      description: t("pages.consultation.benefitItems.free.description"),
     },
     {
       icon: <Phone className="w-6 h-6" />,
-      title: "다양한 연락 방법",
-      description: "전화, 이메일, 방문 상담 모두 가능합니다.",
+      title: t("pages.consultation.benefitItems.multiple.title"),
+      description: t("pages.consultation.benefitItems.multiple.description"),
     },
   ]
 
@@ -42,11 +42,11 @@ export default async function ConsultationPage() {
         <div className="container-max">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h1 className="section-title">무료 상담 신청</h1>
+              <h1 className="section-title">{t("pages.consultation.title")}</h1>
               <p className="body-text max-w-2xl mx-auto">
-                법무법인 세중의 전문 변호사가 직접 상담해드립니다.
+                {t("pages.consultation.description")}
                 <br />
-                아래 양식을 작성해주시면 빠른 시일 내에 연락드리겠습니다.
+                {t("pages.consultation.subDescription")}
               </p>
             </div>
 
@@ -57,7 +57,7 @@ export default async function ConsultationPage() {
               <div className="space-y-6">
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="font-bold text-lg mb-4">상담 혜택</h3>
+                    <h3 className="font-bold text-lg mb-4">{t("pages.consultation.benefits")}</h3>
                     <div className="space-y-4">
                       {benefits.map((benefit, index) => (
                         <div key={index} className="flex gap-3">
@@ -79,7 +79,7 @@ export default async function ConsultationPage() {
                 </Card>
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="font-bold text-lg mb-4">연락처</h3>
+                    <h3 className="font-bold text-lg mb-4">{t("pages.consultation.contact")}</h3>
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
                         <Phone className="w-5 h-5 text-primary" />

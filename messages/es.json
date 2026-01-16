@@ -135,5 +135,128 @@
     "privacyPolicy": "Privacy Policy",
     "emailRejection": "Email Collection Rejection",
     "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."
+  },
+  "pages": {
+    "realEstate": {
+      "title": "Disputas Inmobiliarias",
+      "description": "Resolvemos profesionalmente diversos problemas legales relacionados con bienes raíces, como contratos inmobiliarios, disputas de propiedad y disputas de arrendamiento.",
+      "badge": "Litigios",
+      "mainServices": "Servicios Principales",
+      "process": "Proceso",
+      "faq": "Preguntas Frecuentes",
+      "ctaTitle": "Consulte Ahora",
+      "ctaDescription": "Especialistas en disputas inmobiliarias brindan consulta directa.",
+      "ctaButton": "Consulta Gratuita",
+      "services": {
+        "contract": {
+          "title": "Disputas de Contratos Inmobiliarios",
+          "description": "Resolución de disputas relacionadas con contratos inmobiliarios como contratos de venta, contratos de jeonse y contratos de arrendamiento"
+        },
+        "ownership": {
+          "title": "Disputas de Propiedad",
+          "description": "Disputas relacionadas con la propiedad como errores de registro, fideicomisos nominales y transferencias de propiedad"
+        },
+        "lease": {
+          "title": "Disputas de Arrendamiento",
+          "description": "Disputas relacionadas con el arrendamiento como devolución de depósito jeonse, devolución de depósito de garantía y renovación de contratos"
+        },
+        "construction": {
+          "title": "Disputas de Construcción",
+          "description": "Disputas relacionadas con la construcción como reparación de defectos, retrasos en la construcción y terminación de contratos"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consulta y Análisis del Caso",
+          "description": "Comprendemos y analizamos la situación general del caso a través de consultas con el cliente."
+        },
+        "investigation": {
+          "title": "Recopilación de Evidencias e Investigación",
+          "description": "Recopilamos documentos, contratos y materiales de evidencia relevantes y realizamos una revisión legal."
+        },
+        "strategy": {
+          "title": "Revisión Legal y Desarrollo de Estrategia",
+          "description": "Realizamos una revisión legal basada en los materiales recopilados y desarrollamos una estrategia de resolución."
+        },
+        "negotiation": {
+          "title": "Negociación y Mediación",
+          "description": "Exploramos la posibilidad de mediación a través de negociaciones con la otra parte."
+        },
+        "litigation": {
+          "title": "Litigio (si es necesario)",
+          "description": "Si la negociación no es posible, protegemos los derechos del cliente a través de litigios."
+        }
+      },
+      "faqs": {
+        "duration": {
+          "question": "¿Cuánto tiempo toma una demanda por disputa inmobiliaria?",
+          "answer": "Varía según la complejidad del caso, pero generalmente toma de 6 meses a 1 año. Los casos simples pueden resolverse más rápidamente."
+        },
+        "free": {
+          "question": "¿La consulta por disputa inmobiliaria es gratuita?",
+          "answer": "Sí, la consulta inicial se proporciona de forma gratuita. A través de la consulta, comprendemos el resumen del caso y presentamos soluciones."
+        },
+        "types": {
+          "question": "¿Qué tipos de disputas inmobiliarias manejan?",
+          "answer": "Manejamos todos los problemas legales relacionados con bienes raíces, incluyendo disputas de contratos inmobiliarios, disputas de propiedad, disputas de arrendamiento y disputas de construcción."
+        }
+      }
+    },
+    "consultation": {
+      "title": "Consulta Gratuita",
+      "description": "Los abogados profesionales de Sejoong Law Firm brindan consulta directa.",
+      "subDescription": "Por favor complete el formulario a continuación y nos pondremos en contacto con usted lo antes posible.",
+      "benefits": "Beneficios de Consulta",
+      "contact": "Contacto",
+      "benefitItems": {
+        "direct": {
+          "title": "Consulta Directa con Abogado Profesional",
+          "description": "Abogados profesionales experimentados brindan consulta directa."
+        },
+        "fast": {
+          "title": "Respuesta Rápida",
+          "description": "Nos pondremos en contacto con usted dentro de las 24 horas posteriores a la solicitud de consulta."
+        },
+        "free": {
+          "title": "Consulta Gratuita",
+          "description": "La consulta inicial se proporciona de forma gratuita."
+        },
+        "multiple": {
+          "title": "Varios Métodos de Contacto",
+          "description": "Teléfono, correo electrónico y consulta en persona están disponibles."
+        }
+      }
+    },
+    "documents": {
+      "title": "Generación de Documentos Legales",
+      "description": "Genere fácilmente los documentos legales que necesita.",
+      "subDescription": "Puede generar automáticamente solicitudes de consulta, solicitudes de revisión de contratos, solicitudes de certificados y más.",
+      "features": "Características Principales",
+      "notice": "Aviso",
+      "featuresItems": {
+        "templates": {
+          "title": "Varios Plantillas de Documentos",
+          "description": "Proporcionamos varios documentos legales desde solicitudes de consulta hasta contratos."
+        },
+        "download": {
+          "title": "Descarga Instantánea de PDF",
+          "description": "Puede descargar inmediatamente el documento generado como PDF."
+        },
+        "email": {
+          "title": "Envío Automático por Correo",
+          "description": "Los documentos generados se envían automáticamente por correo electrónico."
+        },
+        "review": {
+          "title": "Revisión de Expertos Legales",
+          "description": "Los documentos generados son revisados por abogados profesionales."
+        }
+      },
+      "noticeItems": {
+        "review": "Los documentos generados son revisados por Sejoong Law Firm.",
+        "pdf": "Los documentos se descargan en formato PDF.",
+        "autoEmail": "También se envían automáticamente por correo electrónico.",
+        "modification": "Si se necesitan modificaciones adicionales, puede ser guiado a través de consulta."
+      }
+    }
   }
 }

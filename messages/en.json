@@ -187,6 +187,129 @@
     "privacyPolicy": "Privacy Policy",
     "emailRejection": "Email Collection Rejection",
     "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."
+  },
+  "pages": {
+    "realEstate": {
+      "title": "Real Estate Disputes",
+      "description": "We professionally resolve various real estate-related legal issues such as real estate contracts, ownership disputes, and lease disputes.",
+      "badge": "Litigation",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Real estate dispute specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "contract": {
+          "title": "Real Estate Contract Disputes",
+          "description": "Resolution of disputes related to real estate contracts such as sales contracts, jeonse contracts, and lease contracts"
+        },
+        "ownership": {
+          "title": "Ownership Disputes",
+          "description": "Ownership-related disputes such as registry errors, nominee trusts, and ownership transfers"
+        },
+        "lease": {
+          "title": "Lease Disputes",
+          "description": "Lease-related disputes such as jeonse deposit returns, security deposit returns, and contract renewals"
+        },
+        "construction": {
+          "title": "Construction Disputes",
+          "description": "Construction-related disputes such as defect repairs, construction delays, and contract terminations"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Case Analysis",
+          "description": "We understand and analyze the overall situation of the case through consultation with the client."
+        },
+        "investigation": {
+          "title": "Evidence Collection and Investigation",
+          "description": "We collect relevant documents, contracts, and evidence materials and conduct legal review."
+        },
+        "strategy": {
+          "title": "Legal Review and Strategy Development",
+          "description": "We conduct legal review based on the collected materials and develop a resolution strategy."
+        },
+        "negotiation": {
+          "title": "Negotiation and Mediation",
+          "description": "We explore the possibility of mediation through negotiation with the other party."
+        },
+        "litigation": {
+          "title": "Litigation (if necessary)",
+          "description": "If negotiation is not possible, we protect the client's rights through litigation."
+        }
+      },
+      "faqs": {
+        "duration": {
+          "question": "How long does a real estate dispute lawsuit take?",
+          "answer": "It varies depending on the complexity of the case, but generally takes about 6 months to 1 year. Simple cases can be resolved more quickly."
+        },
+        "free": {
+          "question": "Is real estate dispute consultation free?",
+          "answer": "Yes, initial consultation is provided free of charge. Through consultation, we understand the overview of the case and present solutions."
+        },
+        "types": {
+          "question": "What types of real estate disputes do you handle?",
+          "answer": "We handle all real estate-related legal issues including real estate contract disputes, ownership disputes, lease disputes, and construction disputes."
+        }
+      }
+    },
+    "consultation": {
+      "title": "Free Consultation",
+      "description": "Sejoong Law Firm's professional attorneys provide direct consultation.",
+      "subDescription": "Please fill out the form below and we will contact you as soon as possible.",
+      "benefits": "Consultation Benefits",
+      "contact": "Contact",
+      "benefitItems": {
+        "direct": {
+          "title": "Direct Consultation with Professional Attorney",
+          "description": "Experienced professional attorneys provide direct consultation."
+        },
+        "fast": {
+          "title": "Fast Response",
+          "description": "We will contact you within 24 hours after consultation request."
+        },
+        "free": {
+          "title": "Free Consultation",
+          "description": "Initial consultation is provided free of charge."
+        },
+        "multiple": {
+          "title": "Various Contact Methods",
+          "description": "Phone, email, and in-person consultation are all available."
+        }
+      }
+    },
+    "documents": {
+      "title": "Legal Document Generation",
+      "description": "Easily generate the legal documents you need.",
+      "subDescription": "You can automatically generate consultation applications, contract review requests, certificate requests, and more.",
+      "features": "Key Features",
+      "notice": "Notice",
+      "featuresItems": {
+        "templates": {
+          "title": "Various Document Templates",
+          "description": "We provide various legal documents from consultation applications to contracts."
+        },
+        "download": {
+          "title": "Instant PDF Download",
+          "description": "You can immediately download the generated document as a PDF."
+        },
+        "email": {
+          "title": "Automatic Email Delivery",
+          "description": "Generated documents are automatically sent by email."
+        },
+        "review": {
+          "title": "Legal Expert Review",
+          "description": "Generated documents are reviewed by professional attorneys."
+        }
+      },
+      "noticeItems": {
+        "review": "Generated documents are reviewed by Sejoong Law Firm.",
+        "pdf": "Documents are downloaded in PDF format.",
+        "autoEmail": "They are also automatically sent by email.",
+        "modification": "If additional modifications are needed, you can be guided through consultation."
+      }
+    }
   }
 }
 

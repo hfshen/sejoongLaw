@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server"
+import { getTranslations, getLocale } from "next-intl/server"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
@@ -8,35 +8,34 @@ import Link from "next/link"
 export async function generateMetadata() {
   const t = await getTranslations()
   return {
-    title: "부동산 분쟁 | 법무법인 세중",
-    description:
-      "부동산 계약, 소유권 분쟁, 임대차 분쟁 등 다양한 부동산 관련 법률 문제를 전문적으로 해결합니다.",
+    title: `${t("pages.realEstate.title")} | ${t("common.title")}`,
+    description: t("pages.realEstate.description"),
   }
 }
 
 export default async function RealEstatePage() {
   const t = await getTranslations()
+  const locale = await getLocale()
 
   const services = [
     {
-      title: "부동산 계약 분쟁",
-      description:
-        "매매계약, 전세계약, 임대차계약 등 부동산 계약 관련 분쟁 해결",
+      title: t("pages.realEstate.services.contract.title"),
+      description: t("pages.realEstate.services.contract.description"),
       icon: <FileText className="w-6 h-6" />,
     },
     {
-      title: "소유권 분쟁",
-      description: "등기부등본 오류, 명의신탁, 소유권 이전 등 소유권 관련 분쟁",
+      title: t("pages.realEstate.services.ownership.title"),
+      description: t("pages.realEstate.services.ownership.description"),
       icon: <Scale className="w-6 h-6" />,
     },
     {
-      title: "임대차 분쟁",
-      description: "전세금 반환, 보증금 반환, 계약 갱신 등 임대차 관련 분쟁",
+      title: t("pages.realEstate.services.lease.title"),
+      description: t("pages.realEstate.services.lease.description"),
       icon: <Users className="w-6 h-6" />,
     },
     {
-      title: "건설 분쟁",
-      description: "하자보수, 공사 지연, 계약 해지 등 건설 관련 분쟁",
+      title: t("pages.realEstate.services.construction.title"),
+      description: t("pages.realEstate.services.construction.description"),
       icon: <CheckCircle className="w-6 h-6" />,
     },
   ]
@@ -44,46 +43,43 @@ export default async function RealEstatePage() {
   const process = [
     {
       step: 1,
-      title: "상담 및 사건 분석",
-      description: "고객과 상담을 통해 사건의 전반적인 상황을 파악하고 분석합니다.",
+      title: t("pages.realEstate.processSteps.consultation.title"),
+      description: t("pages.realEstate.processSteps.consultation.description"),
     },
     {
       step: 2,
-      title: "증거 수집 및 조사",
-      description: "관련 서류, 계약서, 증거 자료를 수집하고 법적 검토를 진행합니다.",
+      title: t("pages.realEstate.processSteps.investigation.title"),
+      description: t("pages.realEstate.processSteps.investigation.description"),
     },
     {
       step: 3,
-      title: "법률 검토 및 전략 수립",
-      description: "수집한 자료를 바탕으로 법률적 검토를 하고 해결 전략을 수립합니다.",
+      title: t("pages.realEstate.processSteps.strategy.title"),
+      description: t("pages.realEstate.processSteps.strategy.description"),
     },
     {
       step: 4,
-      title: "협상 및 조정",
-      description: "상대방과의 협상을 통해 조정 가능성을 모색합니다.",
+      title: t("pages.realEstate.processSteps.negotiation.title"),
+      description: t("pages.realEstate.processSteps.negotiation.description"),
     },
     {
       step: 5,
-      title: "소송 진행 (필요시)",
-      description: "협상이 불가능한 경우 소송을 통해 고객의 권리를 보호합니다.",
+      title: t("pages.realEstate.processSteps.litigation.title"),
+      description: t("pages.realEstate.processSteps.litigation.description"),
     },
   ]
 
   const faqs = [
     {
-      question: "부동산 분쟁 소송 기간은 얼마나 걸리나요?",
-      answer:
-        "사건의 복잡도에 따라 다르지만, 일반적으로 6개월에서 1년 정도 소요됩니다. 간단한 사건의 경우 더 빠르게 해결될 수 있습니다.",
+      question: t("pages.realEstate.faqs.duration.question"),
+      answer: t("pages.realEstate.faqs.duration.answer"),
     },
     {
-      question: "부동산 분쟁 상담은 무료인가요?",
-      answer:
-        "네, 초기 상담은 무료로 제공됩니다. 상담을 통해 사건의 개요를 파악하고 해결 방안을 제시해드립니다.",
+      question: t("pages.realEstate.faqs.free.question"),
+      answer: t("pages.realEstate.faqs.free.answer"),
     },
     {
-      question: "어떤 종류의 부동산 분쟁을 다루나요?",
-      answer:
-        "부동산 계약 분쟁, 소유권 분쟁, 임대차 분쟁, 건설 분쟁 등 모든 부동산 관련 법률 문제를 다룹니다.",
+      question: t("pages.realEstate.faqs.types.question"),
+      answer: t("pages.realEstate.faqs.types.answer"),
     },
   ]
 
@@ -95,12 +91,11 @@ export default async function RealEstatePage() {
           <div className="container-max">
             <div className="max-w-3xl mx-auto text-center">
               <Badge variant="primary" className="mb-4">
-                소송업무
+                {t("pages.realEstate.badge")}
               </Badge>
-              <h1 className="section-title mb-6">부동산 분쟁</h1>
+              <h1 className="section-title mb-6">{t("pages.realEstate.title")}</h1>
               <p className="body-text text-lg">
-                부동산 계약, 소유권 분쟁, 임대차 분쟁 등 다양한 부동산 관련
-                법률 문제를 전문적으로 해결합니다.
+                {t("pages.realEstate.description")}
               </p>
             </div>
           </div>
@@ -109,7 +104,7 @@ export default async function RealEstatePage() {
         {/* Services */}
         <section className="section-padding">
           <div className="container-max">
-            <h2 className="section-title text-center mb-12">주요 서비스</h2>
+            <h2 className="section-title text-center mb-12">{t("pages.realEstate.mainServices")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {services.map((service, index) => (
                 <Card key={index} hover>
@@ -129,7 +124,7 @@ export default async function RealEstatePage() {
         {/* Process */}
         <section className="section-padding bg-background-alt">
           <div className="container-max">
-            <h2 className="section-title text-center mb-12">처리 프로세스</h2>
+            <h2 className="section-title text-center mb-12">{t("pages.realEstate.process")}</h2>
             <div className="max-w-4xl mx-auto">
               <div className="space-y-8">
                 {process.map((item, index) => (
@@ -153,7 +148,7 @@ export default async function RealEstatePage() {
         {/* FAQ */}
         <section className="section-padding">
           <div className="container-max">
-            <h2 className="section-title text-center mb-12">자주 묻는 질문</h2>
+            <h2 className="section-title text-center mb-12">{t("pages.realEstate.faq")}</h2>
             <div className="max-w-3xl mx-auto space-y-6">
               {faqs.map((faq, index) => (
                 <Card key={index}>
@@ -172,15 +167,15 @@ export default async function RealEstatePage() {
         {/* CTA */}
         <section className="section-padding bg-gradient-to-br from-primary to-accent text-white">
           <div className="container-max text-center">
-            <h2 className="text-4xl font-bold mb-6">지금 바로 상담받으세요</h2>
+            <h2 className="text-4xl font-bold mb-6">{t("pages.realEstate.ctaTitle")}</h2>
             <p className="text-xl mb-8 opacity-90">
-              부동산 분쟁 전문 변호사가 직접 상담해드립니다.
+              {t("pages.realEstate.ctaDescription")}
             </p>
             <Link
-              href="/consultation"
+              href={`/${locale}/consultation`}
               className="premium-button-secondary px-8 py-4 text-lg bg-white text-primary hover:bg-gray-100"
             >
-              무료 상담 신청
+              {t("pages.realEstate.ctaButton")}
             </Link>
           </div>
         </section>
