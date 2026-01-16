@@ -1,76 +1,48 @@
-"use client"
+import { Metadata } from "next"
+import HeroSection from "@/components/sections/HeroSection"
+import WhySejoongSection from "@/components/sections/WhySejoongSection"
+import LeaderSection from "@/components/sections/LeaderSection"
+import StatsSection from "@/components/sections/StatsSection"
+import ServicesSection from "@/components/sections/ServicesSection"
+import NetworkSection from "@/components/sections/NetworkSection"
+import CaseStudiesSection from "@/components/sections/CaseStudiesSection"
+import TestimonialsSection from "@/components/sections/TestimonialsSection"
+import CTASection from "@/components/sections/CTASection"
+import InteractiveFAQ from "@/components/faq/InteractiveFAQ"
+import AIChatbot from "@/components/chat/AIChatbot"
+import SmartCTA from "@/components/cta/SmartCTA"
 
-import { useTranslations, useLocale } from "next-intl"
-import Link from "next/link"
-import { FadeInUp, StaggerContainer, StaggerItem } from "@/components/ui/animations"
+export const metadata: Metadata = {
+  title: "법무법인 세중 본사 | 전문 법률 서비스",
+  description:
+    "법무법인 세중은 부동산, 이혼, 상속, 비자, 기업자문 등 다양한 법률 서비스를 제공하는 전문 법무법인입니다.",
+  keywords: [
+    "법무법인",
+    "변호사",
+    "법률 서비스",
+    "부동산 분쟁",
+    "이혼 소송",
+    "비자 신청",
+    "기업 자문",
+  ],
+}
 
 export default function HeadquarterPage() {
-  const t = useTranslations()
-  const locale = useLocale()
-
-  const services = [
-    {
-      path: `/${locale}/litigation/real-estate`,
-      title: t("litigation.realEstate"),
-      description: "Real estate related legal services",
-    },
-    {
-      path: `/${locale}/litigation/divorce`,
-      title: t("litigation.divorce"),
-      description: "Divorce related legal services",
-    },
-    {
-      path: `/${locale}/litigation/inheritance`,
-      title: t("litigation.inheritance"),
-      description: "Inheritance related legal services",
-    },
-    {
-      path: `/${locale}/litigation/traffic`,
-      title: t("litigation.traffic"),
-      description: "Traffic accident related legal services",
-    },
-    {
-      path: `/${locale}/litigation/industrial`,
-      title: t("litigation.industrial"),
-      description: "Industrial accident related legal services",
-    },
-    {
-      path: `/${locale}/litigation/insurance`,
-      title: t("litigation.insurance"),
-      description: "Insurance related legal services",
-    },
-  ]
-
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto container-padding section-padding">
-        <FadeInUp>
-          <div className="text-center mb-16">
-            <h1 className="text-6xl font-bold text-secondary mb-6">
-              {t("branches.headquarter")}
-            </h1>
-            <p className="text-xl text-text-secondary mb-2">
-              {t("common.address")}
-            </p>
-            <p className="text-lg text-primary font-semibold">
-              {t("common.phone")}
-            </p>
-          </div>
-        </FadeInUp>
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service) => (
-            <StaggerItem key={service.path}>
-              <Link href={service.path} className="premium-card">
-                <h2 className="text-2xl font-bold text-secondary mb-3 hover:text-primary transition-colors">
-                  {service.title}
-                </h2>
-                <p className="text-text-secondary">{service.description}</p>
-              </Link>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </div>
-    </div>
+    <>
+      <HeroSection />
+      <WhySejoongSection />
+      <LeaderSection />
+      <StatsSection />
+      <ServicesSection />
+      <NetworkSection />
+      <CaseStudiesSection />
+      <InteractiveFAQ />
+      <TestimonialsSection />
+      <CTASection />
+      <AIChatbot />
+      <SmartCTA variant="floating" position="bottom-right" />
+    </>
   )
 }
 

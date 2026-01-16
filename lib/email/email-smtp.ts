@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer"
 
-const RECIPIENT_EMAIL = "sejoonglaw@gmail.com"
+const RECIPIENT_EMAIL = "contact@sejoonglaw.kr"
 
 // Gmail SMTP 설정
 const createTransporter = () => {
@@ -11,7 +11,7 @@ const createTransporter = () => {
   return nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.GMAIL_USER, // Gmail 주소 (예: sejoonglaw@gmail.com)
+      user: process.env.GMAIL_USER, // Gmail 주소 (예: contact@sejoonglaw.kr)
       pass: process.env.GMAIL_APP_PASSWORD, // Gmail 앱 비밀번호
     },
   })
@@ -123,7 +123,7 @@ export async function sendConsultationConfirmationEmail(data: ConsultationEmailD
           <div style="margin-top: 30px; padding: 20px; background-color: #f9f9f9; border-radius: 5px;">
             <p style="margin: 0;"><strong>문의사항이 있으시면 아래로 연락주세요:</strong></p>
             <p style="margin: 5px 0;">전화: 031-8044-8805</p>
-            <p style="margin: 5px 0;">이메일: sejoonglaw@gmail.com</p>
+            <p style="margin: 5px 0;">이메일: contact@sejoonglaw.kr</p>
           </div>
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
@@ -238,7 +238,7 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData) {
           <div style="margin-top: 30px; padding: 20px; background-color: #f9f9f9; border-radius: 5px;">
             <p style="margin: 0;"><strong>문의사항이 있으시면 아래로 연락주세요:</strong></p>
             <p style="margin: 5px 0;">전화: 031-8044-8805</p>
-            <p style="margin: 5px 0;">이메일: sejoonglaw@gmail.com</p>
+            <p style="margin: 5px 0;">이메일: contact@sejoonglaw.kr</p>
           </div>
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">

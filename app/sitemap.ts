@@ -6,6 +6,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const routes = [
     "",
+    "/ansan",
+    "/headquarter",
+    "/uijeongbu",
     "/consultation",
     "/cases",
     "/about/greeting",
@@ -14,9 +17,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/litigation/real-estate",
     "/litigation/divorce",
     "/litigation/inheritance",
+    "/litigation/traffic",
+    "/litigation/industrial",
+    "/litigation/insurance",
     "/corporate/advisory",
     "/immigration/visa",
+    "/immigration/non-immigrant",
+    "/immigration/immigrant",
     "/foreigner/visa",
+    "/foreigner/stay",
+    "/board",
   ]
 
   const sitemapEntries: MetadataRoute.Sitemap = []

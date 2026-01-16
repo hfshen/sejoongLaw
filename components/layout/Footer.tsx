@@ -54,16 +54,26 @@ export default function Footer() {
               <h4 className="font-semibold mb-2 md:mb-3 text-sm md:text-base">{t("network.title")}</h4>
               <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm">
                 <li>
-                  <span className="text-gray-300 font-semibold">서울 주사무소</span>
+                  <span className="text-accent font-bold">안산 분사무소 (메인)</span>
+                  <p className="text-gray-400 text-xs mt-1">경기도 안산시 단원구 원곡로 45 세중빌딩 2층</p>
+                </li>
+                <li>
+                  <Link
+                    href={`/${locale}/headquarter`}
+                    className="text-gray-300 font-semibold hover:text-accent transition-colors"
+                  >
+                    서울 주사무소
+                  </Link>
                   <p className="text-gray-400 text-xs mt-1">서울특별시 서초구 법원로2길 15, 길도빌딩 303호</p>
                 </li>
                 <li>
-                  <span className="text-gray-300 font-semibold">의정부 분사무소</span>
+                  <Link
+                    href={`/${locale}/uijeongbu`}
+                    className="text-gray-300 font-semibold hover:text-accent transition-colors"
+                  >
+                    의정부 분사무소
+                  </Link>
                   <p className="text-gray-400 text-xs mt-1">경기도 의정부시 녹양로 34번길 30, 406호 (법원 앞)</p>
-                </li>
-                <li>
-                  <span className="text-gray-300 font-semibold">안산 분사무소</span>
-                  <p className="text-gray-400 text-xs mt-1">경기도 안산시 단원구 원곡로 45 세중빌딩 2층</p>
                 </li>
               </ul>
             </div>

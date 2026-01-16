@@ -1,0 +1,105 @@
+{
+  "hero": {
+    "slogan": "From residency to family, workplace, accidents, and criminal cases — Global one-stop legal solutions starting in Ansan.",
+    "cta": {
+      "consultation": "Book Consultation",
+      "call": "Call Now"
+    },
+    "scrollIndicator": "Scroll to learn more"
+  },
+  "introduction": {
+    "title": "Sejoong Law Office Ansan Branch",
+    "content": "Sejoong Law Office (Sejoong Law Firm Ansan Branch) is a one-stop legal service provider based in Wongok-dong, Ansan, offering integrated services in residency/visa/nationality/permanent residence, domestic/international divorce, industrial/traffic accident compensation, wage/severance pay (unpaid) disputes, and civil/criminal cases. For clients struggling with complex procedures and language/document barriers, we provide execution-focused representation from case diagnosis to document organization, settlement/mediation, litigation, and administrative procedures, helping to quickly resolve disputes and substantially restore rights."
+  },
+  "services": {
+    "title": "Core Services",
+    "immigration": {
+      "title": "Immigration/Residency/Status",
+      "description": "Residency extension, status change, registration extension, visa/nationality documents, permanent residence applications, invitation/status adjustment/various administrative document support"
+    },
+    "family": {
+      "title": "Domestic/International Divorce/Family",
+      "description": "Domestic/international divorce litigation, property division, custody/alimony, adoption and adoption dissolution, family relationship matters (including China-related divorce/document issues)"
+    },
+    "compensation": {
+      "title": "Industrial/Traffic Accidents/Damages",
+      "description": "Industrial accident compensation (workplace injuries/unpaid compensation, etc.), traffic accident compensation, settlement (proxy negotiation), damage claims, death case settlement and follow-up procedures"
+    },
+    "labor": {
+      "title": "Wages/Severance/Unpaid",
+      "description": "Workplace/business site unpaid wages, severance disputes, deposit returns and other monetary claim cases"
+    },
+    "litigation": {
+      "title": "Civil/Criminal",
+      "description": "Assault/injury, fraud/voice phishing/online fraud, DUI and traffic accident fines/criminal procedures, sham marriage issues, criminal disposition/judgment-related applications, etc."
+    }
+  },
+  "painPoints": {
+    "title": "Situations Where Sejoong Excels",
+    "items": [
+      {
+        "title": "Employment, family, and business have stopped due to residency issues.",
+        "description": "Quick solutions for clients whose daily lives have stopped due to residency status issues"
+      },
+      {
+        "title": "Divorce/family disputes have become more complicated due to cross-border/document issues.",
+        "description": "Professional handling of complex legal procedures for international marriages"
+      },
+      {
+        "title": "I had an industrial/traffic accident but don't know the compensation process.",
+        "description": "Clear guidance on post-accident compensation procedures and maximizing compensation"
+      },
+      {
+        "title": "I haven't received wages/severance pay and the company is holding out.",
+        "description": "Professional service to securely recover unpaid wages and severance pay"
+      },
+      {
+        "title": "I'm afraid of police/prosecutor procedures for criminal cases (assault/fraud/DUI, etc.).",
+        "description": "Reducing fear of criminal procedures and professional representation for the best outcome"
+      }
+    ]
+  },
+  "differentiators": {
+    "title": "Sejoong's Differentiators",
+    "oneStop": {
+      "title": "One-Stop Structure",
+      "description": "Designed as an integrated flow: Immigration (Administrative) + Disputes (Civil/Criminal) + Compensation (Damages)"
+    },
+    "practical": {
+      "title": "Settlement/Mediation Practical Approach",
+      "description": "Strong positioning in \"resolution\" rather than escalating cases (especially effective for traffic/industrial/unpaid/family matters)"
+    },
+    "global": {
+      "title": "Global Communication",
+      "description": "Structured procedures and documents in ways that multicultural/foreign clients can easily understand"
+    }
+  },
+  "contact": {
+    "title": "Consultation & Information",
+    "location": {
+      "label": "Location",
+      "address": "2F Sejoong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do"
+    },
+    "phone": {
+      "label": "Main Contact",
+      "main": "031-8044-8805",
+      "office": "031-8044-8808"
+    },
+    "fax": {
+      "label": "Fax",
+      "number": "031-491-8817"
+    },
+    "headquarter": {
+      "label": "Headquarters",
+      "address": "303 Gil-do Building, 1713-4 Seocho-dong, Seocho-gu, Seoul"
+    },
+    "copyAddress": "Copy Address"
+  },
+  "cta": {
+    "title": "Get Consultation Now",
+    "subtitle": "Professional attorneys provide direct consultation",
+    "consultation": "Book Online Consultation",
+    "call": "Call Consultation",
+    "inquiry": "Online Inquiry"
+  }
+}

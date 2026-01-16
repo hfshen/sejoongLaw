@@ -63,6 +63,7 @@
     "news": "Latest News"
   },
   "branches": {
+    "title": "Branches",
     "headquarter": "Headquarters",
     "uijeongbu": "Uijeongbu Branch",
     "ansan": "Ansan Branch"

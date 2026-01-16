@@ -109,6 +109,14 @@ export default function Navigation(props?: NavigationProps) {
         { path: `/${locale}/board/news`, label: t("board.news") },
       ],
     },
+    {
+      path: `/${locale}`,
+      label: t("branches.title") || "지점",
+      children: [
+        { path: `/${locale}/headquarter`, label: t("branches.headquarter") },
+        { path: `/${locale}/uijeongbu`, label: t("branches.uijeongbu") },
+      ],
+    },
   ]
 
   const isActive = (path: string) => {

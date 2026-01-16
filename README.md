@@ -48,7 +48,7 @@ COOLSMS_SENDER_PHONE=01012345678
 # 이메일 전송 설정
 # 방법 1: Gmail SMTP (무료, 추천)
 # EMAIL_PROVIDER=smtp
-# GMAIL_USER=sejoonglaw@gmail.com
+# GMAIL_USER=contact@sejoonglaw.kr
 # GMAIL_APP_PASSWORD=your_gmail_app_password
 
 # 방법 2: Resend (월 3,000건 무료, 이후 과금) - 자세한 설정은 docs/RESEND_SETUP.md 참고
@@ -76,7 +76,7 @@ NEXT_PUBLIC_SENTRY_DSN=your_sentry_dsn
 - **이메일 전송**: 
   - **Gmail SMTP (무료)**: Gmail 앱 비밀번호를 발급받아 사용합니다. [Gmail 앱 비밀번호 발급 방법](https://support.google.com/accounts/answer/185833)
   - **Resend (추천)**: 월 3,000건 무료, 이후 과금. [Resend](https://resend.com)에서 API 키를 발급받을 수 있습니다. 자세한 설정 방법은 `docs/RESEND_SETUP.md`를 참고하세요.
-  - 상담 요청과 예약 요청은 `sejoonglaw@gmail.com`으로 자동 전송됩니다.
+  - 상담 요청과 예약 요청은 `contact@sejoonglaw.kr`으로 자동 전송됩니다.
 
 ### 3. Supabase 데이터베이스 설정
 

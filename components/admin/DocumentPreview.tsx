@@ -56,10 +56,10 @@ function DocumentFooter({ locale }: { locale: "ko" | "en" | "zh-CN" }) {
 
   const text =
     locale === "ko"
-      ? "법무법인 세중 | 경기도 안산시 단원구 원곡로 45 세중빌딩 2층 | 전화: 031-8044-8805 | 이메일: sejoonglaw@gmail.com"
+      ? "법무법인 세중 | 경기도 안산시 단원구 원곡로 45 세중빌딩 2층 | 전화: 031-8044-8805 | 이메일: contact@sejoonglaw.kr"
       : locale === "en"
-        ? "Sejoong Law Firm | 2F Sejoong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do | Phone: 031-8044-8805 | Email: sejoonglaw@gmail.com"
-        : "世中律师事务所 | 京畿道安山市檀园区元谷路45号世中大厦2层 | 电话: 031-8044-8805 | 邮箱: sejoonglaw@gmail.com"
+        ? "Sejoong Law Firm | 2F Sejoong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do | Phone: 031-8044-8805 | Email: contact@sejoonglaw.kr"
+        : "世中律师事务所 | 京畿道安山市檀园区元谷路45号世中大厦2层 | 电话: 031-8044-8805 | 邮箱: contact@sejoonglaw.kr"
 
   return (
     <div

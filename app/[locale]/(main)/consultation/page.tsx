@@ -96,10 +96,10 @@ export default async function ConsultationPage() {
                       <div className="flex items-center gap-3">
                         <Mail className="w-5 h-5 text-primary" />
                         <a
-                          href="mailto:sejoonglaw@gmail.com"
+                          href="mailto:contact@sejoonglaw.kr"
                           className="link-hover font-medium"
                         >
-                          sejoonglaw@gmail.com
+                          contact@sejoonglaw.kr
                         </a>
                       </div>
                     </div>

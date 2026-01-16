@@ -264,5 +264,47 @@
       transition: none !important;
     }
   }
+
+  /* WeChat 미니 프로그램 스타일 */
+  html.wechat-mini-program {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  html.wechat-mini-program body {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html.wechat-mini-program .container-max,
+  html.wechat-mini-program .container-padding {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  html.wechat-mini-program header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+  }
+
+  html.wechat-mini-program main {
+    padding-top: 60px;
+  }
+
+  html.wechat-mini-program section {
+    scroll-margin-top: 60px;
+  }
+
+  /* WeChat에서 스크롤 부드럽게 */
+  html.wechat-mini-program * {
+    -webkit-overflow-scrolling: touch;
+  }
 }
 

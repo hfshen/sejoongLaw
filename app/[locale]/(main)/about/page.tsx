@@ -288,18 +288,57 @@ export default function AboutPage() {
       label: "인사말",
       content: (
         <div className="space-y-8">
+          {/* Vision Section */}
           <Card>
             <CardContent className="p-8 md:p-12">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
+                  <span className="text-primary">世中</span> - 세상의 중심으로 나아가다
+                </h2>
+                <p className="text-lg text-text-secondary italic">
+                  About Sejoong
+                </p>
+              </div>
               <div className="prose prose-lg max-w-none">
                 <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-                  법무법인 세중은 고객의 권익 보호와 법률 서비스의 질 향상을 위해 최선을 다하고 있습니다. 우리는 다양한 법률 분야에서 전문적인 서비스를 제공하며, 특히 출입국관리법과 이민 행정, 부동산 분쟁, 이혼·상속, 기업 자문 등에서 깊이 있는 전문성을 보유하고 있습니다.
+                  법무법인 세중은 고객이 필요로 하는 다양한 법률서비스를 신속하고 정확하게 제공하기 위해,
+                  소송업무 및 출입국, 해외 이민, 투자, 비자 분야의 전문가들이 뜻을 모아 설립한 법무법인입니다.
                 </p>
                 <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-                  《출입국관리법》 저자이자 법학박사인 이상국 대표변호사를 중심으로, 각 분야의 전문가들이 모여 고객 여러분의 복잡한 법률 문제를 명쾌하게 해결해드립니다. 법무법인 세중은 고객 여러분의 신뢰를 바탕으로 최고의 법률 서비스를 제공하겠습니다.
+                  《출입국관리법》 저자이자 법학박사인 이상국 대표변호사를 중심으로,
+                  각 분야의 전문가들이 모여 고객 여러분의 복잡한 법률 문제를 명쾌하게 해결해드립니다.
                 </p>
-                <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-8">
-                  법무법인 세중은 2008년 설립 이후 지속적인 성장과 발전을 이루어왔습니다. 우리는 단순한 법률 서비스 제공을 넘어, 고객의 비즈니스 성공과 개인의 권익 보호를 위한 전략적 파트너로서 역할을 수행하고 있습니다. 특히 국제적인 법률 문제에 대한 풍부한 경험과 네트워크를 보유하고 있어, 해외 투자, 국제 거래, 이민 관련 사안 등에서도 전문적인 서비스를 제공합니다.
-                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Values Section */}
+          <Card>
+            <CardContent className="p-8 md:p-12">
+              <h2 className="text-2xl md:text-3xl font-bold text-secondary mb-8 text-center">
+                비전과 가치
+              </h2>
+              <div className="space-y-8">
+                <div className="prose prose-lg max-w-none">
+                  <h3 className="text-xl font-semibold text-secondary mb-4">
+                    고객 헌신과 창의적인 법률 마인드
+                  </h3>
+                  <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+                    법무법인 세중은 고객에 대한 헌신과 창의적인 법률마인드로 고객들에게 항상 최상의 법률서비스를 제공해왔으며,
+                    역량 있는 전문가의 노력과 고객들의 전폭적인 신뢰를 바탕으로 가장 신뢰할 수 있는 로펌으로 일컬어지고 있습니다.
+                  </p>
+                </div>
+                
+                <div className="prose prose-lg max-w-none">
+                  <h3 className="text-xl font-semibold text-secondary mb-4">
+                    신뢰를 가장 소중한 가치로
+                  </h3>
+                  <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
+                    법무법인 세중은 고객과의 신뢰를 가장 소중한 가치로 생각하고,
+                    고객의 문제를 고객의 입장에서 함께 고민하고 해결하며,
+                    분야별 전문가들이 제공하는 최고의 법률서비스를 통해 고객에게 감동과 만족을 드리기 위해 최선을 다하고 있습니다.
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>

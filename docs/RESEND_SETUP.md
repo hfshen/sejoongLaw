@@ -18,7 +18,7 @@
 
 ### Step 3: 도메인 인증 (선택사항)
 - Resend는 기본적으로 `onboarding@resend.dev` 도메인을 제공합니다
-- 하지만 `noreply@sejoonglaw.com` 같은 커스텀 도메인을 사용하려면:
+- 하지만 `noreply@sejoonglaw.kr` 같은 커스텀 도메인을 사용하려면:
   1. 대시보드에서 **"Domains"** 메뉴 클릭
   2. **"Add Domain"** 버튼 클릭
   3. 도메인 이름 입력 (예: `sejoonglaw.com`)
@@ -36,7 +36,7 @@ EMAIL_PROVIDER=resend
 RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
 
 # 발신자 이메일 주소
-# 도메인 인증을 했다면: noreply@sejoonglaw.com
+# 도메인 인증을 했다면: noreply@sejoonglaw.kr
 # 도메인 인증을 안 했다면: onboarding@resend.dev
 RESEND_FROM_EMAIL=onboarding@resend.dev
 ```
@@ -79,7 +79,7 @@ RESEND_FROM_EMAIL=onboarding@resend.dev
 1. `.env.local` 파일에 Resend 설정 추가
 2. 개발 서버 재시작: `npm run dev`
 3. 웹사이트에서 상담 요청 또는 예약 요청 제출
-4. `sejoonglaw@gmail.com`으로 이메일이 도착하는지 확인
+4. `contact@sejoonglaw.kr`으로 이메일이 도착하는지 확인
 
 ### 문제 해결
 - **이메일이 전송되지 않는 경우**:

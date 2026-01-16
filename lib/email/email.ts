@@ -3,8 +3,8 @@ import * as smtpEmail from "./email-smtp"
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
-const RECIPIENT_EMAIL = "sejoonglaw@gmail.com"
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "noreply@sejoonglaw.com"
+const RECIPIENT_EMAIL = "contact@sejoonglaw.kr"
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "noreply@sejoonglaw.kr"
 
 // 이메일 전송 방식 선택: 'resend' 또는 'smtp' (기본값: smtp)
 const EMAIL_PROVIDER = process.env.EMAIL_PROVIDER || "smtp"
@@ -130,7 +130,7 @@ export async function sendConsultationConfirmationEmail(data: ConsultationEmailD
           <div style="margin-top: 30px; padding: 20px; background-color: #f9f9f9; border-radius: 5px;">
             <p style="margin: 0;"><strong>문의사항이 있으시면 아래로 연락주세요:</strong></p>
             <p style="margin: 5px 0;">전화: 031-8044-8805</p>
-            <p style="margin: 5px 0;">이메일: sejoonglaw@gmail.com</p>
+            <p style="margin: 5px 0;">이메일: contact@sejoonglaw.kr</p>
           </div>
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
@@ -265,7 +265,7 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData) {
           <div style="margin-top: 30px; padding: 20px; background-color: #f9f9f9; border-radius: 5px;">
             <p style="margin: 0;"><strong>문의사항이 있으시면 아래로 연락주세요:</strong></p>
             <p style="margin: 5px 0;">전화: 031-8044-8805</p>
-            <p style="margin: 5px 0;">이메일: sejoonglaw@gmail.com</p>
+            <p style="margin: 5px 0;">이메일: contact@sejoonglaw.kr</p>
           </div>
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">

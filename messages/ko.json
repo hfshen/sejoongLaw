@@ -63,6 +63,7 @@
     "news": "최신뉴스"
   },
   "branches": {
+    "title": "지점",
     "headquarter": "본사",
     "uijeongbu": "의정부 지점",
     "ansan": "안산 지점"

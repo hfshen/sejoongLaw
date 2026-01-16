@@ -454,7 +454,8 @@ export async function generateDocumentImage(
             parent?.style.zIndex === "26" ||
             parent?.textContent?.includes("법무법인 세중") ||
             parent?.textContent?.includes("Sejoong Law Firm") ||
-            parent?.textContent?.includes("sejoonglaw@gmail.com")
+            parent?.textContent?.includes("sejoonglaw@gmail.com") ||
+            parent?.textContent?.includes("contact@sejoonglaw.kr")
           )
           
           // SVG 누락 방지: 가능하면 PNG data URL로 강제
@@ -523,6 +524,7 @@ export async function generateDocumentImage(
             text.includes("법무법인 세중") ||
             text.includes("Sejoong Law Firm") ||
             text.includes("sejoonglaw@gmail.com") ||
+            text.includes("contact@sejoonglaw.kr") ||
             text.includes("031-8044-8805")
           )
         }) as HTMLElement[]
@@ -565,6 +567,7 @@ export async function generateDocumentImage(
           const isFooterContainer = htmlEl.textContent?.includes("법무법인 세중") || 
                                    htmlEl.textContent?.includes("Sejoong Law Firm") || 
                                    htmlEl.textContent?.includes("sejoonglaw@gmail.com") ||
+                                   htmlEl.textContent?.includes("contact@sejoonglaw.kr") ||
                                    htmlEl.textContent?.includes("031-8044-8805")
           
           if (zIndex === "20" || zIndex === "21" || zIndex === "22" || zIndex === "24" || zIndex === "25" || zIndex === "26" || zIndexNum >= 20 || hasLogo || isFooterContainer) {

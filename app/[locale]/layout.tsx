@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { locales, type Locale } from "@/lib/i18n"
 import LocaleAttributes from "@/components/layout/LocaleAttributes"
 import { StructuredData } from "@/components/seo/StructuredData"
+import WeChatMeta from "@/components/seo/WeChatMeta"
 import AnalyticsProvider from "@/components/analytics/AnalyticsProvider"
 import { Analytics } from "@vercel/analytics/next"
 import type { Metadata } from "next"
@@ -88,6 +89,9 @@ export async function generateMetadata({
     },
     verification: {
       google: process.env.GOOGLE_VERIFICATION,
+      other: {
+        "naver-site-verification": process.env.NAVER_VERIFICATION || "",
+      },
     },
   }
 }
@@ -111,6 +115,7 @@ export default async function LocaleLayout({
       <StructuredData type="Organization" locale={locale} />
       <StructuredData type="LegalService" locale={locale} />
       <StructuredData type="WebSite" locale={locale} />
+      <WeChatMeta />
       <AnalyticsProvider>
         <NextIntlClientProvider messages={messages}>
           <LocaleAttributes />

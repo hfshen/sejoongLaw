@@ -30,8 +30,23 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale = defaultLocale
   }
 
+  const messages = (await import(`../messages/${locale}.json`)).default
+  let ansanMessages = {}
+  
+  try {
+    ansanMessages = (await import(`../messages/${locale}/ansan.json`)).default
+  } catch {
+    // ansan.json이 없으면 한국어 버전을 fallback으로 사용
+    try {
+      ansanMessages = (await import(`../messages/${defaultLocale}/ansan.json`)).default
+    } catch {
+      // 한국어도 없으면 빈 객체
+      ansanMessages = {}
+    }
+  }
+
   return {
     locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
+    messages: { ...messages, ansan: ansanMessages },
   }
 })

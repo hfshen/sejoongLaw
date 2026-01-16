@@ -15,22 +15,37 @@ export function StructuredData({ type, locale = "ko" }: StructuredDataProps) {
     alternateName: "Sejoong Law Firm",
     url: baseUrl,
     logo: `${baseUrl}/SJ_logo.svg`,
-    contactPoint: {
-      "@type": "ContactPoint",
-      telephone: "+82-31-8044-8805",
-      email: "sejoonglaw@gmail.com",
-      contactType: "customer service",
-      areaServed: "KR",
-      availableLanguage: locales,
-    },
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "서초대로 272, 10층",
-      addressLocality: "서초구",
-      addressRegion: "서울",
-      postalCode: "06578",
-      addressCountry: "KR",
-    },
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        telephone: "+82-31-8044-8805",
+        email: "contact@sejoonglaw.kr",
+        contactType: "customer service",
+        areaServed: "KR",
+        availableLanguage: locales,
+      },
+    ],
+    address: [
+      {
+        "@type": "PostalAddress",
+        name: "안산지사",
+        streetAddress: "원곡로 45, 세중빌딩 2층",
+        addressLocality: "단원구",
+        addressRegion: "안산시",
+        addressRegion2: "경기도",
+        postalCode: "15418",
+        addressCountry: "KR",
+      },
+      {
+        "@type": "PostalAddress",
+        name: "본사",
+        streetAddress: "서초대로 272, 10층",
+        addressLocality: "서초구",
+        addressRegion: "서울",
+        postalCode: "06578",
+        addressCountry: "KR",
+      },
+    ],
     sameAs: [
       // Add social media links if available
     ],
