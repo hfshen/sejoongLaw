@@ -26,7 +26,7 @@ const nextConfig = {
     optimizePackageImports: ["lucide-react", "framer-motion", "@supabase/ssr"],
     instrumentationHook: true,
     // 번들 최적화
-    optimizeCss: true,
+    // optimizeCss: true, // critters 패키지 필요로 인해 비활성화
   },
   // 번들 분석 및 최적화
   webpack: (config, { isServer }) => {
