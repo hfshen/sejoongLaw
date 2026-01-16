@@ -121,11 +121,11 @@ export default async function LocaleLayout({
       <StructuredData type="Organization" locale={locale} />
       <StructuredData type="LegalService" locale={locale} />
       <StructuredData type="WebSite" locale={locale} />
-      <Suspense fallback={null}>
-        <WeChatMeta />
-      </Suspense>
       <AnalyticsProvider>
         <NextIntlClientProvider messages={messages}>
+          <Suspense fallback={null}>
+            <WeChatMeta />
+          </Suspense>
           <LocaleAttributes />
           {children}
         </NextIntlClientProvider>

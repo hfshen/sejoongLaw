@@ -2,11 +2,9 @@
 
 import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
-import { useLocale } from "next-intl"
 
 export default function WeChatMeta() {
   const pathname = usePathname()
-  const locale = useLocale()
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sejoonglaw.com"
   const [mounted, setMounted] = useState(false)
 
