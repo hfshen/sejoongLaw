@@ -182,12 +182,26 @@
     "firmName": "世中律师事务所",
     "representative": "代表律师：李相国",
     "businessNumber": "营业执照号：XXX-XX-XXXXX",
-    "phone": "代表电话：02-536-XXXX",
+    "phone": "代表电话：代表电话：031-8044-8805",
     "fax": "传真：02-536-XXXX",
     "address": "京畿道安山市檀园区元谷路45号世中大厦2层",
     "privacyPolicy": "隐私政策",
     "emailRejection": "拒绝邮件收集",
-    "copyright": "版权所有 © 世中律师事务所。保留所有权利。"
+    "copyright": "版权所有 © 世中律师事务所。保留所有权利。",
+    "branches": {
+      "ansan": {
+        "name": "安山分所（主）",
+        "address": "京畿道安山市檀园区元谷路45号世中大厦2层"
+      },
+      "seoul": {
+        "name": "首尔主事务所",
+        "address": "首尔特别市瑞草区法院路2街15号，吉道大厦303号"
+      },
+      "uijeongbu": {
+        "name": "议政府分事务所",
+        "address": "京畿道议政府市绿杨路34街30号，406号（法院前）"
+      }
+    }
   },
   "pages": {
     "realEstate": {

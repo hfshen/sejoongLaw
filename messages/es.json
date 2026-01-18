@@ -182,12 +182,26 @@
     "firmName": "Sejoong Law Firm",
     "representative": "Managing Partner: Lee Sang-guk",
     "businessNumber": "Business Registration: XXX-XX-XXXXX",
-    "phone": "Main Phone: 02-536-XXXX",
+    "phone": "Main Phone: 031-8044-8805",
     "fax": "Fax: 02-536-XXXX",
     "address": "2F, Sejoong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
     "privacyPolicy": "Privacy Policy",
     "emailRejection": "Email Collection Rejection",
-    "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."
+    "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved.",
+    "branches": {
+      "ansan": {
+        "name": "Sucursal Ansan (Principal)",
+        "address": "2F, Edificio Sejoong, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do"
+      },
+      "seoul": {
+        "name": "Oficina Principal Seúl",
+        "address": "303, Edificio Gildo, 15 Beopwon-ro 2-gil, Seocho-gu, Seúl"
+      },
+      "uijeongbu": {
+        "name": "Oficina Sucursal Uijeongbu",
+        "address": "406, 30 Nogyang-ro 34beon-gil, Uijeongbu-si, Gyeonggi-do (Frente al tribunal)"
+      }
+    }
   },
   "pages": {
     "realEstate": {

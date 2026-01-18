@@ -182,12 +182,26 @@
     "firmName": "世中法律事務所",
     "representative": "代表弁護士：李相国",
     "businessNumber": "事業者登録番号：XXX-XX-XXXXX",
-    "phone": "代表電話：02-536-XXXX",
+    "phone": "代表電話：代表電話：031-8044-8805",
     "fax": "ファックス：02-536-XXXX",
     "address": "京畿道安山市檀園区元谷路45、世中ビル2階",
     "privacyPolicy": "個人情報処理方針",
     "emailRejection": "メール無断収集拒否",
-    "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."
+    "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved.",
+    "branches": {
+      "ansan": {
+        "name": "安山支所（メイン）",
+        "address": "京畿道安山市檀園区元谷路45世中ビル2階"
+      },
+      "seoul": {
+        "name": "ソウル主事務所",
+        "address": "ソウル特別市瑞草区法院路2街15、キルドビル303号"
+      },
+      "uijeongbu": {
+        "name": "議政府分事務所",
+        "address": "京畿道議政府市緑楊路34街30、406号（裁判所前）"
+      }
+    }
   },
   "pages": {
     "realEstate": {
