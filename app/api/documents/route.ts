@@ -7,7 +7,16 @@ import logger from "@/lib/logger"
 
 export async function GET(request: NextRequest) {
   try {
-    const isAdmin = await isAdminAuthenticated()
+    // 관리자 인증 확인
+    let isAdmin = false
+    try {
+      isAdmin = await isAdminAuthenticated()
+    } catch (authError) {
+      logger.error("Admin authentication check failed", { error: authError })
+      // 인증 확인 실패 시에도 401 반환
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     if (!isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -23,6 +32,11 @@ export async function GET(request: NextRequest) {
     const sortOrder = searchParams.get("sortOrder") || "desc"
     const search = searchParams.get("search")
     const caseLinked = searchParams.get("case_linked")
+
+    // sortBy 유효성 검사 (SQL injection 방지)
+    const validSortColumns = ["created_at", "updated_at", "name", "date", "document_type", "locale"]
+    const safeSortBy = validSortColumns.includes(sortBy) ? sortBy : "created_at"
+    const safeSortOrder = sortOrder === "asc" ? "asc" : "desc"
 
     let query = supabase
       .from("documents")
@@ -42,12 +56,12 @@ export async function GET(request: NextRequest) {
     if (search) {
       query = query.or(`name.ilike.%${search}%,data::text.ilike.%${search}%`)
     }
-    if (caseLinked !== null) {
+    if (caseLinked !== null && caseLinked !== "") {
       query = query.eq("is_case_linked", caseLinked === "true")
     }
 
     // 정렬
-    query = query.order(sortBy, { ascending: sortOrder === "asc" })
+    query = query.order(safeSortBy, { ascending: safeSortOrder === "asc" })
 
     const { data, error } = await query
 
