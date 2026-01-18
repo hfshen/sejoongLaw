@@ -117,20 +117,6 @@
       "address": "경기도 안산시 단원구 원곡로 45 세중빌딩 2층",
       "focus": "외국인 사건, 출입국 사범, 산재/노동",
       "phone": "031-8044-8805"
-    },
-    "seoul": {
-      "name": "SEOUL HEADQUARTERS",
-      "nameKo": "서울 주사무소",
-      "address": "서울특별시 서초구 법원로2길 15, 길도빌딩 303호",
-      "focus": "기업법무, 고난도 행정소송, 대법원 상고심",
-      "phone": "02-536-XXXX"
-    },
-    "uijeongbu": {
-      "name": "UIJEONGBU BRANCH",
-      "nameKo": "의정부 분사무소",
-      "address": "경기도 의정부시 녹양로 34번길 30, 406호 (법원 앞)",
-      "focus": "부동산, 민사, 가사, 경기북부 일반송무",
-      "phone": "031-XXX-XXXX"
     }
   },
   "media": {

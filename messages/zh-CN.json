@@ -124,7 +124,59 @@
     "column": "专栏",
     "case": "成功案例",
     "news": "新闻",
-    "readMore": "了解更多"
+    "readMore": "了解更多",
+    "noArticles": "暂无内容。"
+  },
+  "services": {
+    "title": "业务领域",
+    "description": "我们在各个法律领域提供专业服务，保护客户权利并取得最佳结果。",
+    "specialized": "特化",
+    "practiceAreas": {
+      "immigration": {
+        "title": "出入境·行政·移民",
+        "description": "签证申请、移民咨询、行政申诉等",
+        "details": [
+          "强制遣返取消诉讼",
+          "难民/签证行政申诉",
+          "国籍恢复及归化",
+          "签证拒签应对",
+          "居留许可延期/变更"
+        ]
+      },
+      "realEstate": {
+        "title": "房地产·建设",
+        "description": "房地产纠纷、建设诉讼、再开发等",
+        "details": [
+          "腾退/租赁诉讼",
+          "再开发/重建纠纷",
+          "拍卖及强制执行",
+          "房地产纠纷调解",
+          "建设缺陷诉讼"
+        ]
+      },
+      "corporate": {
+        "title": "企业法务·劳动",
+        "description": "企业咨询、M&A、劳动纠纷等",
+        "details": [
+          "企业咨询及M&A",
+          "不当解雇救济",
+          "外籍工人工伤",
+          "企业并购",
+          "海外投资咨询"
+        ]
+      },
+      "familyCriminal": {
+        "title": "家事·刑事",
+        "description": "离婚、继承、刑事辩护等",
+        "details": [
+          "离婚/继承/特留份",
+          "性犯罪/经济犯罪",
+          "外国人刑事辩护",
+          "家事调解",
+          "刑事辩护"
+        ]
+      }
+    }
   },
   "footer": {
     "firmName": "世中律师事务所",
@@ -132,6 +184,7 @@
     "businessNumber": "营业执照号：XXX-XX-XXXXX",
     "phone": "代表电话：02-536-XXXX",
     "fax": "传真：02-536-XXXX",
+    "address": "京畿道安山市檀园区元谷路45号世中大厦2层",
     "privacyPolicy": "隐私政策",
     "emailRejection": "拒绝邮件收集",
     "copyright": "版权所有 © 世中律师事务所。保留所有权利。"

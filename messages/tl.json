@@ -124,7 +124,59 @@
     "column": "Column",
     "case": "Success Stories",
     "news": "News",
-    "readMore": "Read More"
+    "readMore": "Read More",
+    "noArticles": "Walang nilalaman."
+  },
+  "services": {
+    "title": "Mga Larangan ng Pagsasanay",
+    "description": "Nagbibigay kami ng propesyonal na serbisyo sa iba't ibang larangan ng batas upang protektahan ang mga karapatan ng aming mga kliyente at makamit ang pinakamahusay na resulta.",
+    "specialized": "Espesyalisado",
+    "practiceAreas": {
+      "immigration": {
+        "title": "Imigrasyon at Administratibo",
+        "description": "Mga aplikasyon ng visa, konsultasyon sa imigrasyon, administratibong apela, atbp.",
+        "details": [
+          "Mga kaso ng pagkansela ng deportasyon",
+          "Administratibong apela ng refugee/visa",
+          "Pagpapanumbalik ng nasyonalidad at naturalisasyon",
+          "Mga tugon sa pagtanggi ng visa",
+          "Pagpapalawig/pagbabago ng permit ng pananatili"
+        ]
+      },
+      "realEstate": {
+        "title": "Real Estate at Konstruksyon",
+        "description": "Mga alitan sa real estate, litigasyon sa konstruksyon, muling pagpapaunlad, atbp.",
+        "details": [
+          "Mga kaso ng pagpapaalis/upa",
+          "Mga alitan sa muling pagpapaunlad/rekonstruksyon",
+          "Subasta at sapilitang pagpapatupad",
+          "Medyasyon ng mga alitan sa real estate",
+          "Mga kaso ng depekto sa konstruksyon"
+        ]
+      },
+      "corporate": {
+        "title": "Korporatibo at Paggawa",
+        "description": "Konsultasyon sa korporasyon, M&A, mga alitan sa paggawa, atbp.",
+        "details": [
+          "Konsultasyon sa korporasyon at M&A",
+          "Lunas sa hindi makatarungang pagpapaalis",
+          "Mga aksidente sa trabaho ng dayuhang manggagawa",
+          "Mga pagsasanib at pagkuha ng korporasyon",
+          "Konsultasyon sa dayuhang pamumuhunan"
+        ]
+      },
+      "familyCriminal": {
+        "title": "Pamilya at Kriminal",
+        "description": "Diborsyo, mana, depensa sa kriminal, atbp.",
+        "details": [
+          "Diborsyo/mana/sapilitang bahagi",
+          "Mga krimeng sekswal/krimeng pang-ekonomiya",
+          "Depensa sa kriminal para sa mga dayuhan",
+          "Medyasyon ng pamilya",
+          "Depensa sa kriminal"
+        ]
+      }
+    }
   },
   "footer": {
     "firmName": "Sejoong Law Firm",
@@ -132,6 +184,7 @@
     "businessNumber": "Business Registration: XXX-XX-XXXXX",
     "phone": "Main Phone: 02-536-XXXX",
     "fax": "Fax: 02-536-XXXX",
+    "address": "2F, Sejoong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
     "privacyPolicy": "Privacy Policy",
     "emailRejection": "Email Collection Rejection",
     "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."

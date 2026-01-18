@@ -124,7 +124,59 @@
     "column": "Column",
     "case": "Success Stories",
     "news": "News",
-    "readMore": "Read More"
+    "readMore": "Read More",
+    "noArticles": "Tidak ada konten yang tersedia."
+  },
+  "services": {
+    "title": "Bidang Praktik",
+    "description": "Kami menyediakan layanan profesional di berbagai bidang hukum untuk melindungi hak klien dan mencapai hasil terbaik.",
+    "specialized": "Spesialisasi",
+    "practiceAreas": {
+      "immigration": {
+        "title": "Imigrasi dan Administratif",
+        "description": "Aplikasi visa, konsultasi imigrasi, banding administratif, dll.",
+        "details": [
+          "Gugatan pembatalan deportasi",
+          "Banding administratif pengungsi/visa",
+          "Pemulihan kewarganegaraan dan naturalisasi",
+          "Respons penolakan visa",
+          "Perpanjangan/perubahan izin tinggal"
+        ]
+      },
+      "realEstate": {
+        "title": "Properti dan Konstruksi",
+        "description": "Sengketa properti, litigasi konstruksi, pembangunan kembali, dll.",
+        "details": [
+          "Gugatan penggusuran/sewa",
+          "Sengketa pembangunan kembali/rekonstruksi",
+          "Lelang dan eksekusi paksa",
+          "Mediasi sengketa properti",
+          "Gugatan cacat konstruksi"
+        ]
+      },
+      "corporate": {
+        "title": "Korporat dan Tenaga Kerja",
+        "description": "Konsultasi korporat, M&A, sengketa tenaga kerja, dll.",
+        "details": [
+          "Konsultasi korporat dan M&A",
+          "Bantuan pemecatan tidak adil",
+          "Kecelakaan kerja pekerja asing",
+          "Merger dan akuisisi korporat",
+          "Konsultasi investasi luar negeri"
+        ]
+      },
+      "familyCriminal": {
+        "title": "Keluarga dan Pidana",
+        "description": "Perceraian, warisan, pembelaan pidana, dll.",
+        "details": [
+          "Perceraian/warisan/bagian wajib",
+          "Kejahatan seksual/kejahatan ekonomi",
+          "Pembelaan pidana untuk orang asing",
+          "Mediasi keluarga",
+          "Pembelaan pidana"
+        ]
+      }
+    }
   },
   "footer": {
     "firmName": "Sejoong Law Firm",
@@ -132,6 +184,7 @@
     "businessNumber": "Business Registration: XXX-XX-XXXXX",
     "phone": "Main Phone: 02-536-XXXX",
     "fax": "Fax: 02-536-XXXX",
+    "address": "Lt. 2, Gedung Sejoong, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
     "privacyPolicy": "Privacy Policy",
     "emailRejection": "Email Collection Rejection",
     "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."

@@ -1,105 +1,119 @@
 {
   "hero": {
-    "slogan": "체류부터 가정, 일터, 사고, 형사까지 — 안산에서 시작하는 글로벌 원스톱 법률솔루션.",
+    "slogan": "Từ cư trú đến gia đình, nơi làm việc, tai nạn và vụ án hình sự — Giải pháp pháp lý tích hợp toàn cầu bắt đầu từ Ansan.",
     "cta": {
-      "consultation": "상담 예약",
-      "call": "전화 상담"
+      "consultation": "Đặt Lịch Tư Vấn",
+      "call": "Gọi Ngay"
     },
-    "scrollIndicator": "스크롤하여 더 알아보기"
+    "scrollIndicator": "Cuộn để tìm hiểu thêm"
   },
   "introduction": {
-    "title": "법률사무소 세중 안산지사",
-    "content": "법률사무소 세중(법무법인 세중 안산지사)은 안산 원곡동 거점에서 체류·비자·국적/영주, 국내·국제이혼, 산재·교통사고 보상, 임금·퇴직금(체불) 분쟁, 민사·형사 사건을 통합 제공하는 원스톱 법률 서비스입니다. 복잡한 절차와 언어·서류 장벽으로 어려움을 겪는 고객을 위해, 사건 진단부터 자료 정리, 합의·조정, 소송 및 행정 절차까지 실행 중심으로 끝까지 대리해 분쟁을 빠르게 정리하고 권리를 실질적으로 회복하도록 돕습니다."
+    "title": "Văn phòng Luật Sejoong Chi nhánh Ansan",
+    "content": "Văn phòng Luật Sejoong (Văn phòng Luật Sejoong Chi nhánh Ansan) là nhà cung cấp dịch vụ pháp lý tích hợp có trụ sở tại Wongok-dong, Ansan, cung cấp dịch vụ tích hợp về cư trú/visa/quốc tịch/thường trú, ly hôn trong nước/quốc tế, bồi thường tai nạn lao động/giao thông, tranh chấp tiền lương/lương hưu (chưa trả), và vụ án dân sự/hình sự. Đối với khách hàng đang gặp khó khăn với các thủ tục phức tạp và rào cản ngôn ngữ/tài liệu, chúng tôi cung cấp đại diện tập trung vào thực thi từ chẩn đoán vụ án đến tổ chức tài liệu, giải quyết/hòa giải, kiện tụng và thủ tục hành chính, giúp giải quyết tranh chấp nhanh chóng và khôi phục đáng kể quyền lợi."
   },
   "services": {
-    "title": "핵심 서비스",
+    "title": "Dịch Vụ Cốt Lõi",
     "immigration": {
-      "title": "출입국/체류·신분",
-      "description": "체류 연장, 체류자격 변경, 등록증 연장 대행, 비자/국적 관련 서류, 영주권 신청 서류, 초청·신분정리·각종 행정 서류 지원"
+      "title": "Nhập Cư/Cư Trú/Tình Trạng",
+      "description": "Gia hạn cư trú, thay đổi tình trạng, gia hạn đăng ký, tài liệu visa/quốc tịch, đơn xin thường trú, hỗ trợ tài liệu hành chính mời/điều chỉnh tình trạng/đa dạng"
     },
     "family": {
-      "title": "국내·국제 이혼/가사",
-      "description": "국내·국제 이혼소송, 재산분할, 양육권·양육비, 입양 및 파양(입양관계 해소), 가족관계 정리 (중국 관련 이혼/서류 이슈 포함)"
+      "title": "Ly Hôn/Gia Đình Trong Nước/Quốc Tế",
+      "description": "Kiện tụng ly hôn trong nước/quốc tế, chia tài sản, quyền nuôi con/cấp dưỡng, nhận con nuôi và giải thể nhận con nuôi, vấn đề quan hệ gia đình (bao gồm vấn đề ly hôn/tài liệu liên quan đến Trung Quốc)"
     },
     "compensation": {
-      "title": "산재·교통사고·손해배상",
-      "description": "산재 보상(업무 중 부상/보상 미수령 등), 교통사고 보상, 합의(대리 협의), 손해배상 청구, 사망사건 합의 및 후속 절차"
+      "title": "Tai Nạn Lao Động/Giao Thông/Thiệt Hại",
+      "description": "Bồi thường tai nạn lao động (thương tích nơi làm việc/bồi thường chưa nhận, v.v.), bồi thường tai nạn giao thông, giải quyết (thương lượng ủy quyền), yêu cầu bồi thường thiệt hại, giải quyết vụ án tử vong và thủ tục tiếp theo"
     },
     "labor": {
-      "title": "임금·퇴직금·체불",
-      "description": "현장/사업장 임금 체불, 퇴직금 분쟁, 보증금 반환 등 금전청구 사건"
+      "title": "Tiền Lương/Lương Hưu/Chưa Trả",
+      "description": "Tiền lương chưa trả tại nơi làm việc/địa điểm kinh doanh, tranh chấp lương hưu, hoàn trả tiền đặt cọc và các vụ án yêu cầu tiền khác"
     },
     "litigation": {
-      "title": "민사·형사",
-      "description": "폭행·상해, 사기·보이스피싱/온라인 사기, 음주운전 및 교통사고 벌금/형사절차, 위장결혼 관련 이슈, 형사처분/판결문 관련 신청 등"
+      "title": "Dân Sự/Hình Sự",
+      "description": "Tấn công/thương tích, lừa đảo/lừa đảo qua điện thoại/lừa đảo trực tuyến, lái xe say rượu và phạt tai nạn giao thông/thủ tục hình sự, vấn đề kết hôn giả, đơn liên quan đến xử lý/phán quyết hình sự, v.v."
     }
   },
   "painPoints": {
-    "title": "세중이 강한 고객 상황",
+    "title": "Tình Huống Sejoong Xuất Sắc",
+    "subtitle": "Nếu bạn đang ở trong tình huống này, Sejoong có thể giúp đỡ",
     "items": [
       {
-        "title": "체류 문제 때문에 취업·가정·사업이 멈췄다.",
-        "description": "체류 자격 문제로 인해 일상생활이 멈춘 고객을 위한 빠른 해결책"
+        "title": "Việc làm, gia đình và kinh doanh đã dừng lại do vấn đề cư trú.",
+        "description": "Giải pháp nhanh cho khách hàng có cuộc sống hàng ngày đã dừng lại do vấn đề tình trạng cư trú"
       },
       {
-        "title": "이혼/가사 분쟁이 국경·서류 문제로 더 복잡해졌다.",
-        "description": "국제 결혼의 복잡한 법적 절차를 전문적으로 처리"
+        "title": "Tranh chấp ly hôn/gia đình đã trở nên phức tạp hơn do vấn đề xuyên biên giới/tài liệu.",
+        "description": "Xử lý chuyên nghiệp các thủ tục pháp lý phức tạp cho hôn nhân quốc tế"
       },
       {
-        "title": "산재/교통사고를 당했는데 보상 절차를 모르겠다.",
-        "description": "사고 후 보상 절차를 명확하게 안내하고 최대한의 보상 받기"
+        "title": "Tôi đã gặp tai nạn lao động/giao thông nhưng không biết quy trình bồi thường.",
+        "description": "Hướng dẫn rõ ràng về thủ tục bồi thường sau tai nạn và tối đa hóa bồi thường"
       },
       {
-        "title": "임금·퇴직금을 못 받았는데 회사가 버틴다.",
-        "description": "체불 임금과 퇴직금을 확실하게 회수하는 전문 서비스"
+        "title": "Tôi chưa nhận được tiền lương/lương hưu và công ty đang chống lại.",
+        "description": "Dịch vụ chuyên nghiệp để thu hồi an toàn tiền lương và lương hưu chưa trả"
       },
       {
-        "title": "형사 사건(폭행/사기/음주 등)으로 경찰·검찰 절차가 두렵다.",
-        "description": "형사 절차의 두려움을 덜고 최선의 결과를 위한 전문 변호"
+        "title": "Tôi sợ thủ tục cảnh sát/công tố cho vụ án hình sự (tấn công/lừa đảo/lái xe say rượu, v.v.).",
+        "description": "Giảm nỗi sợ thủ tục hình sự và đại diện chuyên nghiệp cho kết quả tốt nhất"
       }
     ]
   },
   "differentiators": {
-    "title": "세중의 차별점",
+    "title": "Điểm Khác Biệt Của Sejoong",
     "oneStop": {
-      "title": "원스톱 구조",
-      "description": "출입국(행정) + 분쟁(민·형사) + 보상(손해배상)을 한 흐름으로 설계"
+      "title": "Cấu Trúc Tích Hợp",
+      "description": "Được thiết kế như một luồng tích hợp: Nhập cư (Hành chính) + Tranh chấp (Dân sự/Hình sự) + Bồi thường (Thiệt hại)"
     },
     "practical": {
-      "title": "합의/조정 실무형",
-      "description": "사건을 키우기보다 \"정리\"에 강한 포지셔닝 (교통·산재·체불·가사에 특히 효과적)"
+      "title": "Phương Pháp Thực Tế Giải Quyết/Hòa Giải",
+      "description": "Định vị mạnh trong \"giải quyết\" thay vì leo thang vụ án (đặc biệt hiệu quả cho các vấn đề giao thông/lao động/chưa trả/gia đình)"
     },
     "global": {
-      "title": "글로벌 커뮤니케이션",
-      "description": "다문화/외국인 고객이 이해하기 쉬운 방식으로 절차·서류를 구조화"
+      "title": "Giao Tiếp Toàn Cầu",
+      "description": "Thủ tục và tài liệu được cấu trúc theo cách mà khách hàng đa văn hóa/nước ngoài có thể dễ dàng hiểu"
     }
   },
   "contact": {
-    "title": "상담 및 안내",
+    "title": "Tư Vấn và Thông Tin",
     "location": {
-      "label": "위치",
-      "address": "경기도 안산시 단원구 원곡로 45 세중빌딩 2층"
+      "label": "Vị Trí",
+      "address": "Tầng 2 Tòa nhà Sejoong, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do"
     },
     "phone": {
-      "label": "대표 연락처",
+      "label": "Liên Hệ Chính",
       "main": "031-8044-8805",
       "office": "031-8044-8808"
     },
     "fax": {
-      "label": "팩스",
+      "label": "Fax",
       "number": "031-491-8817"
     },
     "headquarter": {
-      "label": "본사",
-      "address": "서울 서초구 서초동 1713-4, 길도빌딩 303호"
+      "label": "Trụ Sở Chính",
+      "address": "303 Tòa nhà Gil-do, 1713-4 Seocho-dong, Seocho-gu, Seoul"
     },
-    "copyAddress": "주소 복사"
+    "copyAddress": "Sao Chép Địa Chỉ",
+    "copied": "Đã Sao Chép",
+    "mapTitle": "Vị Trí Văn phòng Luật Sejoong tại Ansan"
   },
   "cta": {
-    "title": "지금 바로 상담받으세요",
-    "subtitle": "전문 변호사가 직접 상담해드립니다",
-    "consultation": "온라인 상담 예약",
-    "call": "전화 상담",
-    "inquiry": "온라인 문의"
+    "title": "Nhận Tư Vấn Ngay",
+    "subtitle": "Luật sư chuyên nghiệp cung cấp tư vấn trực tiếp",
+    "consultation": "Đặt Lịch Tư Vấn Trực Tuyến",
+    "call": "Tư Vấn Qua Điện Thoại",
+    "inquiry": "Yêu Cầu Trực Tuyến"
+  },
+  "imageAlt": {
+    "background": "Nền Thư Viện Pháp Luật",
+    "logo": "Logo Văn phòng Luật Sejoong tại Ansan"
+  },
+  "metadata": {
+    "title": "Sejoong Law Office Ansan Branch | One-Stop Legal Solutions",
+    "description": "From residency to family, workplace, accidents, and criminal cases — Global one-stop legal solutions starting in Ansan. Specialized in immigration/residency, divorce/family, industrial/traffic accidents, wages/severance, civil/criminal cases.",
+    "keywords": "Sejoong Law Office, Ansan attorney, one-stop legal service, residency visa, divorce litigation, industrial accident compensation, traffic accident, unpaid wages, criminal defense, Ansan legal consultation, Wongok-dong attorney, Ansan attorney recommendation, Ansan legal office, Gyeonggi attorney",
+    "ogDescription": "From residency to family, workplace, accidents, and criminal cases — Global one-stop legal solutions starting in Ansan.",
+    "ogImageAlt": "Sejoong Law Office Ansan Branch"
   }
 }

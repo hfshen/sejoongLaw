@@ -40,7 +40,7 @@ export default function PainPointsSection() {
             {t("title")}
           </h2>
           <p className="text-base md:text-lg text-text-secondary max-w-2xl mx-auto px-4">
-            이런 상황이라면 세중이 도와드립니다
+            {t("subtitle")}
           </p>
           <div className="w-24 h-1 bg-primary mx-auto mt-3 md:mt-4" />
         </motion.div>

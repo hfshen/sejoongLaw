@@ -124,7 +124,59 @@
     "column": "Column",
     "case": "Success Stories",
     "news": "News",
-    "readMore": "Read More"
+    "readMore": "Read More",
+    "noArticles": "Keine Inhalte verfügbar."
+  },
+  "services": {
+    "title": "Tätigkeitsbereiche",
+    "description": "Wir bieten professionelle Dienstleistungen in verschiedenen Rechtsbereichen, um die Rechte unserer Mandanten zu schützen und die besten Ergebnisse zu erzielen.",
+    "specialized": "Spezialisiert",
+    "practiceAreas": {
+      "immigration": {
+        "title": "Einwanderung und Verwaltung",
+        "description": "Visumanträge, Einwanderungsberatung, Verwaltungsbeschwerden usw.",
+        "details": [
+          "Klagen auf Aufhebung der Abschiebung",
+          "Verwaltungsbeschwerden für Flüchtlinge/Visum",
+          "Wiedererlangung der Staatsangehörigkeit und Einbürgerung",
+          "Reaktionen auf Visumablehnung",
+          "Verlängerung/Änderung der Aufenthaltserlaubnis"
+        ]
+      },
+      "realEstate": {
+        "title": "Immobilien und Bau",
+        "description": "Immobiliendispute, Baurechtsstreitigkeiten, Sanierung usw.",
+        "details": [
+          "Räumungsklagen/Mietstreitigkeiten",
+          "Sanierungs-/Wiederaufbaustreitigkeiten",
+          "Auktion und Zwangsvollstreckung",
+          "Mediation von Immobiliendisputen",
+          "Klagen wegen Baumängeln"
+        ]
+      },
+      "corporate": {
+        "title": "Unternehmensrecht und Arbeit",
+        "description": "Unternehmensberatung, M&A, Arbeitsstreitigkeiten usw.",
+        "details": [
+          "Unternehmensberatung und M&A",
+          "Abhilfe bei ungerechtfertigter Kündigung",
+          "Arbeitsunfälle ausländischer Arbeitnehmer",
+          "Unternehmensfusionen und -übernahmen",
+          "Beratung bei Auslandsinvestitionen"
+        ]
+      },
+      "familyCriminal": {
+        "title": "Familie und Strafrecht",
+        "description": "Scheidung, Erbschaft, Strafverteidigung usw.",
+        "details": [
+          "Scheidung/Erbschaft/Pflichtteil",
+          "Sexualstraftaten/Wirtschaftsstraftaten",
+          "Strafverteidigung für Ausländer",
+          "Familienschlichtung",
+          "Strafverteidigung"
+        ]
+      }
+    }
   },
   "footer": {
     "firmName": "Sejoong Law Firm",
@@ -132,6 +184,7 @@
     "businessNumber": "Business Registration: XXX-XX-XXXXX",
     "phone": "Main Phone: 02-536-XXXX",
     "fax": "Fax: 02-536-XXXX",
+    "address": "2F, Sejoong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
     "privacyPolicy": "Privacy Policy",
     "emailRejection": "Email Collection Rejection",
     "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."

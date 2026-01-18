@@ -10,6 +10,7 @@ import ParticleBackground from "@/components/3d/ParticleBackground"
 
 export default function HeroSectionAnsan() {
   const t = useTranslations("ansan.hero")
+  const tCommon = useTranslations("ansan")
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export default function HeroSectionAnsan() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background/80 to-accent/10" />
         <Image
           src="/images/hero/background-law.svg"
-          alt="법전 서재 배경"
+          alt={tCommon("imageAlt.background")}
           fill
           className="object-cover opacity-30"
           priority
@@ -69,7 +70,7 @@ export default function HeroSectionAnsan() {
                 >
                   <Image
                     src="/SJ_logo.svg"
-                    alt="법무법인 세중 안산지사 로고"
+                    alt={tCommon("imageAlt.logo")}
                     fill
                     className="object-contain"
                     priority
@@ -160,7 +161,7 @@ export default function HeroSectionAnsan() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.7 }}
-        aria-label="다음 섹션으로 스크롤"
+        aria-label={t("scrollIndicator")}
       >
         <motion.div
           animate={{ y: [0, 10, 0] }}

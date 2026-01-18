@@ -1,105 +1,119 @@
 {
   "hero": {
-    "slogan": "체류부터 가정, 일터, 사고, 형사까지 — 안산에서 시작하는 글로벌 원스톱 법률솔루션.",
+    "slogan": "Desde residencia hasta familia, lugar de trabajo, accidentes y casos penales — Soluciones legales integrales globales que comienzan en Ansan.",
     "cta": {
-      "consultation": "상담 예약",
-      "call": "전화 상담"
+      "consultation": "Reservar Consulta",
+      "call": "Llamar Ahora"
     },
-    "scrollIndicator": "스크롤하여 더 알아보기"
+    "scrollIndicator": "Desplázate para saber más"
   },
   "introduction": {
-    "title": "법률사무소 세중 안산지사",
-    "content": "법률사무소 세중(법무법인 세중 안산지사)은 안산 원곡동 거점에서 체류·비자·국적/영주, 국내·국제이혼, 산재·교통사고 보상, 임금·퇴직금(체불) 분쟁, 민사·형사 사건을 통합 제공하는 원스톱 법률 서비스입니다. 복잡한 절차와 언어·서류 장벽으로 어려움을 겪는 고객을 위해, 사건 진단부터 자료 정리, 합의·조정, 소송 및 행정 절차까지 실행 중심으로 끝까지 대리해 분쟁을 빠르게 정리하고 권리를 실질적으로 회복하도록 돕습니다."
+    "title": "Oficina de Abogados Sejoong Sucursal Ansan",
+    "content": "Oficina de Abogados Sejoong (Oficina de Abogados Sejoong Sucursal Ansan) es un proveedor de servicios legales integrales con sede en Wongok-dong, Ansan, que ofrece servicios integrados en residencia/visa/nacionalidad/residencia permanente, divorcio nacional/internacional, compensación por accidentes industriales/tráfico, disputas salariales/jubilación (impagas), y casos civiles/penales. Para clientes que luchan con procedimientos complejos y barreras de idioma/documentos, proporcionamos representación centrada en la ejecución desde el diagnóstico del caso hasta la organización de documentos, acuerdo/mediación, litigio y procedimientos administrativos, ayudando a resolver disputas rápidamente y restaurar sustancialmente los derechos."
   },
   "services": {
-    "title": "핵심 서비스",
+    "title": "Servicios Principales",
     "immigration": {
-      "title": "출입국/체류·신분",
-      "description": "체류 연장, 체류자격 변경, 등록증 연장 대행, 비자/국적 관련 서류, 영주권 신청 서류, 초청·신분정리·각종 행정 서류 지원"
+      "title": "Inmigración/Residencia/Estado",
+      "description": "Extensión de residencia, cambio de estado, extensión de registro, documentos de visa/nacionalidad, solicitudes de residencia permanente, apoyo a documentos administrativos de invitación/ajuste de estado/varios"
     },
     "family": {
-      "title": "국내·국제 이혼/가사",
-      "description": "국내·국제 이혼소송, 재산분할, 양육권·양육비, 입양 및 파양(입양관계 해소), 가족관계 정리 (중국 관련 이혼/서류 이슈 포함)"
+      "title": "Divorcio/Familia Nacional/Internacional",
+      "description": "Litigio de divorcio nacional/internacional, división de propiedad, custodia/pensión alimenticia, adopción y disolución de adopción, asuntos de relaciones familiares (incluidos problemas de divorcio/documentos relacionados con China)"
     },
     "compensation": {
-      "title": "산재·교통사고·손해배상",
-      "description": "산재 보상(업무 중 부상/보상 미수령 등), 교통사고 보상, 합의(대리 협의), 손해배상 청구, 사망사건 합의 및 후속 절차"
+      "title": "Accidentes Industriales/Tráfico/Daños",
+      "description": "Compensación por accidente industrial (lesiones en el lugar de trabajo/compensación no recibida, etc.), compensación por accidente de tráfico, acuerdo (negociación por poder), reclamos de daños, acuerdo de caso de muerte y procedimientos de seguimiento"
     },
     "labor": {
-      "title": "임금·퇴직금·체불",
-      "description": "현장/사업장 임금 체불, 퇴직금 분쟁, 보증금 반환 등 금전청구 사건"
+      "title": "Salarios/Jubilación/Impagos",
+      "description": "Salarios impagos en el lugar de trabajo/sitio comercial, disputas de jubilación, devolución de depósito y otros casos de reclamos monetarios"
     },
     "litigation": {
-      "title": "민사·형사",
-      "description": "폭행·상해, 사기·보이스피싱/온라인 사기, 음주운전 및 교통사고 벌금/형사절차, 위장결혼 관련 이슈, 형사처분/판결문 관련 신청 등"
+      "title": "Civil/Penal",
+      "description": "Asalto/lesión, fraude/phishing de voz/fraude en línea, DUI y multas de accidentes de tráfico/procedimientos penales, problemas de matrimonio falso, solicitudes relacionadas con disposición/juicio penal, etc."
     }
   },
   "painPoints": {
-    "title": "세중이 강한 고객 상황",
+    "title": "Situaciones Donde Sejoong Destaca",
+    "subtitle": "Si estás en esta situación, Sejoong puede ayudarte",
     "items": [
       {
-        "title": "체류 문제 때문에 취업·가정·사업이 멈췄다.",
-        "description": "체류 자격 문제로 인해 일상생활이 멈춘 고객을 위한 빠른 해결책"
+        "title": "El empleo, la familia y el negocio se han detenido debido a problemas de residencia.",
+        "description": "Soluciones rápidas para clientes cuya vida diaria se ha detenido debido a problemas de estado de residencia"
       },
       {
-        "title": "이혼/가사 분쟁이 국경·서류 문제로 더 복잡해졌다.",
-        "description": "국제 결혼의 복잡한 법적 절차를 전문적으로 처리"
+        "title": "Las disputas de divorcio/familia se han vuelto más complicadas debido a problemas transfronterizos/de documentos.",
+        "description": "Manejo profesional de procedimientos legales complejos para matrimonios internacionales"
       },
       {
-        "title": "산재/교통사고를 당했는데 보상 절차를 모르겠다.",
-        "description": "사고 후 보상 절차를 명확하게 안내하고 최대한의 보상 받기"
+        "title": "Tuve un accidente industrial/de tráfico pero no conozco el proceso de compensación.",
+        "description": "Orientación clara sobre los procedimientos de compensación posteriores al accidente y maximización de la compensación"
       },
       {
-        "title": "임금·퇴직금을 못 받았는데 회사가 버틴다.",
-        "description": "체불 임금과 퇴직금을 확실하게 회수하는 전문 서비스"
+        "title": "No he recibido salarios/jubilación y la empresa se está resistiendo.",
+        "description": "Servicio profesional para recuperar de forma segura los salarios y la jubilación impagos"
       },
       {
-        "title": "형사 사건(폭행/사기/음주 등)으로 경찰·검찰 절차가 두렵다.",
-        "description": "형사 절차의 두려움을 덜고 최선의 결과를 위한 전문 변호"
+        "title": "Tengo miedo de los procedimientos policiales/fiscales para casos penales (asalto/fraude/DUI, etc.).",
+        "description": "Reducir el miedo a los procedimientos penales y representación profesional para el mejor resultado"
       }
     ]
   },
   "differentiators": {
-    "title": "세중의 차별점",
+    "title": "Diferenciadores de Sejoong",
     "oneStop": {
-      "title": "원스톱 구조",
-      "description": "출입국(행정) + 분쟁(민·형사) + 보상(손해배상)을 한 흐름으로 설계"
+      "title": "Estructura Integral",
+      "description": "Diseñado como un flujo integrado: Inmigración (Administrativo) + Disputas (Civil/Penal) + Compensación (Daños)"
     },
     "practical": {
-      "title": "합의/조정 실무형",
-      "description": "사건을 키우기보다 \"정리\"에 강한 포지셔닝 (교통·산재·체불·가사에 특히 효과적)"
+      "title": "Enfoque Práctico de Acuerdo/Mediación",
+      "description": "Posicionamiento fuerte en \"resolución\" en lugar de escalar casos (especialmente efectivo para asuntos de tráfico/industriales/impagos/familia)"
     },
     "global": {
-      "title": "글로벌 커뮤니케이션",
-      "description": "다문화/외국인 고객이 이해하기 쉬운 방식으로 절차·서류를 구조화"
+      "title": "Comunicación Global",
+      "description": "Procedimientos y documentos estructurados de manera que los clientes multiculturales/extranjeros puedan entender fácilmente"
     }
   },
   "contact": {
-    "title": "상담 및 안내",
+    "title": "Consulta e Información",
     "location": {
-      "label": "위치",
-      "address": "경기도 안산시 단원구 원곡로 45 세중빌딩 2층"
+      "label": "Ubicación",
+      "address": "2F Edificio Sejoong, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do"
     },
     "phone": {
-      "label": "대표 연락처",
+      "label": "Contacto Principal",
       "main": "031-8044-8805",
       "office": "031-8044-8808"
     },
     "fax": {
-      "label": "팩스",
+      "label": "Fax",
       "number": "031-491-8817"
     },
     "headquarter": {
-      "label": "본사",
-      "address": "서울 서초구 서초동 1713-4, 길도빌딩 303호"
+      "label": "Sede",
+      "address": "303 Edificio Gil-do, 1713-4 Seocho-dong, Seocho-gu, Seúl"
     },
-    "copyAddress": "주소 복사"
+    "copyAddress": "Copiar Dirección",
+    "copied": "Copiado",
+    "mapTitle": "Ubicación de la Oficina de Abogados Sejoong en Ansan"
   },
   "cta": {
-    "title": "지금 바로 상담받으세요",
-    "subtitle": "전문 변호사가 직접 상담해드립니다",
-    "consultation": "온라인 상담 예약",
-    "call": "전화 상담",
-    "inquiry": "온라인 문의"
+    "title": "Obtén Consulta Ahora",
+    "subtitle": "Los abogados profesionales brindan consulta directa",
+    "consultation": "Reservar Consulta en Línea",
+    "call": "Consulta por Teléfono",
+    "inquiry": "Consulta en Línea"
+  },
+  "imageAlt": {
+    "background": "Fondo de biblioteca legal",
+    "logo": "Logotipo de la Oficina de Abogados Sejoong en Ansan"
+  },
+  "metadata": {
+    "title": "Oficina de Abogados Sejoong Sucursal Ansan | Soluciones Legales Integrales",
+    "description": "Desde residencia hasta familia, lugar de trabajo, accidentes y casos penales — Soluciones legales integrales globales que comienzan en Ansan. Especializado en inmigración/residencia, divorcio/familia, accidentes industriales/tráfico, salarios/jubilación, casos civiles/penales.",
+    "keywords": "Oficina de Abogados Sejoong, abogado Ansan, servicio legal integral, visa de residencia, litigio de divorcio, compensación por accidente industrial, accidente de tráfico, salarios impagos, defensa penal, consulta legal Ansan, abogado Wongok-dong, recomendación de abogado Ansan, oficina legal Ansan, abogado Gyeonggi",
+    "ogDescription": "Desde residencia hasta familia, lugar de trabajo, accidentes y casos penales — Soluciones legales integrales globales que comienzan en Ansan.",
+    "ogImageAlt": "Oficina de Abogados Sejoong Sucursal Ansan"
   }
 }

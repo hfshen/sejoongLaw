@@ -36,6 +36,7 @@
   },
   "painPoints": {
     "title": "Situations Where Sejoong Excels",
+    "subtitle": "If you're in this situation, Sejoong can help",
     "items": [
       {
         "title": "Employment, family, and business have stopped due to residency issues.",
@@ -93,7 +94,9 @@
       "label": "Headquarters",
       "address": "303 Gil-do Building, 1713-4 Seocho-dong, Seocho-gu, Seoul"
     },
-    "copyAddress": "Copy Address"
+    "copyAddress": "Copy Address",
+    "copied": "Copied",
+    "mapTitle": "Sejoong Law Office Ansan Branch Location"
   },
   "cta": {
     "title": "Get Consultation Now",
@@ -101,5 +104,16 @@
     "consultation": "Book Online Consultation",
     "call": "Call Consultation",
     "inquiry": "Online Inquiry"
+  },
+  "imageAlt": {
+    "background": "Law library background",
+    "logo": "Sejoong Law Firm Ansan Branch logo"
+  },
+  "metadata": {
+    "title": "Sejoong Law Office Ansan Branch | One-Stop Legal Solutions",
+    "description": "From residency to family, workplace, accidents, and criminal cases — Global one-stop legal solutions starting in Ansan. Specialized in immigration/residency, divorce/family, industrial/traffic accidents, wages/severance, civil/criminal cases.",
+    "keywords": "Sejoong Law Office, Ansan attorney, one-stop legal service, residency visa, divorce litigation, industrial accident compensation, traffic accident, unpaid wages, criminal defense, Ansan legal consultation, Wongok-dong attorney, Ansan attorney recommendation, Ansan legal office, Gyeonggi attorney",
+    "ogDescription": "From residency to family, workplace, accidents, and criminal cases — Global one-stop legal solutions starting in Ansan.",
+    "ogImageAlt": "Sejoong Law Office Ansan Branch"
   }
 }

@@ -124,7 +124,59 @@
     "column": "Column",
     "case": "Success Stories",
     "news": "News",
-    "readMore": "Read More"
+    "readMore": "Read More",
+    "noArticles": "Aucun contenu disponible."
+  },
+  "services": {
+    "title": "Domaines d'Activité",
+    "description": "Nous fournissons des services professionnels dans divers domaines juridiques pour protéger les droits de nos clients et obtenir les meilleurs résultats.",
+    "specialized": "Spécialisé",
+    "practiceAreas": {
+      "immigration": {
+        "title": "Immigration et Administratif",
+        "description": "Demandes de visa, conseil en immigration, recours administratifs, etc.",
+        "details": [
+          "Actions en annulation d'expulsion",
+          "Recours administratifs réfugiés/visas",
+          "Récupération de nationalité et naturalisation",
+          "Réponses au refus de visa",
+          "Prolongation/changement de permis de séjour"
+        ]
+      },
+      "realEstate": {
+        "title": "Immobilier et Construction",
+        "description": "Litiges immobiliers, litiges de construction, réaménagement, etc.",
+        "details": [
+          "Actions d'expulsion/bail",
+          "Litiges de réaménagement/reconstruction",
+          "Vente aux enchères et exécution forcée",
+          "Médiation des litiges immobiliers",
+          "Actions pour défauts de construction"
+        ]
+      },
+      "corporate": {
+        "title": "Entreprise et Travail",
+        "description": "Conseil d'entreprise, M&A, litiges du travail, etc.",
+        "details": [
+          "Conseil d'entreprise et M&A",
+          "Recours pour licenciement abusif",
+          "Accidents du travail des travailleurs étrangers",
+          "Fusions et acquisitions d'entreprises",
+          "Conseil en investissement étranger"
+        ]
+      },
+      "familyCriminal": {
+        "title": "Famille et Pénal",
+        "description": "Divorce, succession, défense pénale, etc.",
+        "details": [
+          "Divorce/succession/part réservataire",
+          "Crimes sexuels/crimes économiques",
+          "Défense pénale des étrangers",
+          "Médiation familiale",
+          "Défense pénale"
+        ]
+      }
+    }
   },
   "footer": {
     "firmName": "Sejoong Law Firm",
@@ -132,6 +184,7 @@
     "businessNumber": "Business Registration: XXX-XX-XXXXX",
     "phone": "Main Phone: 02-536-XXXX",
     "fax": "Fax: 02-536-XXXX",
+    "address": "2F, Sejoong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
     "privacyPolicy": "Privacy Policy",
     "emailRejection": "Email Collection Rejection",
     "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."

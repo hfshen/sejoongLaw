@@ -124,7 +124,59 @@
     "column": "Column",
     "case": "Success Stories",
     "news": "News",
-    "readMore": "Read More"
+    "readMore": "Read More",
+    "noArticles": "No hay contenido disponible."
+  },
+  "services": {
+    "title": "Áreas de Práctica",
+    "description": "Proporcionamos servicios profesionales en diversos campos legales para proteger los derechos de nuestros clientes y lograr los mejores resultados.",
+    "specialized": "Especializado",
+    "practiceAreas": {
+      "immigration": {
+        "title": "Inmigración y Administrativo",
+        "description": "Solicitudes de visa, consultoría de inmigración, apelaciones administrativas, etc.",
+        "details": [
+          "Demandas de cancelación de deportación",
+          "Apelaciones administrativas de refugiados/visas",
+          "Recuperación de nacionalidad y naturalización",
+          "Respuestas a rechazo de visa",
+          "Extensión/cambio de permiso de estadía"
+        ]
+      },
+      "realEstate": {
+        "title": "Bienes Raíces y Construcción",
+        "description": "Disputas inmobiliarias, litigios de construcción, reurbanización, etc.",
+        "details": [
+          "Demandas de desalojo/arrendamiento",
+          "Disputas de reurbanización/reconstrucción",
+          "Subasta y ejecución forzada",
+          "Mediación de disputas inmobiliarias",
+          "Demandas por defectos de construcción"
+        ]
+      },
+      "corporate": {
+        "title": "Corporativo y Laboral",
+        "description": "Consultoría corporativa, M&A, disputas laborales, etc.",
+        "details": [
+          "Consultoría corporativa y M&A",
+          "Alivio por despido injusto",
+          "Accidentes industriales de trabajadores extranjeros",
+          "Fusiones y adquisiciones corporativas",
+          "Consultoría de inversión extranjera"
+        ]
+      },
+      "familyCriminal": {
+        "title": "Familiar y Penal",
+        "description": "Divorcio, herencia, defensa penal, etc.",
+        "details": [
+          "Divorcio/herencia/porción forzosa",
+          "Delitos sexuales/delitos económicos",
+          "Defensa penal de extranjeros",
+          "Mediación familiar",
+          "Defensa penal"
+        ]
+      }
+    }
   },
   "footer": {
     "firmName": "Sejoong Law Firm",
@@ -132,6 +184,7 @@
     "businessNumber": "Business Registration: XXX-XX-XXXXX",
     "phone": "Main Phone: 02-536-XXXX",
     "fax": "Fax: 02-536-XXXX",
+    "address": "2F, Sejoong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
     "privacyPolicy": "Privacy Policy",
     "emailRejection": "Email Collection Rejection",
     "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."

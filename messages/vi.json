@@ -124,7 +124,59 @@
     "column": "Column",
     "case": "Success Stories",
     "news": "News",
-    "readMore": "Read More"
+    "readMore": "Read More",
+    "noArticles": "Không có nội dung."
+  },
+  "services": {
+    "title": "Lĩnh Vực Hoạt Động",
+    "description": "Chúng tôi cung cấp dịch vụ chuyên nghiệp trong các lĩnh vực pháp lý khác nhau để bảo vệ quyền lợi của khách hàng và đạt được kết quả tốt nhất.",
+    "specialized": "Chuyên Biệt",
+    "practiceAreas": {
+      "immigration": {
+        "title": "Nhập Cư và Hành Chính",
+        "description": "Đơn xin thị thực, tư vấn nhập cư, kháng cáo hành chính, v.v.",
+        "details": [
+          "Vụ kiện hủy trục xuất",
+          "Kháng cáo hành chính người tị nạn/thị thực",
+          "Khôi phục quốc tịch và nhập quốc tịch",
+          "Phản ứng từ chối thị thực",
+          "Gia hạn/thay đổi giấy phép cư trú"
+        ]
+      },
+      "realEstate": {
+        "title": "Bất Động Sản và Xây Dựng",
+        "description": "Tranh chấp bất động sản, kiện tụng xây dựng, tái phát triển, v.v.",
+        "details": [
+          "Vụ kiện trục xuất/thuê",
+          "Tranh chấp tái phát triển/tái xây dựng",
+          "Đấu giá và thi hành án",
+          "Hòa giải tranh chấp bất động sản",
+          "Vụ kiện khiếm khuyết xây dựng"
+        ]
+      },
+      "corporate": {
+        "title": "Doanh Nghiệp và Lao Động",
+        "description": "Tư vấn doanh nghiệp, M&A, tranh chấp lao động, v.v.",
+        "details": [
+          "Tư vấn doanh nghiệp và M&A",
+          "Cứu trợ sa thải bất công",
+          "Tai nạn lao động của công nhân nước ngoài",
+          "Sáp nhập và mua lại doanh nghiệp",
+          "Tư vấn đầu tư nước ngoài"
+        ]
+      },
+      "familyCriminal": {
+        "title": "Gia Đình và Hình Sự",
+        "description": "Ly hôn, thừa kế, bào chữa hình sự, v.v.",
+        "details": [
+          "Ly hôn/thừa kế/phần bắt buộc",
+          "Tội phạm tình dục/tội phạm kinh tế",
+          "Bào chữa hình sự cho người nước ngoài",
+          "Hòa giải gia đình",
+          "Bào chữa hình sự"
+        ]
+      }
+    }
   },
   "footer": {
     "firmName": "Sejoong Law Firm",
@@ -132,6 +184,7 @@
     "businessNumber": "Business Registration: XXX-XX-XXXXX",
     "phone": "Main Phone: 02-536-XXXX",
     "fax": "Fax: 02-536-XXXX",
+    "address": "Tầng 2, Tòa nhà Sejoong, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
     "privacyPolicy": "Privacy Policy",
     "emailRejection": "Email Collection Rejection",
     "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."

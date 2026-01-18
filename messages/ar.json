@@ -124,7 +124,59 @@
     "column": "Column",
     "case": "Success Stories",
     "news": "News",
-    "readMore": "Read More"
+    "readMore": "Read More",
+    "noArticles": "لا يوجد محتوى متاح."
+  },
+  "services": {
+    "title": "مجالات الممارسة",
+    "description": "نقدم خدمات مهنية في مختلف المجالات القانونية لحماية حقوق عملائنا وتحقيق أفضل النتائج.",
+    "specialized": "متخصص",
+    "practiceAreas": {
+      "immigration": {
+        "title": "الهجرة والإدارة",
+        "description": "طلبات التأشيرة، استشارات الهجرة، الطعون الإدارية، إلخ.",
+        "details": [
+          "دعاوى إلغاء الترحيل",
+          "الطعون الإدارية للاجئين/التأشيرات",
+          "استعادة الجنسية والتجنس",
+          "الرد على رفض التأشيرة",
+          "تمديد/تغيير تصريح الإقامة"
+        ]
+      },
+      "realEstate": {
+        "title": "العقارات والبناء",
+        "description": "نزاعات العقارات، دعاوى البناء، إعادة التطوير، إلخ.",
+        "details": [
+          "دعاوى الإخلاء/الإيجار",
+          "نزاعات إعادة التطوير/إعادة البناء",
+          "المزاد والتنفيذ القسري",
+          "التوسط في نزاعات العقارات",
+          "دعاوى عيوب البناء"
+        ]
+      },
+      "corporate": {
+        "title": "الشركات والعمل",
+        "description": "استشارات الشركات، الاندماج والاستحواذ، نزاعات العمل، إلخ.",
+        "details": [
+          "استشارات الشركات والاندماج والاستحواذ",
+          "الإنصاف من الفصل غير العادل",
+          "حوادث العمل للعمال الأجانب",
+          "اندماج واستحواذ الشركات",
+          "استشارات الاستثمار الأجنبي"
+        ]
+      },
+      "familyCriminal": {
+        "title": "الأحوال الشخصية والجنائي",
+        "description": "الطلاق، الميراث، الدفاع الجنائي، إلخ.",
+        "details": [
+          "الطلاق/الميراث/الحصة الإجبارية",
+          "الجرائم الجنسية/الجرائم الاقتصادية",
+          "الدفاع الجنائي للأجانب",
+          "التوسط في الأحوال الشخصية",
+          "الدفاع الجنائي"
+        ]
+      }
+    }
   },
   "footer": {
     "firmName": "Sejoong Law Firm",
@@ -132,6 +184,7 @@
     "businessNumber": "Business Registration: XXX-XX-XXXXX",
     "phone": "Main Phone: 02-536-XXXX",
     "fax": "Fax: 02-536-XXXX",
+    "address": "2F, Sejoong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
     "privacyPolicy": "Privacy Policy",
     "emailRejection": "Email Collection Rejection",
     "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."

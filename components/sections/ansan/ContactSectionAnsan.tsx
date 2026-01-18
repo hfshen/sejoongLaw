@@ -60,7 +60,7 @@ export default function ContactSectionAnsan() {
                     {copied ? (
                       <>
                         <Check className="w-4 h-4" />
-                        복사됨
+                        {t("copied")}
                       </>
                     ) : (
                       <>
@@ -136,7 +136,7 @@ export default function ContactSectionAnsan() {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 className="absolute inset-0"
-                title="법률사무소 세중 안산지사 위치"
+                title={t("mapTitle")}
               />
             </div>
           </motion.div>

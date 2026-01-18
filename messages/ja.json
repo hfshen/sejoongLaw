@@ -127,12 +127,64 @@
     "readMore": "詳しく見る",
     "noArticles": "コンテンツがありません。"
   },
+  "services": {
+    "title": "業務分野",
+    "description": "様々な法律分野で専門的なサービスを提供し、お客様の権利を保護し最善の結果を生み出します。",
+    "specialized": "特化",
+    "practiceAreas": {
+      "immigration": {
+        "title": "出入国・行政・移民",
+        "description": "ビザ申請、移民相談、行政審判など",
+        "details": [
+          "強制退去取消訴訟",
+          "難民/ビザ行政審判",
+          "国籍回復及び帰化",
+          "ビザ拒否対応",
+          "滞在許可延長/変更"
+        ]
+      },
+      "realEstate": {
+        "title": "不動産・建設",
+        "description": "不動産紛争、建設訴訟、再開発など",
+        "details": [
+          "明渡/賃貸訴訟",
+          "再開発/再建紛争",
+          "競売及び強制執行",
+          "不動産紛争調停",
+          "建設瑕疵訴訟"
+        ]
+      },
+      "corporate": {
+        "title": "企業法務・労働",
+        "description": "企業相談、M&A、労働紛争など",
+        "details": [
+          "企業相談及びM&A",
+          "不当解雇救済",
+          "外国人労働者労災",
+          "企業買収合併",
+          "海外投資相談"
+        ]
+      },
+      "familyCriminal": {
+        "title": "家事・刑事",
+        "description": "離婚、相続、刑事防衛など",
+        "details": [
+          "離婚/相続/遺留分",
+          "性犯罪/経済犯罪",
+          "外国人刑事防衛",
+          "家事調停",
+          "刑事弁護"
+        ]
+      }
+    }
+  },
   "footer": {
     "firmName": "世中法律事務所",
     "representative": "代表弁護士：李相国",
     "businessNumber": "事業者登録番号：XXX-XX-XXXXX",
     "phone": "代表電話：02-536-XXXX",
     "fax": "ファックス：02-536-XXXX",
+    "address": "京畿道安山市檀園区元谷路45、世中ビル2階",
     "privacyPolicy": "個人情報処理方針",
     "emailRejection": "メール無断収集拒否",
     "copyright": "Copyright © SEJOONG LAW FIRM. All Rights Reserved."
