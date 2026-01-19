@@ -240,6 +240,27 @@ const members: Member[] = [
   },
 ]
 
+const location = {
+  name: "본사",
+  address: "서울시 서초구 서초대로 272, 10층",
+  addressDetail: "(서초동, 한국아이비에스빌딩)",
+  phone: "031-8044-8805",
+  lat: 37.4836,
+  lng: 127.0329,
+  subway: [
+    "지하철 2호선 서초역 3번 출구 도보 5분",
+    "지하철 2호선 강남역 7번 출구 도보 10분",
+  ],
+  bus: [
+    "간선: 146, 341, 362, 463, 641, 643",
+    "지선: 3412, 6411",
+    "광역: 9404, 9408",
+  ],
+}
+
+export default function AboutPage() {
+  const t = useTranslations()
+  
   const values = [
     {
       icon: <Award className="w-8 h-8" />,
@@ -262,27 +283,7 @@ const members: Member[] = [
       description: t("about.tabs.greeting.firmValues.items.customer.description"),
     },
   ]
-
-const location = {
-  name: "본사",
-  address: "서울시 서초구 서초대로 272, 10층",
-  addressDetail: "(서초동, 한국아이비에스빌딩)",
-  phone: "031-8044-8805",
-  lat: 37.4836,
-  lng: 127.0329,
-  subway: [
-    "지하철 2호선 서초역 3번 출구 도보 5분",
-    "지하철 2호선 강남역 7번 출구 도보 10분",
-  ],
-  bus: [
-    "간선: 146, 341, 362, 463, 641, 643",
-    "지선: 3412, 6411",
-    "광역: 9404, 9408",
-  ],
-}
-
-export default function AboutPage() {
-  const t = useTranslations()
+  
   const tabs = [
     {
       id: "greeting",
