@@ -31,14 +31,14 @@ export default function LeaderSection() {
                 >
                   <Image
                     src="/images/leader/book-cover.svg"
-                    alt="출입국관리법-이론과 실제"
+                    alt={t("leader.book.alt")}
                     fill
                     className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
                     <p className="text-xs text-white font-semibold text-center">
-                      《출입국관리법-이론과 실제》
+                      {t("leader.book.title")}
                     </p>
                   </div>
                 </motion.div>
@@ -52,14 +52,14 @@ export default function LeaderSection() {
                 >
                   <Image
                     src="/images/leader/ceo-photo.svg"
-                    alt="이상국 대표변호사"
+                    alt={t("leader.ceo.alt")}
                     fill
                     className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
                     <p className="text-xs text-white font-semibold text-center">
-                      이상국 대표변호사
+                      {t("leader.ceo.name")}
                     </p>
                   </div>
                 </motion.div>

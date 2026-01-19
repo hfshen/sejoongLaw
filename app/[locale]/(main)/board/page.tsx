@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import { getTranslations } from "next-intl/server"
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/Card"
@@ -8,9 +9,12 @@ import Button from "@/components/ui/Button"
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
-  title: "상담게시판 | 법무법인 세중",
-  description: "최근업무사례, 온라인상담 Q/A, 세중 칼럼, 최신뉴스를 확인하세요.",
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations()
+  return {
+    title: `${t("pages.board.title")} | ${t("common.title")}`,
+    description: t("pages.board.description"),
+  }
 }
 
 async function getBoardPosts() {
@@ -36,43 +40,44 @@ async function getBoardPosts() {
   }
 }
 
-const boardCategories = [
-  {
-    key: "cases",
-    title: "최근업무사례",
-    description: "법무법인 세중의 최근 업무 사례를 확인하세요.",
-    icon: <Award className="w-6 h-6" />,
-    href: "/board",
-    color: "primary",
-  },
-  {
-    key: "qa",
-    title: "온라인상담 Q/A",
-    description: "자주 묻는 질문과 답변을 확인하세요.",
-    icon: <MessageSquare className="w-6 h-6" />,
-    href: "/board/qa",
-    color: "default",
-  },
-  {
-    key: "column",
-    title: "세중 칼럼",
-    description: "전문 변호사의 법률 칼럼을 읽어보세요.",
-    icon: <FileText className="w-6 h-6" />,
-    href: "/board/column",
-    color: "success",
-  },
-  {
-    key: "news",
-    title: "최신뉴스",
-    description: "법무법인 세중의 최신 소식을 확인하세요.",
-    icon: <Newspaper className="w-6 h-6" />,
-    href: "/board/news",
-    color: "default",
-  },
-]
-
 export default async function BoardPage() {
+  const t = await getTranslations("pages.board")
   const posts = await getBoardPosts()
+
+  const boardCategories = [
+    {
+      key: "cases",
+      title: t("categories.cases.title"),
+      description: t("categories.cases.description"),
+      icon: <Award className="w-6 h-6" />,
+      href: "/board",
+      color: "primary",
+    },
+    {
+      key: "qa",
+      title: t("categories.qa.title"),
+      description: t("categories.qa.description"),
+      icon: <MessageSquare className="w-6 h-6" />,
+      href: "/board/qa",
+      color: "default",
+    },
+    {
+      key: "column",
+      title: t("categories.column.title"),
+      description: t("categories.column.description"),
+      icon: <FileText className="w-6 h-6" />,
+      href: "/board/column",
+      color: "success",
+    },
+    {
+      key: "news",
+      title: t("categories.news.title"),
+      description: t("categories.news.description"),
+      icon: <Newspaper className="w-6 h-6" />,
+      href: "/board/news",
+      color: "default",
+    },
+  ]
 
   return (
     <div className="min-h-screen bg-background">
@@ -85,13 +90,13 @@ export default async function BoardPage() {
         <div className="container-max relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <Badge variant="primary" className="mb-6 text-sm md:text-base">
-              상담게시판
+              {t("title")}
             </Badge>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary mb-6">
-              상담게시판
+              {t("title")}
             </h1>
             <p className="text-lg md:text-xl text-text-secondary leading-relaxed">
-              최근업무사례, 온라인상담, 칼럼, 뉴스 등 다양한 정보를 확인하세요.
+              {t("description")}
             </p>
           </div>
         </div>
@@ -115,7 +120,7 @@ export default async function BoardPage() {
                       {category.description}
                     </p>
                     <div className="flex items-center justify-center text-primary font-semibold text-sm">
-                      자세히 보기
+                      {t("viewMore")}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </div>
                   </CardContent>
@@ -130,10 +135,10 @@ export default async function BoardPage() {
       <section className="section-padding bg-background-alt">
         <div className="container-max">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="section-title mb-0">최근업무사례</h2>
+            <h2 className="section-title mb-0">{t("categories.cases.title")}</h2>
             <Link href="/board/write">
               <Button variant="outline">
-                글쓰기
+                {t("write")}
               </Button>
             </Link>
           </div>
@@ -142,10 +147,10 @@ export default async function BoardPage() {
             <Card>
               <CardContent className="p-12 text-center">
                 <p className="text-text-secondary mb-4">
-                  등록된 업무사례가 없습니다.
+                  {t("noPosts")}
                 </p>
                 <Link href="/board/write">
-                  <Button>첫 글 작성하기</Button>
+                  <Button>{t("writeFirst")}</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -157,7 +162,7 @@ export default async function BoardPage() {
                     <CardContent className="p-6">
                       <div className="flex items-center gap-2 mb-3">
                         <Badge variant="primary" className="text-xs">
-                          업무사례
+                          {t("categories.cases.title")}
                         </Badge>
                         <span className="text-xs text-text-secondary">
                           <Calendar className="w-3 h-3 inline mr-1" />
@@ -171,7 +176,7 @@ export default async function BoardPage() {
                         {post.content}
                       </p>
                       <div className="flex items-center text-primary font-semibold text-sm">
-                        자세히 보기
+                        {t("viewMore")}
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </div>
                     </CardContent>

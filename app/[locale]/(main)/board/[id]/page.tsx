@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 
 async function getPost(id: string) {
@@ -38,8 +39,9 @@ async function getPost(id: string) {
 export default async function BoardPostPage({
   params,
 }: {
-  params: { id: string }
+  params: { id: string; locale: string }
 }) {
+  const t = await getTranslations()
   const post = await getPost(params.id)
 
   if (!post) {
@@ -52,10 +54,10 @@ export default async function BoardPostPage({
       <div className="bg-white rounded-lg shadow-md p-8">
         <div className="mb-6">
           <p className="text-sm text-text-secondary">
-            작성자: {post.profiles?.name || post.profiles?.email || "익명"}
+            {t("board.post.author")}: {post.profiles?.name || post.profiles?.email || t("board.post.anonymous")}
           </p>
           <p className="text-sm text-text-secondary">
-            작성일: {new Date(post.created_at).toLocaleDateString("ko-KR")}
+            {t("board.post.date")}: {new Date(post.created_at).toLocaleDateString("ko-KR")}
           </p>
         </div>
         <div className="prose prose-lg max-w-none">

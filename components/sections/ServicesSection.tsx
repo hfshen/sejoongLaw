@@ -206,7 +206,7 @@ export default function ServicesSection() {
                         href={`/${locale}/${area.category}`}
                         className="inline-flex items-center gap-2 text-primary font-semibold text-sm md:text-base group/link hover:gap-3 transition-all duration-300"
                       >
-                        <span>자세히 보기</span>
+                        <span>{t("services.viewMore")}</span>
                         <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                       </Link>
                     </motion.div>

@@ -2,32 +2,31 @@
 
 import { TestimonialCard } from "@/components/ui/TestimonialCard"
 import { motion } from "framer-motion"
-
-const testimonials = [
-  {
-    quote:
-      "법무법인 세중의 도움으로 복잡한 부동산 분쟁을 성공적으로 해결할 수 있었습니다. 전문성과 세심한 상담에 정말 감사드립니다.",
-    author: "김○○",
-    role: "부동산 분쟁 사건",
-    rating: 5,
-  },
-  {
-    quote:
-      "이혼 상담부터 소송까지 전 과정을 신뢰하고 맡길 수 있었습니다. 변호사님의 전문적인 조언 덕분에 원하는 결과를 얻을 수 있었습니다.",
-    author: "이○○",
-    role: "이혼 소송 사건",
-    rating: 5,
-  },
-  {
-    quote:
-      "비자 거절 당했을 때 법무법인 세중의 도움으로 재신청에 성공했습니다. 빠른 대응과 정확한 조언이 인상적이었습니다.",
-    author: "박○○",
-    role: "비자 신청 사건",
-    rating: 5,
-  },
-]
+import { useTranslations } from "next-intl"
 
 export default function TestimonialsSection() {
+  const t = useTranslations()
+  
+  const testimonials = [
+    {
+      quote: t("testimonials.items.1.quote"),
+      author: t("testimonials.items.1.author"),
+      role: t("testimonials.items.1.role"),
+      rating: 5,
+    },
+    {
+      quote: t("testimonials.items.2.quote"),
+      author: t("testimonials.items.2.author"),
+      role: t("testimonials.items.2.role"),
+      rating: 5,
+    },
+    {
+      quote: t("testimonials.items.3.quote"),
+      author: t("testimonials.items.3.author"),
+      role: t("testimonials.items.3.role"),
+      rating: 5,
+    },
+  ]
   return (
     <section className="section-padding bg-background-alt">
       <div className="container-max">
@@ -38,9 +37,9 @@ export default function TestimonialsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8 md:mb-16"
         >
-          <h2 className="section-title">고객 후기</h2>
+          <h2 className="section-title">{t("testimonials.title")}</h2>
           <p className="body-text max-w-2xl mx-auto px-4">
-            법무법인 세중을 이용하신 고객들의 생생한 후기를 확인해보세요.
+            {t("testimonials.description")}
           </p>
         </motion.div>
 

@@ -7,7 +7,10 @@
     "readMore": "詳細を見る",
     "contact": "お問い合わせ",
     "close": "閉じる",
-    "viewAll": "すべて見る"
+    "viewAll": "すべて見る",
+    "logoAlt": "世中法律事務所",
+    "openMenu": "メニューを開く",
+    "openSubmenu": "サブメニューを開く"
   },
   "nav": {
     "about": "事務所紹介",
@@ -19,8 +22,116 @@
   },
   "about": {
     "greeting": "ご挨拶",
-    "members": "メンバー紹介",
-    "location": "アクセス"
+    "members": {
+      "positions": {
+        "managingPartner": "Managing Partner",
+        "lawyer": "Lawyer",
+        "foreignLawyer": "Foreign Lawyer",
+        "manager": "Office Manager / Case Manager"
+      },
+      "specialties": {
+        "civil": "Civil",
+        "criminal": "Criminal",
+        "family": "Family Litigation",
+        "immigration": "Immigration Control Act",
+        "immigrationAdmin": "Immigration Administration",
+        "generalCivilCriminal": "General Civil/Criminal",
+        "damages": "Damages (Industrial Accidents, Traffic Accidents, etc.)",
+        "construction": "Construction/Real Estate",
+        "administrative": "Administrative",
+        "corporate": "General Corporate",
+        "litigation": "Litigation",
+        "criminalDrug": "Criminal (Drugs)",
+        "immigrationLaw": "Immigration Law",
+        "caseManagement": "Case Management",
+        "chineseLaw": "Chinese Law"
+      },
+      "badges": {
+        "managingPartner": "Managing Partner",
+        "foreign": "Foreign"
+      },
+      "modal": {
+        "viewDetails": "View Details",
+        "introduction": "Introduction",
+        "contact": "Contact",
+        "education": "Education",
+        "history": "History",
+        "career": "Career",
+        "achievements": "Key Achievements",
+        "clients": "Companies and Public Institutions Advised",
+        "cases": "Corporations Represented in Litigation",
+        "specialties": "Main Practice Areas"
+      }
+    },
+    "location": "アクセス",
+    "description": "Sejoong Law Firm is a law firm established by experts in litigation, immigration control, overseas immigration, investment, and visa fields to provide various legal services that customers need quickly and accurately.",
+    "tabs": {
+      "greeting": {
+        "label": "Greeting",
+        "vision": {
+          "title": "Moving toward the center of the world",
+          "subtitle": "About Sejoong",
+          "description2": "Centered around Managing Partner Lee Sang-guk, author of 《Immigration Control Act》 and Doctor of Law, experts from various fields gather to clearly solve complex legal problems for our clients."
+        },
+        "values": {
+          "title": "Vision and Values",
+          "commitment": {
+            "title": "Customer Commitment and Creative Legal Mind",
+            "description": "Sejoong Law Firm has always provided the best legal services to clients with commitment to customers and a creative legal mind, and is called the most trustworthy law firm based on the efforts of capable experts and the full trust of clients."
+          },
+          "trust": {
+            "title": "Trust as the Most Precious Value",
+            "description": "Sejoong Law Firm considers trust with customers as the most precious value, thinks and solves customer problems together from the customer's perspective, and does its best to provide customers with emotion and satisfaction through the best legal services provided by field-specific experts."
+          }
+        },
+        "firmValues": {
+          "title": "Sejoong Law Firm's Values",
+          "items": {
+            "expertise": {
+              "title": "Expertise",
+              "description": "Expert lawyers in each field provide the best legal services."
+            },
+            "trust": {
+              "title": "Trust",
+              "description": "We provide transparent and honest legal services based on trust with customers."
+            },
+            "global": {
+              "title": "Global",
+              "description": "We solve legal problems across borders in one stop."
+            },
+            "customer": {
+              "title": "Customer Centric",
+              "description": "We think of protecting customer rights and interests as the top priority and do our best."
+            }
+          }
+        }
+      },
+      "members": {
+        "label": "Members",
+        "description": "Sejoong Law Firm's expert lawyers protect customers' rights based on rich experience and expertise in various legal fields. Field-specific experts cooperate to provide the best legal services."
+      },
+      "location": {
+        "label": "Location",
+        "address": "Address",
+        "phone": "Main Phone",
+        "subway": "Subway",
+        "bus": "Bus",
+        "car": "Car",
+        "parking": "Building basement parking available (paid)",
+        "map": "Map"
+      }
+    },
+    "hero": {
+      "badge": "About Us",
+      "title": "Sejoong Law Firm",
+      "description": "A professional law firm that does its best to protect customer rights and interests and improve the quality of legal services."
+    },
+    "cta": {
+      "title": "Get Consultation Now",
+      "description": "Expert lawyers provide direct consultation.",
+      "button": "Free Consultation",
+      "phone": "Phone Consultation: 031-8044-8805"
+    }
   },
   "litigation": {
     "realEstate": "不動産紛争",
@@ -30,14 +141,465 @@
     "industrial": "労災事故",
     "insurance": "保険訴訟",
     "tax": "税務訴訟",
-    "general": "家事/民事/刑事/行政"
+    "general": "家事/民事/刑事/行政",
+    "description": "We provide professional litigation services in various legal fields.",
+    "tabs": {
+      "realEstate": {
+        "label": "Real Estate Disputes",
+        "description1": "Real estate is an important asset in our lives, and real estate-related disputes require complex and professional legal knowledge. Sejoong Law Firm professionally resolves all real estate-related legal issues including real estate contracts, ownership disputes, lease disputes, and construction disputes.",
+        "description2": "We adopt a systematic approach to resolve real estate disputes. First, we understand the overall situation of the case through consultation with the client, and thoroughly collect related documents and evidence. Then, we present the optimal solution through legal review and seek the possibility of adjustment through negotiation. If negotiation is not possible, we protect the client's rights through litigation.",
+        "mainServices": "Main Services",
+        "process": "Process",
+        "services": {
+          "contract": {
+            "title": "Real Estate Contract Disputes",
+            "desc": "Resolution of disputes related to real estate contracts such as sales contracts, jeonse contracts, and lease contracts"
+          },
+          "ownership": {
+            "title": "Ownership Disputes",
+            "desc": "Ownership-related disputes such as registry errors, name trusts, and ownership transfers"
+          },
+          "lease": {
+            "title": "Lease Disputes",
+            "desc": "Lease-related disputes such as jeonse deposit returns, security deposit returns, and contract renewals"
+          },
+          "construction": {
+            "title": "Construction Disputes",
+            "desc": "Construction-related disputes such as defect repairs, construction delays, and contract terminations"
+          }
+        },
+        "processSteps": {
+          "consultation": {
+            "title": "Consultation and Case Analysis",
+            "desc": "We understand and analyze the overall situation of the case through consultation with the client."
+          },
+          "investigation": {
+            "title": "Evidence Collection and Investigation",
+            "desc": "Collection of related documents, contracts, and evidence materials and legal review"
+          },
+          "strategy": {
+            "title": "Legal Review and Strategy Development",
+            "desc": "Legal review based on collected materials and development of resolution strategies"
+          },
+          "negotiation": {
+            "title": "Negotiation and Mediation",
+            "desc": "Seeking the possibility of adjustment through negotiation with the other party"
+          },
+          "litigation": {
+            "title": "Litigation (if necessary)",
+            "desc": "Protecting the client's rights through litigation if negotiation is not possible"
+          }
+        }
+      },
+      "divorce": {
+        "label": "Divorce/International Divorce",
+        "description1": "Divorce is an important turning point in life, and legal issues that arise during the divorce process require careful and professional approach. Sejoong Law Firm professionally resolves all divorce-related legal issues including judicial divorce, consensual divorce, property division, alimony, and child custody.",
+        "description2": "Especially in international divorce cases, the situation is more complex due to different legal systems and language barriers between countries. We have extensive experience in divorce cases between nationals and foreigners, and accurately understand and apply international private law and family laws of each country. We also comprehensively resolve subsequent issues such as child custody, visitation rights, and property division.",
+        "mainServices": "Main Services",
+        "services": {
+          "judicial": {
+            "title": "Judicial Divorce",
+            "desc": "Divorce procedures through trial when consensual divorce is not possible"
+          },
+          "agreement": {
+            "title": "Consensual Divorce",
+            "desc": "Divorce negotiation and document preparation through agreement between spouses"
+          },
+          "property": {
+            "title": "Property Division",
+            "desc": "Fair division and claim of property formed during marriage"
+          },
+          "alimony": {
+            "title": "Alimony Claim",
+            "desc": "Alimony claim and negotiation against the party who caused the divorce"
+          },
+          "custody": {
+            "title": "Child Custody and Parental Rights",
+            "desc": "Designation of child custodian and determination of parental rights holder"
+          },
+          "international": {
+            "title": "International Divorce",
+            "desc": "Divorce and family disputes between nationals and foreigners"
+          }
+        }
+      },
+      "inheritance": {
+        "label": "Inheritance Disputes",
+        "description1": "Inheritance is property inherited from ancestors, but disputes that arise during the inheritance process require careful approach as they involve emotional conflicts and legal complexity among family members. Sejoong Law Firm professionally resolves all inheritance-related legal issues including inheritance property division, reserved portion return claims, and inheritance recovery claims.",
+        "description2": "To resolve inheritance disputes, we first accurately identify the scope of inheritance property and calculate each heir's inheritance share. We support reserved portion return claims when there are reserved portion right holders, and proceed with inheritance recovery claim lawsuits when inheritance rights are violated. We also support establishing inheritance plans and writing wills at the pre-inheritance stage. We provide legal advisory for inheritance tax reduction to minimize the client's burden.",
+        "mainServices": "Main Services",
+        "services": {
+          "division": {
+            "title": "Inheritance Property Division",
+            "desc": "Fair division and division negotiation of inheritance property"
+          },
+          "reserve": {
+            "title": "Reserved Portion Return Claim",
+            "desc": "Protection of reserved portion right holders' rights and return claims"
+          },
+          "recovery": {
+            "title": "Inheritance Recovery Claim",
+            "desc": "Recovery claim lawsuit for inheritance right violations"
+          },
+          "will": {
+            "title": "Will and Inheritance Planning",
+            "desc": "Establishment of inheritance plans and will writing at the pre-inheritance stage"
+          },
+          "tax": {
+            "title": "Inheritance Tax Reduction",
+            "desc": "Legal advisory and planning for inheritance tax reduction"
+          },
+          "international": {
+            "title": "Domestic and International Inheritance Cases",
+            "desc": "Processing of inheritance cases when there is overseas property"
+          }
+        }
+      },
+      "traffic": {
+        "label": "Traffic Accidents",
+        "description1": "Traffic accidents are unexpected accidents that can happen to anyone, and proper legal response after an accident is important. Sejoong Law Firm professionally resolves all traffic accident-related legal issues including traffic accident damages, insurance claims, and fault ratio disputes.",
+        "description2": "We immediately investigate the accident scene and collect evidence to accurately identify the cause of the accident. In calculating fault ratios, we accurately apply the Road Traffic Act and related precedents to derive results favorable to the client. We also demonstrate expertise in negotiations with insurance companies to help clients receive maximum insurance benefits. We also proceed with additional compensation claims when sequelae or disabilities occur.",
+        "mainServices": "Main Services",
+        "services": {
+          "damages": {
+            "title": "Damage Claim",
+            "desc": "Property damage and mental damage compensation claims due to traffic accidents"
+          },
+          "insurance": {
+            "title": "Insurance Claim",
+            "desc": "Insurance claims and dispute resolution such as auto insurance and accident insurance"
+          },
+          "fault": {
+            "title": "Fault Ratio Dispute",
+            "desc": "Accident cause analysis, fault ratio calculation, and dispute resolution"
+          },
+          "criminal": {
+            "title": "Criminal Punishment Response",
+            "desc": "Response to criminal punishment such as Road Traffic Act violations and negligent injury"
+          },
+          "sequelae": {
+            "title": "Sequelae and Disability",
+            "desc": "Traffic accident sequelae and disability grade calculation, additional compensation claims"
+          },
+          "investigation": {
+            "title": "Accident Investigation",
+            "desc": "Accident scene investigation, evidence collection, and accident cause analysis"
+          }
+        }
+      },
+      "industrial": {
+        "label": "Industrial Accidents",
+        "description1": "Industrial accidents are legal issues that occur when workers suffer work-related accidents. According to the Industrial Safety and Health Act and the Industrial Accident Compensation Insurance Act, workers have the right to receive appropriate compensation. Sejoong Law Firm professionally resolves all industrial accident-related legal issues including industrial accident recognition, disability grade determination, and compensation claims.",
+        "description2": "In industrial accident cases, we first accurately identify the circumstances of the accident and determine whether it is a work-related accident. To recognize work-related accidents, we must accurately meet the recognition requirements for each type such as work-related diseases, work-related accidents, and commuting accidents. We support claims for various benefits (medical benefits, suspension benefits, disability benefits, nursing benefits, survivor benefits, etc.) under the Industrial Accident Compensation Insurance Act, and apply for re-examination when there are objections to disability grade determination.",
+        "description3": "We also proceed with damage claims against employers to protect workers' rights to the maximum. In addition to compensation under the Industrial Accident Compensation Insurance Act, civil damage claims are possible for damages caused by the employer's intent or negligence. We do our best to protect workers' rights and interests.",
+        "mainServices": "Main Services",
+        "services": {
+          "recognition": {
+            "title": "Industrial Accident Recognition",
+            "desc": "Application for work-related accident recognition, objection application, and re-examination request"
+          },
+          "disability": {
+            "title": "Disability Grade Determination",
+            "desc": "Disability grade determination, objection application, and re-examination request"
+          },
+          "compensation": {
+            "title": "Compensation Claim",
+            "desc": "Claims for various benefits such as medical benefits, suspension benefits, and disability benefits"
+          },
+          "damages": {
+            "title": "Damage Claim",
+            "desc": "Civil damage claim against employers"
+          },
+          "investigation": {
+            "title": "Accident Investigation",
+            "desc": "Investigation of accident circumstances and evidence collection"
+          }
+        }
+      },
+      "insurance": {
+        "label": "Insurance Litigation",
+        "description1": "Insurance is an important means to prepare for unexpected accidents or illnesses, but cases occur where insurance benefits are refused or unfairly reduced. Sejoong Law Firm professionally resolves all insurance-related disputes including life insurance, property insurance, auto insurance, fire insurance, and accident insurance.",
+        "description2": "We accurately interpret insurance terms and protect clients' rights through litigation when insurance companies unfairly refuse to pay insurance benefits. In particular, we actively utilize precedents favorable to policyholders regarding insurance benefit payment refusals due to violation of the duty to inform before contract. In interpreting insurance terms, it is a principle to interpret them unfavorably to insurance companies, so we actively utilize this to protect clients' rights.",
+        "description3": "We also request recalculation when there are objections to insurance benefit calculation, and proceed with litigation if necessary. We can also claim delay damages for insurance benefit payment delays. We support the entire process from negotiation with insurance companies to litigation so that clients can receive maximum insurance benefits.",
+        "mainServices": "Main Services",
+        "services": {
+          "refusal": {
+            "title": "Insurance Benefit Payment Refusal",
+            "desc": "Objection application and litigation against insurance benefit payment refusal"
+          },
+          "reduction": {
+            "title": "Insurance Benefit Reduction",
+            "desc": "Objection application and litigation against unfair insurance benefit reduction"
+          },
+          "interpretation": {
+            "title": "Contract Interpretation",
+            "desc": "Interpretation of insurance terms and insurance benefit calculation"
+          },
+          "delay": {
+            "title": "Delay Damages",
+            "desc": "Delay damage claim for insurance benefit payment delays"
+          }
+        }
+      },
+      "tax": {
+        "label": "Tax Litigation",
+        "description1": "Tax litigation is litigation that resolves disputes regarding tax imposition and collection between tax authorities and taxpayers. Sejoong Law Firm professionally handles all tax-related litigation including income tax, corporate tax, value-added tax, comprehensive real estate tax, inheritance tax, and gift tax.",
+        "description2": "We support clients from the tax investigation stage to prevent unfair tax imposition in advance. We prevent unfair dispositions by tax authorities during the tax investigation process, and proceed with objection applications and review requests for investigation results. When review requests are dismissed or unsatisfactory, we file administrative litigation to protect clients' rights.",
+        "description3": "We accurately understand and apply tax laws and related precedents to derive results favorable to clients. In particular, unclear provisions of tax laws should be interpreted favorably to taxpayers as a principle, so we actively utilize this. We also support establishing tax plans at the pre-tax investigation stage to minimize tax burden.",
+        "mainServices": "Main Services",
+        "services": {
+          "response": {
+            "title": "Tax Investigation Response",
+            "desc": "Legal advisory and response during tax investigation process"
+          },
+          "objection": {
+            "title": "Objection Application",
+            "desc": "Objection application and review request for tax investigation results"
+          },
+          "lawsuit": {
+            "title": "Administrative Litigation",
+            "desc": "Administrative litigation to cancel tax imposition dispositions"
+          },
+          "planning": {
+            "title": "Tax Planning",
+            "desc": "Establishment of tax plans at the pre-tax investigation stage"
+          }
+        }
+      },
+      "general": {
+        "label": "Family/Civil/Criminal/Administrative",
+        "description1": "Sejoong Law Firm provides professional services in various legal fields such as family, civil, criminal, and administrative. Expert lawyers in each field cooperate to solve clients' complex legal problems.",
+        "description2": "In family litigation, we handle all family law-related issues such as divorce, inheritance, adoption, parental rights, child custody, and visitation rights. Family litigation requires careful approach as it involves emotional conflicts among family members, and we strive to derive the best legal results while considering clients' emotions.",
+        "description3": "In civil litigation, we resolve various civil disputes such as contract disputes, damages due to illegal acts, debt collection, real estate disputes, and construction disputes. Civil litigation is important for evidence collection and legal interpretation, so we derive results favorable to clients through thorough prior preparation.",
+        "description4": "In criminal cases, we protect defendants' rights as defense attorneys and proceed with arguments to claim innocence or reduce sentences. In administrative litigation, we proceed with litigation seeking cancellation or invalidation of administrative dispositions, and accurately apply administrative procedure laws and various administrative laws and regulations to protect clients' rights.",
+        "mainServices": "Main Services",
+        "services": {
+          "family": {
+            "title": "Family Litigation",
+            "desc": "Family law-related litigation such as divorce, inheritance, adoption, parental rights, and child custody"
+          },
+          "civil": {
+            "title": "Civil Litigation",
+            "desc": "Civil disputes such as contract disputes, damages, debt collection, and real estate disputes"
+          },
+          "criminal": {
+            "title": "Criminal Cases",
+            "desc": "Criminal defense, innocence claims, sentence reduction arguments"
+          },
+          "administrative": {
+            "title": "Administrative Litigation",
+            "desc": "Administrative disposition cancellation, invalidation confirmation litigation"
+          }
+        }
+      }
+    },
+    "cta": {
+      "title": "Get Consultation Now",
+      "description": "Litigation specialists provide direct consultation.",
+      "button": "Free Consultation",
+      "phone": "Phone Consultation: 031-8044-8805"
+    }
   },
   "corporate": {
     "advisory": "企業相談",
     "mna": "企業買収・合併(M&A)",
     "overseas": "海外投資",
     "finance": "不動産金融",
-    "indirect": "間接不動産投資"
+    "indirect": "間接不動産投資",
+    "description": "We provide professional advisory services to solve corporate legal issues.",
+    "ctaTitle": "Get Consultation Now",
+    "ctaDescription": "Corporate advisory specialists provide direct consultation.",
+    "tabs": {
+      "advisory": {
+        "description1": "For successful corporate operations, it is important to prevent and manage legal risks in advance. Sejoong Law Firm provides professional advisory services to solve corporate legal issues. We support all areas including corporate legal affairs, contract review, and regulatory compliance.",
+        "description2": "We follow a systematic process to solve corporate legal issues. First, we understand and analyze the status of corporate legal issues. Then, we conduct legal review through review of related laws and precedents, and present solutions to minimize legal risks. We support and monitor the execution of presented solutions and provide continuous legal advisory and post-management.",
+        "mainServices": "Main Services",
+        "process": "Process",
+        "services": {
+          "corporate": {
+            "title": "Corporate Legal Advisory",
+            "desc": "Legal advisory and risk management for overall corporate operations"
+          },
+          "contract": {
+            "title": "Contract Review and Drafting",
+            "desc": "Legal review and drafting support for various contracts"
+          },
+          "regulation": {
+            "title": "Regulatory Compliance",
+            "desc": "Response to various regulations such as Fair Trade Act and Personal Information Protection Act"
+          },
+          "labor": {
+            "title": "Labor Law Advisory",
+            "desc": "Advisory on labor-related matters such as employment contracts, severance pay, and unfair dismissal"
+          },
+          "ip": {
+            "title": "Intellectual Property",
+            "desc": "Protection of intellectual property such as patents, trademarks, and copyrights"
+          },
+          "structure": {
+            "title": "Corporate Structure Advisory",
+            "desc": "Advisory on corporation establishment, organizational restructuring, and governance improvement"
+          }
+        },
+        "processSteps": {
+          "consultation": {
+            "title": "Consultation and Status Assessment",
+            "desc": "We understand and analyze the status of corporate legal issues."
+          },
+          "review": {
+            "title": "Legal Review",
+            "desc": "Legal review through review of related laws and precedents"
+          },
+          "solution": {
+            "title": "Solution Presentation",
+            "desc": "Presentation of solutions to minimize legal risks"
+          },
+          "execution": {
+            "title": "Execution Support",
+            "desc": "Support and monitoring of the execution of presented solutions"
+          },
+          "followup": {
+            "title": "Follow-up Management",
+            "desc": "Continuous legal advisory and post-management"
+          }
+        }
+      },
+      "mna": {
+        "label": "Mergers & Acquisitions (M&A)",
+        "description1": "Mergers and acquisitions (M&A) are important strategies for corporate growth and market competitiveness. Sejoong Law Firm provides M&A-related legal services. We support the entire process including corporate valuation, contract drafting, and permit procedures.",
+        "description2": "In M&A cases, we first conduct valuation and due diligence of the target company. We identify legal, financial, and tax risks, and draft merger and acquisition contracts and stock transfer contracts. We handle necessary permit procedures such as Fair Trade Commission reporting and foreign investment reporting, and present M&A-related tax planning and tax reduction measures. We also resolve labor issues that arise during mergers and acquisitions and support corporate restructuring such as mergers, divisions, and conversions.",
+        "mainServices": "Main Services",
+        "services": {
+          "valuation": {
+            "title": "Corporate Valuation",
+            "desc": "Valuation of target company and Due Diligence"
+          },
+          "contract": {
+            "title": "M&A Contract Drafting",
+            "desc": "Drafting of various contracts such as merger and acquisition contracts and stock transfer contracts"
+          },
+          "permit": {
+            "title": "Permit Procedures",
+            "desc": "Agency of permit procedures such as Fair Trade Commission reporting and foreign investment reporting"
+          },
+          "tax": {
+            "title": "Tax Advisory",
+            "desc": "Tax planning and tax reduction measures for M&A"
+          },
+          "labor": {
+            "title": "Labor Issues",
+            "desc": "Resolution and response to labor issues arising from mergers and acquisitions"
+          },
+          "restructuring": {
+            "title": "Corporate Restructuring",
+            "desc": "Support for corporate restructuring such as mergers, divisions, and conversions"
+          }
+        }
+      },
+      "overseas": {
+        "label": "Overseas Investment",
+        "description1": "Overseas investment is an important strategy for strengthening corporate global competitiveness and market expansion. Sejoong Law Firm provides legal services related to overseas investment. We support the entire process including overseas investment reporting, foreign investment company establishment, and overseas branch establishment.",
+        "description2": "In overseas investment cases, we first analyze the legal system and investment environment of the target country. We accurately understand different legal systems and investment regulations by country to minimize investment risks. We support foreign investment reporting and foreign investment company establishment under the Foreign Investment Promotion Act, and also support overseas branch or local corporation establishment.",
+        "description3": "We present tax planning and tax reduction measures related to overseas investment, and provide legal advisory to prevent conflicts with local laws. We also support compliance with foreign exchange transaction law regulations related to overseas investment, and support resolution through international arbitration or local litigation when overseas investment-related disputes occur.",
+        "mainServices": "Main Services",
+        "services": {
+          "incorporation": {
+            "title": "Overseas Corporation Establishment",
+            "desc": "Support for corporation establishment and permit procedures by overseas country"
+          },
+          "ma": {
+            "title": "Overseas M&A",
+            "desc": "Legal services related to overseas corporate mergers and acquisitions"
+          },
+          "regulation": {
+            "title": "Overseas Investment Regulation",
+            "desc": "Response to overseas investment regulations such as Foreign Investment Act and Foreign Exchange Transaction Act"
+          },
+          "contract": {
+            "title": "International Contracts",
+            "desc": "Drafting and review of various contracts related to overseas investment"
+          },
+          "tax": {
+            "title": "Tax Planning",
+            "desc": "Tax planning and tax reduction measures for overseas investment"
+          },
+          "dispute": {
+            "title": "Dispute Resolution",
+            "desc": "Overseas investment-related dispute resolution and international arbitration"
+          }
+        }
+      },
+      "finance": {
+        "label": "Real Estate Finance",
+        "description1": "Real estate finance is a method of financing for real estate development and investment. Sejoong Law Firm provides legal services related to real estate finance. We provide legal advisory on various real estate finance products such as real estate mortgage loans, project financing, real estate funds, and REITs.",
+        "description2": "In real estate finance cases, we first calculate the value and collateral value of real estate. We accurately evaluate the market value and collateral value of real estate to calculate appropriate loan limits. We review and draft loan contracts with financial institutions and negotiate loan conditions, interest rates, and repayment conditions.",
+        "description3": "For project financing, we review both project contracts and financial contracts to increase the success possibility of the project. For real estate funds, we support compliance with regulations under the Collective Investment Act and also present tax planning related to real estate finance. We also support resolution through litigation when real estate finance-related disputes occur.",
+        "mainServices": "Main Services",
+        "services": {
+          "mortgage": {
+            "title": "Real Estate Mortgage Loan",
+            "desc": "Real estate mortgage loan contract review and dispute resolution"
+          },
+          "project": {
+            "title": "Project Financing",
+            "desc": "Real estate development project financing contract review"
+          },
+          "fund": {
+            "title": "Real Estate Fund",
+            "desc": "Advisory on real estate fund establishment, operation, and dissolution"
+          },
+          "reits": {
+            "title": "REITs",
+            "desc": "Advisory on Real Estate Investment Trust (REITs) establishment and operation"
+          },
+          "regulation": {
+            "title": "Real Estate Finance Regulation",
+            "desc": "Response to real estate finance regulations and permits"
+          },
+          "contract": {
+            "title": "Contract Review",
+            "desc": "Review and drafting of various contracts related to real estate finance"
+          }
+        }
+      },
+      "indirect": {
+        "label": "Indirect Real Estate Investment",
+        "description1": "Indirect real estate investment is a method of investing indirectly in real estate without directly investing. Sejoong Law Firm provides legal services related to indirect real estate investment. We provide legal advisory on various indirect real estate investment products such as real estate funds, REITs, and real estate development project investments.",
+        "description2": "In indirect real estate investment cases, we first analyze the value and profitability of the target real estate. We comprehensively analyze the market value, rental profitability, and future value appreciation potential of real estate to evaluate investment value. We support compliance with regulations under the Collective Investment Act and Capital Markets Act, and review and draft investment contracts and operation contracts.",
+        "description3": "We present tax planning and tax reduction measures related to indirect real estate investment, and provide legal advisory for investor protection. In particular, for collective investment organizations, there are strict regulations for investor protection, so we support accurate compliance. We also support resolution through litigation when indirect real estate investment-related disputes occur.",
+        "mainServices": "Main Services",
+        "services": {
+          "fund": {
+            "title": "Real Estate Fund",
+            "desc": "Advisory on real estate fund establishment, operation, and dissolution"
+          },
+          "reits": {
+            "title": "REITs",
+            "desc": "Advisory on Real Estate Investment Trust (REITs) establishment and operation"
+          },
+          "project": {
+            "title": "Project Investment",
+            "desc": "Real estate development project investment contract review"
+          },
+          "protection": {
+            "title": "Investor Protection",
+            "desc": "Investor protection advisory under the Collective Investment Act"
+          },
+          "regulation": {
+            "title": "Regulatory Compliance",
+            "desc": "Response to regulations such as Collective Investment Act and Capital Markets Act"
+          },
+          "tax": {
+            "title": "Tax Planning",
+            "desc": "Tax planning and tax reduction measures for indirect real estate investment"
+          }
+        }
+      }
+    },
+    "cta": {
+      "button": "Free Consultation",
+      "phone": "Phone Consultation: 031-8044-8805"
+    }
   },
   "immigration": {
     "visa": "ビザ/移民",
@@ -45,7 +607,121 @@
     "immigrant": "移民ビザ",
     "refusal": "ビザ拒否",
     "waiver": "免除申請",
-    "success": "ビザ成功事例"
+    "success": "ビザ成功事例",
+    "description": "We provide professional legal services related to immigration such as visa application, immigration consultation, and immigration control.",
+    "title": "Professional Immigration Legal Services",
+    "subtitle": "From visa application to immigration consultation, Sejoong Law Firm is with you.\nExperienced expert lawyers provide the best services.",
+    "mainServices": "Main Services",
+    "servicesDescription": "We provide various legal services related to immigration.",
+    "services": {
+      "visa": {
+        "title": "Visa Application",
+        "description": "Various visa application form preparation and submission agency, visa rejection response",
+        "features": [
+          "Visa application form preparation and submission",
+          "Visa rejection reapplication",
+          "Visa extension and change",
+          "Visa consultation and advisory"
+        ]
+      },
+      "nonImmigrant": {
+        "title": "Non-Immigrant Visa",
+        "description": "Visa application for non-immigrant purposes such as tourism, business, and study",
+        "features": [
+          "Tourist Visa (B-2)",
+          "Business Visa (C-2)",
+          "Student Visa (D-2)",
+          "Short-term Employment Visa (C-4)"
+        ]
+      },
+      "immigrant": {
+        "title": "Immigrant Visa",
+        "description": "Visa application for immigrant purposes such as permanent residence, naturalization, and marriage immigration",
+        "features": [
+          "Permanent Residence Application (F-5)",
+          "Marriage Immigration Visa (F-6)",
+          "Naturalization Application",
+          "Nationality Restoration"
+        ]
+      },
+      "refusal": {
+        "title": "Visa Rejection Response",
+        "description": "Visa rejection reason analysis and reapplication strategy development",
+        "features": [
+          "Rejection reason analysis",
+          "Reapplication strategy development",
+          "Additional document preparation",
+          "Administrative appeal claim"
+        ]
+      },
+      "waiver": {
+        "title": "Waiver Application",
+        "description": "Waiver application for entry ban removal",
+        "features": [
+          "Entry ban reason analysis",
+          "Waiver application form preparation",
+          "Additional document preparation",
+          "Application procedure guidance"
+        ]
+      },
+      "success": {
+        "title": "Visa Success Cases",
+        "description": "Check various visa application success cases",
+        "features": [
+          "Reapplication success after rejection",
+          "Complex case resolution",
+          "Rapid processing",
+          "Customer satisfaction"
+        ]
+      }
+    },
+    "process": {
+      "title": "Process",
+      "description": "Proceeds through systematic and professional procedures.",
+      "steps": {
+        "consultation": {
+          "title": "Consultation and Case Understanding",
+          "description": "Accurately understand the client's situation and determine the appropriate visa type."
+        },
+        "preparation": {
+          "title": "Document Preparation",
+          "description": "Systematically collect and organize necessary documents."
+        },
+        "application": {
+          "title": "Application Form Preparation",
+          "description": "Professional lawyers prepare and review application forms."
+        },
+        "submission": {
+          "title": "Submission and Tracking",
+          "description": "Submit to the competent authority and continuously track progress."
+        },
+        "result": {
+          "title": "Result Confirmation and Follow-up",
+          "description": "Confirm results and guide necessary follow-up procedures."
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "items": {
+        "duration": {
+          "question": "How long does visa application take?",
+          "answer": "It varies depending on visa type and country, but generally takes 2 weeks to 3 months. For urgent cases, expedited processing service is available."
+        },
+        "rejection": {
+          "question": "What should I do if my visa is rejected?",
+          "answer": "We analyze the rejection reason and develop a reapplication strategy. If necessary, administrative appeal can be filed."
+        },
+        "online": {
+          "question": "Can I receive consultation online?",
+          "answer": "Yes, online video consultation is available. You can select online consultation when making a reservation."
+        }
+      }
+    },
+    "cta": {
+      "button": "Apply for Consultation",
+      "viewMore": "View Details"
+    }
   },
   "foreigner": {
     "visa": "ビザ(VISA)",
@@ -54,13 +730,126 @@
     "stay": "滞在許可延長/変更",
     "immigration": "出入国管理事務所関連業務",
     "investment": "外国人投資",
-    "overseasKorean": "在外同胞法律支援"
+    "overseasKorean": "在外同胞法律支援",
+    "description": "We provide professional legal services for foreigners including visas, stay permits, and immigration control.",
+    "title": "Professional Legal Services for Foreigners",
+    "subtitle": "From visas to stay permits, we support life in Korea.\nExpert lawyers who can provide multilingual consultation are here to help.",
+    "mainServices": "Main Services",
+    "servicesDescription": "We provide various legal services for foreigners.",
+    "services": {
+      "visa": {
+        "title": "Visa",
+        "description": "Various visa applications and issuance certificate issuance",
+        "features": [
+          "Visa issuance certificate",
+          "Visa type-specific applicant guidance",
+          "Visa application agency",
+          "Visa extension and change"
+        ]
+      },
+      "stay": {
+        "title": "Stay Permit Extension/Change",
+        "description": "Stay period extension and stay qualification change application",
+        "features": [
+          "Stay period extension application",
+          "Stay qualification change application",
+          "Alien registration card renewal",
+          "Address change report"
+        ]
+      },
+      "immigration": {
+        "title": "Immigration Office Related Work",
+        "description": "Agency of all work processed by the Immigration Office",
+        "features": [
+          "Visa application agency",
+          "Stay permit application",
+          "Alien registration",
+          "Administrative appeal claim"
+        ]
+      },
+      "investment": {
+        "title": "Foreign Investment",
+        "description": "Legal advisory and application agency for foreign investment",
+        "features": [
+          "Foreign investment reporting",
+          "Investment visa application",
+          "Corporation establishment advisory",
+          "Tax advisory"
+        ]
+      },
+      "overseasKorean": {
+        "title": "Overseas Korean Legal Support",
+        "description": "Legal services for overseas Koreans",
+        "features": [
+          "Overseas Korean visa application",
+          "Nationality restoration consultation",
+          "Return-related advisory",
+          "Legal consultation"
+        ]
+      }
+    },
+    "process": {
+      "title": "Process",
+      "description": "Proceeds through systematic and professional procedures.",
+      "steps": {
+        "consultation": {
+          "title": "Consultation Application",
+          "description": "Apply for consultation online or by phone."
+        },
+        "analysis": {
+          "title": "Case Analysis",
+          "description": "Analyze the client's situation and determine necessary services."
+        },
+        "preparation": {
+          "title": "Document Preparation",
+          "description": "Systematically collect and organize necessary documents."
+        },
+        "application": {
+          "title": "Application and Tracking",
+          "description": "Apply to the competent authority and track progress."
+        },
+        "result": {
+          "title": "Result Confirmation",
+          "description": "Confirm results and guide subsequent procedures."
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "items": {
+        "registration": {
+          "question": "How do I get an alien registration card?",
+          "answer": "You must apply to the Immigration Office within 90 days of entry. You can apply by preparing the necessary documents."
+        },
+        "extension": {
+          "question": "When should I apply for stay period extension?",
+          "answer": "You can apply from 4 months before the stay period expires. You must apply before expiration."
+        },
+        "rejection": {
+          "question": "Can I reapply if my visa is rejected?",
+          "answer": "Yes, you can resolve the rejection reason and reapply. Getting help from a professional lawyer increases the chances of success."
+        }
+      }
+    },
+    "cta": {
+      "button": "Apply for Consultation",
+      "viewMore": "View Details"
+    }
   },
   "board": {
     "cases": "最近の業務事例",
     "qa": "オンライン相談Q/A",
     "column": "世中コラム",
-    "news": "最新ニュース"
+    "news": "最新ニュース",
+    "write": {
+      "title": "Write Post",
+      "titleLabel": "Title",
+      "contentLabel": "Content",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "cancel": "Cancel",
+      "error": "Failed to write post."
+    }
   },
   "branches": {
     "title": "支店",
@@ -93,7 +882,15 @@
     "title": "代表弁護士",
     "ceoMessage": "法律は人に向かうべきです。特に国境の上では、なおさらそうです。",
     "message": "数十年間出入国管理法と外国人政策を研究してきた学者であり実務家として約束します。不当な強制退去、手強いビザ問題、そして私たちの隣人の複雑な財産紛争まで。世中法律事務所はあなたの権利を守る最も頼もしい盾になります。",
-    "name": "代表弁護士 / 法学博士 李 相 国"
+    "name": "代表弁護士 / 法学博士 李 相 国",
+    "book": {
+      "alt": "Immigration Control Act - Theory and Practice",
+      "title": "《Immigration Control Act - Theory and Practice》"
+    },
+    "ceo": {
+      "alt": "Managing Partner Lee Sang-guk",
+      "name": "Managing Partner Lee Sang-guk"
+    }
   },
   "network": {
     "title": "アクセス",
@@ -117,7 +914,8 @@
       "address": "京畿道安山市檀園区元谷洞748-6、世中ビル2階",
       "focus": "外国人事件、出入国違反、労災/労働",
       "phone": "031-XXX-XXXX"
-    }
+    },
+    "focus": "Focus"
   },
   "media": {
     "title": "メディア＆インサイト",
@@ -125,7 +923,9 @@
     "case": "成功事例",
     "news": "ニュース",
     "readMore": "詳しく見る",
-    "noArticles": "コンテンツがありません。"
+    "noArticles": "コンテンツがありません。",
+    "loading": "Loading...",
+    "viewCount": "Views"
   },
   "services": {
     "title": "業務分野",
@@ -176,7 +976,8 @@
           "刑事弁護"
         ]
       }
-    }
+    },
+    "viewMore": "View Details"
   },
   "footer": {
     "firmName": "世中法律事務所",
@@ -323,6 +1124,2242 @@
         "pdf": "文書はPDF形式でダウンロードされます。",
         "autoEmail": "メールでも自動送信されます。",
         "modification": "追加修正が必要な場合は、相談を通じてご案内いたします。"
+      }
+    },
+    "greeting": {
+      "title": "Greeting",
+      "description": "We introduce Sejoong Law Firm's greeting and vision. We will do our best to protect our clients' rights and improve the quality of legal services.",
+      "badge": "About Us",
+      "heroTitle": "Greeting",
+      "heroDescription": "Thank you for visiting Sejoong Law Firm.",
+      "visionTitle": "Moving toward the center of the world",
+      "visionSubtitle": "About Sejoong",
+      "visionText1": "Sejoong Law Firm was established by experts in litigation, immigration, overseas immigration, investment, and visa fields to provide various legal services that clients need quickly and accurately.",
+      "visionText2": "Centered around Managing Partner Lee Sang-guk, who is the author of 《Immigration Control Act》 and holds a Ph.D. in Law, experts from each field gather to clearly solve our clients' complex legal problems.",
+      "valuesTitle": "Vision and Values",
+      "value1Title": "Client Commitment and Creative Legal Mind",
+      "value1Text": "Sejoong Law Firm has always provided the best legal services to clients with commitment to clients and a creative legal mind, and is called the most trustworthy law firm based on the efforts of capable experts and the full trust of clients.",
+      "value2Title": "Trust as the Most Precious Value",
+      "value2Text": "Sejoong Law Firm considers trust with clients as the most precious value, thinks and solves clients' problems together from the client's perspective, and strives to provide clients with emotion and satisfaction through the best legal services provided by experts in each field.",
+      "firmValuesTitle": "Sejoong Law Firm's Values",
+      "valueItems": {
+        "expertise": {
+          "title": "Expertise",
+          "description": "Expert lawyers in each field provide the best legal services."
+        },
+        "trust": {
+          "title": "Reliability",
+          "description": "We provide transparent and honest legal services based on trust with clients."
+        },
+        "global": {
+          "title": "Global",
+          "description": "We solve legal problems across borders in one stop."
+        },
+        "customer": {
+          "title": "Customer Centric",
+          "description": "We prioritize protecting our clients' rights and do our best."
+        }
+      },
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Expert lawyers provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "ctaPhone": "Phone Consultation: 031-8044-8805"
+    },
+    "divorce": {
+      "title": "Divorce/International Divorce",
+      "description": "We professionally resolve all divorce-related legal issues such as divorce litigation, international divorce, property division, alimony, and custody.",
+      "badge": "Litigation",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Divorce specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "litigation": {
+          "title": "Litigation Divorce",
+          "description": "Divorce procedure through trial when agreement divorce is not possible"
+        },
+        "agreement": {
+          "title": "Agreement Divorce",
+          "description": "Divorce negotiation and divorce document preparation through agreement between spouses"
+        },
+        "property": {
+          "title": "Property Division",
+          "description": "Fair division and claim of property formed during marriage"
+        },
+        "alimony": {
+          "title": "Alimony Claim",
+          "description": "Alimony claim and negotiation against the person who caused the divorce"
+        },
+        "custody": {
+          "title": "Custody and Parental Rights",
+          "description": "Designation of child's custodian and determination of parent"
+        },
+        "international": {
+          "title": "International Divorce",
+          "description": "Resolution of divorce and family disputes between nationals and foreigners"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Case Analysis",
+          "description": "We understand the overall situation such as divorce reasons, property situation, and child custody."
+        },
+        "evidence": {
+          "title": "Evidence Collection",
+          "description": "Collection and organization of evidence materials to prove divorce reasons"
+        },
+        "strategy": {
+          "title": "Negotiation Strategy Establishment",
+          "description": "Establishment of negotiation strategy for property division, alimony, custody, etc."
+        },
+        "negotiation": {
+          "title": "Negotiation and Mediation",
+          "description": "Attempt to reach an agreement through negotiation with the other party"
+        },
+        "litigation": {
+          "title": "Litigation (if necessary)",
+          "description": "Decision on divorce and related matters through trial when negotiation is not possible"
+        }
+      },
+      "faqs": {
+        "duration": {
+          "question": "How long does a divorce lawsuit take?",
+          "answer": "Agreement divorce takes 1-2 months, and litigation divorce takes about 6 months to 1 year. It may vary depending on the complexity of the case."
+        },
+        "property": {
+          "question": "How is property division done?",
+          "answer": "Property formed during marriage is fairly divided according to the degree of contribution by the spouses. If agreement is difficult, the court decides."
+        },
+        "international": {
+          "question": "Is international divorce possible?",
+          "answer": "Yes, we professionally handle international family cases such as divorce between nationals and foreigners, and divorce between multiple nationals."
+        }
+      }
+    },
+    "advisory": {
+      "title": "Corporate Advisory",
+      "description": "We provide professional advisory services to solve corporate legal issues. We support all areas including corporate legal affairs, contract review, and regulatory compliance.",
+      "badge": "Corporate Advisory",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Corporate advisory specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "corporate": {
+          "title": "Corporate Legal Advisory",
+          "description": "Legal advisory and risk management for overall corporate operations"
+        },
+        "contract": {
+          "title": "Contract Review and Drafting",
+          "description": "Legal review and drafting support for various contracts"
+        },
+        "regulation": {
+          "title": "Regulatory Compliance",
+          "description": "Response to various regulations such as Fair Trade Act and Personal Information Protection Act"
+        },
+        "labor": {
+          "title": "Labor Law Advisory",
+          "description": "Advisory on labor-related matters such as employment contracts, severance pay, and unfair dismissal"
+        },
+        "ip": {
+          "title": "Intellectual Property",
+          "description": "Protection of intellectual property such as patents, trademarks, and copyrights"
+        },
+        "structure": {
+          "title": "Corporate Structure Advisory",
+          "description": "Advisory on corporation establishment, organizational restructuring, and governance improvement"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Status Assessment",
+          "description": "We understand and analyze the status of corporate legal issues."
+        },
+        "review": {
+          "title": "Legal Review",
+          "description": "Legal review through review of related laws and precedents"
+        },
+        "solution": {
+          "title": "Solution Presentation",
+          "description": "Presentation of solutions to minimize legal risks"
+        },
+        "execution": {
+          "title": "Execution Support",
+          "description": "Support and monitoring of the execution of presented solutions"
+        },
+        "followup": {
+          "title": "Follow-up Management",
+          "description": "Continuous legal advisory and post-management"
+        }
+      },
+      "faqs": {
+        "format": {
+          "question": "In what format is corporate advisory provided?",
+          "answer": "It is provided in various formats such as regular advisory, case-by-case advisory, and phone/email consultation. You can choose the format that suits your company's needs."
+        },
+        "small": {
+          "question": "Can small companies also receive advisory?",
+          "answer": "Yes, we provide advisory services regardless of company size. Customized advisory packages for small companies are also available."
+        },
+        "urgent": {
+          "question": "Can you respond to urgent legal issues?",
+          "answer": "Yes, we provide initial response within 24 hours for urgent legal issues. Please contact us immediately by phone or email."
+        }
+      }
+    },
+    "inheritance": {
+      "title": "Inheritance Disputes",
+      "description": "We professionally resolve all inheritance-related legal issues such as inheritance property division, reserve portion return claims, and inheritance recovery claims.",
+      "badge": "Litigation",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Inheritance specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "division": {
+          "title": "Inheritance Property Division",
+          "description": "Fair division and division negotiation of inheritance property"
+        },
+        "reserve": {
+          "title": "Reserve Portion Return Claim",
+          "description": "Protection of reserve portion rights and return claim"
+        },
+        "recovery": {
+          "title": "Inheritance Recovery Claim",
+          "description": "Recovery claim lawsuit for inheritance right infringement"
+        },
+        "will": {
+          "title": "Will and Inheritance Planning",
+          "description": "Establishment of inheritance plan and will writing before inheritance"
+        },
+        "tax": {
+          "title": "Inheritance Tax Reduction",
+          "description": "Legal advisory and planning for inheritance tax reduction"
+        },
+        "international": {
+          "title": "Domestic and International Inheritance Cases",
+          "description": "Handling of inheritance cases with overseas property"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Inheritance Property Assessment",
+          "description": "We understand the types, scale, and heirs of inheritance property."
+        },
+        "investigation": {
+          "title": "Inheritance Property Investigation",
+          "description": "Investigation of all inheritance property including bank accounts, real estate, and stocks"
+        },
+        "review": {
+          "title": "Legal Review",
+          "description": "Review of legal rights such as inheritance share and reserve portion according to inheritance law"
+        },
+        "negotiation": {
+          "title": "Negotiation and Mediation",
+          "description": "Reaching property division agreement through negotiation among heirs"
+        },
+        "litigation": {
+          "title": "Litigation (if necessary)",
+          "description": "Resolution through trial when negotiation is not possible"
+        }
+      },
+      "faqs": {
+        "duration": {
+          "question": "How long does an inheritance dispute lawsuit take?",
+          "answer": "It varies depending on the complexity of the case, but generally takes about 6 months to 1 year. It may take longer if the property is large or there are many heirs."
+        },
+        "reserve": {
+          "question": "What is a reserve portion?",
+          "answer": "A reserve portion is a system that guarantees heirs a certain percentage of their statutory inheritance share. If the reserve portion is infringed, you can claim a return."
+        },
+        "tax": {
+          "question": "Is inheritance tax reduction possible?",
+          "answer": "Yes, inheritance tax can be reduced by establishing an appropriate inheritance plan before inheritance. Please consult with an expert lawyer."
+        }
+      }
+    },
+    "traffic": {
+      "title": "Traffic Accidents",
+      "description": "We professionally resolve all traffic accident-related legal issues such as traffic accident damages claims, insurance claims, and fault ratio disputes.",
+      "badge": "Litigation",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Traffic accident specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "damages": {
+          "title": "Damages Claim",
+          "description": "Property damage and mental damage compensation claim due to traffic accident"
+        },
+        "insurance": {
+          "title": "Insurance Claim",
+          "description": "Insurance claim and dispute resolution such as car insurance and accident insurance"
+        },
+        "fault": {
+          "title": "Fault Ratio Dispute",
+          "description": "Accident cause analysis, fault ratio calculation, and dispute resolution"
+        },
+        "criminal": {
+          "title": "Criminal Punishment Response",
+          "description": "Response to criminal punishment such as Road Traffic Act violations and negligent injury"
+        },
+        "sequelae": {
+          "title": "Sequelae and Disability",
+          "description": "Traffic accident sequelae and disability grade calculation, additional compensation claim"
+        },
+        "investigation": {
+          "title": "Accident Investigation",
+          "description": "Accident scene investigation, evidence collection, accident cause analysis"
+        }
+      },
+      "processSteps": {
+        "assessment": {
+          "title": "Accident Status Assessment",
+          "description": "We understand the circumstances of the traffic accident, damage details, insurance status, etc."
+        },
+        "evidence": {
+          "title": "Evidence Collection",
+          "description": "Collection of evidence such as accident scene photos, CCTV, medical certificates, and treatment cost receipts"
+        },
+        "fault": {
+          "title": "Fault Ratio Calculation",
+          "description": "Accident cause analysis and fault ratio calculation"
+        },
+        "damages": {
+          "title": "Damage Amount Calculation",
+          "description": "Calculation of damage amount such as treatment costs, business interruption loss, and consolation money"
+        },
+        "negotiation": {
+          "title": "Negotiation and Litigation",
+          "description": "Negotiation with insurance company, litigation if negotiation fails"
+        }
+      },
+      "faqs": {
+        "timing": {
+          "question": "How long after a traffic accident should I consult with a lawyer?",
+          "answer": "It is best to consult as soon as possible. Especially if you consult before negotiating with the insurance company, you can get more favorable conditions."
+        },
+        "amount": {
+          "question": "The amount offered by the insurance company seems low. What should I do?",
+          "answer": "You can consult with a lawyer to accurately calculate the damage amount, renegotiate with the insurance company, or receive appropriate compensation through litigation."
+        },
+        "fault": {
+          "question": "The fault ratio has been unfairly calculated.",
+          "answer": "You can reanalyze the accident cause to recalculate the fault ratio, and adjust it through negotiation with the insurance company or the other party, or through litigation."
+        }
+      }
+    },
+    "immigrationVisa": {
+      "title": "Visa/Immigration",
+      "description": "We provide professional services in immigration control law such as visa applications, immigration consultation, and visa refusal response. Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+      "badge": "Immigration",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "application": {
+          "title": "Visa Application",
+          "description": "Various visa applications and extension, change application agency"
+        },
+        "consultation": {
+          "title": "Immigration Consultation",
+          "description": "Comprehensive consultation on immigration such as permanent residency and citizenship"
+        },
+        "refusal": {
+          "title": "Visa Refusal Response",
+          "description": "Visa refusal reason analysis and reapplication, administrative appeal"
+        },
+        "waiver": {
+          "title": "Waiver Application",
+          "description": "Waiver application for lifting entry ban"
+        },
+        "litigation": {
+          "title": "Immigration Control Litigation",
+          "description": "Litigation related to immigration control such as deportation and entry refusal"
+        },
+        "international": {
+          "title": "International Immigration",
+          "description": "Immigration services for various countries such as the United States, Canada, and Australia"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Case Analysis",
+          "description": "We analyze visa type, application eligibility, required documents, etc."
+        },
+        "preparation": {
+          "title": "Document Preparation",
+          "description": "Collection, translation, and notarization of required documents"
+        },
+        "application": {
+          "title": "Application Form Completion",
+          "description": "Visa application form completion and document organization"
+        },
+        "submission": {
+          "title": "Application and Tracking",
+          "description": "Application to immigration office and tracking of progress"
+        },
+        "result": {
+          "title": "Result Response",
+          "description": "Guidance on follow-up procedures upon approval, reapplication or litigation upon refusal"
+        }
+      },
+      "faqs": {
+        "duration": {
+          "question": "How long does a visa application take?",
+          "answer": "It varies depending on the visa type, but generally takes about 2 weeks to 3 months. Complex cases may take longer."
+        },
+        "refusal": {
+          "question": "What should I do if my visa is refused?",
+          "answer": "You can analyze the refusal reason, supplement missing documents and reapply, or cancel the refusal disposition through administrative appeal."
+        },
+        "author": {
+          "question": "Does the author lawyer of 《Immigration Control Act》 provide direct consultation?",
+          "answer": "Yes, Managing Partner Lee Sang-guk provides direct consultation. As an authority on immigration control law, he provides the highest level of professional service."
+        }
+      }
+    },
+    "foreignerVisa": {
+      "title": "Visa (VISA)",
+      "description": "We provide visa (VISA) related services such as certificate of visa issuance and eligibility by visa type.",
+      "badge": "Foreigner Center",
+      "services": {
+        "certificate": {
+          "title": "Certificate of Visa Issuance",
+          "description": "Application for issuance of certificate of visa issuance required before entering Korea"
+        },
+        "types": {
+          "title": "Eligibility by Visa Type",
+          "description": "Guidance on application eligibility and eligibility by each visa type"
+        }
+      },
+      "readMore": "Read More"
+    },
+    "industrial": {
+      "title": "Industrial Accidents",
+      "description": "We professionally resolve all industrial accident-related legal issues such as industrial accident recognition, disability grade calculation, and compensation claims.",
+      "badge": "Litigation",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Industrial accident specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "recognition": {
+          "title": "Industrial Accident Recognition",
+          "description": "Industrial accident recognition application and cancellation of refusal disposition lawsuit"
+        },
+        "disability": {
+          "title": "Disability Grade Calculation",
+          "description": "Disability grade re-determination application and dispute resolution"
+        },
+        "compensation": {
+          "title": "Compensation Claim",
+          "description": "Compensation claims such as medical benefits, work interruption benefits, and disability benefits"
+        },
+        "survivor": {
+          "title": "Survivor Benefits",
+          "description": "Survivor benefits and funeral expenses claim in case of death accident"
+        },
+        "dispute": {
+          "title": "Accident Compensation Dispute",
+          "description": "Resolution of compensation disputes with insurance companies"
+        },
+        "litigation": {
+          "title": "Industrial Accident Litigation",
+          "description": "Litigation representation for industrial accident recognition refusal, disability grade disputes, etc."
+        }
+      },
+      "processSteps": {
+        "assessment": {
+          "title": "Accident Status Assessment",
+          "description": "We understand the circumstances of the industrial accident, treatment process, company response, etc."
+        },
+        "evidence": {
+          "title": "Evidence Collection",
+          "description": "Collection of evidence such as accident reports, medical certificates, and treatment cost receipts"
+        },
+        "application": {
+          "title": "Industrial Accident Recognition Application",
+          "description": "Completion and submission of industrial accident recognition application"
+        },
+        "calculation": {
+          "title": "Compensation Calculation",
+          "description": "Calculation of compensation such as medical benefits, work interruption benefits, and disability benefits"
+        },
+        "resolution": {
+          "title": "Dispute Resolution",
+          "description": "Administrative appeal or litigation if refusal disposition"
+        }
+      },
+      "faqs": {
+        "refusal": {
+          "question": "Industrial accident recognition was refused. What should I do?",
+          "answer": "You can analyze the refusal reason, supplement additional evidence and reapply, or cancel the refusal disposition through administrative appeal."
+        },
+        "disability": {
+          "question": "The disability grade was calculated too low.",
+          "answer": "You can raise the grade through a disability grade re-determination application. Please consult with an expert lawyer."
+        },
+        "amount": {
+          "question": "How much industrial accident compensation can I receive?",
+          "answer": "It consists of medical benefits, work interruption benefits, disability benefits, etc., and varies depending on the disability grade and average wage. The exact amount is calculated through consultation."
+        }
+      }
+    },
+    "insurance": {
+      "title": "Insurance Litigation",
+      "description": "We professionally resolve insurance disputes and litigation such as car insurance, life insurance, and fire insurance.",
+      "badge": "Litigation",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Insurance litigation specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "car": {
+          "title": "Car Insurance",
+          "description": "Car insurance accident handling, insurance claim, subrogation dispute"
+        },
+        "life": {
+          "title": "Life Insurance",
+          "description": "Insurance policy interpretation, insurance fraud, incomplete sales dispute"
+        },
+        "fire": {
+          "title": "Fire Insurance",
+          "description": "Fire insurance claim, insurance policy interpretation dispute"
+        },
+        "industrial": {
+          "title": "Industrial Accident Insurance",
+          "description": "Industrial accident insurance compensation claim and dispute"
+        },
+        "interpretation": {
+          "title": "Insurance Policy Interpretation",
+          "description": "Legal interpretation of insurance policies and determination of insurance payment"
+        },
+        "claim": {
+          "title": "Insurance Claim",
+          "description": "Various insurance claims and cancellation of refusal disposition lawsuit"
+        }
+      },
+      "processSteps": {
+        "analysis": {
+          "title": "Insurance Case Analysis",
+          "description": "We analyze insurance contract contents, accident circumstances, insurance refusal reasons, etc."
+        },
+        "review": {
+          "title": "Insurance Policy Review",
+          "description": "Legal interpretation of insurance policies and review of insurance payment"
+        },
+        "evidence": {
+          "title": "Evidence Collection",
+          "description": "Collection of evidence such as insurance contracts, accident-related documents, and medical certificates"
+        },
+        "negotiation": {
+          "title": "Insurance Company Negotiation",
+          "description": "Request for insurance payment through negotiation with insurance company"
+        },
+        "litigation": {
+          "title": "Litigation",
+          "description": "Claim for insurance payment through litigation if negotiation fails"
+        }
+      },
+      "faqs": {
+        "refusal": {
+          "question": "The insurance company refused to pay insurance. What should I do?",
+          "answer": "We analyze the refusal reason and request insurance payment based on insurance policies and laws. If negotiation is difficult, it can be resolved through litigation."
+        },
+        "terms": {
+          "question": "The insurance policy is too complex to understand.",
+          "answer": "We determine whether insurance payment is made through legal interpretation of insurance policies and clearly explain to customers."
+        },
+        "misrepresentation": {
+          "question": "I was harmed by incomplete insurance sales.",
+          "answer": "You can cancel the contract or claim damages if important matters were not explained during the insurance sales process."
+        }
+      }
+    },
+    "mna": {
+      "title": "Mergers & Acquisitions (M&A)",
+      "description": "We provide legal services related to corporate mergers and acquisitions (M&A). We support the entire process including corporate valuation, contract drafting, and permit procedures.",
+      "badge": "Corporate Advisory",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "M&A specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "valuation": {
+          "title": "Corporate Valuation",
+          "description": "Valuation of target company and Due Diligence"
+        },
+        "contract": {
+          "title": "M&A Contract Drafting",
+          "description": "Drafting of various contracts such as merger and acquisition contracts and stock transfer contracts"
+        },
+        "permit": {
+          "title": "Permit Procedures",
+          "description": "Agency of permit procedures such as Fair Trade Commission reporting and foreign investment reporting"
+        },
+        "tax": {
+          "title": "Tax Advisory",
+          "description": "Tax planning and tax reduction measures for M&A"
+        },
+        "labor": {
+          "title": "Labor Issues",
+          "description": "Resolution and response to labor issues arising from mergers and acquisitions"
+        },
+        "restructuring": {
+          "title": "Corporate Restructuring",
+          "description": "Support for corporate restructuring such as mergers, divisions, and conversions"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Planning",
+          "description": "We review M&A purpose, target, method, etc. and establish strategy."
+        },
+        "diligence": {
+          "title": "Due Diligence",
+          "description": "Due diligence in all fields including legal, financial, tax, and labor"
+        },
+        "negotiation": {
+          "title": "Valuation and Negotiation",
+          "description": "Corporate valuation and acquisition price negotiation"
+        },
+        "contract": {
+          "title": "Contract Drafting and Review",
+          "description": "Merger and acquisition contract drafting and various condition negotiations"
+        },
+        "registration": {
+          "title": "Permits and Registration",
+          "description": "Necessary permit reporting and registration procedures"
+        }
+      },
+      "faqs": {
+        "duration": {
+          "question": "How long does M&A take?",
+          "answer": "It varies depending on the size and complexity of the case, but generally takes about 3 months to 1 year. The due diligence period takes the longest."
+        },
+        "diligence": {
+          "question": "What is Due Diligence?",
+          "answer": "It is a process of investigating all fields such as legal, financial, tax, and labor of the target company to identify potential risks."
+        },
+        "foreign": {
+          "question": "Is it possible to acquire foreign companies?",
+          "answer": "Yes, overseas company acquisition is also possible. We provide comprehensive advisory considering the laws and regulations of each country."
+        }
+      }
+    },
+    "tax": {
+      "title": "Tax Litigation",
+      "description": "We professionally resolve tax-related litigation and administrative appeals such as VAT, income tax, and corporate tax.",
+      "badge": "Litigation",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Tax litigation specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "vat": {
+          "title": "Value Added Tax",
+          "description": "VAT tax assessment cancellation lawsuit and administrative appeal"
+        },
+        "income": {
+          "title": "Income Tax",
+          "description": "Income tax assessment cancellation lawsuit and administrative appeal"
+        },
+        "corporate": {
+          "title": "Corporate Tax",
+          "description": "Corporate tax assessment cancellation lawsuit and administrative appeal"
+        },
+        "investigation": {
+          "title": "Tax Investigation Response",
+          "description": "Tax investigation response and adjustment negotiation"
+        },
+        "advisory": {
+          "title": "Tax Advisory",
+          "description": "Tax planning and tax reduction measures"
+        },
+        "appeal": {
+          "title": "Administrative Appeal",
+          "description": "Administrative appeal against tax assessment"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Case Analysis",
+          "description": "We analyze tax assessment contents, tax investigation results, related laws, etc."
+        },
+        "review": {
+          "title": "Legal Review",
+          "description": "Legal review through review of related tax laws and precedents"
+        },
+        "evidence": {
+          "title": "Evidence Collection",
+          "description": "Collection of evidence such as tax-related documents, contracts, and supporting materials"
+        },
+        "negotiation": {
+          "title": "Tax Office Negotiation",
+          "description": "Tax assessment adjustment through negotiation with tax office"
+        },
+        "litigation": {
+          "title": "Litigation and Administrative Appeal",
+          "description": "Litigation or administrative appeal if negotiation fails"
+        }
+      },
+      "faqs": {
+        "duration": {
+          "question": "How long does tax litigation take?",
+          "answer": "It varies depending on the complexity of the case, but generally takes about 6 months to 2 years. Administrative appeals can be resolved faster."
+        },
+        "cost": {
+          "question": "How much does tax litigation cost?",
+          "answer": "It varies depending on the size and complexity of the case. We will provide accurate cost information through initial consultation."
+        },
+        "success": {
+          "question": "What is the success rate of tax litigation?",
+          "answer": "It varies depending on the specific content and evidence of the case. Please consult with an expert lawyer to evaluate the success rate."
+        }
+      }
+    },
+    "general": {
+      "title": "Family/Civil/Criminal/Administrative",
+      "description": "We professionally resolve litigation in various legal fields such as family, civil, criminal, and administrative.",
+      "badge": "Litigation",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Expert lawyers provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "family": {
+          "title": "Family Litigation",
+          "description": "Family-related litigation such as divorce, inheritance, and parental rights"
+        },
+        "civil": {
+          "title": "Civil Litigation",
+          "description": "Civil litigation such as contract disputes, damages, and debt collection"
+        },
+        "criminal": {
+          "title": "Criminal Litigation",
+          "description": "Criminal case defense and criminal litigation representation"
+        },
+        "administrative": {
+          "title": "Administrative Litigation",
+          "description": "Administrative litigation such as administrative disposition cancellation and obligation performance"
+        },
+        "preservation": {
+          "title": "Preservation Measures",
+          "description": "Application for preservation measures such as provisional attachment and provisional disposition"
+        },
+        "mediation": {
+          "title": "Mediation and Arbitration",
+          "description": "Dispute resolution through court mediation, arbitration, etc."
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Case Analysis",
+          "description": "We analyze the nature of the case, legal issues, solutions, etc."
+        },
+        "investigation": {
+          "title": "Evidence Collection and Investigation",
+          "description": "Collection of related documents, evidence materials, and legal review"
+        },
+        "strategy": {
+          "title": "Litigation Strategy Establishment",
+          "description": "Establishment of litigation strategy suitable for the characteristics of the case"
+        },
+        "filing": {
+          "title": "Filing Lawsuit",
+          "description": "Drafting complaint and filing lawsuit with court"
+        },
+        "litigation": {
+          "title": "Litigation Process",
+          "description": "Representation of entire litigation process including arguments, evidence submission, and judgment"
+        }
+      },
+      "faqs": {
+        "types": {
+          "question": "What types of litigation do you handle?",
+          "answer": "We handle litigation in all legal fields including family, civil, criminal, and administrative. Expert lawyers in each field handle consultation and litigation."
+        },
+        "duration": {
+          "question": "How long does litigation take?",
+          "answer": "It varies depending on the nature and complexity of the case, but generally takes about 3 months to 2 years."
+        },
+        "cost": {
+          "question": "How much does litigation cost?",
+          "answer": "It varies depending on the size and complexity of the case. We will provide accurate cost information through initial consultation."
+        }
+      }
+    },
+    "overseas": {
+      "title": "Overseas Investment",
+      "description": "We provide legal services related to overseas investment such as overseas investment, overseas corporation establishment, and overseas M&A.",
+      "badge": "Corporate Advisory",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Overseas investment specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "incorporation": {
+          "title": "Overseas Corporation Establishment",
+          "description": "Support for corporation establishment and permit procedures by overseas country"
+        },
+        "ma": {
+          "title": "Overseas M&A",
+          "description": "Legal services related to overseas corporate mergers and acquisitions"
+        },
+        "regulation": {
+          "title": "Overseas Investment Regulation",
+          "description": "Response to overseas investment regulations such as Foreign Investment Act and Foreign Exchange Transaction Act"
+        },
+        "contract": {
+          "title": "International Contracts",
+          "description": "Drafting and review of various contracts related to overseas investment"
+        },
+        "tax": {
+          "title": "Tax Planning",
+          "description": "Tax planning and tax reduction measures for overseas investment"
+        },
+        "dispute": {
+          "title": "Dispute Resolution",
+          "description": "Overseas investment-related dispute resolution and international arbitration"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Planning",
+          "description": "We review overseas investment purpose, target country, investment method, etc. and establish strategy."
+        },
+        "research": {
+          "title": "Legal Research",
+          "description": "Research on laws, regulations, tax systems, etc. of the target country"
+        },
+        "preparation": {
+          "title": "Document Preparation",
+          "description": "Preparation of necessary documents such as corporation establishment and investment reporting"
+        },
+        "execution": {
+          "title": "Investment Execution",
+          "description": "Investment execution such as corporation establishment, contract execution, and investment reporting"
+        },
+        "management": {
+          "title": "Post-Management",
+          "description": "Legal advisory and post-management after investment"
+        }
+      },
+      "faqs": {
+        "countries": {
+          "question": "Which countries do you support investment to?",
+          "answer": "We support investment to all countries worldwide including the United States, China, Vietnam, and Indonesia."
+        },
+        "duration": {
+          "question": "How long does overseas corporation establishment take?",
+          "answer": "It varies by country, but generally takes about 1 to 3 months."
+        },
+        "tax": {
+          "question": "How do you solve tax problems for overseas investment?",
+          "answer": "We analyze the tax system of the target country and present tax reduction measures. We also consider domestic tax issues."
+        }
+      }
+    },
+    "nonImmigrant": {
+      "title": "Non-Immigrant Visa",
+      "description": "We provide non-immigrant visa application and extension services for tourism, business, study, medical purposes, etc.",
+      "badge": "Immigration",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Visa specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "tourist": {
+          "title": "Tourist Visa (B-2)",
+          "description": "Short-term stay visa application for tourism purposes"
+        },
+        "business": {
+          "title": "Business Visa (B-1)",
+          "description": "Short-term stay visa application for business purposes"
+        },
+        "student": {
+          "title": "Student Visa (F-1)",
+          "description": "Long-term stay visa application for study purposes"
+        },
+        "medical": {
+          "title": "Medical Visa (B-2)",
+          "description": "Short-term stay visa application for medical purposes"
+        },
+        "family": {
+          "title": "Family Visit Visa (F-1)",
+          "description": "Long-term stay visa application for family visit purposes"
+        },
+        "extension": {
+          "title": "Visa Extension",
+          "description": "Stay period extension application and change"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Visa Type Decision",
+          "description": "We determine the appropriate visa type for the purpose and guide necessary documents."
+        },
+        "preparation": {
+          "title": "Document Preparation",
+          "description": "Collection, translation, and notarization of necessary documents"
+        },
+        "application": {
+          "title": "Visa Application",
+          "description": "Visa application form completion and submission"
+        },
+        "interview": {
+          "title": "Interview Preparation",
+          "description": "Visa interview preparation and practice"
+        },
+        "result": {
+          "title": "Result Response",
+          "description": "Guidance on follow-up procedures upon approval, reapplication upon refusal"
+        }
+      },
+      "faqs": {
+        "types": {
+          "question": "What types of non-immigrant visas can I apply for?",
+          "answer": "You can apply for various non-immigrant visas for tourism, business, study, medical, family visit purposes, etc."
+        },
+        "duration": {
+          "question": "How long is the non-immigrant visa stay period?",
+          "answer": "It varies depending on the visa type, but generally 3 months to 1 year. Extension application is also possible."
+        },
+        "extension": {
+          "question": "Is visa extension possible?",
+          "answer": "Yes, visa extension is possible if the stay purpose continues. We will guide you through the extension application process."
+        }
+      }
+    },
+    "finance": {
+      "title": "Real Estate Finance",
+      "description": "We provide legal services related to real estate finance such as real estate mortgage loans, real estate funds, and REITs.",
+      "badge": "Corporate Advisory",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Real estate finance specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "mortgage": {
+          "title": "Real Estate Mortgage Loan",
+          "description": "Real estate mortgage loan contract review and dispute resolution"
+        },
+        "fund": {
+          "title": "Real Estate Fund",
+          "description": "Advisory on real estate fund establishment, operation, and dissolution"
+        },
+        "reits": {
+          "title": "REITs",
+          "description": "Advisory on Real Estate Investment Trust (REITs) establishment and operation"
+        },
+        "regulation": {
+          "title": "Real Estate Finance Regulation",
+          "description": "Response to real estate finance regulations and permits"
+        },
+        "contract": {
+          "title": "Contract Review",
+          "description": "Review and drafting of various contracts related to real estate finance"
+        },
+        "dispute": {
+          "title": "Dispute Resolution",
+          "description": "Real estate finance-related dispute resolution and litigation representation"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Status Assessment",
+          "description": "We understand the overall status of real estate finance transactions."
+        },
+        "review": {
+          "title": "Legal Review",
+          "description": "Review of related laws and regulations to analyze legal risks"
+        },
+        "contract": {
+          "title": "Contract Review",
+          "description": "Legal review of contracts and presentation of improvement measures"
+        },
+        "permit": {
+          "title": "Permit Support",
+          "description": "Support for necessary permit reporting and procedures"
+        },
+        "management": {
+          "title": "Post-Management",
+          "description": "Continuous legal advisory and management after transaction completion"
+        }
+      },
+      "faqs": {
+        "fund": {
+          "question": "How do I establish a real estate fund?",
+          "answer": "A permit under the Capital Markets Act is required to establish a real estate fund. Please consult with an expert lawyer to proceed with the establishment procedure."
+        },
+        "difference": {
+          "question": "What is the difference between REITs and real estate funds?",
+          "answer": "REITs are listed real estate investment companies, while real estate funds are private fund forms. Different legal requirements and regulations apply to each."
+        },
+        "review": {
+          "question": "Can I have my real estate mortgage loan contract reviewed?",
+          "answer": "Yes, you can improve unfavorable terms and minimize risks through legal review of real estate mortgage loan contracts."
+        }
+      }
+    },
+    "indirect": {
+      "title": "Real Estate Indirect Investment",
+      "description": "We provide legal services related to real estate indirect investment such as real estate indirect investment product establishment, operation, and dissolution.",
+      "badge": "Corporate Advisory",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Real estate indirect investment specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "establishment": {
+          "title": "Fund Establishment",
+          "description": "Real estate indirect investment fund establishment and permit"
+        },
+        "operation": {
+          "title": "Fund Operation",
+          "description": "Legal advisory on real estate fund operation"
+        },
+        "protection": {
+          "title": "Investor Protection",
+          "description": "Legal advisory and contract review for investor protection"
+        },
+        "regulation": {
+          "title": "Regulatory Compliance",
+          "description": "Response to related regulations such as Capital Markets Act"
+        },
+        "contract": {
+          "title": "Contract Drafting",
+          "description": "Drafting and review of various fund-related contracts"
+        },
+        "dissolution": {
+          "title": "Fund Dissolution",
+          "description": "Real estate fund dissolution procedures and distribution"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Investment Planning",
+          "description": "We plan the purpose, scale, structure, etc. of real estate indirect investment."
+        },
+        "review": {
+          "title": "Legal Review",
+          "description": "Review of related laws such as Capital Markets Act and confirmation of permit requirements"
+        },
+        "establishment": {
+          "title": "Fund Establishment",
+          "description": "Fund establishment and permit application"
+        },
+        "management": {
+          "title": "Operation Management",
+          "description": "Legal advisory and management during fund operation"
+        },
+        "distribution": {
+          "title": "Dissolution and Distribution",
+          "description": "Procedures and profit distribution upon fund dissolution"
+        }
+      },
+      "faqs": {
+        "permit": {
+          "question": "What permit is required to establish a real estate indirect investment fund?",
+          "answer": "A collective investment business permit under the Capital Markets Act is required. Please consult with an expert lawyer to proceed with the permit procedure."
+        },
+        "issues": {
+          "question": "What should I do if legal issues arise during fund operation?",
+          "answer": "We provide continuous advisory on legal issues that arise during fund operation. We can respond immediately when problems occur."
+        },
+        "protection": {
+          "question": "What measures do you take to protect investors?",
+          "answer": "We take various measures such as investment prospectus review, contract improvement, and investor rights protection."
+        }
+      }
+    },
+    "immigrant": {
+      "title": "Immigrant Visa",
+      "description": "We provide immigrant visa application services such as permanent residency, citizenship, and family invitation.",
+      "badge": "Immigration",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "permanent": {
+          "title": "Permanent Residency (F-5)",
+          "description": "Korean permanent residency application and renewal"
+        },
+        "citizenship": {
+          "title": "Citizenship",
+          "description": "Korean citizenship acquisition application"
+        },
+        "family": {
+          "title": "Family Invitation (F-3)",
+          "description": "Immigrant visa application through family invitation"
+        },
+        "investment": {
+          "title": "Investment Immigration (F-5)",
+          "description": "Permanent residency acquisition through investment"
+        },
+        "marriage": {
+          "title": "Marriage Immigration (F-6)",
+          "description": "Immigrant visa application through marriage"
+        },
+        "consultation": {
+          "title": "Immigration Consultation",
+          "description": "Immigration strategy establishment and comprehensive consultation"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Immigration Planning",
+          "description": "We review immigration purpose, qualification requirements, etc. and establish a plan."
+        },
+        "qualification": {
+          "title": "Qualification Confirmation",
+          "description": "Confirmation and preparation of immigrant visa application qualification requirements"
+        },
+        "preparation": {
+          "title": "Document Preparation",
+          "description": "Collection and preparation of documents required for immigrant visa application"
+        },
+        "application": {
+          "title": "Application and Tracking",
+          "description": "Immigrant visa application and progress tracking"
+        },
+        "settlement": {
+          "title": "Visa Issuance and Settlement",
+          "description": "Support for Korean settlement after visa issuance"
+        }
+      },
+      "faqs": {
+        "qualification": {
+          "question": "What are the qualifications for permanent residency application?",
+          "answer": "You can apply for permanent residency if you have legally stayed for more than 5 years and meet certain income requirements. Please check the detailed requirements through consultation."
+        },
+        "citizenship": {
+          "question": "How do I acquire citizenship?",
+          "answer": "After acquiring permanent residency, you can apply for citizenship if you stay for a certain period and meet requirements such as Korean language ability and social integration program completion."
+        },
+        "duration": {
+          "question": "How long does an immigrant visa application take?",
+          "answer": "It varies depending on the immigrant visa type, but generally takes about 6 months to 1 year. Complex cases may take longer."
+        }
+      }
+    },
+    "refusal": {
+      "title": "Visa Refusal",
+      "description": "We provide visa refusal response services such as visa refusal reason analysis, reapplication, and administrative appeal. Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+      "badge": "Immigration",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "analysis": {
+          "title": "Refusal Reason Analysis",
+          "description": "We accurately analyze visa refusal reasons and present response measures."
+        },
+        "supplement": {
+          "title": "Document Supplement",
+          "description": "Supplement missing documents to prepare for reapplication"
+        },
+        "reapplication": {
+          "title": "Reapplication",
+          "description": "Visa reapplication with supplemented documents"
+        },
+        "appeal": {
+          "title": "Administrative Appeal",
+          "description": "Administrative appeal against visa refusal disposition"
+        },
+        "litigation": {
+          "title": "Litigation",
+          "description": "Cancellation of refusal disposition through litigation if administrative appeal is dismissed"
+        },
+        "waiver": {
+          "title": "Waiver Application",
+          "description": "Waiver application for lifting entry ban"
+        }
+      },
+      "processSteps": {
+        "analysis": {
+          "title": "Refusal Reason Analysis",
+          "description": "We analyze the visa refusal notice to accurately understand the refusal reason."
+        },
+        "strategy": {
+          "title": "Response Strategy Establishment",
+          "description": "We establish a response strategy according to the refusal reason."
+        },
+        "supplement": {
+          "title": "Document Supplement",
+          "description": "Supplement missing documents or collect additional evidence"
+        },
+        "reapplication": {
+          "title": "Reapplication or Administrative Appeal",
+          "description": "Reapplication after document supplement or administrative appeal"
+        },
+        "litigation": {
+          "title": "Litigation (if necessary)",
+          "description": "Cancellation of refusal disposition through litigation if administrative appeal is dismissed"
+        }
+      },
+      "faqs": {
+        "reapplication": {
+          "question": "My visa was refused. Can I reapply?",
+          "answer": "Yes, you can reapply after resolving the refusal reason. Accurately analyzing and supplementing the refusal reason and reapplying increases the approval possibility."
+        },
+        "choice": {
+          "question": "Which is better, administrative appeal or reapplication?",
+          "answer": "It depends on the refusal reason. Reapplication is faster if it can be resolved through document supplement, and administrative appeal is effective if it is a legal interpretation issue."
+        },
+        "timing": {
+          "question": "How long should I wait after visa refusal to reapply?",
+          "answer": "It depends on the refusal reason, but generally you can reapply immediately. However, it is important to reapply after resolving the refusal reason."
+        }
+      }
+    },
+    "waiver": {
+      "title": "Waiver Application",
+      "description": "We provide waiver application services for lifting entry ban. Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+      "badge": "Immigration",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "release": {
+          "title": "Entry Ban Release",
+          "description": "Waiver application for releasing entry ban reason"
+        },
+        "analysis": {
+          "title": "Reason Analysis",
+          "description": "Analysis of entry ban reason and review of release possibility"
+        },
+        "preparation": {
+          "title": "Document Preparation",
+          "description": "Collection and preparation of documents required for waiver application"
+        },
+        "application": {
+          "title": "Application Form Completion",
+          "description": "Waiver application form completion and submission"
+        },
+        "reapplication": {
+          "title": "Reapplication",
+          "description": "Reapplication after supplementing additional documents if refused"
+        },
+        "appeal": {
+          "title": "Administrative Appeal",
+          "description": "Administrative appeal if waiver is refused"
+        }
+      },
+      "processSteps": {
+        "check": {
+          "title": "Entry Ban Reason Confirmation",
+          "description": "We confirm the entry ban reason and review the release possibility."
+        },
+        "preparation": {
+          "title": "Release Reason Organization",
+          "description": "Organization of reasons and evidence materials for entry ban release"
+        },
+        "documents": {
+          "title": "Document Preparation",
+          "description": "Collection and preparation of various documents required for waiver application"
+        },
+        "submission": {
+          "title": "Application Submission",
+          "description": "Waiver application form completion and submission to immigration office"
+        },
+        "result": {
+          "title": "Result Response",
+          "description": "Entry guidance upon approval, reapplication or administrative appeal upon refusal"
+        }
+      },
+      "faqs": {
+        "what": {
+          "question": "What is a Waiver?",
+          "answer": "A waiver is a system that allows entry even if there is an entry ban reason, if there are special circumstances. You must apply to the immigration office and receive approval."
+        },
+        "refusal": {
+          "question": "What should I do if my waiver application is refused?",
+          "answer": "You can analyze the refusal reason, supplement additional documents and reapply, or cancel the refusal disposition through administrative appeal."
+        },
+        "duration": {
+          "question": "How long does a waiver application take?",
+          "answer": "Generally takes about 3 to 6 months. It may vary depending on the complexity of the case."
+        }
+      }
+    },
+    "success": {
+      "title": "Visa Success Cases",
+      "description": "We introduce Sejoong Law Firm's visa success cases. Check the expertise of Managing Partner Lee Sang-guk, author of 《Immigration Control Act》.",
+      "badge": "Immigration",
+      "mainCases": "Main Success Cases",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+      "ctaButton": "Free Consultation",
+      "stats": {
+        "approvalRate": "Visa Approval Rate",
+        "successCases": "Success Cases",
+        "satisfiedClients": "Satisfied Clients"
+      },
+      "cases": {
+        "reapplication": {
+          "title": "Successful Reapplication After Visa Refusal",
+          "description": "Case of approval through document supplement and reapplication after E-2 visa refusal",
+          "category": "Visa Reapplication",
+          "result": "Approved"
+        },
+        "waiver": {
+          "title": "Successful Entry Ban Release",
+          "description": "Case of successful entry ban release through waiver application",
+          "category": "Waiver",
+          "result": "Approved"
+        },
+        "permanent": {
+          "title": "Successful Permanent Residency Application",
+          "description": "Case of successfully completing F-5 permanent residency application",
+          "category": "Permanent Residency",
+          "result": "Approved"
+        },
+        "appeal": {
+          "title": "Administrative Appeal Victory",
+          "description": "Case of winning administrative appeal against visa refusal disposition",
+          "category": "Administrative Appeal",
+          "result": "Won"
+        },
+        "family": {
+          "title": "Successful Family Invitation Visa",
+          "description": "Case of successfully completing F-3 family invitation visa application",
+          "category": "Family Invitation",
+          "result": "Approved"
+        },
+        "investment": {
+          "title": "Successful Investment Immigration",
+          "description": "Case of successful permanent residency acquisition through investment",
+          "category": "Investment Immigration",
+          "result": "Approved"
+        }
+      }
+    },
+    "stay": {
+      "title": "Stay Permit Extension/Change",
+      "description": "We provide stay permit-related services such as stay permit extension and stay qualification change.",
+      "badge": "Foreigner Center",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "extension": {
+          "title": "Stay Permit Extension",
+          "description": "Stay period extension application and processing"
+        },
+        "change": {
+          "title": "Stay Qualification Change",
+          "description": "Application to change from current stay qualification to another qualification"
+        },
+        "address": {
+          "title": "Stay Address Change",
+          "description": "Stay address change reporting"
+        },
+        "visa": {
+          "title": "Re-entry Permit",
+          "description": "Re-entry permit issuance application"
+        },
+        "registration": {
+          "title": "Foreigner Registration",
+          "description": "Foreigner registration card issuance and renewal"
+        },
+        "illegal": {
+          "title": "Illegal Stay Response",
+          "description": "Resolution of illegal stay issues such as stay period overstay"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Status Assessment",
+          "description": "We understand the current stay status and extension/change purpose."
+        },
+        "qualification": {
+          "title": "Qualification Confirmation",
+          "description": "Confirmation of extension or change application qualification requirements"
+        },
+        "preparation": {
+          "title": "Document Preparation",
+          "description": "Collection and preparation of various documents required for application"
+        },
+        "submission": {
+          "title": "Application Submission",
+          "description": "Application submission to immigration office"
+        },
+        "result": {
+          "title": "Result Confirmation",
+          "description": "Approval confirmation and guidance on follow-up procedures"
+        }
+      },
+      "faqs": {
+        "timing": {
+          "question": "When should I apply for stay permit extension?",
+          "answer": "It is recommended to apply at least 2 months before the stay period expires. Applying after expiration may result in disadvantages."
+        },
+        "change": {
+          "question": "Is stay qualification change possible?",
+          "answer": "Yes, stay qualification change is possible if certain requirements are met. For example, it is possible to change from student visa to work visa."
+        },
+        "overstay": {
+          "question": "What should I do if I have overstayed?",
+          "answer": "You must immediately report to the immigration office and apply for extension. The longer the overstay period, the greater the disadvantage, so quick response is important."
+        }
+      }
+    },
+    "immigration": {
+      "title": "Immigration Office Related Services",
+      "description": "We handle various immigration office-related services. We support the entire process including visa application, stay permit, and foreigner registration.",
+      "badge": "Foreigner Center",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "visa": {
+          "title": "Visa Application Proxy",
+          "description": "Proxy for various visa application form completion and submission"
+        },
+        "stay": {
+          "title": "Stay Permit Application",
+          "description": "Proxy for various applications such as stay permit extension and change"
+        },
+        "registration": {
+          "title": "Foreigner Registration",
+          "description": "Proxy for foreigner registration card issuance and renewal"
+        },
+        "appeal": {
+          "title": "Administrative Appeal",
+          "description": "Administrative appeal against immigration control disposition"
+        },
+        "litigation": {
+          "title": "Litigation Representation",
+          "description": "Litigation representation for immigration control-related matters"
+        },
+        "emergency": {
+          "title": "Emergency Response",
+          "description": "Response to emergency situations such as deportation and entry refusal"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Service Understanding",
+          "description": "We understand the services to be processed at the immigration office."
+        },
+        "preparation": {
+          "title": "Document Preparation",
+          "description": "Collection and preparation of necessary documents"
+        },
+        "application": {
+          "title": "Application Form Completion",
+          "description": "Completion of various application forms and document organization"
+        },
+        "submission": {
+          "title": "Submission and Tracking",
+          "description": "Submission to immigration office and progress tracking"
+        },
+        "result": {
+          "title": "Result Confirmation",
+          "description": "Approval confirmation and guidance on follow-up procedures"
+        }
+      },
+      "faqs": {
+        "proxy": {
+          "question": "It is difficult to visit the immigration office. Can you handle it for me?",
+          "answer": "Some services can be handled by proxy, but some require personal visit. Please check the possibility through consultation."
+        },
+        "appeal": {
+          "question": "I am dissatisfied with the immigration office disposition.",
+          "answer": "You can cancel the disposition through administrative appeal. Please consult with an expert lawyer to proceed with administrative appeal."
+        },
+        "deportation": {
+          "question": "I received a deportation notice. What should I do?",
+          "answer": "You must immediately consult with a lawyer to establish a response plan. You can prevent deportation through waiver application or litigation."
+        }
+      }
+    },
+    "investment": {
+      "title": "Foreign Investment",
+      "description": "We provide legal services related to foreign investment such as foreign investment reporting, foreign investment company establishment, and foreign investment visa.",
+      "badge": "Foreigner Center",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Foreign investment specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "report": {
+          "title": "Foreign Investment Reporting",
+          "description": "Foreign investment reporting and permit under Foreign Investment Promotion Act"
+        },
+        "establishment": {
+          "title": "Foreign Investment Company Establishment",
+          "description": "Corporation establishment and registration of foreign investment companies"
+        },
+        "visa": {
+          "title": "Foreign Investment Visa",
+          "description": "Visa application linked to foreign investment (D-8, F-5, etc.)"
+        },
+        "tax": {
+          "title": "Tax Planning",
+          "description": "Tax planning and tax reduction measures for foreign investment"
+        },
+        "regulation": {
+          "title": "Regulatory Compliance",
+          "description": "Response to various foreign investment-related regulations"
+        },
+        "contract": {
+          "title": "International Contracts",
+          "description": "Contract drafting and review with overseas investors"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Investment Planning",
+          "description": "We plan the purpose, scale, structure, etc. of foreign investment."
+        },
+        "review": {
+          "title": "Legal Review",
+          "description": "Review of related laws such as Foreign Investment Promotion Act"
+        },
+        "establishment": {
+          "title": "Company Establishment",
+          "description": "Corporation establishment of foreign investment companies"
+        },
+        "report": {
+          "title": "Foreign Investment Reporting",
+          "description": "Foreign investment reporting and permit procedure"
+        },
+        "management": {
+          "title": "Visa and Post-Management",
+          "description": "Investment-related visa application and continuous legal advisory"
+        }
+      },
+      "faqs": {
+        "required": {
+          "question": "Is foreign investment reporting mandatory?",
+          "answer": "Yes, investments above a certain amount must be reported under the Foreign Investment Promotion Act. Failure to report may result in disadvantages."
+        },
+        "permanent": {
+          "question": "Can I get permanent residency through foreign investment?",
+          "answer": "You can apply for permanent residency (F-5) through investment above a certain amount. It varies depending on the investment amount and requirements."
+        },
+        "procedure": {
+          "question": "What is the procedure for foreign investment company establishment?",
+          "answer": "Procedures such as corporation establishment, foreign investment reporting, and foreign exchange transaction reporting are required. Please consult with an expert lawyer to proceed."
+        }
+      }
+    },
+    "overseasKorean": {
+      "title": "Overseas Korean Legal Support",
+      "description": "We provide legal support services for overseas Koreans. We resolve all legal issues related to overseas Koreans including visas, stay, and investment.",
+      "badge": "Foreigner Center",
+      "mainServices": "Main Services",
+      "process": "Process",
+      "faq": "Frequently Asked Questions",
+      "ctaTitle": "Get Consultation Now",
+      "ctaDescription": "Overseas Korean specialists provide direct consultation.",
+      "ctaButton": "Free Consultation",
+      "services": {
+        "visa": {
+          "title": "Overseas Korean Visa",
+          "description": "F-4 overseas Korean visa application and extension"
+        },
+        "stay": {
+          "title": "Stay Permit",
+          "description": "Overseas Korean stay permit extension and change"
+        },
+        "investment": {
+          "title": "Investment Support",
+          "description": "Legal advisory on overseas Korean investment"
+        },
+        "family": {
+          "title": "Family Invitation",
+          "description": "Stay support through family invitation"
+        },
+        "consultation": {
+          "title": "Legal Consultation",
+          "description": "Comprehensive legal consultation for overseas Koreans"
+        },
+        "dispute": {
+          "title": "Dispute Resolution",
+          "description": "Resolution of legal disputes related to overseas Koreans"
+        }
+      },
+      "processSteps": {
+        "consultation": {
+          "title": "Consultation and Qualification Confirmation",
+          "description": "We confirm overseas Korean qualification requirements and provide consultation."
+        },
+        "preparation": {
+          "title": "Document Preparation",
+          "description": "Preparation of documents such as overseas Korean certificate and family relationship certificate"
+        },
+        "application": {
+          "title": "Application Form Completion",
+          "description": "Visa or stay permit application form completion"
+        },
+        "submission": {
+          "title": "Application and Tracking",
+          "description": "Application to immigration office and progress tracking"
+        },
+        "result": {
+          "title": "Result Confirmation",
+          "description": "Approval confirmation and guidance on follow-up procedures"
+        }
+      },
+      "faqs": {
+        "qualification": {
+          "question": "What are the qualifications for overseas Korean visa (F-4) application?",
+          "answer": "A person who held Korean nationality or their direct descendants can apply for F-4 visa if they meet certain requirements."
+        },
+        "employment": {
+          "question": "Can I work with an overseas Korean visa?",
+          "answer": "Yes, F-4 visa allows free employment activities. You can work without separate work visa application."
+        },
+        "benefit": {
+          "question": "Are there benefits for overseas Korean investment?",
+          "answer": "Some tax benefits and simplified procedures may apply for overseas Korean investment. Please consult with an expert lawyer."
+        }
+      }
+    },
+    "location": {
+      "title": "Directions",
+      "description": "We guide you to each branch office of Sejoong Law Firm.",
+      "badge": "About Us",
+      "address": "Address",
+      "mainBusiness": "Main Business",
+      "subway": "By Subway",
+      "bus": "By Bus",
+      "car": "By Car",
+      "parking": "Underground parking available (paid)",
+      "map": "Map",
+      "locations": {
+        "seoul": {
+          "name": "Seoul Headquarters",
+          "nameEn": "SEOUL HEADQUARTERS",
+          "address": "15 Beobwon-ro 2-gil, Seocho-gu, Seoul, 303, Gildo Building",
+          "focus": "Corporate Legal Affairs, High-Difficulty Administrative Litigation, Supreme Court Appeals"
+        },
+        "uijeongbu": {
+          "name": "Uijeongbu Branch",
+          "nameEn": "UIJEONGBU BRANCH",
+          "address": "30 Nogyang-ro 34beon-gil, Uijeongbu-si, Gyeonggi-do, 406",
+          "addressDetail": "(In front of the court)",
+          "focus": "Real Estate, Civil, Family, General Litigation in Northern Gyeonggi"
+        },
+        "ansan": {
+          "name": "Ansan Branch",
+          "nameEn": "ANSAN BRANCH",
+          "address": "2F, Sejoong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
+          "focus": "Foreigner Cases, Immigration Violations, Industrial Accidents/Labor"
+        }
+      }
+    },
+    "members": {
+      "title": "Members",
+      "description": "We introduce the expert lawyers of Sejoong Law Firm."
+    },
+    "board": {
+      "title": "Consultation Board",
+      "description": "Check recent work cases, online consultation Q/A, Sejoong columns, and latest news.",
+      "viewMore": "View More",
+      "write": "Write",
+      "writeFirst": "Write First Post",
+      "noPosts": "No work cases registered.",
+      "categories": {
+        "cases": {
+          "title": "Recent Work Cases",
+          "description": "Check recent work cases of Sejoong Law Firm."
+        },
+        "qa": {
+          "title": "Online Consultation Q/A",
+          "description": "Check legal consultation questions and answers."
+        },
+        "column": {
+          "title": "Sejoong Column",
+          "description": "Check expert columns of Sejoong Law Firm."
+        },
+        "news": {
+          "title": "Latest News",
+          "description": "Check latest news of Sejoong Law Firm."
+        }
+      }
+    },
+    "types": {
+      "title": "Visa Types by Applicant",
+      "description": "We provide information on application qualifications and applicants for each visa type."
+    },
+    "certificate": {
+      "title": "Visa Issuance Certificate",
+      "description": "We provide visa issuance certificate application services required before entering Korea.",
+      "mainServices": "Main Services",
+      "process": {
+        "title": "Process",
+        "step1": {
+          "title": "Consultation and Qualification Check",
+          "description": "Check eligibility for visa issuance certificate application and provide consultation."
+        },
+        "step2": {
+          "title": "Document Preparation",
+          "description": "Prepare documents such as invitation letter, inviter ID, relationship certificate, etc."
+        },
+        "step3": {
+          "title": "Application Form Preparation",
+          "description": "Prepare visa issuance certificate application form and organize documents"
+        },
+        "step4": {
+          "title": "Submission and Tracking",
+          "description": "Submit to Immigration Office and track progress"
+        },
+        "step5": {
+          "title": "Issuance and Visa Application",
+          "description": "Apply for visa at embassy after visa issuance certificate is issued"
+        }
+      },
+      "faqs": {
+        "title": "Frequently Asked Questions",
+        "q1": {
+          "question": "What is a visa issuance certificate?",
+          "answer": "It is a document required to obtain a visa from the embassy before entering Korea. It is issued by the Immigration Office."
+        },
+        "q2": {
+          "question": "How long does it take to issue a visa issuance certificate?",
+          "answer": "Generally takes 2 weeks to 1 month. Expedited processing may be possible for urgent cases."
+        },
+        "q3": {
+          "question": "What should I do if my visa issuance certificate is rejected?",
+          "answer": "You can analyze the rejection reason, supplement additional documents, and reapply, or cancel the rejection disposition through administrative appeal."
+        }
+      },
+      "cta": {
+        "title": "Get Consultation Now",
+        "description": "Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+        "button": "Free Consultation"
+      },
+      "services": {
+        "application": {
+          "title": "Visa Issuance Certificate Application",
+          "description": "Application for visa issuance certificate required before entering Korea"
+        },
+        "preparation": {
+          "title": "Document Preparation",
+          "description": "Collection and preparation of documents required for visa issuance certificate application"
+        },
+        "form": {
+          "title": "Application Form Preparation",
+          "description": "Preparation and submission of visa issuance certificate application form"
+        },
+        "tracking": {
+          "title": "Progress Tracking",
+          "description": "Track application progress and confirm results"
+        },
+        "rejection": {
+          "title": "Rejection Response",
+          "description": "Reapplication or objection when visa issuance certificate is rejected"
+        },
+        "embassy": {
+          "title": "Embassy Application",
+          "description": "Support for embassy visa application after visa issuance certificate is issued"
+        }
+      }
+    }
+  },
+  "cases": {
+    "backToList": "Back to Case List",
+    "result": "Result",
+    "requestConsultation": "Request Consultation",
+    "problem": "Problem Situation",
+    "solution": "Solution Process",
+    "timeline": "Processing Period",
+    "relatedServices": "Related Services",
+    "categories": {
+      "realEstate": "Real Estate",
+      "divorce": "Divorce",
+      "visa": "Visa",
+      "corporate": "Corporate Advisory"
+    },
+    "page": {
+      "title": "Success Cases",
+      "description": "Check out various success cases created with Sejoong Law Firm's expertise and know-how."
+    },
+    "detail": {
+      "metadata": {
+        "notFound": "Case not found"
+      },
+      "backToList": "Back to List",
+      "result": "Result",
+      "problem": "Problem",
+      "solution": "Solution",
+      "timeline": "Timeline",
+      "relatedServices": "Related Services",
+      "requestConsultation": "Request Consultation",
+      "relatedCases": {
+        "title": "Other Success Cases"
+      },
+      "cases": {
+        "1": {
+          "title": "Real Estate Dispute Litigation Victory",
+          "description": "Protected customer rights and achieved victory in a complex real estate contract dispute.",
+          "result": "50% increase in compensation, 30% reduction in litigation period",
+          "problem": "During the real estate sale contract process, the seller violated the contract terms, causing a dispute. The customer paid the deposit, but the seller refused to transfer ownership and tried to cancel the contract.",
+          "solution": "Sejoong Law Firm clearly proved the customer's rights through contract analysis, review of related laws, and evidence collection. We filed a lawsuit for contract performance with the court, and a professional lawyer team systematically proceeded with the case to receive a victory judgment.",
+          "timeline": "Approximately 8 months from filing to judgment",
+          "relatedServices": [
+            "Real Estate Dispute",
+            "Contract Dispute",
+            "Litigation Representation"
+          ]
+        },
+        "2": {
+          "title": "Divorce Property Division Success",
+          "description": "Maximized protection of customer rights and interests through fair property division.",
+          "result": "95% customer satisfaction, successful property division agreement",
+          "problem": "During the divorce process, a dispute arose due to differences of opinion with the spouse regarding property division. No agreement was reached on the evaluation and division ratio of joint property.",
+          "solution": "Sejoong Law Firm presented a fair property division plan through property list organization, evaluation, and presentation of legal grounds. We derived an agreement that both parties could be satisfied with through negotiation.",
+          "timeline": "Approximately 3 months from consultation to agreement",
+          "relatedServices": [
+            "Divorce Consultation",
+            "Property Division",
+            "Negotiation Representation"
+          ]
+        },
+        "3": {
+          "title": "Visa Rejection Reapplication Success",
+          "description": "Successfully obtained visa through reapplication after visa rejection.",
+          "result": "100% reapplication success rate, reduced processing period",
+          "problem": "The visa application was rejected, and there was insufficient explanation of the rejection reason. A specific plan for reapplication was needed.",
+          "solution": "Sejoong Law Firm systematically proceeded with reapplication through rejection reason analysis, organization of necessary documents, and reapplication strategy development. We successfully obtained the visa through legal review by expert lawyers and administrative procedure guidance.",
+          "timeline": "Approximately 2 months from reapplication to issuance",
+          "relatedServices": [
+            "Visa Application",
+            "Immigration Consultation",
+            "Administrative Appeal"
+          ]
+        },
+        "4": {
+          "title": "Corporate M&A Legal Advisory",
+          "description": "Provided professional legal advisory during large-scale corporate merger and acquisition (M&A) process.",
+          "result": "Transaction success, minimized legal risks",
+          "problem": "Complex legal issues and risks arose during the large-scale corporate merger and acquisition process. Various legal reviews were needed, including contract review, confirmation of the legal status of the acquisition target company, and regulatory compliance.",
+          "solution": "Sejoong Law Firm formed a dedicated lawyer team to provide legal advisory throughout the entire merger and acquisition process. We successfully completed the transaction through contract review, due diligence, regulatory compliance confirmation, and negotiation support.",
+          "timeline": "Approximately 6 months from advisory start to transaction completion",
+          "relatedServices": [
+            "Corporate Advisory",
+            "M&A",
+            "Contract Review"
+          ]
+        }
+      }
+    }
+  },
+  "headquarter": {
+    "description": "Sejoong Law Firm is a professional law firm that provides various legal services including real estate, divorce, inheritance, visa, and corporate advisory.",
+    "keywords": {
+      "lawFirm": "Law Firm",
+      "lawyer": "Lawyer",
+      "legalService": "Legal Service",
+      "realEstate": "Real Estate Dispute",
+      "divorce": "Divorce Litigation",
+      "visa": "Visa Application",
+      "corporate": "Corporate Advisory"
+    }
+  },
+  "ansan": {
+    "metadata": {
+      "title": "Sejoong Law Firm Ansan Branch | One-Stop Legal Solution",
+      "description": "From stay to family, workplace, accidents, and criminal — Global one-stop legal solution starting in Ansan. Specialized in immigration/stay, divorce/family, industrial accidents/traffic accidents, wages/severance pay, civil/criminal cases.",
+      "keywords": {
+        "lawFirm": "Sejoong Law Firm",
+        "ansanLawyer": "Ansan Lawyer",
+        "oneStop": "One-Stop Legal Service",
+        "stayVisa": "Stay Visa",
+        "divorce": "Divorce Litigation",
+        "industrial": "Industrial Accident Compensation",
+        "traffic": "Traffic Accident",
+        "wage": "Wage Arrears",
+        "criminal": "Criminal Defense",
+        "consultation": "Ansan Legal Consultation",
+        "lawyer": "Wongok-dong Lawyer"
+      },
+      "openGraph": {
+        "title": "Sejoong Law Firm Ansan Branch | One-Stop Legal Solution",
+        "description": "From stay to family, workplace, accidents, and criminal — Global one-stop legal solution starting in Ansan."
+      }
+    }
+  },
+  "search": {
+    "title": "Search Results",
+    "searching": "Searching...",
+    "noResults": " has no search results.",
+    "enterQuery": "Please enter a search term.",
+    "viewMore": "View Details"
+  },
+  "uijeongbu": {
+    "title": "Uijeongbu Branch",
+    "subtitle": "Divorce/Inheritance Specialized Center, Real Estate Specialized Center",
+    "divorce": {
+      "title": "Divorce/Inheritance Specialized Center",
+      "description": "We professionally provide legal services related to divorce and inheritance in the Uijeongbu area."
+    },
+    "realEstate": {
+      "title": "Real Estate Specialized Center",
+      "description": "We professionally provide legal services related to real estate in the Uijeongbu area."
+    }
+  },
+  "visaTypes": {
+    "title": "Visa Types",
+    "cta": {
+      "title": "Get Consultation Now",
+      "description": "Managing Partner Lee Sang-guk, author of 《Immigration Control Act》, provides direct consultation.",
+      "button": "Free Consultation"
+    },
+    "types": {
+      "A-1": {
+        "title": "Diplomatic",
+        "description": "Diplomatic mission members and their families"
+      },
+      "A-2": {
+        "title": "Official",
+        "description": "Official duty performers and their families"
+      },
+      "A-3": {
+        "title": "Agreement",
+        "description": "Visa under agreement"
+      },
+      "B-1": {
+        "title": "Business",
+        "description": "Short-term stay for business purposes"
+      },
+      "B-2": {
+        "title": "Tourism/Medical",
+        "description": "Short-term stay for tourism and medical purposes"
+      },
+      "C-1": {
+        "title": "Temporary Entry",
+        "description": "Short-term stay for temporary entry purposes"
+      },
+      "C-3": {
+        "title": "Short-term Commercial",
+        "description": "Stay for short-term commercial purposes"
+      },
+      "C-4": {
+        "title": "Short-term Employment",
+        "description": "Stay for short-term employment purposes"
+      },
+      "D-1": {
+        "title": "Culture/Arts",
+        "description": "Stay for culture and arts activities"
+      },
+      "D-2": {
+        "title": "Study",
+        "description": "Long-term stay for academic purposes"
+      },
+      "D-3": {
+        "title": "Industrial Training",
+        "description": "Stay for industrial training purposes"
+      },
+      "D-4": {
+        "title": "General Training",
+        "description": "Stay for general training purposes"
+      },
+      "D-5": {
+        "title": "Journalism",
+        "description": "Stay for journalism purposes"
+      },
+      "D-6": {
+        "title": "Religion",
+        "description": "Stay for religious activities"
+      },
+      "D-7": {
+        "title": "Residence",
+        "description": "Stay for residence purposes"
+      },
+      "D-8": {
+        "title": "Corporate Investment",
+        "description": "Stay for corporate investment purposes"
+      },
+      "D-9": {
+        "title": "Trade Management",
+        "description": "Stay for trade management purposes"
+      },
+      "D-10": {
+        "title": "Job Seeking",
+        "description": "Stay for job seeking purposes"
+      },
+      "E-1": {
+        "title": "Professor",
+        "description": "Stay for professor activities"
+      },
+      "E-2": {
+        "title": "Language Teaching",
+        "description": "Stay for language teaching purposes"
+      },
+      "E-3": {
+        "title": "Research",
+        "description": "Stay for research purposes"
+      },
+      "E-4": {
+        "title": "Technical Guidance",
+        "description": "Stay for technical guidance purposes"
+      },
+      "E-5": {
+        "title": "Professional",
+        "description": "Stay for professional employment"
+      },
+      "E-6": {
+        "title": "Arts/Entertainment",
+        "description": "Stay for arts and entertainment purposes"
+      },
+      "E-7": {
+        "title": "Specific Activities",
+        "description": "Stay for specific activities"
+      },
+      "E-9": {
+        "title": "Non-Professional Employment",
+        "description": "Stay for non-professional employment purposes"
+      },
+      "E-10": {
+        "title": "Crew Employment",
+        "description": "Stay for crew employment purposes"
+      },
+      "F-1": {
+        "title": "Visiting Co-residence",
+        "description": "Stay for visiting co-residence purposes"
+      },
+      "F-2": {
+        "title": "Residence",
+        "description": "Stay for residence purposes"
+      },
+      "F-3": {
+        "title": "Accompanying",
+        "description": "Stay for accompanying purposes"
+      },
+      "F-4": {
+        "title": "Overseas Korean",
+        "description": "Stay for overseas Korean purposes"
+      },
+      "F-5": {
+        "title": "Permanent Residence",
+        "description": "Stay for permanent residence purposes"
+      },
+      "F-6": {
+        "title": "Marriage Immigration",
+        "description": "Stay for marriage immigration purposes"
+      },
+      "G-1": {
+        "title": "Other",
+        "description": "Stay for other purposes"
+      }
+    }
+  },
+  "booking": {
+    "title": "Online Booking",
+    "description": "Book a consultation with an expert lawyer at your desired date and time. You can choose between in-person consultation or online video consultation.",
+    "features": {
+      "title": "Booking Benefits",
+      "realtime": {
+        "title": "24-Hour Booking Available",
+        "description": "You can book at any time you want."
+      },
+      "online": {
+        "title": "Online Video Consultation",
+        "description": "If it is difficult to visit, you can receive consultation through video call."
+      },
+      "reminder": {
+        "title": "Automatic Notification",
+        "description": "You can receive booking confirmation and reminders via email/SMS."
+      },
+      "available24h": {
+        "title": "24-Hour Booking Available",
+        "description": "You can book at any time you want."
+      }
+    },
+    "notice": {
+      "title": "Booking Notice",
+      "items": {
+        "min24h": "Please book at least 24 hours in advance.",
+        "change": "Booking changes/cancellations are possible until one day before the booking date.",
+        "online": "For online consultations, a link will be sent via email.",
+        "visit": "For in-person consultations, you will be guided to the office address."
+      }
+    }
+  },
+  "cta": {
+    "title": "Get Consultation Now",
+    "description": "Expert lawyers provide direct consultation. Start with a free consultation.",
+    "booking": "Online Booking",
+    "consultation": "Free Consultation",
+    "phone": "031-8044-8805",
+    "email": "contact@sejoonglaw.kr"
+  },
+  "caseStudies": {
+    "title": "Success Cases",
+    "description": "Check out success cases created with Sejoong Law Firm's expertise and know-how.",
+    "categories": {
+      "all": "All",
+      "realEstate": "Real Estate",
+      "divorce": "Divorce",
+      "visa": "Visa",
+      "corporate": "Corporate Advisory"
+    },
+    "viewMore": "View Details",
+    "viewAll": "View All Cases",
+    "cases": {
+      "1": {
+        "title": "Real Estate Dispute Litigation Victory",
+        "category": "Real Estate",
+        "description": "Protected customer rights and achieved victory in a complex real estate contract dispute.",
+        "result": "50% increase in compensation, 30% reduction in litigation period"
+      },
+      "2": {
+        "title": "Divorce Property Division Success",
+        "category": "Divorce",
+        "description": "Maximized protection of customer rights and interests through fair property division.",
+        "result": "95% customer satisfaction, successful property division agreement"
+      },
+      "3": {
+        "title": "Visa Rejection Reapplication Success",
+        "category": "Visa",
+        "description": "Successfully obtained visa through reapplication after visa rejection.",
+        "result": "100% reapplication success rate, reduced processing period"
+      },
+      "4": {
+        "title": "Corporate M&A Legal Advisory",
+        "category": "Corporate Advisory",
+        "description": "Provided professional legal advisory during large-scale corporate merger and acquisition (M&A) process.",
+        "result": "Transaction success, minimized legal risks"
+      }
+    }
+  },
+  "stats": {
+    "title": "Sejoong Law Firm's Achievements",
+    "description": "We protect customer rights and create the best results based on long experience and expertise.",
+    "items": {
+      "experience": "Years of Experience",
+      "cases": "Success Cases",
+      "customers": "Satisfied Customers",
+      "winRate": "Win Rate"
+    }
+  },
+  "testimonials": {
+    "title": "Customer Reviews",
+    "description": "Check out vivid reviews from customers who used Sejoong Law Firm.",
+    "items": {
+      "1": {
+        "quote": "I was able to successfully resolve a complex real estate dispute with the help of Sejoong Law Firm. I am truly grateful for their expertise and careful consultation.",
+        "author": "Kim ○○",
+        "role": "Real Estate Dispute Case"
+      },
+      "2": {
+        "quote": "I was able to trust and entrust the entire process from divorce consultation to litigation. Thanks to the lawyer's professional advice, I was able to get the desired result.",
+        "author": "Lee ○○",
+        "role": "Divorce Litigation Case"
+      },
+      "3": {
+        "quote": "When my visa was rejected, I succeeded in reapplying with the help of Sejoong Law Firm. The quick response and accurate advice were impressive.",
+        "author": "Park ○○",
+        "role": "Visa Application Case"
+      }
+    }
+  },
+  "notFound": {
+    "board": {
+      "title": "404",
+      "message": "Post not found."
+    },
+    "case": {
+      "title": "404",
+      "heading": "Case not found",
+      "description": "The requested success case may not exist or has been deleted.",
+      "backToCases": "Back to Cases List"
+    }
+  },
+  "consultation": {
+    "validation": {
+      "service": "Please select a service",
+      "name": "Please enter your name",
+      "email": "Please enter a valid email",
+      "phone": "Please enter your contact number",
+      "subject": "Please enter a subject (at least 2 characters)",
+      "message": "Please enter consultation details (at least 5 characters)"
+    },
+    "services": {
+      "litigation": "Litigation",
+      "corporate": "Corporate Advisory",
+      "immigration": "Overseas Immigration",
+      "foreigner": "Foreigner Center",
+      "other": "Other"
+    },
+    "error": {
+      "submitFailed": "Failed to submit consultation request.",
+      "submitError": "An error occurred while submitting the consultation request. Please try again."
+    },
+    "success": {
+      "title": "Consultation request completed",
+      "message": "We will contact you soon."
+    },
+    "form": {
+      "title": "Free Consultation Request",
+      "selectService": "Select Consultation Service",
+      "name": "Name",
+      "phone": "Contact Number",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Consultation Details",
+      "files": "Related Documents (Optional)",
+      "previous": "Previous",
+      "next": "Next",
+      "submit": "Submit Consultation Request",
+      "placeholders": {
+        "name": "John Doe",
+        "phone": "010-1234-5678",
+        "email": "example@email.com",
+        "subject": "Please enter consultation subject",
+        "message": "Please enter consultation details"
       }
     }
   }

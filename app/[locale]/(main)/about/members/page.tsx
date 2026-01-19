@@ -4,9 +4,10 @@ import MembersGrid, { Member } from "@/components/about/MembersGrid"
 import MembersHero from "@/components/about/MembersHero"
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations()
   return {
-    title: "구성원 소개 | 법무법인 세중",
-    description: "법무법인 세중의 전문 변호사들을 소개합니다.",
+    title: `${t("pages.members.title")} | ${t("common.title")}`,
+    description: t("pages.members.description"),
   }
 }
 

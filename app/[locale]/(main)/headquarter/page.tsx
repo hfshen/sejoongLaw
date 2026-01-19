@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import { getTranslations } from "next-intl/server"
 import HeroSection from "@/components/sections/HeroSection"
 import WhySejoongSection from "@/components/sections/WhySejoongSection"
 import LeaderSection from "@/components/sections/LeaderSection"
@@ -12,19 +13,21 @@ import InteractiveFAQ from "@/components/faq/InteractiveFAQ"
 import AIChatbot from "@/components/chat/AIChatbot"
 import SmartCTA from "@/components/cta/SmartCTA"
 
-export const metadata: Metadata = {
-  title: "법무법인 세중 본사 | 전문 법률 서비스",
-  description:
-    "법무법인 세중은 부동산, 이혼, 상속, 비자, 기업자문 등 다양한 법률 서비스를 제공하는 전문 법무법인입니다.",
-  keywords: [
-    "법무법인",
-    "변호사",
-    "법률 서비스",
-    "부동산 분쟁",
-    "이혼 소송",
-    "비자 신청",
-    "기업 자문",
-  ],
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations()
+  return {
+    title: `${t("branches.headquarter")} | ${t("common.title")}`,
+    description: t("headquarter.description"),
+    keywords: [
+      t("headquarter.keywords.lawFirm"),
+      t("headquarter.keywords.lawyer"),
+      t("headquarter.keywords.legalService"),
+      t("headquarter.keywords.realEstate"),
+      t("headquarter.keywords.divorce"),
+      t("headquarter.keywords.visa"),
+      t("headquarter.keywords.corporate"),
+    ],
+  }
 }
 
 export default function HeadquarterPage() {

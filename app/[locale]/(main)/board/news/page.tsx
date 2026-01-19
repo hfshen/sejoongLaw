@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getTranslations } from "next-intl/server"
 import Link from "next/link"
 
 async function getNews() {
@@ -18,14 +19,15 @@ async function getNews() {
 }
 
 export default async function NewsPage() {
+  const t = await getTranslations()
   const news = await getNews()
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-bold text-secondary mb-8">최신뉴스</h1>
+      <h1 className="text-4xl font-bold text-secondary mb-8">{t("board.news.title")}</h1>
       {news.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-text-secondary">등록된 뉴스가 없습니다.</p>
+          <p className="text-text-secondary">{t("board.news.noNews")}</p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -44,7 +46,7 @@ export default async function NewsPage() {
               )}
               <div className="flex justify-between items-center">
                 {article.source && (
-                  <p className="text-sm text-text-secondary">출처: {article.source}</p>
+                  <p className="text-sm text-text-secondary">{t("board.news.source")}: {article.source}</p>
                 )}
                 {article.published_at && (
                   <p className="text-sm text-text-secondary">
@@ -59,7 +61,7 @@ export default async function NewsPage() {
                   rel="noopener noreferrer"
                   className="text-primary hover:underline mt-2 inline-block"
                 >
-                  원문 보기 →
+                  {t("board.news.viewOriginal")} →
                 </a>
               )}
             </div>

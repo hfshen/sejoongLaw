@@ -7,36 +7,36 @@ import Link from "next/link"
 import { Award, Users, Globe, Heart } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations()
   return {
-    title: "인사말 | 법무법인 세중",
-    description:
-      "법무법인 세중의 인사말과 비전을 소개합니다. 고객의 권익 보호와 법률 서비스의 질 향상을 위해 최선을 다하겠습니다.",
+    title: `${t("pages.greeting.title")} | ${t("common.title")}`,
+    description: t("pages.greeting.description"),
   }
 }
 
 export default async function GreetingPage() {
-  const t = await getTranslations()
+  const t = await getTranslations("pages.greeting")
 
   const values = [
     {
       icon: <Award className="w-8 h-8" />,
-      title: "전문성",
-      description: "각 분야별 전문 변호사들이 최고의 법률 서비스를 제공합니다.",
+      title: t("valueItems.expertise.title"),
+      description: t("valueItems.expertise.description"),
     },
     {
       icon: <Users className="w-8 h-8" />,
-      title: "신뢰성",
-      description: "고객과의 신뢰를 바탕으로 투명하고 정직한 법률 서비스를 제공합니다.",
+      title: t("valueItems.trust.title"),
+      description: t("valueItems.trust.description"),
     },
     {
       icon: <Globe className="w-8 h-8" />,
-      title: "글로벌",
-      description: "국경을 넘나드는 법률 문제까지 원스톱으로 해결합니다.",
+      title: t("valueItems.global.title"),
+      description: t("valueItems.global.description"),
     },
     {
       icon: <Heart className="w-8 h-8" />,
-      title: "고객 중심",
-      description: "고객의 권익 보호를 최우선으로 생각하며 최선을 다합니다.",
+      title: t("valueItems.customer.title"),
+      description: t("valueItems.customer.description"),
     },
   ]
 
@@ -51,13 +51,13 @@ export default async function GreetingPage() {
         <div className="container-max relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="primary" className="mb-6 text-sm md:text-base">
-              법인소개
+              {t("badge")}
             </Badge>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary mb-6">
-              인사말
+              {t("heroTitle")}
             </h1>
             <p className="text-lg md:text-xl text-text-secondary leading-relaxed">
-              법무법인 세중을 방문해주셔서 진심으로 감사드립니다.
+              {t("heroDescription")}
             </p>
           </div>
         </div>
@@ -72,20 +72,18 @@ export default async function GreetingPage() {
               <CardContent className="p-8 md:p-12">
                 <div className="text-center mb-8">
                   <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
-                    <span className="text-primary">世中</span> - 세상의 중심으로 나아가다
+                    <span className="text-primary">世中</span> - {t("visionTitle")}
                   </h2>
                   <p className="text-lg text-text-secondary italic">
-                    About Sejoong
+                    {t("visionSubtitle")}
                   </p>
                 </div>
                 <div className="prose prose-lg max-w-none">
                   <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-6">
-                    법무법인 세중은 고객이 필요로 하는 다양한 법률서비스를 신속하고 정확하게 제공하기 위해,
-                    소송업무 및 출입국, 해외 이민, 투자, 비자 분야의 전문가들이 뜻을 모아 설립한 법무법인입니다.
+                    {t("visionText1")}
                   </p>
                   <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-6">
-                    《출입국관리법》 저자이자 법학박사인 이상국 대표변호사를 중심으로,
-                    각 분야의 전문가들이 모여 고객 여러분의 복잡한 법률 문제를 명쾌하게 해결해드립니다.
+                    {t("visionText2")}
                   </p>
                 </div>
               </CardContent>
@@ -95,27 +93,24 @@ export default async function GreetingPage() {
             <Card className="mb-12">
               <CardContent className="p-8 md:p-12">
                 <h2 className="text-2xl md:text-3xl font-bold text-secondary mb-8 text-center">
-                  비전과 가치
+                  {t("valuesTitle")}
                 </h2>
                 <div className="space-y-8">
                   <div className="prose prose-lg max-w-none">
                     <h3 className="text-xl font-semibold text-secondary mb-4">
-                      고객 헌신과 창의적인 법률 마인드
+                      {t("value1Title")}
                     </h3>
                     <p className="text-lg text-text-secondary leading-relaxed mb-6">
-                      법무법인 세중은 고객에 대한 헌신과 창의적인 법률마인드로 고객들에게 항상 최상의 법률서비스를 제공해왔으며,
-                      역량 있는 전문가의 노력과 고객들의 전폭적인 신뢰를 바탕으로 가장 신뢰할 수 있는 로펌으로 일컬어지고 있습니다.
+                      {t("value1Text")}
                     </p>
                   </div>
                   
                   <div className="prose prose-lg max-w-none">
                     <h3 className="text-xl font-semibold text-secondary mb-4">
-                      신뢰를 가장 소중한 가치로
+                      {t("value2Title")}
                     </h3>
                     <p className="text-lg text-text-secondary leading-relaxed mb-6">
-                      법무법인 세중은 고객과의 신뢰를 가장 소중한 가치로 생각하고,
-                      고객의 문제를 고객의 입장에서 함께 고민하고 해결하며,
-                      분야별 전문가들이 제공하는 최고의 법률서비스를 통해 고객에게 감동과 만족을 드리기 위해 최선을 다하고 있습니다.
+                      {t("value2Text")}
                     </p>
                   </div>
                 </div>
@@ -125,7 +120,7 @@ export default async function GreetingPage() {
             {/* Values */}
             <div>
               <h2 className="text-2xl md:text-3xl font-bold text-secondary mb-8 text-center">
-                법무법인 세중의 가치
+                {t("firmValuesTitle")}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {values.map((value, index) => (
@@ -153,10 +148,10 @@ export default async function GreetingPage() {
       <section className="section-padding bg-gradient-to-br from-primary to-accent text-white">
         <div className="container-max text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            지금 바로 상담받으세요
+            {t("ctaTitle")}
           </h2>
           <p className="text-lg md:text-xl mb-8 opacity-90">
-            전문 변호사가 직접 상담해드립니다.
+            {t("ctaDescription")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/consultation">
@@ -165,12 +160,12 @@ export default async function GreetingPage() {
                 variant="secondary"
                 className="bg-white text-primary hover:bg-gray-100"
               >
-                무료 상담 신청
+                {t("ctaButton")}
               </Button>
             </Link>
             <Link href="tel:03180448805">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                전화 상담: 031-8044-8805
+                {t("ctaPhone")}
               </Button>
             </Link>
           </div>

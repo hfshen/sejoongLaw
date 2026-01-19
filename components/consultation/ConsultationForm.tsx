@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -9,25 +9,15 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
 import { useTranslations, useLocale } from "next-intl"
 import { motion, AnimatePresence } from "framer-motion"
 
-const consultationSchema = z.object({
-  service: z.string().min(1, "서비스를 선택해주세요"),
-  name: z.string().min(2, "이름을 입력해주세요"),
-  email: z.string().email("올바른 이메일을 입력해주세요"),
-  phone: z.string().min(10, "연락처를 입력해주세요"),
-  subject: z.string().min(5, "제목을 입력해주세요"),
-  message: z.string().min(10, "상담 내용을 입력해주세요"),
-  files: z.array(z.instanceof(File)).optional(),
-})
-
-type ConsultationFormData = z.infer<typeof consultationSchema>
-
-const services = [
-  "소송업무",
-  "기업자문",
-  "해외이주",
-  "외국인센터",
-  "기타",
-]
+type ConsultationFormData = {
+  service: string
+  name: string
+  email: string
+  phone: string
+  subject: string
+  message: string
+  files?: File[]
+}
 
 export default function ConsultationForm() {
   const t = useTranslations()
@@ -35,6 +25,24 @@ export default function ConsultationForm() {
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+
+  const consultationSchema = useMemo(() => z.object({
+    service: z.string().min(1, t("consultation.validation.service")),
+    name: z.string().min(2, t("consultation.validation.name")),
+    email: z.string().email(t("consultation.validation.email")),
+    phone: z.string().min(10, t("consultation.validation.phone")),
+    subject: z.string().min(2, t("consultation.validation.subject")),
+    message: z.string().min(5, t("consultation.validation.message")),
+    files: z.array(z.instanceof(File)).optional(),
+  }), [t])
+
+  const services = [
+    t("consultation.services.litigation"),
+    t("consultation.services.corporate"),
+    t("consultation.services.immigration"),
+    t("consultation.services.foreigner"),
+    t("consultation.services.other"),
+  ]
 
   const {
     register,
@@ -70,11 +78,11 @@ export default function ConsultationForm() {
       if (response.ok) {
         setSubmitted(true)
       } else {
-        throw new Error("상담 신청에 실패했습니다.")
+        throw new Error(t("consultation.error.submitFailed"))
       }
     } catch (error) {
       console.error("Error submitting consultation:", error)
-      alert("상담 신청 중 오류가 발생했습니다. 다시 시도해주세요.")
+      alert(t("consultation.error.submitError"))
     } finally {
       setIsSubmitting(false)
     }
@@ -105,10 +113,10 @@ export default function ConsultationForm() {
               </svg>
             </div>
             <h3 className="text-2xl font-bold text-secondary mb-2">
-              상담 신청이 완료되었습니다
+              {t("consultation.success.title")}
             </h3>
             <p className="body-text">
-              빠른 시일 내에 연락드리겠습니다.
+              {t("consultation.success.message")}
             </p>
           </motion.div>
         </CardContent>
@@ -119,7 +127,7 @@ export default function ConsultationForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>무료 상담 신청</CardTitle>
+        <CardTitle>{t("consultation.form.title")}</CardTitle>
         <div className="flex gap-2 mt-4">
           {[1, 2, 3].map((s) => (
             <div
@@ -144,7 +152,7 @@ export default function ConsultationForm() {
               >
                 <div>
                   <label htmlFor="service-select" className="block text-sm font-medium text-secondary mb-2">
-                    상담 서비스 선택 *
+                    {t("consultation.form.selectService")} *
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-labelledby="service-select">
                     {services.map((service) => (
@@ -187,13 +195,13 @@ export default function ConsultationForm() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-secondary mb-2">
-                      이름 *
+                      {t("consultation.form.name")} *
                     </label>
                     <input
                       id="name"
                       {...register("name")}
                       className="premium-input"
-                      placeholder="홍길동"
+                      placeholder={t("consultation.form.placeholders.name")}
                       aria-invalid={errors.name ? "true" : "false"}
                       aria-describedby={errors.name ? "name-error" : undefined}
                     />
@@ -205,12 +213,12 @@ export default function ConsultationForm() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">
-                      연락처 *
+                      {t("consultation.form.phone")} *
                     </label>
                     <input
                       {...register("phone")}
                       className="premium-input"
-                      placeholder="010-1234-5678"
+                      placeholder={t("consultation.form.placeholders.phone")}
                     />
                     {errors.phone && (
                       <p className="text-red-500 text-sm mt-1">
@@ -221,13 +229,13 @@ export default function ConsultationForm() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">
-                    이메일 *
-                  </label>
-                  <input
-                    {...register("email")}
-                    type="email"
-                    className="premium-input"
-                    placeholder="example@email.com"
+                    {t("consultation.form.email")} *
+                    </label>
+                    <input
+                      {...register("email")}
+                      type="email"
+                      className="premium-input"
+                      placeholder={t("consultation.form.placeholders.email")}
                   />
                   {errors.email && (
                     <p className="text-red-500 text-sm mt-1">
@@ -241,10 +249,10 @@ export default function ConsultationForm() {
                     variant="outline"
                     onClick={() => setStep(1)}
                   >
-                    이전
+                    {t("consultation.form.previous")}
                   </Button>
                   <Button type="button" onClick={() => setStep(3)}>
-                    다음
+                    {t("consultation.form.next")}
                   </Button>
                 </div>
               </motion.div>
@@ -260,12 +268,12 @@ export default function ConsultationForm() {
               >
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">
-                    제목 *
+                    {t("consultation.form.subject")} *
                   </label>
                   <input
                     {...register("subject")}
                     className="premium-input"
-                    placeholder="상담 제목을 입력해주세요"
+                    placeholder={t("consultation.form.placeholders.subject")}
                   />
                   {errors.subject && (
                     <p className="text-red-500 text-sm mt-1">
@@ -275,12 +283,12 @@ export default function ConsultationForm() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">
-                    상담 내용 *
+                    {t("consultation.form.message")} *
                   </label>
                   <textarea
                     {...register("message")}
                     className="premium-textarea"
-                    placeholder="상담 내용을 자세히 입력해주세요"
+                    placeholder={t("consultation.form.placeholders.message")}
                     rows={6}
                   />
                   {errors.message && (
@@ -291,7 +299,7 @@ export default function ConsultationForm() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">
-                    관련 문서 (선택)
+                    {t("consultation.form.files")}
                   </label>
                   <input
                     type="file"
@@ -310,10 +318,10 @@ export default function ConsultationForm() {
                     variant="outline"
                     onClick={() => setStep(2)}
                   >
-                    이전
+                    {t("consultation.form.previous")}
                   </Button>
                   <Button type="submit" isLoading={isSubmitting}>
-                    상담 신청하기
+                    {t("consultation.form.submit")}
                   </Button>
                 </div>
               </motion.div>

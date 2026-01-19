@@ -2,10 +2,12 @@
 
 import { useSearchParams } from "next/navigation"
 import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import { Card, CardContent } from "@/components/ui/Card"
 import SearchBar from "@/components/search/SearchBar"
 
 export default function SearchPage() {
+  const t = useTranslations()
   const searchParams = useSearchParams()
   const query = searchParams.get("q") || ""
   const [results, setResults] = useState<any[]>([])
@@ -28,7 +30,7 @@ export default function SearchPage() {
         <div className="container-max">
           <div className="max-w-4xl mx-auto">
             <div className="mb-8">
-              <h1 className="section-title">검색 결과</h1>
+              <h1 className="section-title">{t("search.title")}</h1>
               <div className="mt-6">
                 <SearchBar />
               </div>
@@ -37,7 +39,7 @@ export default function SearchPage() {
             {isLoading ? (
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                <p className="mt-4 text-text-secondary">검색 중...</p>
+                <p className="mt-4 text-text-secondary">{t("search.searching")}</p>
               </div>
             ) : results.length > 0 ? (
               <div className="space-y-4">
@@ -50,7 +52,7 @@ export default function SearchPage() {
                         href={result.url}
                         className="text-primary font-semibold mt-4 inline-block"
                       >
-                        자세히 보기 →
+                        {t("search.viewMore")} →
                       </a>
                     </CardContent>
                   </Card>
@@ -60,7 +62,7 @@ export default function SearchPage() {
               <Card>
                 <CardContent className="p-12 text-center">
                   <p className="text-text-secondary text-lg">
-                    &quot;{query}&quot;에 대한 검색 결과가 없습니다.
+                    &quot;{query}&quot;{t("search.noResults")}
                   </p>
                 </CardContent>
               </Card>
@@ -68,7 +70,7 @@ export default function SearchPage() {
               <Card>
                 <CardContent className="p-12 text-center">
                   <p className="text-text-secondary text-lg">
-                    검색어를 입력해주세요.
+                    {t("search.enterQuery")}
                   </p>
                 </CardContent>
               </Card>

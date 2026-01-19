@@ -7,43 +7,45 @@ import Link from "next/link"
 import { Shield, FileText, DollarSign, AlertTriangle, Car, Heart } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations()
   return {
-    title: "보험소송 | 법무법인 세중",
-    description:
-      "자동차보험, 생명보험, 화재보험 등 보험 분쟁 및 소송을 전문적으로 해결합니다.",
+    title: `${t("pages.insurance.title")} | ${t("common.title")}`,
+    description: t("pages.insurance.description"),
   }
 }
 
 export default async function InsurancePage() {
+  const t = await getTranslations("pages.insurance")
+
   const services = [
     {
-      title: "자동차보험",
-      description: "자동차보험 사고 처리, 보험금 청구, 구상금 분쟁",
+      title: t("services.car.title"),
+      description: t("services.car.description"),
       icon: <Car className="w-6 h-6" />,
     },
     {
-      title: "생명보험",
-      description: "보험약관 해석, 보험사기, 불완전판매 분쟁",
+      title: t("services.life.title"),
+      description: t("services.life.description"),
       icon: <Heart className="w-6 h-6" />,
     },
     {
-      title: "화재보험",
-      description: "화재보험금 청구, 보험약관 해석 분쟁",
+      title: t("services.fire.title"),
+      description: t("services.fire.description"),
       icon: <AlertTriangle className="w-6 h-6" />,
     },
     {
-      title: "산재보험",
-      description: "산업재해보험 보상금 청구 및 분쟁",
+      title: t("services.industrial.title"),
+      description: t("services.industrial.description"),
       icon: <Shield className="w-6 h-6" />,
     },
     {
-      title: "보험약관 해석",
-      description: "보험약관의 법적 해석 및 보험금 지급 여부 판단",
+      title: t("services.interpretation.title"),
+      description: t("services.interpretation.description"),
       icon: <FileText className="w-6 h-6" />,
     },
     {
-      title: "보험금 청구",
-      description: "각종 보험금 청구 및 거부 처분 취소 소송",
+      title: t("services.claim.title"),
+      description: t("services.claim.description"),
       icon: <DollarSign className="w-6 h-6" />,
     },
   ]
@@ -51,46 +53,43 @@ export default async function InsurancePage() {
   const process = [
     {
       step: 1,
-      title: "보험 사건 분석",
-      description: "보험 계약 내용, 사고 경위, 보험금 거부 사유 등을 분석합니다.",
+      title: t("processSteps.analysis.title"),
+      description: t("processSteps.analysis.description"),
     },
     {
       step: 2,
-      title: "보험약관 검토",
-      description: "보험약관의 법적 해석 및 보험금 지급 여부 검토",
+      title: t("processSteps.review.title"),
+      description: t("processSteps.review.description"),
     },
     {
       step: 3,
-      title: "증거 수집",
-      description: "보험 계약서, 사고 관련 서류, 진단서 등 증거 수집",
+      title: t("processSteps.evidence.title"),
+      description: t("processSteps.evidence.description"),
     },
     {
       step: 4,
-      title: "보험사 협상",
-      description: "보험사와 협상을 통해 보험금 지급 요구",
+      title: t("processSteps.negotiation.title"),
+      description: t("processSteps.negotiation.description"),
     },
     {
       step: 5,
-      title: "소송 진행",
-      description: "협상 실패 시 소송을 통해 보험금 지급 청구",
+      title: t("processSteps.litigation.title"),
+      description: t("processSteps.litigation.description"),
     },
   ]
 
   const faqs = [
     {
-      question: "보험사가 보험금 지급을 거부했습니다. 어떻게 해야 하나요?",
-      answer:
-        "거부 사유를 분석하고, 보험약관과 법률을 근거로 보험금 지급을 요구합니다. 협상이 어려운 경우 소송을 통해 해결할 수 있습니다.",
+      question: t("faqs.refusal.question"),
+      answer: t("faqs.refusal.answer"),
     },
     {
-      question: "보험약관이 복잡해서 이해하기 어렵습니다.",
-      answer:
-        "보험약관의 법적 해석을 통해 보험금 지급 여부를 판단하고, 고객에게 명확히 설명해드립니다.",
+      question: t("faqs.terms.question"),
+      answer: t("faqs.terms.answer"),
     },
     {
-      question: "보험 불완전판매로 피해를 입었습니다.",
-      answer:
-        "보험 판매 과정에서 중요한 사항을 설명하지 않아 계약을 취소하거나 손해배상을 청구할 수 있습니다.",
+      question: t("faqs.misrepresentation.question"),
+      answer: t("faqs.misrepresentation.answer"),
     },
   ]
 
@@ -99,10 +98,10 @@ export default async function InsurancePage() {
       <section className="section-padding-sm bg-gradient-to-br from-primary/10 to-accent/5">
         <div className="container-max">
           <div className="max-w-3xl mx-auto text-center">
-            <Badge variant="primary" className="mb-4">소송업무</Badge>
-            <h1 className="section-title mb-6">보험소송</h1>
+            <Badge variant="primary" className="mb-4">{t("badge")}</Badge>
+            <h1 className="section-title mb-6">{t("title")}</h1>
             <p className="body-text text-lg">
-              자동차보험, 생명보험, 화재보험 등 보험 분쟁 및 소송을 전문적으로 해결합니다.
+              {t("description")}
             </p>
           </div>
         </div>
@@ -110,7 +109,7 @@ export default async function InsurancePage() {
 
       <section className="section-padding">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">주요 서비스</h2>
+          <h2 className="section-title text-center mb-12">{t("mainServices")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, index) => (
               <Card key={index} hover>
@@ -129,7 +128,7 @@ export default async function InsurancePage() {
 
       <section className="section-padding bg-background-alt">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">처리 프로세스</h2>
+          <h2 className="section-title text-center mb-12">{t("process")}</h2>
           <div className="max-w-4xl mx-auto">
             <div className="space-y-8">
               {process.map((item, index) => (
@@ -152,7 +151,7 @@ export default async function InsurancePage() {
 
       <section className="section-padding">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">자주 묻는 질문</h2>
+          <h2 className="section-title text-center mb-12">{t("faq")}</h2>
           <div className="max-w-3xl mx-auto space-y-6">
             {faqs.map((faq, index) => (
               <Card key={index}>
@@ -168,11 +167,11 @@ export default async function InsurancePage() {
 
       <section className="section-padding bg-gradient-to-br from-primary to-accent text-white">
         <div className="container-max text-center">
-          <h2 className="text-4xl font-bold mb-6">지금 바로 상담받으세요</h2>
-          <p className="text-xl mb-8 opacity-90">보험소송 전문 변호사가 직접 상담해드립니다.</p>
+          <h2 className="text-4xl font-bold mb-6">{t("ctaTitle")}</h2>
+          <p className="text-xl mb-8 opacity-90">{t("ctaDescription")}</p>
           <Link href="/consultation">
             <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100">
-              무료 상담 신청
+              {t("ctaButton")}
             </Button>
           </Link>
         </div>

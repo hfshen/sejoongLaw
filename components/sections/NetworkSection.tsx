@@ -96,7 +96,7 @@ export default function NetworkSection() {
                       <div className="flex items-start">
                         <Building2 className="w-5 h-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
                         <p className="text-sm text-text-secondary">
-                          <span className="font-semibold">Focus: </span>
+                          <span className="font-semibold">{t("network.focus")}: </span>
                           {branchInfo.focus}
                         </p>
                       </div>

@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
 import { Modal } from "@/components/ui/Modal"
 import { Award, GraduationCap, Briefcase, Phone, Mail, ChevronRight } from "lucide-react"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 
 export interface Member {
@@ -31,6 +32,7 @@ interface MembersGridProps {
 }
 
 export default function MembersGrid({ members }: MembersGridProps) {
+  const t = useTranslations()
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
 
   return (
@@ -64,14 +66,14 @@ export default function MembersGrid({ members }: MembersGridProps) {
                   {member.id === "1" && (
                     <div className="absolute -top-2 -right-2">
                       <Badge variant="primary" className="text-xs">
-                        대표
+                        {t("about.members.badges.managingPartner")}
                       </Badge>
                     </div>
                   )}
                   {member.isForeign && (
                     <div className="absolute -top-2 -right-2">
                       <Badge variant="accent" className="text-xs">
-                        외국
+                        {t("about.members.badges.foreign")}
                       </Badge>
                     </div>
                   )}
@@ -103,7 +105,7 @@ export default function MembersGrid({ members }: MembersGridProps) {
                   </div>
                 )}
                 <div className="mt-4 flex items-center justify-center text-primary text-sm font-semibold">
-                  상세보기 <ChevronRight className="w-4 h-4 ml-1" />
+                  {t("about.members.modal.viewDetails")} <ChevronRight className="w-4 h-4 ml-1" />
                 </div>
               </CardContent>
             </Card>
@@ -121,7 +123,7 @@ export default function MembersGrid({ members }: MembersGridProps) {
           <div className="space-y-6">
             {selectedMember.description && (
               <div>
-                <h3 className="font-bold text-lg text-secondary mb-3">소개</h3>
+                <h3 className="font-bold text-lg text-secondary mb-3">{t("about.members.modal.introduction")}</h3>
                 <p className="text-text-secondary leading-relaxed">
                   {selectedMember.description}
                 </p>
@@ -130,7 +132,7 @@ export default function MembersGrid({ members }: MembersGridProps) {
 
             {(selectedMember.phone || selectedMember.email) && (
               <div>
-                <h3 className="font-bold text-lg text-secondary mb-3">연락처</h3>
+                <h3 className="font-bold text-lg text-secondary mb-3">{t("about.members.modal.contact")}</h3>
                 <div className="space-y-2">
                   {selectedMember.phone && (
                     <div className="flex items-center gap-3">
@@ -162,7 +164,7 @@ export default function MembersGrid({ members }: MembersGridProps) {
               <div>
                 <h3 className="font-bold text-lg text-secondary mb-3 flex items-center gap-2">
                   <GraduationCap className="w-5 h-5 text-primary" />
-                  학력
+                  {t("about.members.modal.education")}
                 </h3>
                 <ul className="space-y-2 text-text-secondary">
                   {selectedMember.education.map((edu, index) => (
@@ -177,7 +179,7 @@ export default function MembersGrid({ members }: MembersGridProps) {
 
             {selectedMember.history && selectedMember.history.length > 0 && (
               <div>
-                <h3 className="font-bold text-lg text-secondary mb-3">약력</h3>
+                <h3 className="font-bold text-lg text-secondary mb-3">{t("about.members.modal.history")}</h3>
                 <ul className="space-y-2 text-text-secondary">
                   {selectedMember.history.map((item, index) => (
                     <li key={index} className="flex items-start gap-2">
@@ -193,7 +195,7 @@ export default function MembersGrid({ members }: MembersGridProps) {
               <div>
                 <h3 className="font-bold text-lg text-secondary mb-3 flex items-center gap-2">
                   <Briefcase className="w-5 h-5 text-primary" />
-                  경력
+                  {t("about.members.modal.career")}
                 </h3>
                 <ul className="space-y-2 text-text-secondary">
                   {selectedMember.career.map((item, index) => (
@@ -210,7 +212,7 @@ export default function MembersGrid({ members }: MembersGridProps) {
               <div>
                 <h3 className="font-bold text-lg text-secondary mb-3 flex items-center gap-2">
                   <Award className="w-5 h-5 text-primary" />
-                  주요 성과
+                  {t("about.members.modal.achievements")}
                 </h3>
                 <ul className="space-y-2 text-text-secondary">
                   {selectedMember.achievements.map((item, index) => (
@@ -226,7 +228,7 @@ export default function MembersGrid({ members }: MembersGridProps) {
             {selectedMember.clients && selectedMember.clients.length > 0 && (
               <div>
                 <h3 className="font-bold text-lg text-secondary mb-3">
-                  법률자문한 기업, 공공기관 등
+                  {t("about.members.modal.clients")}
                 </h3>
                 <ul className="space-y-2 text-text-secondary">
                   {selectedMember.clients.map((client, index) => (
@@ -242,7 +244,7 @@ export default function MembersGrid({ members }: MembersGridProps) {
             {selectedMember.cases && selectedMember.cases.length > 0 && (
               <div>
                 <h3 className="font-bold text-lg text-secondary mb-3">
-                  소송대리한 법인 등
+                  {t("about.members.modal.cases")}
                 </h3>
                 <ul className="space-y-2 text-text-secondary">
                   {selectedMember.cases.map((caseItem, index) => (
@@ -257,7 +259,7 @@ export default function MembersGrid({ members }: MembersGridProps) {
 
             {selectedMember.specialties && selectedMember.specialties.length > 0 && (
               <div>
-                <h3 className="font-bold text-lg text-secondary mb-3">주요 업무 분야</h3>
+                <h3 className="font-bold text-lg text-secondary mb-3">{t("about.members.modal.specialties")}</h3>
                 <div className="flex flex-wrap gap-2">
                   {selectedMember.specialties.map((specialty, index) => (
                     <Badge key={index} variant="primary" className="text-sm">

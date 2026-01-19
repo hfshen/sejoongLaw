@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { FadeIn } from "@/components/ui/animations"
 import Navigation from "./Navigation"
 import LanguageSelector from "@/components/ui/LanguageSelector"
@@ -12,6 +12,7 @@ import { useState } from "react"
 
 export default function Header() {
   const locale = useLocale()
+  const t = useTranslations()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
@@ -26,7 +27,7 @@ export default function Header() {
             >
               <Image
                 src="/SJ_logo.svg"
-                alt="법무법인 세중"
+                alt={t("common.logoAlt")}
                 width={220}
                 height={66}
                 className="h-8 md:h-12 w-auto"
@@ -56,7 +57,7 @@ export default function Header() {
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="md:hidden p-2 text-secondary hover:text-primary transition-colors"
-                aria-label="메뉴 열기"
+                aria-label={t("common.openMenu")}
               >
                 <Menu className="w-6 h-6" />
               </button>

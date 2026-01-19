@@ -2,8 +2,10 @@
 
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 export default function WritePage() {
+  const t = useTranslations()
   const router = useRouter()
   const searchParams = useSearchParams()
   const category = searchParams.get("category") || "cases"
@@ -25,10 +27,10 @@ export default function WritePage() {
       if (response.ok) {
         router.push("/board")
       } else {
-        alert("게시글 작성에 실패했습니다.")
+        alert(t("board.write.error"))
       }
     } catch (error) {
-      alert("게시글 작성에 실패했습니다.")
+      alert(t("board.write.error"))
     } finally {
       setLoading(false)
     }
@@ -36,11 +38,11 @@ export default function WritePage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-bold text-secondary mb-8">게시글 작성</h1>
+      <h1 className="text-4xl font-bold text-secondary mb-8">{t("board.write.title")}</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-sm font-medium text-secondary mb-2">
-            제목
+            {t("board.write.titleLabel")}
           </label>
           <input
             type="text"
@@ -52,7 +54,7 @@ export default function WritePage() {
         </div>
         <div>
           <label className="block text-sm font-medium text-secondary mb-2">
-            내용
+            {t("board.write.contentLabel")}
           </label>
           <textarea
             value={content}
@@ -68,14 +70,14 @@ export default function WritePage() {
             disabled={loading}
             className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90 disabled:opacity-50"
           >
-            {loading ? "작성 중..." : "작성하기"}
+            {loading ? t("board.write.submitting") : t("board.write.submit")}
           </button>
           <button
             type="button"
             onClick={() => router.back()}
             className="bg-gray-200 text-secondary px-6 py-2 rounded-lg hover:bg-gray-300"
           >
-            취소
+            {t("board.write.cancel")}
           </button>
         </div>
       </form>

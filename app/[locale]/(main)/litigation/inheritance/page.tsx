@@ -7,45 +7,45 @@ import Link from "next/link"
 import { Scale, FileText, Users, DollarSign, Shield, CheckCircle } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations()
   return {
-    title: "상속분쟁 | 법무법인 세중",
-    description:
-      "상속재산분할, 유류분반환청구, 상속회복청구 등 상속 관련 모든 법률 문제를 전문적으로 해결합니다.",
+    title: `${t("pages.inheritance.title")} | ${t("common.title")}`,
+    description: t("pages.inheritance.description"),
   }
 }
 
 export default async function InheritancePage() {
-  const t = await getTranslations()
+  const t = await getTranslations("pages.inheritance")
 
   const services = [
     {
-      title: "상속재산분할",
-      description: "상속재산의 공정한 분할 및 분할 협상",
+      title: t("services.division.title"),
+      description: t("services.division.description"),
       icon: <DollarSign className="w-6 h-6" />,
     },
     {
-      title: "유류분반환청구",
-      description: "유류분 권리자의 권리 보호 및 반환청구",
+      title: t("services.reserve.title"),
+      description: t("services.reserve.description"),
       icon: <Shield className="w-6 h-6" />,
     },
     {
-      title: "상속회복청구",
-      description: "상속권 침해에 대한 회복청구 소송",
+      title: t("services.recovery.title"),
+      description: t("services.recovery.description"),
       icon: <Scale className="w-6 h-6" />,
     },
     {
-      title: "유언 및 상속계획",
-      description: "상속 전 단계의 상속계획 수립 및 유언 작성",
+      title: t("services.will.title"),
+      description: t("services.will.description"),
       icon: <FileText className="w-6 h-6" />,
     },
     {
-      title: "상속세 절세",
-      description: "상속세 절세를 위한 법률 자문 및 계획",
+      title: t("services.tax.title"),
+      description: t("services.tax.description"),
       icon: <CheckCircle className="w-6 h-6" />,
     },
     {
-      title: "국내외 상속사건",
-      description: "해외 재산이 있는 경우의 상속 사건 처리",
+      title: t("services.international.title"),
+      description: t("services.international.description"),
       icon: <Users className="w-6 h-6" />,
     },
   ]
@@ -53,46 +53,43 @@ export default async function InheritancePage() {
   const process = [
     {
       step: 1,
-      title: "상담 및 상속재산 파악",
-      description: "상속재산의 종류, 규모, 상속인 등을 파악합니다.",
+      title: t("processSteps.consultation.title"),
+      description: t("processSteps.consultation.description"),
     },
     {
       step: 2,
-      title: "상속재산 조사",
-      description: "은행 계좌, 부동산, 주식 등 모든 상속재산 조사",
+      title: t("processSteps.investigation.title"),
+      description: t("processSteps.investigation.description"),
     },
     {
       step: 3,
-      title: "법률 검토",
-      description: "상속법에 따른 상속분, 유류분 등 법적 권리 검토",
+      title: t("processSteps.review.title"),
+      description: t("processSteps.review.description"),
     },
     {
       step: 4,
-      title: "협상 및 조정",
-      description: "상속인 간 협상을 통한 재산분할 합의 도출",
+      title: t("processSteps.negotiation.title"),
+      description: t("processSteps.negotiation.description"),
     },
     {
       step: 5,
-      title: "소송 진행 (필요시)",
-      description: "협상이 불가능한 경우 재판을 통해 해결",
+      title: t("processSteps.litigation.title"),
+      description: t("processSteps.litigation.description"),
     },
   ]
 
   const faqs = [
     {
-      question: "상속분쟁 소송 기간은 얼마나 걸리나요?",
-      answer:
-        "사건의 복잡도에 따라 다르지만, 일반적으로 6개월에서 1년 정도 소요됩니다. 재산 규모가 크거나 상속인이 많은 경우 더 오래 걸릴 수 있습니다.",
+      question: t("faqs.duration.question"),
+      answer: t("faqs.duration.answer"),
     },
     {
-      question: "유류분이 무엇인가요?",
-      answer:
-        "유류분은 상속인이 법정상속분의 일정 비율을 보장받는 제도입니다. 유류분을 침해당한 경우 반환을 청구할 수 있습니다.",
+      question: t("faqs.reserve.question"),
+      answer: t("faqs.reserve.answer"),
     },
     {
-      question: "상속세 절세가 가능한가요?",
-      answer:
-        "네, 상속 전 단계에서 적절한 상속계획을 수립하면 상속세를 절감할 수 있습니다. 전문 변호사와 상담하시기 바랍니다.",
+      question: t("faqs.tax.question"),
+      answer: t("faqs.tax.answer"),
     },
   ]
 
@@ -103,12 +100,11 @@ export default async function InheritancePage() {
         <div className="container-max">
           <div className="max-w-3xl mx-auto text-center">
             <Badge variant="primary" className="mb-4">
-              소송업무
+              {t("badge")}
             </Badge>
-            <h1 className="section-title mb-6">상속분쟁</h1>
+            <h1 className="section-title mb-6">{t("title")}</h1>
             <p className="body-text text-lg">
-              상속재산분할, 유류분반환청구, 상속회복청구 등 상속 관련 모든 법률
-              문제를 전문적으로 해결합니다.
+              {t("description")}
             </p>
           </div>
         </div>
@@ -117,7 +113,7 @@ export default async function InheritancePage() {
       {/* Services */}
       <section className="section-padding">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">주요 서비스</h2>
+          <h2 className="section-title text-center mb-12">{t("mainServices")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, index) => (
               <Card key={index} hover>
@@ -137,7 +133,7 @@ export default async function InheritancePage() {
       {/* Process */}
       <section className="section-padding bg-background-alt">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">처리 프로세스</h2>
+          <h2 className="section-title text-center mb-12">{t("process")}</h2>
           <div className="max-w-4xl mx-auto">
             <div className="space-y-8">
               {process.map((item, index) => (
@@ -161,7 +157,7 @@ export default async function InheritancePage() {
       {/* FAQ */}
       <section className="section-padding">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">자주 묻는 질문</h2>
+          <h2 className="section-title text-center mb-12">{t("faq")}</h2>
           <div className="max-w-3xl mx-auto space-y-6">
             {faqs.map((faq, index) => (
               <Card key={index}>
@@ -180,9 +176,9 @@ export default async function InheritancePage() {
       {/* CTA */}
       <section className="section-padding bg-gradient-to-br from-primary to-accent text-white">
         <div className="container-max text-center">
-          <h2 className="text-4xl font-bold mb-6">지금 바로 상담받으세요</h2>
+          <h2 className="text-4xl font-bold mb-6">{t("ctaTitle")}</h2>
           <p className="text-xl mb-8 opacity-90">
-            상속 전문 변호사가 직접 상담해드립니다.
+            {t("ctaDescription")}
           </p>
           <Link href="/consultation">
             <Button
@@ -190,7 +186,7 @@ export default async function InheritancePage() {
               variant="secondary"
               className="bg-white text-primary hover:bg-gray-100"
             >
-              무료 상담 신청
+              {t("ctaButton")}
             </Button>
           </Link>
         </div>

@@ -146,7 +146,7 @@ export default function MediaInsightSection() {
           <h2 className="section-title">{t("media.title")}</h2>
         </motion.div>
 
-        {/* 탭 네비게이션 */}
+        {/* Tab Navigation */}
         <div className="flex justify-center mb-8">
           <div className="inline-flex bg-white rounded-lg p-1 shadow-md">
             {tabs.map((tab) => (
@@ -172,7 +172,7 @@ export default function MediaInsightSection() {
         {/* 아티클 그리드 */}
         {loading ? (
           <div className="text-center py-12">
-            <p className="text-text-secondary">로딩 중...</p>
+            <p className="text-text-secondary">{t("media.loading")}</p>
           </div>
         ) : articles.length === 0 ? (
           <div className="text-center py-12">
@@ -208,7 +208,7 @@ export default function MediaInsightSection() {
                         </Badge>
                         {article.view_count > 0 && (
                           <span className="text-xs text-text-secondary">
-                            조회 {article.view_count}
+                            {t("media.viewCount")} {article.view_count}
                           </span>
                         )}
                       </div>

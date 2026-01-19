@@ -6,9 +6,10 @@ import { MapPin, Train, Bus, Car, Building2 } from "lucide-react"
 import KakaoMap from "@/components/maps/KakaoMap"
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations()
   return {
-    title: "오시는 길 | 법무법인 세중",
-    description: "법무법인 세중 본사 위치 및 교통편 안내입니다.",
+    title: `${t("pages.location.title")} | ${t("common.title")}`,
+    description: t("pages.location.description"),
   }
 }
 
@@ -17,11 +18,11 @@ export default async function LocationPage() {
 
   const locations = [
     {
-      name: "서울 주사무소",
-      nameEn: "SEOUL HEADQUARTERS",
-      address: "서울특별시 서초구 법원로2길 15, 길도빌딩 303호",
+      name: t("pages.location.locations.seoul.name"),
+      nameEn: t("pages.location.locations.seoul.nameEn"),
+      address: t("pages.location.locations.seoul.address"),
       addressDetail: "",
-      focus: "기업법무, 고난도 행정소송, 대법원 상고심",
+      focus: t("pages.location.locations.seoul.focus"),
       lat: 37.5015,
       lng: 127.0037,
       subway: [
@@ -35,11 +36,11 @@ export default async function LocationPage() {
       ],
     },
     {
-      name: "의정부 분사무소",
-      nameEn: "UIJEONGBU BRANCH",
-      address: "경기도 의정부시 녹양로 34번길 30, 406호",
-      addressDetail: "(법원 앞)",
-      focus: "부동산, 민사, 가사, 경기북부 일반송무",
+      name: t("pages.location.locations.uijeongbu.name"),
+      nameEn: t("pages.location.locations.uijeongbu.nameEn"),
+      address: t("pages.location.locations.uijeongbu.address"),
+      addressDetail: t("pages.location.locations.uijeongbu.addressDetail"),
+      focus: t("pages.location.locations.uijeongbu.focus"),
       lat: 37.7381,
       lng: 127.0476,
       subway: [
@@ -50,11 +51,11 @@ export default async function LocationPage() {
       ],
     },
     {
-      name: "안산 분사무소",
-      nameEn: "ANSAN BRANCH",
-      address: "경기도 안산시 단원구 원곡로 45 세중빌딩 2층",
+      name: t("pages.location.locations.ansan.name"),
+      nameEn: t("pages.location.locations.ansan.nameEn"),
+      address: t("pages.location.locations.ansan.address"),
       addressDetail: "",
-      focus: "외국인 사건, 출입국 사범, 산재/노동",
+      focus: t("pages.location.locations.ansan.focus"),
       lat: 37.3219,
       lng: 126.8308,
       subway: [
@@ -78,13 +79,13 @@ export default async function LocationPage() {
         <div className="container-max relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <Badge variant="primary" className="mb-6 text-sm md:text-base">
-              법인소개
+              {t("pages.location.badge")}
             </Badge>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary mb-6">
-              오시는 길
+              {t("pages.location.title")}
             </h1>
             <p className="text-lg md:text-xl text-text-secondary leading-relaxed">
-              법무법인 세중 각 분사무소로 오시는 길을 안내해드립니다.
+              {t("pages.location.description")}
             </p>
           </div>
         </div>
@@ -112,7 +113,7 @@ export default async function LocationPage() {
                           <div className="flex items-start gap-4">
                             <MapPin className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                             <div>
-                              <h3 className="font-semibold text-secondary mb-2">주소</h3>
+                              <h3 className="font-semibold text-secondary mb-2">{t("pages.location.address")}</h3>
                               <p className="text-text-secondary text-lg">
                                 {location.address}
                               </p>
@@ -129,7 +130,7 @@ export default async function LocationPage() {
                               <Building2 className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                               <div>
                                 <h3 className="font-semibold text-secondary mb-2">
-                                  주요 업무
+                                  {t("pages.location.mainBusiness")}
                                 </h3>
                                 <p className="text-text-secondary text-lg">
                                   {location.focus}
@@ -142,7 +143,7 @@ export default async function LocationPage() {
                             <Train className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                             <div>
                               <h3 className="font-semibold text-secondary mb-2">
-                                지하철 이용시
+                                {t("pages.location.subway")}
                               </h3>
                               <ul className="space-y-1">
                                 {location.subway.map((line, idx) => (
@@ -158,7 +159,7 @@ export default async function LocationPage() {
                             <Bus className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                             <div>
                               <h3 className="font-semibold text-secondary mb-2">
-                                버스 이용시
+                                {t("pages.location.bus")}
                               </h3>
                               <ul className="space-y-1">
                                 {location.bus.map((bus, idx) => (
@@ -174,10 +175,10 @@ export default async function LocationPage() {
                             <Car className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                             <div>
                               <h3 className="font-semibold text-secondary mb-2">
-                                자가용 이용시
+                                {t("pages.location.car")}
                               </h3>
                               <p className="text-text-secondary">
-                                건물 지하 주차장 이용 가능 (유료)
+                                {t("pages.location.parking")}
                               </p>
                             </div>
                           </div>
@@ -186,7 +187,7 @@ export default async function LocationPage() {
 
                       {/* Right: Map */}
                       <div>
-                        <h3 className="font-semibold text-secondary mb-4">지도</h3>
+                        <h3 className="font-semibold text-secondary mb-4">{t("pages.location.map")}</h3>
                         <div className="w-full h-96 rounded-lg overflow-hidden shadow-lg">
                           <KakaoMap
                             lat={location.lat}

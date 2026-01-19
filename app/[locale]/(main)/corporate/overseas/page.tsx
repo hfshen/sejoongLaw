@@ -7,43 +7,45 @@ import Link from "next/link"
 import { Globe, Building2, FileText, Scale, CheckCircle, DollarSign } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations()
   return {
-    title: "해외투자 | 법무법인 세중",
-    description:
-      "해외 투자, 해외 법인 설립, 해외 M&A 등 해외투자 관련 법률 서비스를 제공합니다.",
+    title: `${t("pages.overseas.title")} | ${t("common.title")}`,
+    description: t("pages.overseas.description"),
   }
 }
 
 export default async function OverseasPage() {
+  const t = await getTranslations("pages.overseas")
+
   const services = [
     {
-      title: "해외 법인 설립",
-      description: "해외 국가별 법인 설립 및 인허가 절차 지원",
+      title: t("services.incorporation.title"),
+      description: t("services.incorporation.description"),
       icon: <Building2 className="w-6 h-6" />,
     },
     {
-      title: "해외 M&A",
-      description: "해외 기업 인수합병 관련 법률 서비스",
+      title: t("services.ma.title"),
+      description: t("services.ma.description"),
       icon: <DollarSign className="w-6 h-6" />,
     },
     {
-      title: "해외 투자 규제",
-      description: "외국인투자법, 외환거래법 등 해외 투자 규제 대응",
+      title: t("services.regulation.title"),
+      description: t("services.regulation.description"),
       icon: <Scale className="w-6 h-6" />,
     },
     {
-      title: "국제 계약",
-      description: "해외 투자 관련 각종 계약서 작성 및 검토",
+      title: t("services.contract.title"),
+      description: t("services.contract.description"),
       icon: <FileText className="w-6 h-6" />,
     },
     {
-      title: "세무 계획",
-      description: "해외 투자 관련 세무 계획 및 절세 방안",
+      title: t("services.tax.title"),
+      description: t("services.tax.description"),
       icon: <CheckCircle className="w-6 h-6" />,
     },
     {
-      title: "분쟁 해결",
-      description: "해외 투자 관련 분쟁 해결 및 국제 중재",
+      title: t("services.dispute.title"),
+      description: t("services.dispute.description"),
       icon: <Globe className="w-6 h-6" />,
     },
   ]
@@ -51,46 +53,43 @@ export default async function OverseasPage() {
   const process = [
     {
       step: 1,
-      title: "투자 계획 수립",
-      description: "해외 투자 목적, 대상 국가, 투자 규모 등을 계획합니다.",
+      title: t("processSteps.consultation.title"),
+      description: t("processSteps.consultation.description"),
     },
     {
       step: 2,
-      title: "법률 검토",
-      description: "투자 대상 국가의 법률 및 규제 검토",
+      title: t("processSteps.research.title"),
+      description: t("processSteps.research.description"),
     },
     {
       step: 3,
-      title: "인허가 및 신고",
-      description: "필요한 인허가 신청 및 외국인투자 신고",
+      title: t("processSteps.preparation.title"),
+      description: t("processSteps.preparation.description"),
     },
     {
       step: 4,
-      title: "계약 체결",
-      description: "해외 투자 관련 각종 계약 체결",
+      title: t("processSteps.execution.title"),
+      description: t("processSteps.execution.description"),
     },
     {
       step: 5,
-      title: "후속 관리",
-      description: "해외 투자 후 지속적인 법률 자문 및 관리",
+      title: t("processSteps.management.title"),
+      description: t("processSteps.management.description"),
     },
   ]
 
   const faqs = [
     {
-      question: "해외 법인 설립은 어떤 절차가 필요한가요?",
-      answer:
-        "투자 대상 국가의 법률에 따라 다르지만, 일반적으로 법인 설립, 인허가, 외국인투자 신고 등이 필요합니다. 각 국가별 전문 변호사와 협력하여 진행합니다.",
+      question: t("faqs.countries.question"),
+      answer: t("faqs.countries.answer"),
     },
     {
-      question: "해외 투자 시 세무 문제는 어떻게 해결하나요?",
-      answer:
-        "해외 투자 전 단계에서 세무 계획을 수립하여 이중과세 방지 및 절세 방안을 제시합니다. 각 국가의 세법을 고려한 종합적인 자문을 제공합니다.",
+      question: t("faqs.duration.question"),
+      answer: t("faqs.duration.answer"),
     },
     {
-      question: "해외 투자 분쟁이 발생하면 어떻게 하나요?",
-      answer:
-        "국제 중재 또는 해당 국가의 법원을 통한 분쟁 해결이 가능합니다. 국제 중재 전문 변호사가 대리합니다.",
+      question: t("faqs.tax.question"),
+      answer: t("faqs.tax.answer"),
     },
   ]
 
@@ -99,10 +98,10 @@ export default async function OverseasPage() {
       <section className="section-padding-sm bg-gradient-to-br from-primary/10 to-accent/5">
         <div className="container-max">
           <div className="max-w-3xl mx-auto text-center">
-            <Badge variant="primary" className="mb-4">기업자문</Badge>
-            <h1 className="section-title mb-6">해외투자</h1>
+            <Badge variant="primary" className="mb-4">{t("badge")}</Badge>
+            <h1 className="section-title mb-6">{t("title")}</h1>
             <p className="body-text text-lg">
-              해외 투자, 해외 법인 설립, 해외 M&A 등 해외투자 관련 법률 서비스를 제공합니다.
+              {t("description")}
             </p>
           </div>
         </div>
@@ -110,7 +109,7 @@ export default async function OverseasPage() {
 
       <section className="section-padding">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">주요 서비스</h2>
+          <h2 className="section-title text-center mb-12">{t("mainServices")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, index) => (
               <Card key={index} hover>
@@ -129,7 +128,7 @@ export default async function OverseasPage() {
 
       <section className="section-padding bg-background-alt">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">처리 프로세스</h2>
+          <h2 className="section-title text-center mb-12">{t("process")}</h2>
           <div className="max-w-4xl mx-auto">
             <div className="space-y-8">
               {process.map((item, index) => (
@@ -152,7 +151,7 @@ export default async function OverseasPage() {
 
       <section className="section-padding">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">자주 묻는 질문</h2>
+          <h2 className="section-title text-center mb-12">{t("faq")}</h2>
           <div className="max-w-3xl mx-auto space-y-6">
             {faqs.map((faq, index) => (
               <Card key={index}>
@@ -168,11 +167,11 @@ export default async function OverseasPage() {
 
       <section className="section-padding bg-gradient-to-br from-primary to-accent text-white">
         <div className="container-max text-center">
-          <h2 className="text-4xl font-bold mb-6">지금 바로 상담받으세요</h2>
-          <p className="text-xl mb-8 opacity-90">해외투자 전문 변호사가 직접 상담해드립니다.</p>
+          <h2 className="text-4xl font-bold mb-6">{t("ctaTitle")}</h2>
+          <p className="text-xl mb-8 opacity-90">{t("ctaDescription")}</p>
           <Link href="/consultation">
             <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100">
-              무료 상담 신청
+              {t("ctaButton")}
             </Button>
           </Link>
         </div>

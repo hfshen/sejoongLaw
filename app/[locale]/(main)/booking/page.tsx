@@ -6,9 +6,8 @@ import { CheckCircle, Clock, Calendar, Video } from "lucide-react"
 export async function generateMetadata() {
   const t = await getTranslations()
   return {
-    title: "온라인 예약 | 법무법인 세중",
-    description:
-      "원하시는 날짜와 시간에 전문 변호사와 상담을 예약하세요. 방문 상담 또는 온라인 화상 상담을 선택할 수 있습니다.",
+    title: `${t("booking.title")} | ${t("common.title")}`,
+    description: t("booking.description"),
   }
 }
 
@@ -18,23 +17,23 @@ export default async function BookingPage() {
   const benefits = [
     {
       icon: <Calendar className="w-6 h-6" />,
-      title: "24시간 예약 가능",
-      description: "언제든지 원하시는 시간에 예약하실 수 있습니다.",
+      title: t("booking.features.available24h.title"),
+      description: t("booking.features.available24h.description"),
     },
     {
       icon: <Clock className="w-6 h-6" />,
-      title: "실시간 일정 확인",
-      description: "상담사 일정을 실시간으로 확인하고 예약하세요.",
+      title: t("booking.features.realtime.title"),
+      description: t("booking.features.realtime.description"),
     },
     {
       icon: <Video className="w-6 h-6" />,
-      title: "온라인 상담 가능",
-      description: "방문이 어려우시면 화상 통화로 상담받으실 수 있습니다.",
+      title: t("booking.features.online.title"),
+      description: t("booking.features.online.description"),
     },
     {
       icon: <CheckCircle className="w-6 h-6" />,
-      title: "자동 알림",
-      description: "예약 확인 및 리마인더를 이메일/SMS로 받으실 수 있습니다.",
+      title: t("booking.features.reminder.title"),
+      description: t("booking.features.reminder.description"),
     },
   ]
 
@@ -44,11 +43,9 @@ export default async function BookingPage() {
         <div className="container-max">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
-              <h1 className="section-title">온라인 예약</h1>
+              <h1 className="section-title">{t("booking.title")}</h1>
               <p className="body-text max-w-2xl mx-auto">
-                원하시는 날짜와 시간에 전문 변호사와 상담을 예약하세요.
-                <br />
-                방문 상담 또는 온라인 화상 상담을 선택할 수 있습니다.
+                {t("booking.description")}
               </p>
             </div>
 
@@ -59,7 +56,7 @@ export default async function BookingPage() {
               <div className="space-y-6">
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="font-bold text-lg mb-4">예약 혜택</h3>
+                    <h3 className="font-bold text-lg mb-4">{t("booking.features.title")}</h3>
                     <div className="space-y-4">
                       {benefits.map((benefit, index) => (
                         <div key={index} className="flex gap-3">
@@ -81,12 +78,12 @@ export default async function BookingPage() {
                 </Card>
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="font-bold text-lg mb-4">예약 안내</h3>
+                    <h3 className="font-bold text-lg mb-4">{t("booking.notice.title")}</h3>
                     <ul className="space-y-2 text-sm text-text-secondary">
-                      <li>• 예약은 최소 24시간 전에 해주세요.</li>
-                      <li>• 예약 변경/취소는 예약일 하루 전까지 가능합니다.</li>
-                      <li>• 온라인 상담의 경우 링크가 이메일로 발송됩니다.</li>
-                      <li>• 방문 상담은 사무실 주소로 안내됩니다.</li>
+                      <li>• {t("booking.notice.items.min24h")}</li>
+                      <li>• {t("booking.notice.items.change")}</li>
+                      <li>• {t("booking.notice.items.online")}</li>
+                      <li>• {t("booking.notice.items.visit")}</li>
                     </ul>
                   </CardContent>
                 </Card>

@@ -9,6 +9,7 @@ import { MapPin, Phone, Train, Bus, Car } from "lucide-react"
 import KakaoMap from "@/components/maps/KakaoMap"
 import Link from "next/link"
 import Button from "@/components/ui/Button"
+import { useTranslations } from "next-intl"
 
 // Members data
 const members: Member[] = [
@@ -239,28 +240,28 @@ const members: Member[] = [
   },
 ]
 
-const values = [
-  {
-    icon: <Award className="w-8 h-8" />,
-    title: "전문성",
-    description: "각 분야별 전문 변호사들이 최고의 법률 서비스를 제공합니다.",
-  },
-  {
-    icon: <Users className="w-8 h-8" />,
-    title: "신뢰성",
-    description: "고객과의 신뢰를 바탕으로 투명하고 정직한 법률 서비스를 제공합니다.",
-  },
-  {
-    icon: <Globe className="w-8 h-8" />,
-    title: "글로벌",
-    description: "국경을 넘나드는 법률 문제까지 원스톱으로 해결합니다.",
-  },
-  {
-    icon: <Heart className="w-8 h-8" />,
-    title: "고객 중심",
-    description: "고객의 권익 보호를 최우선으로 생각하며 최선을 다합니다.",
-  },
-]
+  const values = [
+    {
+      icon: <Award className="w-8 h-8" />,
+      title: t("about.tabs.greeting.firmValues.items.expertise.title"),
+      description: t("about.tabs.greeting.firmValues.items.expertise.description"),
+    },
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: t("about.tabs.greeting.firmValues.items.trust.title"),
+      description: t("about.tabs.greeting.firmValues.items.trust.description"),
+    },
+    {
+      icon: <Globe className="w-8 h-8" />,
+      title: t("about.tabs.greeting.firmValues.items.global.title"),
+      description: t("about.tabs.greeting.firmValues.items.global.description"),
+    },
+    {
+      icon: <Heart className="w-8 h-8" />,
+      title: t("about.tabs.greeting.firmValues.items.customer.title"),
+      description: t("about.tabs.greeting.firmValues.items.customer.description"),
+    },
+  ]
 
 const location = {
   name: "본사",
@@ -281,10 +282,11 @@ const location = {
 }
 
 export default function AboutPage() {
+  const t = useTranslations()
   const tabs = [
     {
       id: "greeting",
-      label: "인사말",
+      label: t("about.tabs.greeting.label"),
       content: (
         <div className="space-y-8">
           {/* Vision Section */}
@@ -292,20 +294,18 @@ export default function AboutPage() {
             <CardContent className="p-8 md:p-12">
               <div className="text-center mb-8">
                 <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
-                  <span className="text-primary">世中</span> - 세상의 중심으로 나아가다
+                  <span className="text-primary">世中</span> - {t("about.tabs.greeting.vision.title")}
                 </h2>
                 <p className="text-lg text-text-secondary italic">
-                  About Sejoong
+                  {t("about.tabs.greeting.vision.subtitle")}
                 </p>
               </div>
               <div className="prose prose-lg max-w-none">
                 <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-                  법무법인 세중은 고객이 필요로 하는 다양한 법률서비스를 신속하고 정확하게 제공하기 위해,
-                  소송업무 및 출입국, 해외 이민, 투자, 비자 분야의 전문가들이 뜻을 모아 설립한 법무법인입니다.
+                  {t("about.description")}
                 </p>
                 <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-                  《출입국관리법》 저자이자 법학박사인 이상국 대표변호사를 중심으로,
-                  각 분야의 전문가들이 모여 고객 여러분의 복잡한 법률 문제를 명쾌하게 해결해드립니다.
+                  {t("about.tabs.greeting.vision.description2")}
                 </p>
               </div>
             </CardContent>
@@ -315,27 +315,24 @@ export default function AboutPage() {
           <Card>
             <CardContent className="p-8 md:p-12">
               <h2 className="text-2xl md:text-3xl font-bold text-secondary mb-8 text-center">
-                비전과 가치
+                {t("about.tabs.greeting.values.title")}
               </h2>
               <div className="space-y-8">
                 <div className="prose prose-lg max-w-none">
                   <h3 className="text-xl font-semibold text-secondary mb-4">
-                    고객 헌신과 창의적인 법률 마인드
+                    {t("about.tabs.greeting.values.commitment.title")}
                   </h3>
                   <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-                    법무법인 세중은 고객에 대한 헌신과 창의적인 법률마인드로 고객들에게 항상 최상의 법률서비스를 제공해왔으며,
-                    역량 있는 전문가의 노력과 고객들의 전폭적인 신뢰를 바탕으로 가장 신뢰할 수 있는 로펌으로 일컬어지고 있습니다.
+                    {t("about.tabs.greeting.values.commitment.description")}
                   </p>
                 </div>
                 
                 <div className="prose prose-lg max-w-none">
                   <h3 className="text-xl font-semibold text-secondary mb-4">
-                    신뢰를 가장 소중한 가치로
+                    {t("about.tabs.greeting.values.trust.title")}
                   </h3>
                   <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-                    법무법인 세중은 고객과의 신뢰를 가장 소중한 가치로 생각하고,
-                    고객의 문제를 고객의 입장에서 함께 고민하고 해결하며,
-                    분야별 전문가들이 제공하는 최고의 법률서비스를 통해 고객에게 감동과 만족을 드리기 위해 최선을 다하고 있습니다.
+                    {t("about.tabs.greeting.values.trust.description")}
                   </p>
                 </div>
               </div>
@@ -344,7 +341,7 @@ export default function AboutPage() {
 
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-secondary mb-8 text-center">
-              법무법인 세중의 가치
+              {t("about.tabs.greeting.firmValues.title")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {values.map((value, index) => (
@@ -369,12 +366,12 @@ export default function AboutPage() {
     },
     {
       id: "members",
-      label: "구성원 소개",
+      label: t("about.tabs.members.label"),
       content: (
         <div>
           <div className="mb-8">
             <p className="text-base md:text-lg text-text-secondary leading-relaxed mb-6">
-              법무법인 세중의 전문 변호사들은 다양한 법률 분야에서 풍부한 경험과 전문성을 바탕으로 고객의 권리를 보호합니다. 각 분야별 전문가들이 협력하여 최상의 법률 서비스를 제공합니다.
+              {t("about.tabs.members.description")}
             </p>
           </div>
           <MembersGrid members={members} />
@@ -383,7 +380,7 @@ export default function AboutPage() {
     },
     {
       id: "location",
-      label: "오시는 길",
+      label: t("about.tabs.location.label"),
       content: (
         <div>
           <Card>
@@ -397,7 +394,7 @@ export default function AboutPage() {
                     <div className="flex items-start gap-4">
                       <MapPin className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                       <div>
-                        <h3 className="font-semibold text-secondary mb-2">주소</h3>
+                        <h3 className="font-semibold text-secondary mb-2">{t("about.tabs.location.address")}</h3>
                         <p className="text-text-secondary text-base">{location.address}</p>
                         <p className="text-text-secondary text-base">{location.addressDetail}</p>
                       </div>
@@ -405,7 +402,7 @@ export default function AboutPage() {
                     <div className="flex items-start gap-4">
                       <Phone className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                       <div>
-                        <h3 className="font-semibold text-secondary mb-2">대표전화</h3>
+                        <h3 className="font-semibold text-secondary mb-2">{t("about.tabs.location.phone")}</h3>
                         <a
                           href={`tel:${location.phone.replace(/[^0-9]/g, "")}`}
                           className="text-primary font-semibold text-base hover:underline"
@@ -417,7 +414,7 @@ export default function AboutPage() {
                     <div className="flex items-start gap-4">
                       <Train className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                       <div>
-                        <h3 className="font-semibold text-secondary mb-2">지하철 이용시</h3>
+                        <h3 className="font-semibold text-secondary mb-2">{t("about.tabs.location.subway")}</h3>
                         <ul className="space-y-1">
                           {location.subway.map((line, idx) => (
                             <li key={idx} className="text-text-secondary text-sm">
@@ -430,7 +427,7 @@ export default function AboutPage() {
                     <div className="flex items-start gap-4">
                       <Bus className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                       <div>
-                        <h3 className="font-semibold text-secondary mb-2">버스 이용시</h3>
+                        <h3 className="font-semibold text-secondary mb-2">{t("about.tabs.location.bus")}</h3>
                         <ul className="space-y-1">
                           {location.bus.map((bus, idx) => (
                             <li key={idx} className="text-text-secondary text-sm">
@@ -443,16 +440,16 @@ export default function AboutPage() {
                     <div className="flex items-start gap-4">
                       <Car className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                       <div>
-                        <h3 className="font-semibold text-secondary mb-2">자가용 이용시</h3>
+                        <h3 className="font-semibold text-secondary mb-2">{t("about.tabs.location.car")}</h3>
                         <p className="text-text-secondary text-sm">
-                          건물 지하 주차장 이용 가능 (유료)
+                          {t("about.tabs.location.parking")}
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-secondary mb-4">지도</h3>
+                  <h3 className="font-semibold text-secondary mb-4">{t("about.tabs.location.map")}</h3>
                   <div className="w-full h-96 rounded-lg overflow-hidden shadow-lg">
                     <KakaoMap lat={location.lat} lng={location.lng} name={location.name} />
                   </div>
@@ -476,13 +473,13 @@ export default function AboutPage() {
         <div className="container-max relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="primary" className="mb-6 text-sm md:text-base">
-              법인소개
+              {t("about.hero.badge")}
             </Badge>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary mb-6">
-              법무법인 세중
+              {t("about.hero.title")}
             </h1>
             <p className="text-lg md:text-xl text-text-secondary leading-relaxed">
-              고객의 권익 보호와 법률 서비스의 질 향상을 위해 최선을 다하는 전문 법무법인입니다.
+              {t("about.hero.description")}
             </p>
           </div>
         </div>
@@ -501,10 +498,10 @@ export default function AboutPage() {
       <section className="section-padding bg-gradient-to-br from-primary to-accent text-white">
         <div className="container-max text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            지금 바로 상담받으세요
+            {t("about.cta.title")}
           </h2>
           <p className="text-lg md:text-xl mb-8 opacity-90">
-            전문 변호사가 직접 상담해드립니다.
+            {t("about.cta.description")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/consultation">
@@ -513,12 +510,12 @@ export default function AboutPage() {
                 variant="secondary"
                 className="bg-white text-primary hover:bg-gray-100"
               >
-                무료 상담 신청
+                {t("about.cta.button")}
               </Button>
             </Link>
             <Link href="tel:03180448805">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                전화 상담: 031-8044-8805
+                {t("about.cta.phone")}
               </Button>
             </Link>
           </div>

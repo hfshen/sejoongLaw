@@ -33,14 +33,36 @@ export default function Navigation(props?: NavigationProps) {
     {
       path: `/${locale}/about`,
       label: t("nav.about"),
+      children: [
+        { path: `/${locale}/about/greeting`, label: t("about.greeting") },
+        { path: `/${locale}/about/members`, label: t("about.members") },
+        { path: `/${locale}/about/location`, label: t("about.location") },
+      ],
     },
     {
       path: `/${locale}/litigation`,
       label: t("nav.litigation"),
+      children: [
+        { path: `/${locale}/litigation/real-estate`, label: t("litigation.realEstate") },
+        { path: `/${locale}/litigation/divorce`, label: t("litigation.divorce") },
+        { path: `/${locale}/litigation/inheritance`, label: t("litigation.inheritance") },
+        { path: `/${locale}/litigation/traffic`, label: t("litigation.traffic") },
+        { path: `/${locale}/litigation/industrial`, label: t("litigation.industrial") },
+        { path: `/${locale}/litigation/insurance`, label: t("litigation.insurance") },
+        { path: `/${locale}/litigation/tax`, label: t("litigation.tax") },
+        { path: `/${locale}/litigation/general`, label: t("litigation.general") },
+      ],
     },
     {
       path: `/${locale}/corporate`,
       label: t("nav.corporate"),
+      children: [
+        { path: `/${locale}/corporate/advisory`, label: t("corporate.advisory") },
+        { path: `/${locale}/corporate/m-a`, label: t("corporate.mna") },
+        { path: `/${locale}/corporate/overseas`, label: t("corporate.overseas") },
+        { path: `/${locale}/corporate/finance`, label: t("corporate.finance") },
+        { path: `/${locale}/corporate/indirect`, label: t("corporate.indirect") },
+      ],
     },
     {
       path: `/${locale}/immigration`,
@@ -138,14 +160,70 @@ export default function Navigation(props?: NavigationProps) {
               <div key={menu.path} className="relative group">
                 <Link
                   href={menu.path}
-                  className={`px-4 py-2 text-sm font-semibold transition-all duration-200 rounded-lg focus-ring ${
+                  className={`px-4 py-2 text-sm font-semibold transition-all duration-200 rounded-lg focus-ring flex items-center gap-1 ${
                     isActive(menu.path)
                       ? "text-primary bg-primary/10"
                       : "text-secondary hover:text-primary hover:bg-gray-50"
                   }`}
                 >
                   {menu.label}
+                  {menu.children && (
+                    <ChevronDown className="w-3 h-3 opacity-60" />
+                  )}
                 </Link>
+                {menu.children && (
+                  <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="py-2">
+                      {menu.children.map((child) => (
+                        <div key={child.path}>
+                          {child.children ? (
+                            <div className="relative group/sub">
+                              <Link
+                                href={child.path}
+                                className={`block px-4 py-2 text-sm transition-colors flex items-center justify-between ${
+                                  isActive(child.path)
+                                    ? "text-primary bg-primary/5 font-semibold"
+                                    : "text-secondary hover:text-primary hover:bg-gray-50"
+                                }`}
+                              >
+                                <span>{child.label}</span>
+                                <ChevronDown className="w-3 h-3 opacity-60" />
+                              </Link>
+                              <div className="absolute left-full top-0 ml-1 w-56 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-200 z-50">
+                                <div className="py-2">
+                                  {child.children.map((subChild) => (
+                                    <Link
+                                      key={subChild.path}
+                                      href={subChild.path}
+                                      className={`block px-4 py-2 text-sm transition-colors ${
+                                        isActive(subChild.path)
+                                          ? "text-primary bg-primary/5 font-semibold"
+                                          : "text-secondary hover:text-primary hover:bg-gray-50"
+                                      }`}
+                                    >
+                                      {subChild.label}
+                                    </Link>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <Link
+                              href={child.path}
+                              className={`block px-4 py-2 text-sm transition-colors ${
+                                isActive(child.path)
+                                  ? "text-primary bg-primary/5 font-semibold"
+                                  : "text-secondary hover:text-primary hover:bg-gray-50"
+                              }`}
+                            >
+                              {child.label}
+                            </Link>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -172,7 +250,7 @@ export default function Navigation(props?: NavigationProps) {
                     <button
                       onClick={() => handleMenuToggle(menu.path)}
                       className="px-4 py-3"
-                      aria-label="서브메뉴 열기"
+                      aria-label={t("common.openSubmenu")}
                     >
                       <ChevronDown
                         className={`w-4 h-4 transition-transform text-secondary ${
@@ -206,7 +284,7 @@ export default function Navigation(props?: NavigationProps) {
                                     )
                                   }
                                   className="px-4 py-2"
-                                  aria-label="서브메뉴 열기"
+                                  aria-label={t("common.openSubmenu")}
                                 >
                                   <ChevronDown
                                     className={`w-4 h-4 transition-transform text-secondary ${

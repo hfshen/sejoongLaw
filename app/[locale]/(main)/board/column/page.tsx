@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { getTranslations } from "next-intl/server"
 import Link from "next/link"
 
 async function getColumns() {
@@ -20,14 +21,15 @@ async function getColumns() {
 }
 
 export default async function ColumnPage() {
+  const t = await getTranslations()
   const columns = await getColumns()
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-bold text-secondary mb-8">세중 칼럼</h1>
+      <h1 className="text-4xl font-bold text-secondary mb-8">{t("board.column.title")}</h1>
       {columns.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-text-secondary">등록된 칼럼이 없습니다.</p>
+          <p className="text-text-secondary">{t("board.column.noColumns")}</p>
         </div>
       ) : (
         <div className="space-y-6">

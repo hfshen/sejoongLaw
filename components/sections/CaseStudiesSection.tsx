@@ -4,7 +4,7 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import Image from "next/image"
@@ -19,49 +19,57 @@ interface CaseStudy {
   image?: string
 }
 
-const caseStudies: CaseStudy[] = [
-  {
-    id: "1",
-    title: "부동산 분쟁 소송 승소",
-    category: "부동산",
-    description: "복잡한 부동산 계약 분쟁에서 고객의 권리를 보호하고 승소를 이끌어냈습니다.",
-    result: "배상금 50% 증가, 소송 기간 30% 단축",
-    image: "/images/cases/case-1.svg",
-  },
-  {
-    id: "2",
-    title: "이혼 재산분할 성공",
-    category: "이혼",
-    description: "공정한 재산분할을 통해 고객의 권익을 최대한 보호했습니다.",
-    result: "고객 만족도 95%, 재산분할 합의 성공",
-    image: "/images/cases/case-2.svg",
-  },
-  {
-    id: "3",
-    title: "비자 거절 재신청 성공",
-    category: "비자",
-    description: "비자 거절 후 재신청을 통해 성공적으로 비자를 발급받았습니다.",
-    result: "재신청 성공률 100%, 처리 기간 단축",
-    image: "/images/cases/case-3.svg",
-  },
-  {
-    id: "4",
-    title: "기업 M&A 법률 자문",
-    category: "기업자문",
-    description: "대규모 기업 인수합병(M&A) 과정에서 전문적인 법률 자문을 제공했습니다.",
-    result: "거래 성공, 법적 리스크 최소화",
-    image: "/images/cases/case-4.svg",
-  },
-]
-
-const categories = ["전체", "부동산", "이혼", "비자", "기업자문"]
-
 export default function CaseStudiesSection() {
   const locale = useLocale()
-  const [selectedCategory, setSelectedCategory] = useState("전체")
+  const t = useTranslations()
+  
+  const caseStudies: CaseStudy[] = [
+    {
+      id: "1",
+      title: t("caseStudies.cases.1.title"),
+      category: t("caseStudies.cases.1.category"),
+      description: t("caseStudies.cases.1.description"),
+      result: t("caseStudies.cases.1.result"),
+      image: "/images/cases/case-1.svg",
+    },
+    {
+      id: "2",
+      title: t("caseStudies.cases.2.title"),
+      category: t("caseStudies.cases.2.category"),
+      description: t("caseStudies.cases.2.description"),
+      result: t("caseStudies.cases.2.result"),
+      image: "/images/cases/case-2.svg",
+    },
+    {
+      id: "3",
+      title: t("caseStudies.cases.3.title"),
+      category: t("caseStudies.cases.3.category"),
+      description: t("caseStudies.cases.3.description"),
+      result: t("caseStudies.cases.3.result"),
+      image: "/images/cases/case-3.svg",
+    },
+    {
+      id: "4",
+      title: t("caseStudies.cases.4.title"),
+      category: t("caseStudies.cases.4.category"),
+      description: t("caseStudies.cases.4.description"),
+      result: t("caseStudies.cases.4.result"),
+      image: "/images/cases/case-4.svg",
+    },
+  ]
+
+  const categories = [
+    t("caseStudies.categories.all"),
+    t("caseStudies.categories.realEstate"),
+    t("caseStudies.categories.divorce"),
+    t("caseStudies.categories.visa"),
+    t("caseStudies.categories.corporate")
+  ]
+  
+  const [selectedCategory, setSelectedCategory] = useState(t("caseStudies.categories.all"))
 
   const filteredCases =
-    selectedCategory === "전체"
+    selectedCategory === t("caseStudies.categories.all")
       ? caseStudies
       : caseStudies.filter((c) => c.category === selectedCategory)
 
@@ -75,9 +83,9 @@ export default function CaseStudiesSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="section-title">성공 사례</h2>
+          <h2 className="section-title">{t("caseStudies.title")}</h2>
           <p className="body-text max-w-2xl mx-auto">
-            법무법인 세중의 전문성과 노하우로 만들어낸 성공 사례를 확인해보세요.
+            {t("caseStudies.description")}
           </p>
         </motion.div>
 
@@ -139,7 +147,7 @@ export default function CaseStudiesSection() {
                     </CardContent>
                     <div className="p-6 pt-0">
                       <div className="flex items-center text-primary font-semibold">
-                        자세히 보기
+                        {t("caseStudies.viewMore")}
                         <ArrowRight className="ml-2 w-4 h-4" />
                       </div>
                     </div>
@@ -155,7 +163,7 @@ export default function CaseStudiesSection() {
             href={`/${locale}/cases`}
             className="premium-button-outline inline-flex items-center"
           >
-            모든 사례 보기
+            {t("caseStudies.viewAll")}
             <ArrowRight className="ml-2 w-5 h-5" />
           </Link>
         </div>

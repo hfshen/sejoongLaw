@@ -18,9 +18,10 @@ import {
 import CTASection from "@/components/sections/CTASection"
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations()
   return {
-    title: "해외이주 | 법무법인 세중",
-    description: "비자 신청, 이민 상담, 출입국 관리 등 해외이주 관련 전문 법률 서비스를 제공합니다.",
+    title: `${t("nav.immigration")} | ${t("common.title")}`,
+    description: t("immigration.description"),
   }
 }
 
@@ -30,74 +31,74 @@ export default async function ImmigrationPage() {
   const services = [
     {
       icon: <Plane className="w-8 h-8" />,
-      title: "비자 신청",
-      description: "각종 비자 신청서 작성 및 제출 대행, 비자 거절 대응",
+      title: t("immigration.services.visa.title"),
+      description: t("immigration.services.visa.description"),
       link: "/immigration/visa",
       features: [
-        "비자 신청서 작성 및 제출",
-        "비자 거절 재신청",
-        "비자 연장 및 변경",
-        "비자 상담 및 자문",
+        t("immigration.services.visa.features.0"),
+        t("immigration.services.visa.features.1"),
+        t("immigration.services.visa.features.2"),
+        t("immigration.services.visa.features.3"),
       ],
     },
     {
       icon: <FileCheck className="w-8 h-8" />,
-      title: "비이민비자",
-      description: "관광, 비즈니스, 유학 등 비이민 목적의 비자 신청",
+      title: t("immigration.services.nonImmigrant.title"),
+      description: t("immigration.services.nonImmigrant.description"),
       link: "/immigration/non-immigrant",
       features: [
-        "관광비자 (B-2)",
-        "비즈니스비자 (C-2)",
-        "유학비자 (D-2)",
-        "단기취업비자 (C-4)",
+        t("immigration.services.nonImmigrant.features.0"),
+        t("immigration.services.nonImmigrant.features.1"),
+        t("immigration.services.nonImmigrant.features.2"),
+        t("immigration.services.nonImmigrant.features.3"),
       ],
     },
     {
       icon: <Shield className="w-8 h-8" />,
-      title: "이민비자",
-      description: "영주권, 귀화, 결혼이민 등 이민 목적의 비자 신청",
+      title: t("immigration.services.immigrant.title"),
+      description: t("immigration.services.immigrant.description"),
       link: "/immigration/immigrant",
       features: [
-        "영주권 신청 (F-5)",
-        "결혼이민비자 (F-6)",
-        "귀화 신청",
-        "국적 회복",
+        t("immigration.services.immigrant.features.0"),
+        t("immigration.services.immigrant.features.1"),
+        t("immigration.services.immigrant.features.2"),
+        t("immigration.services.immigrant.features.3"),
       ],
     },
     {
       icon: <AlertCircle className="w-8 h-8" />,
-      title: "비자 거절 대응",
-      description: "비자 거절 사유 분석 및 재신청 전략 수립",
+      title: t("immigration.services.refusal.title"),
+      description: t("immigration.services.refusal.description"),
       link: "/immigration/refusal",
       features: [
-        "거절 사유 분석",
-        "재신청 전략 수립",
-        "추가 서류 준비",
-        "행정심판 청구",
+        t("immigration.services.refusal.features.0"),
+        t("immigration.services.refusal.features.1"),
+        t("immigration.services.refusal.features.2"),
+        t("immigration.services.refusal.features.3"),
       ],
     },
     {
       icon: <Globe className="w-8 h-8" />,
-      title: "웨이버(Waiver) 신청",
-      description: "입국 금지 해제를 위한 웨이버 신청",
+      title: t("immigration.services.waiver.title"),
+      description: t("immigration.services.waiver.description"),
       link: "/immigration/waiver",
       features: [
-        "입국 금지 사유 분석",
-        "웨이버 신청서 작성",
-        "추가 서류 준비",
-        "신청 절차 안내",
+        t("immigration.services.waiver.features.0"),
+        t("immigration.services.waiver.features.1"),
+        t("immigration.services.waiver.features.2"),
+        t("immigration.services.waiver.features.3"),
       ],
     },
     {
       icon: <CheckCircle className="w-8 h-8" />,
-      title: "비자 성공사례",
-      description: "다양한 비자 신청 성공 사례를 확인하세요",
+      title: t("immigration.services.success.title"),
+      description: t("immigration.services.success.description"),
       link: "/immigration/success",
       features: [
-        "거절 후 재신청 성공",
-        "복잡한 사건 해결",
-        "신속한 처리",
-        "고객 만족도",
+        t("immigration.services.success.features.0"),
+        t("immigration.services.success.features.1"),
+        t("immigration.services.success.features.2"),
+        t("immigration.services.success.features.3"),
       ],
     },
   ]
@@ -105,43 +106,43 @@ export default async function ImmigrationPage() {
   const process = [
     {
       step: 1,
-      title: "상담 및 사건 파악",
-      description: "고객의 상황을 정확히 파악하고 적절한 비자 유형을 결정합니다.",
+      title: t("immigration.process.steps.consultation.title"),
+      description: t("immigration.process.steps.consultation.description"),
     },
     {
       step: 2,
-      title: "서류 준비",
-      description: "필요한 서류를 체계적으로 수집하고 정리합니다.",
+      title: t("immigration.process.steps.preparation.title"),
+      description: t("immigration.process.steps.preparation.description"),
     },
     {
       step: 3,
-      title: "신청서 작성",
-      description: "전문 변호사가 신청서를 작성하고 검토합니다.",
+      title: t("immigration.process.steps.application.title"),
+      description: t("immigration.process.steps.application.description"),
     },
     {
       step: 4,
-      title: "제출 및 추적",
-      description: "관할 기관에 제출하고 진행 상황을 지속적으로 추적합니다.",
+      title: t("immigration.process.steps.submission.title"),
+      description: t("immigration.process.steps.submission.description"),
     },
     {
       step: 5,
-      title: "결과 확인 및 후속 조치",
-      description: "결과를 확인하고 필요한 후속 절차를 안내합니다.",
+      title: t("immigration.process.steps.result.title"),
+      description: t("immigration.process.steps.result.description"),
     },
   ]
 
   const faqs = [
     {
-      question: "비자 신청은 얼마나 걸리나요?",
-      answer: "비자 유형과 국가에 따라 다르지만, 일반적으로 2주에서 3개월 정도 소요됩니다. 긴급한 경우 가속 처리 서비스를 이용할 수 있습니다.",
+      question: t("immigration.faq.items.duration.question"),
+      answer: t("immigration.faq.items.duration.answer"),
     },
     {
-      question: "비자가 거절되면 어떻게 하나요?",
-      answer: "거절 사유를 분석하고 재신청 전략을 수립합니다. 필요시 행정심판을 청구할 수 있습니다.",
+      question: t("immigration.faq.items.rejection.question"),
+      answer: t("immigration.faq.items.rejection.answer"),
     },
     {
-      question: "온라인으로 상담받을 수 있나요?",
-      answer: "네, 온라인 화상 상담이 가능합니다. 예약 시 온라인 상담을 선택하시면 됩니다.",
+      question: t("immigration.faq.items.online.question"),
+      answer: t("immigration.faq.items.online.answer"),
     },
   ]
 
@@ -156,21 +157,19 @@ export default async function ImmigrationPage() {
         <div className="container-max relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <Badge variant="primary" className="mb-6 text-sm md:text-base">
-              해외이주
+              {t("nav.immigration")}
             </Badge>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary mb-6">
-              전문적인 해외이주 법률 서비스
+              {t("immigration.title")}
             </h1>
             <p className="text-lg md:text-xl text-text-secondary leading-relaxed mb-8">
-              비자 신청부터 이민 상담까지, 법무법인 세중이 함께합니다.
-              <br />
-              경험 많은 전문 변호사가 최상의 서비스를 제공합니다.
+              {t("immigration.subtitle")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/consultation">
                 <Button size="lg" className="w-full sm:w-auto">
                   <Calendar className="w-5 h-5 mr-2" />
-                  상담 신청하기
+                  {t("immigration.cta.button")}
                 </Button>
               </Link>
               <a href="tel:03180448805">
@@ -188,9 +187,9 @@ export default async function ImmigrationPage() {
       <section className="section-padding">
         <div className="container-max">
           <div className="text-center mb-12">
-            <h2 className="section-title">주요 서비스</h2>
+            <h2 className="section-title">{t("immigration.mainServices")}</h2>
             <p className="body-text max-w-2xl mx-auto">
-              다양한 해외이주 관련 법률 서비스를 제공합니다.
+              {t("immigration.servicesDescription")}
             </p>
           </div>
 
@@ -213,7 +212,7 @@ export default async function ImmigrationPage() {
                   </ul>
                   <Link href={service.link}>
                     <Button variant="outline" className="w-full">
-                      자세히 보기
+                      {t("immigration.cta.viewMore")}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </Link>
@@ -228,9 +227,9 @@ export default async function ImmigrationPage() {
       <section className="section-padding bg-background-alt">
         <div className="container-max">
           <div className="text-center mb-12">
-            <h2 className="section-title">처리 절차</h2>
+            <h2 className="section-title">{t("immigration.process.title")}</h2>
             <p className="body-text max-w-2xl mx-auto">
-              체계적이고 전문적인 절차로 진행됩니다.
+              {t("immigration.process.description")}
             </p>
           </div>
 
@@ -254,7 +253,7 @@ export default async function ImmigrationPage() {
       <section className="section-padding">
         <div className="container-max">
           <div className="text-center mb-12">
-            <h2 className="section-title">자주 묻는 질문</h2>
+            <h2 className="section-title">{t("immigration.faq.title")}</h2>
           </div>
 
           <div className="max-w-3xl mx-auto space-y-4">

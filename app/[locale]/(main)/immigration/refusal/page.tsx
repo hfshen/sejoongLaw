@@ -7,43 +7,45 @@ import Link from "next/link"
 import { AlertTriangle, FileText, Scale, CheckCircle, RefreshCw, Shield } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations()
   return {
-    title: "비자거절 | 법무법인 세중",
-    description:
-      "비자 거절 사유 분석, 재신청, 행정심판 등 비자 거절 대응 서비스를 제공합니다. 《출입국관리법》 저자 이상국 대표변호사가 직접 상담합니다.",
+    title: `${t("pages.refusal.title")} | ${t("common.title")}`,
+    description: t("pages.refusal.description"),
   }
 }
 
 export default async function RefusalPage() {
+  const t = await getTranslations("pages.refusal")
+
   const services = [
     {
-      title: "거절 사유 분석",
-      description: "비자 거절 사유를 정확히 분석하고 대응 방안을 제시합니다.",
+      title: t("services.analysis.title"),
+      description: t("services.analysis.description"),
       icon: <AlertTriangle className="w-6 h-6" />,
     },
     {
-      title: "서류 보완",
-      description: "부족한 서류를 보완하여 재신청 준비",
+      title: t("services.supplement.title"),
+      description: t("services.supplement.description"),
       icon: <FileText className="w-6 h-6" />,
     },
     {
-      title: "재신청",
-      description: "보완된 서류로 비자 재신청",
+      title: t("services.reapplication.title"),
+      description: t("services.reapplication.description"),
       icon: <RefreshCw className="w-6 h-6" />,
     },
     {
-      title: "행정심판",
-      description: "비자 거절 처분에 대한 행정심판 청구",
+      title: t("services.appeal.title"),
+      description: t("services.appeal.description"),
       icon: <Scale className="w-6 h-6" />,
     },
     {
-      title: "소송",
-      description: "행정심판 기각 시 소송을 통한 거절 처분 취소",
+      title: t("services.litigation.title"),
+      description: t("services.litigation.description"),
       icon: <Shield className="w-6 h-6" />,
     },
     {
-      title: "웨이버 신청",
-      description: "입국 금지 해제를 위한 웨이버 신청",
+      title: t("services.waiver.title"),
+      description: t("services.waiver.description"),
       icon: <CheckCircle className="w-6 h-6" />,
     },
   ]
@@ -51,46 +53,43 @@ export default async function RefusalPage() {
   const process = [
     {
       step: 1,
-      title: "거절 사유 분석",
-      description: "비자 거절 통지서를 분석하여 거절 사유를 정확히 파악합니다.",
+      title: t("processSteps.analysis.title"),
+      description: t("processSteps.analysis.description"),
     },
     {
       step: 2,
-      title: "대응 전략 수립",
-      description: "거절 사유에 따른 대응 전략을 수립합니다.",
+      title: t("processSteps.strategy.title"),
+      description: t("processSteps.strategy.description"),
     },
     {
       step: 3,
-      title: "서류 보완",
-      description: "부족한 서류를 보완하거나 추가 증거를 수집",
+      title: t("processSteps.supplement.title"),
+      description: t("processSteps.supplement.description"),
     },
     {
       step: 4,
-      title: "재신청 또는 행정심판",
-      description: "서류 보완 후 재신청하거나 행정심판 청구",
+      title: t("processSteps.reapplication.title"),
+      description: t("processSteps.reapplication.description"),
     },
     {
       step: 5,
-      title: "소송 (필요시)",
-      description: "행정심판 기각 시 소송을 통해 거절 처분 취소",
+      title: t("processSteps.litigation.title"),
+      description: t("processSteps.litigation.description"),
     },
   ]
 
   const faqs = [
     {
-      question: "비자가 거절되었습니다. 재신청이 가능한가요?",
-      answer:
-        "네, 거절 사유를 해결한 후 재신청이 가능합니다. 거절 사유를 정확히 분석하고 보완하여 재신청하면 승인 가능성이 높아집니다.",
+      question: t("faqs.reapplication.question"),
+      answer: t("faqs.reapplication.answer"),
     },
     {
-      question: "행정심판과 재신청 중 어떤 것이 좋은가요?",
-      answer:
-        "거절 사유에 따라 다릅니다. 서류 보완으로 해결 가능한 경우 재신청이 빠르고, 법적 해석 문제인 경우 행정심판이 효과적입니다.",
+      question: t("faqs.choice.question"),
+      answer: t("faqs.choice.answer"),
     },
     {
-      question: "비자 거절 후 얼마나 기다려야 재신청할 수 있나요?",
-      answer:
-        "거절 사유에 따라 다르지만, 일반적으로 즉시 재신청이 가능합니다. 다만 거절 사유를 해결한 후 재신청하는 것이 중요합니다.",
+      question: t("faqs.timing.question"),
+      answer: t("faqs.timing.answer"),
     },
   ]
 
@@ -99,10 +98,10 @@ export default async function RefusalPage() {
       <section className="section-padding-sm bg-gradient-to-br from-primary/10 to-accent/5">
         <div className="container-max">
           <div className="max-w-3xl mx-auto text-center">
-            <Badge variant="primary" className="mb-4">해외이주</Badge>
-            <h1 className="section-title mb-6">비자거절</h1>
+            <Badge variant="primary" className="mb-4">{t("badge")}</Badge>
+            <h1 className="section-title mb-6">{t("title")}</h1>
             <p className="body-text text-lg">
-              비자 거절 사유 분석, 재신청, 행정심판 등 비자 거절 대응 서비스를 제공합니다. 《출입국관리법》 저자 이상국 대표변호사가 직접 상담합니다.
+              {t("description")}
             </p>
           </div>
         </div>
@@ -110,7 +109,7 @@ export default async function RefusalPage() {
 
       <section className="section-padding">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">주요 서비스</h2>
+          <h2 className="section-title text-center mb-12">{t("mainServices")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, index) => (
               <Card key={index} hover>
@@ -129,7 +128,7 @@ export default async function RefusalPage() {
 
       <section className="section-padding bg-background-alt">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">처리 프로세스</h2>
+          <h2 className="section-title text-center mb-12">{t("process")}</h2>
           <div className="max-w-4xl mx-auto">
             <div className="space-y-8">
               {process.map((item, index) => (
@@ -152,7 +151,7 @@ export default async function RefusalPage() {
 
       <section className="section-padding">
         <div className="container-max">
-          <h2 className="section-title text-center mb-12">자주 묻는 질문</h2>
+          <h2 className="section-title text-center mb-12">{t("faq")}</h2>
           <div className="max-w-3xl mx-auto space-y-6">
             {faqs.map((faq, index) => (
               <Card key={index}>
@@ -168,11 +167,11 @@ export default async function RefusalPage() {
 
       <section className="section-padding bg-gradient-to-br from-primary to-accent text-white">
         <div className="container-max text-center">
-          <h2 className="text-4xl font-bold mb-6">지금 바로 상담받으세요</h2>
-          <p className="text-xl mb-8 opacity-90">《출입국관리법》 저자 이상국 대표변호사가 직접 상담해드립니다.</p>
+          <h2 className="text-4xl font-bold mb-6">{t("ctaTitle")}</h2>
+          <p className="text-xl mb-8 opacity-90">{t("ctaDescription")}</p>
           <Link href="/consultation">
             <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100">
-              무료 상담 신청
+              {t("ctaButton")}
             </Button>
           </Link>
         </div>

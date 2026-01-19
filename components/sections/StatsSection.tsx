@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { StatCard } from "@/components/ui/StatCard"
 import { Award, Users, Briefcase, TrendingUp } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 interface Stat {
   value: number
@@ -11,34 +12,35 @@ interface Stat {
   suffix?: string
 }
 
-const stats: Stat[] = [
-  {
-    value: 15,
-    label: "년 이상의 경력",
-    icon: <Award className="w-full h-full" />,
-    suffix: "+",
-  },
-  {
-    value: 1000,
-    label: "건 이상의 성공 사례",
-    icon: <Briefcase className="w-full h-full" />,
-    suffix: "+",
-  },
-  {
-    value: 5000,
-    label: "명 이상의 만족한 고객",
-    icon: <Users className="w-full h-full" />,
-    suffix: "+",
-  },
-  {
-    value: 95,
-    label: "% 이상의 승소율",
-    icon: <TrendingUp className="w-full h-full" />,
-    suffix: "%",
-  },
-]
-
 export default function StatsSection() {
+  const t = useTranslations()
+  
+  const stats: Stat[] = [
+    {
+      value: 15,
+      label: t("stats.items.experience"),
+      icon: <Award className="w-full h-full" />,
+      suffix: "+",
+    },
+    {
+      value: 1000,
+      label: t("stats.items.cases"),
+      icon: <Briefcase className="w-full h-full" />,
+      suffix: "+",
+    },
+    {
+      value: 5000,
+      label: t("stats.items.customers"),
+      icon: <Users className="w-full h-full" />,
+      suffix: "+",
+    },
+    {
+      value: 95,
+      label: t("stats.items.winRate"),
+      icon: <TrendingUp className="w-full h-full" />,
+      suffix: "%",
+    },
+  ]
   return (
     <section className="section-padding bg-background-alt">
       <div className="container-max">
@@ -49,9 +51,9 @@ export default function StatsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8 md:mb-16"
         >
-          <h2 className="section-title">법무법인 세중의 성과</h2>
+          <h2 className="section-title">{t("stats.title")}</h2>
           <p className="body-text max-w-2xl mx-auto px-4">
-            오랜 경험과 전문성을 바탕으로 고객의 권리를 보호하고 최상의 결과를 만들어냅니다.
+            {t("stats.description")}
           </p>
         </motion.div>
 
