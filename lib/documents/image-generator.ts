@@ -240,7 +240,7 @@ export async function generateDocumentImage(
 
     const wmLogoSrc = logoPng || absLogo
 
-    // 법원 제출용(OLD-case)은 워터마크 OFF
+    // 법원 제출용(SEJOONG)은 워터마크 OFF
     if (shouldWatermark) {
       // 워터마크는 캡처 전에 <img> 타일로 강제(이미지 로딩 대기 가능)
       setupWatermarkTiles(previewElement, wmLogoSrc)
@@ -652,7 +652,7 @@ export async function generateDocumentImage(
 
       // (핵심) 워터마크는 html2canvas가 배경/transform을 누락하는 경우가 있어,
       // 최종 캔버스에 "오버레이"로 직접 그려서 100% 보장한다.
-      // 법원 제출용(OLD-case)은 워터마크 OFF
+      // 법원 제출용(SEJOONG)은 워터마크 OFF
       if (shouldWatermark) {
         // 주의: 먼저 본문을 그린 뒤 워터마크를 얹어야(흰 배경에 덮이지 않음) 실제로 보인다.
         try {

@@ -50,11 +50,11 @@ export async function GET(
       attorney_appointment: "변호인선임서",
       litigation_power: "소송위임장",
       insurance_consent: "사망보험금지급동의",
-      agreement_old: "합의서(OLD-case)",
-      power_of_attorney_old: "위임장(OLD-case)",
-      attorney_appointment_old: "변호인선임서(OLD-case)",
-      litigation_power_old: "소송위임장(OLD-case)",
-      insurance_consent_old: "사망보험금지급동의(OLD-case)",
+      agreement_old: "합의서(SEJOONG)",
+      power_of_attorney_old: "위임장(SEJOONG)",
+      attorney_appointment_old: "변호인선임서(SEJOONG)",
+      litigation_power_old: "소송위임장(SEJOONG)",
+      insurance_consent_old: "사망보험금지급동의(SEJOONG)",
     }
 
     const fileName = `${documentTypeNames[document.document_type as DocumentType]}_${document.name}_${document.date}.pdf`

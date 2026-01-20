@@ -41,6 +41,18 @@ function addToast(message: string, type: ToastType = "info", duration: number = 
   return id
 }
 
+function updateToast(id: string, message: string, type?: ToastType) {
+  const index = globalToasts.findIndex((t) => t.id === id)
+  if (index !== -1) {
+    globalToasts[index] = {
+      ...globalToasts[index],
+      message,
+      ...(type && { type }),
+    }
+    notifyListeners()
+  }
+}
+
 function removeToast(id: string) {
   globalToasts = globalToasts.filter((t) => t.id !== id)
   notifyListeners()
@@ -52,6 +64,10 @@ export const toast = {
   error: (message: string, duration?: number) => addToast(message, "error", duration),
   info: (message: string, duration?: number) => addToast(message, "info", duration),
   warning: (message: string, duration?: number) => addToast(message, "warning", duration),
+  update: (id: string, message: string, type?: ToastType) => updateToast(id, message, type),
+  remove: (id: string) => removeToast(id),
+  // 진행 상황 표시용: duration 0으로 자동 닫힘 방지
+  progress: (message: string) => addToast(message, "success", 0),
 }
 
 // Toast Container Component

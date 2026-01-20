@@ -250,7 +250,7 @@ export default function DocumentForm({
             <input
               {...register(fieldKey as any, { required: isRequired })}
               type="text"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-secondary"
             />
             {(errors as any)[fieldKey] && (
               <p className="text-sm text-red-500">필수 항목입니다.</p>
@@ -267,7 +267,7 @@ export default function DocumentForm({
             <textarea
               {...register(fieldKey as any, { required: isRequired })}
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-secondary"
             />
             {(errors as any)[fieldKey] && (
               <p className="text-sm text-red-500">필수 항목입니다.</p>
@@ -284,7 +284,7 @@ export default function DocumentForm({
             <input
               {...register(fieldKey as any, { required: isRequired })}
               type="date"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-secondary"
             />
             {(errors as any)[fieldKey] && (
               <p className="text-sm text-red-500">필수 항목입니다.</p>
@@ -307,7 +307,7 @@ export default function DocumentForm({
               </label>
               {isSpecialAuthorityField ? (
                 // 기타 특별수권사항 토글 버튼 (O/X)
-                <div className="flex gap-1">
+                <div className="flex gap-2 flex-shrink-0">
                   {field.options?.map((option) => {
                     const isSelected = selectedValue === option.value
                     return (
@@ -319,7 +319,7 @@ export default function DocumentForm({
                           e.stopPropagation()
                           setValue(fieldKey as any, option.value, { shouldDirty: true, shouldValidate: true, shouldTouch: true })
                         }}
-                        className={`px-3 py-1 rounded border-2 transition-all text-sm font-medium ${
+                        className={`px-4 py-1.5 rounded border-2 transition-all text-sm font-medium min-w-[80px] ${
                           isSelected
                             ? "border-primary bg-primary text-white shadow-sm"
                             : "border-gray-300 bg-white text-secondary hover:border-primary hover:bg-gray-50"
@@ -354,7 +354,7 @@ export default function DocumentForm({
               // 일반 Select (기타 특별수권사항이 아닌 경우)
               <select
                 {...register(fieldKey as any, { required: isRequired })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-secondary"
                 onChange={(e) => {
                   setValue(fieldKey as any, e.target.value)
                   if (!isRelationField || e.target.value !== "기타") {
@@ -375,7 +375,7 @@ export default function DocumentForm({
                 {...register(`${fieldKey}_other` as any)}
                 type="text"
                 placeholder={locale === "ko" ? "관계를 입력하세요" : locale === "en" ? "Enter relation" : "请输入关系"}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent mt-2"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent mt-2 bg-white text-secondary"
               />
             )}
             {(errors as any)[fieldKey] && (
@@ -470,6 +470,8 @@ export default function DocumentForm({
     if (field.type === "textarea") return "md:col-span-2"
     if (field.type === "checkbox") return "md:col-span-2"
     if (field.key === "court") return "md:col-span-2"
+    // Special Authority 필드들은 전체 폭 사용
+    if (field.key.startsWith("special_authority.")) return "md:col-span-2"
     return ""
   }
 
@@ -477,17 +479,18 @@ export default function DocumentForm({
     <div className="space-y-6">
       {/* 헤더 */}
       <div className="sticky top-16 z-20 bg-background/95 backdrop-blur border-b border-gray-200 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center gap-4 flex-shrink-0">
           <Button
             type="button"
             variant="outline"
             onClick={() => router.push("/admin/documents")}
+            className="h-9 flex-shrink-0"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             뒤로
           </Button>
-          <div>
+          <div className="flex-shrink-0">
             <h1 className="text-2xl font-bold text-secondary">
               {getDocumentTypeLabel(documentType, locale)}
             </h1>
@@ -496,13 +499,13 @@ export default function DocumentForm({
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
           {/* 언어 선택 */}
-          <div className="flex items-center gap-2 border border-gray-300 rounded-lg p-1">
+          <div className="flex items-center gap-1 border border-gray-300 rounded-lg p-1 flex-shrink-0">
             <button
               type="button"
               onClick={() => onLocaleChange("ko")}
-              className={`px-3 py-1 rounded text-sm ${
+              className={`px-2 py-1 rounded text-xs h-7 flex-shrink-0 ${
                 locale === "ko"
                   ? "bg-primary text-white"
                   : "text-secondary hover:bg-gray-100"
@@ -513,7 +516,7 @@ export default function DocumentForm({
             <button
               type="button"
               onClick={() => onLocaleChange("en")}
-              className={`px-3 py-1 rounded text-sm ${
+              className={`px-2 py-1 rounded text-xs h-7 flex-shrink-0 ${
                 locale === "en"
                   ? "bg-primary text-white"
                   : "text-secondary hover:bg-gray-100"
@@ -524,7 +527,7 @@ export default function DocumentForm({
             <button
               type="button"
               onClick={() => onLocaleChange("zh-CN")}
-              className={`px-3 py-1 rounded text-sm ${
+              className={`px-2 py-1 rounded text-xs h-7 flex-shrink-0 ${
                 locale === "zh-CN"
                   ? "bg-primary text-white"
                   : "text-secondary hover:bg-gray-100"
@@ -539,12 +542,19 @@ export default function DocumentForm({
               type="button"
               variant="outline"
               onClick={handleDownloadJPEG}
+              className="h-9 flex-shrink-0"
             >
               <ImageIcon className="w-4 h-4 mr-2" />
-              이미지 다운로드
+              <span className="hidden sm:inline">이미지 다운로드</span>
+              <span className="sm:hidden">다운로드</span>
             </Button>
           )}
-          <Button type="button" onClick={handleSubmit(onSubmit)} disabled={saving}>
+          <Button 
+            type="button" 
+            onClick={handleSubmit(onSubmit)} 
+            disabled={saving}
+            className="h-9 flex-shrink-0"
+          >
             {saving ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -583,7 +593,7 @@ export default function DocumentForm({
                       defaultValue={initialData?.name}
                       readOnly={isCaseLinked}
                       className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
-                        isCaseLinked ? "bg-gray-50 text-gray-700" : ""
+                        isCaseLinked ? "bg-gray-50 text-gray-700" : "bg-white text-secondary"
                       }`}
                     />
                   </div>
@@ -595,7 +605,7 @@ export default function DocumentForm({
                       {...register("date", { required: true })}
                       type="date"
                       defaultValue={initialData?.date || new Date().toISOString().split("T")[0]}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-secondary"
                     />
                   </div>
                 </div>

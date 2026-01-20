@@ -6,7 +6,7 @@ export type DocumentType =
   | "attorney_appointment" // 변호인선임서
   | "litigation_power" // 소송위임장
   | "insurance_consent" // 사망보험금지급동의
-  // OLD-case (법원 제출용 원본 양식 기반)
+  // SEJOONG (법원 제출용 원본 양식 기반)
   | "agreement_old"
   | "power_of_attorney_old"
   | "attorney_appointment_old"
@@ -206,7 +206,7 @@ export const agreementTemplate: DocumentTemplate = {
   ],
 }
 
-// OLD-case 템플릿: 1차는 기존 필드셋을 그대로 재사용(레이아웃은 별도 Preview로 원본 양식에 맞춤)
+// SEJOONG 템플릿: 1차는 기존 필드셋을 그대로 재사용(레이아웃은 별도 Preview로 원본 양식에 맞춤)
 export const agreementOldTemplate: DocumentTemplate = {
   type: "agreement_old",
   fields: agreementTemplate.fields,
@@ -464,6 +464,12 @@ export const insuranceConsentTemplate: DocumentTemplate = {
       group: "recipient",
     },
     {
+      key: "sender_representative",
+      label: { ko: "대표", en: "Representative", "zh-CN": "代表" },
+      type: "text",
+      group: "recipient",
+    },
+    {
       key: "sender_registration",
       label: { ko: "사업자등록번호", en: "Business Registration Number", "zh-CN": "营业执照号" },
       type: "text",
@@ -516,18 +522,7 @@ export const insuranceConsentTemplate: DocumentTemplate = {
       type: "text",
       group: "insurance",
     },
-    {
-      key: "policyholder",
-      label: { ko: "보험계약자", en: "Policyholder", "zh-CN": "投保人" },
-      type: "text",
-      group: "insurance",
-    },
-    {
-      key: "policyholder_registration",
-      label: { ko: "사업자등록번호", en: "Business Registration Number", "zh-CN": "营业执照号" },
-      type: "text",
-      group: "insurance",
-    },
+    // 보험계약자는 발신회사와 동일하므로 sender_company, sender_registration을 사용
     {
       key: "contract_date_1",
       label: { ko: "시작일", en: "Contract Date 1", "zh-CN": "合同日期1" },
@@ -540,18 +535,7 @@ export const insuranceConsentTemplate: DocumentTemplate = {
       type: "date",
       group: "insurance",
     },
-    {
-      key: "beneficiary_name",
-      label: { ko: "수익자 성명", en: "Beneficiary Name", "zh-CN": "受益人姓名" },
-      type: "text",
-      group: "beneficiary",
-    },
-    {
-      key: "beneficiary_registration",
-      label: { ko: "사업자등록번호", en: "Business Registration Number", "zh-CN": "营业执照号" },
-      type: "text",
-      group: "beneficiary",
-    },
+    // 수익자 정보는 불필요 - 제거됨
     {
       key: "heir_1_name",
       label: { ko: "법정상속인 1 성명", en: "Heir 1 Name", "zh-CN": "法定继承人1姓名" },
@@ -628,11 +612,11 @@ export function getDocumentTypeLabel(
     attorney_appointment: { ko: "변호인선임서", en: "Attorney Appointment", "zh-CN": "律师任命书" },
     litigation_power: { ko: "소송위임장", en: "Litigation Power", "zh-CN": "诉讼委托书" },
     insurance_consent: { ko: "사망보험금지급동의", en: "Insurance Consent", "zh-CN": "死亡保险金支付同意书" },
-    agreement_old: { ko: "합의서(OLD-case)", en: "Agreement (OLD-case)", "zh-CN": "协议（旧版）" },
-    power_of_attorney_old: { ko: "위임장(OLD-case)", en: "Power of Attorney (OLD-case)", "zh-CN": "委托书（旧版）" },
-    attorney_appointment_old: { ko: "변호인선임서(OLD-case)", en: "Attorney Appointment (OLD-case)", "zh-CN": "律师任命书（旧版）" },
-    litigation_power_old: { ko: "소송위임장(OLD-case)", en: "Litigation Power (OLD-case)", "zh-CN": "诉讼委托书（旧版）" },
-    insurance_consent_old: { ko: "사망보험금지급동의(OLD-case)", en: "Insurance Consent (OLD-case)", "zh-CN": "死亡保险金支付同意书（旧版）" },
+    agreement_old: { ko: "합의서(SEJOONG)", en: "Agreement (SEJOONG)", "zh-CN": "协议（旧版）" },
+    power_of_attorney_old: { ko: "위임장(SEJOONG)", en: "Power of Attorney (SEJOONG)", "zh-CN": "委托书（旧版）" },
+    attorney_appointment_old: { ko: "변호인선임서(SEJOONG)", en: "Attorney Appointment (SEJOONG)", "zh-CN": "律师任命书（旧版）" },
+    litigation_power_old: { ko: "소송위임장(SEJOONG)", en: "Litigation Power (SEJOONG)", "zh-CN": "诉讼委托书（旧版）" },
+    insurance_consent_old: { ko: "사망보험금지급동의(SEJOONG)", en: "Insurance Consent (SEJOONG)", "zh-CN": "死亡保险金支付同意书（旧版）" },
   }
   return labels[type][locale]
 }

@@ -142,7 +142,7 @@ export default function NewCasePage() {
                     type="text"
                     value={caseName}
                     onChange={(e) => setCaseName(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
                     placeholder="예: 2024-001 사망사고"
                     required
                   />
@@ -153,7 +153,7 @@ export default function NewCasePage() {
                     type="text"
                     value={caseNumber}
                     onChange={(e) => setCaseNumber(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
                     placeholder="예: 2024가단1234"
                   />
                 </div>

@@ -287,7 +287,7 @@ export default function UnifiedDocumentForm({
                     [childKey]: e.target.value,
                   })
                 }}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
               >
                 <option value="">선택하세요</option>
                 {field.options?.map((option) => (
@@ -414,7 +414,7 @@ export default function UnifiedDocumentForm({
                 type="text"
                 value={value}
                 onChange={(e) => setValue(fieldName, e.target.value, { shouldDirty: true, shouldTouch: true })}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
                 placeholder={field.label.ko}
               />
             </div>
@@ -446,7 +446,7 @@ export default function UnifiedDocumentForm({
                 value={value}
                 disabled={partyA2AddressSame}
                 onChange={(e) => setValue(fieldName, e.target.value, { shouldDirty: true, shouldTouch: true })}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${partyA2AddressSame ? "bg-gray-50 text-gray-700" : ""}`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${partyA2AddressSame ? "bg-gray-50 text-gray-700" : "bg-white text-secondary"}`}
                 placeholder={field.label.ko}
               />
             </div>
@@ -491,7 +491,7 @@ export default function UnifiedDocumentForm({
                 value={incidentLocation}
                 onChange={(e) => setValue(fieldName, e.target.value, { shouldDirty: true, shouldTouch: true })}
                 disabled={incidentSame}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${incidentSame ? "bg-gray-50 text-gray-700" : ""}`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${incidentSame ? "bg-gray-50 text-gray-700" : "bg-white text-secondary"}`}
                 placeholder={field.label.ko}
               />
             </div>
@@ -514,7 +514,7 @@ export default function UnifiedDocumentForm({
                   const next = sanitizePersonName(e.target.value)
                   setValue(fieldName, next, { shouldDirty: true, shouldTouch: true })
                 }}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
                 placeholder={field.label.ko}
               />
               {errors[fieldName] && (
@@ -542,7 +542,7 @@ export default function UnifiedDocumentForm({
                   const next = sanitizePersonName(e.target.value)
                   setValue(fieldName, next, { shouldDirty: true, shouldTouch: true })
                 }}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
                 placeholder={field.label.ko}
               />
               {errors[fieldName] && (
@@ -574,7 +574,7 @@ export default function UnifiedDocumentForm({
                   setValue(fieldName, next, { shouldDirty: true, shouldTouch: true })
                 }}
                 placeholder="000000-0000000"
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
               />
             </div>
           )
@@ -600,7 +600,7 @@ export default function UnifiedDocumentForm({
                   setValue(fieldName, next, { shouldDirty: true, shouldTouch: true })
                 }}
                 placeholder="000-00-00000"
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
               />
             </div>
           )
@@ -617,7 +617,7 @@ export default function UnifiedDocumentForm({
                 required: isRequired ? `${field.label.ko}을(를) 입력하세요` : false,
               })}
               type="text"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
               placeholder={field.label.ko}
             />
             {errors[fieldName] && (
@@ -630,8 +630,10 @@ export default function UnifiedDocumentForm({
 
       case "date":
         // 생년월일 아이콘 클릭(=포커스) 시 기본 2000-01-01을 가리키도록 값 세팅
-        // (브라우저 date picker의 "표시 월"만 제어는 불가하므로, 비어있을 때만 기본값을 채움)
-        const dateValue = (watchedValues as any)[fieldName] || ""
+        // 일반 정보(general) 그룹의 날짜는 오늘 날짜를 기본값으로 사용
+        const isGeneralDateField = field.unifiedGroup === "general"
+        const todayStr = new Date().toISOString().split("T")[0]
+        const dateValue = (watchedValues as any)[fieldName] || (isGeneralDateField ? todayStr : "")
         return (
           <div key={fieldName}>
             <label className="block text-sm font-medium mb-1">
@@ -646,9 +648,13 @@ export default function UnifiedDocumentForm({
               onChange={(e) => setValue(fieldName, e.target.value, { shouldDirty: true, shouldTouch: true })}
               onFocus={() => {
                 const cur = (watchedValues as any)[fieldName] || ""
-                if (!cur) setValue(fieldName, "2000-01-01", { shouldDirty: true, shouldTouch: true })
+                if (!cur) {
+                  // 일반 정보는 오늘 날짜, 그 외(생년월일 등)는 2000-01-01
+                  const defaultDate = isGeneralDateField ? todayStr : "2000-01-01"
+                  setValue(fieldName, defaultDate, { shouldDirty: true, shouldTouch: true })
+                }
               }}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
             />
             {errors[fieldName] && (
               <p className="text-red-500 text-sm mt-1">
@@ -674,7 +680,7 @@ export default function UnifiedDocumentForm({
                 required: isRequired ? `${field.label.ko}을(를) 입력하세요` : false,
               })}
               rows={3}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
               placeholder={field.label.ko}
             />
             {errors[fieldName] && (
@@ -771,7 +777,7 @@ export default function UnifiedDocumentForm({
                     type="text"
                     value={otherValue}
                     onChange={(e) => setValue(otherKey, e.target.value, { shouldDirty: true, shouldTouch: true })}
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
                     placeholder="관계를 입력하세요"
                   />
                 </div>
@@ -790,7 +796,7 @@ export default function UnifiedDocumentForm({
               {...register(fieldName, {
                 required: isRequired ? `${field.label.ko}을(를) 선택하세요` : false,
               })}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white text-secondary"
             >
               <option value="">선택하세요</option>
               {field.options?.map((option) => (

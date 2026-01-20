@@ -1444,7 +1444,7 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, PreviewComponentProps
         <h2 className="font-bold mb-1" style={{ fontSize: "16px", fontFamily: cellFontFamily }}>{locale === "ko" ? "보험계약사항" : locale === "en" ? "Insurance Contract Details" : "保险合同事项"}</h2>
         <div className="space-y-1" style={{ fontSize: "14px", fontFamily: cellFontFamily }}>
           <p><strong>{locale === "ko" ? "가. 보험상품명:" : locale === "en" ? "a. Insurance Product Name:" : "a. 保险产品名称："}</strong> {getValue("insurance_product")}</p>
-          <p><strong>{locale === "ko" ? "나. 보험계약자:" : locale === "en" ? "b. Policyholder:" : "b. 投保人："}</strong> {getValue("policyholder")}</p>
+          <p><strong>{locale === "ko" ? "나. 보험계약자:" : locale === "en" ? "b. Policyholder:" : "b. 投保人："}</strong> {getValue("sender_company")} (사업자등록번호: {getValue("sender_registration")})</p>
           <p><strong>{locale === "ko" ? "다. 피보험자:" : locale === "en" ? "c. Insured Person:" : "c. 被保险人："}</strong> {getValue("insured_name")}</p>
           <p><strong>{locale === "ko" ? "라. 계약 일자:" : locale === "en" ? "d. Contract Date:" : "d. 合同日期："}</strong> {getValue("contract_date_1")} {getValue("contract_date_2") && `+ ${getValue("contract_date_2")}`}</p>
         </div>
@@ -1508,7 +1508,7 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, PreviewComponentProps
 
 
 // ============================================================================
-// OLD-case 프리뷰 컴포넌트들 (HTML/CSS로 문서 구조 재현)
+// SEJOONG 프리뷰 컴포넌트들 (HTML/CSS로 문서 구조 재현)
 // ============================================================================
 
 // 공통 스타일
@@ -1555,7 +1555,7 @@ const oldCaseTdStyle: React.CSSProperties = {
   textAlign: "left",
 }
 
-// 합의서 OLD-case 미리보기
+// 합의서 SEJOONG 미리보기
 const AgreementOldPreview = forwardRef<HTMLDivElement, PreviewComponentProps & { data: AgreementData }>(
   function AgreementOldPreview({ data, locale, fontClass, getValue, formatDate }, ref) {
     // Locale에 따른 폰트 설정
@@ -1591,7 +1591,7 @@ const AgreementOldPreview = forwardRef<HTMLDivElement, PreviewComponentProps & {
         agree: "다음과 같이",
         agree2: "은 합의 한다.",
         clause1: "은 위 사건과 관련하여",
-        clause1_2: "과 원만히 합의를 보았으며 추후, 민, 형사상. 에 관하여 그 어떠한 이의도 제기하지 않는다.",
+        clause1_2: "과 원만히 합의를 보았으며 추후, 민·형사 상에 관하여 그 어떠한 이의도 제기하지 않는다.",
         clause2: "위 사건과 관련하여",
         clause2_2: "은",
         clause2_3: "의 대표자에게 처벌을 원하지 아니하며 이에",
@@ -1729,23 +1729,25 @@ const AgreementOldPreview = forwardRef<HTMLDivElement, PreviewComponentProps & {
         <style>{`
           .agreement-kv {
             display: flex;
-            gap: 22.68px; /* 6mm */
             align-items: baseline;
             margin: 0;
+            width: 100%;
           }
           .agreement-kv .k {
-            width: ${locale === "en" ? "150px" : "90.72px"}; /* 24mm, wider for English to prevent wrapping */
+            width: ${locale === "en" ? "180px" : "130px"};
             white-space: nowrap;
             font-family: ${fontFamily};
             font-size: 11.5pt;
             flex-shrink: 0;
+            text-align: right;
+            padding-right: 8px;
           }
           .agreement-kv .v {
             flex: 1;
             min-width: 0;
-            margin-left: ${locale === "en" ? "10px" : "0"};
             font-family: ${fontFamily};
             font-size: 11.5pt;
+            text-align: left;
           }
           .agreement-blank {
             display: inline-block;
@@ -1926,7 +1928,7 @@ const AgreementOldPreview = forwardRef<HTMLDivElement, PreviewComponentProps & {
   }
 )
 
-// 위임장 OLD-case 미리보기
+// 위임장 SEJOONG 미리보기
 const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentProps & { data: PowerOfAttorneyData; getCheckboxValue: (key: string) => boolean }>(
   function PowerOfAttorneyOldPreview({ data, locale, fontClass, getValue, getCheckboxValue, formatDate }, ref) {
     // Locale에 따른 폰트 설정
@@ -2119,26 +2121,29 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           maxHeight: "1123px",
           position: "relative",
           backgroundColor: "#ffffff",
-          padding: "40px 53px 25px 53px",
+          padding: `${locale === "en" ? "35px" : "40px"} 53px ${locale === "en" ? "35px" : "30px"} 53px`,
           boxSizing: "border-box",
           fontFamily,
-          color: "#111"
+          color: "#111",
+          display: "flex",
+          flexDirection: "column"
         }}
       >
         <style>{`
           .poa-title {
             text-align: center;
-            font-weight: 800;
-            font-size: 23pt;
-            letter-spacing: 0.85em;
-            text-indent: 0.85em;
+            font-weight: 700;
+            font-size: 21pt;
+            letter-spacing: ${locale === "ko" ? "0.3em" : locale === "zh-CN" ? "0.2em" : "0.1em"};
+            text-indent: ${locale === "ko" ? "0.3em" : locale === "zh-CN" ? "0.2em" : "0.1em"};
             margin: 10px 0 15px 0;
             font-family: ${fontFamily};
+            line-height: 1.2;
           }
           .poa-sec {
             font-size: 12pt;
             font-weight: 600;
-            margin: 12px 0 5px 0;
+            margin: ${locale === "en" ? "8px" : "12px"} 0 ${locale === "en" ? "3px" : "5px"} 0;
             font-family: ${fontFamily};
           }
           .poa-t {
@@ -2146,36 +2151,42 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             table-layout: fixed;
             border: 1.25px solid #4c4c4c;
             font-size: 11.5pt;
-            margin: 0 0 12px 0;
+            margin: 0 0 ${locale === "en" ? "8px" : "12px"} 0;
             border-collapse: collapse;
           }
           .poa-t td {
             border: 1.25px solid #4c4c4c;
             vertical-align: middle;
-            padding: 5px 7px;
+            padding: 4px 6px;
             box-sizing: border-box;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
           .poa-k {
             width: ${locale === "en" ? "140px" : locale === "zh-CN" ? "130px" : "120px"};
             text-align: center;
-            letter-spacing: 0.55em;
-            text-indent: 0.55em;
+            letter-spacing: ${locale === "en" ? "0.1em" : locale === "zh-CN" ? "0.1em" : "0.55em"};
+            text-indent: ${locale === "en" ? "0.1em" : locale === "zh-CN" ? "0.1em" : "0.55em"};
             font-weight: 600;
-            white-space: nowrap;
-            overflow: visible;
+            white-space: normal;
+            overflow: hidden;
             font-family: ${fontFamily};
-            font-size: ${locale === "en" ? "11pt" : locale === "zh-CN" ? "11pt" : "12pt"};
+            font-size: ${locale === "en" ? "10pt" : locale === "zh-CN" ? "10pt" : "11.5pt"};
+            line-height: 1.2;
+            padding: 4px 4px;
           }
           .poa-k2 {
             width: ${locale === "en" ? "180px" : locale === "zh-CN" ? "170px" : "160px"};
             text-align: center;
-            letter-spacing: 0.38em;
-            text-indent: 0.38em;
+            letter-spacing: ${locale === "en" ? "0.05em" : locale === "zh-CN" ? "0.05em" : "0.38em"};
+            text-indent: ${locale === "en" ? "0.05em" : locale === "zh-CN" ? "0.05em" : "0.38em"};
             font-weight: 600;
-            white-space: nowrap;
-            overflow: visible;
+            white-space: normal;
+            overflow: hidden;
             font-family: ${fontFamily};
-            font-size: ${locale === "en" ? "11pt" : locale === "zh-CN" ? "11pt" : "12pt"};
+            font-size: ${locale === "en" ? "10pt" : locale === "zh-CN" ? "10pt" : "11.5pt"};
+            line-height: 1.2;
+            padding: 4px 4px;
           }
           .poa-v {
             width: auto;
@@ -2183,8 +2194,12 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             word-wrap: break-word;
             overflow-wrap: break-word;
             overflow: hidden;
+            white-space: normal;
+            line-height: 1.25;
             font-family: ${fontFamily};
-            font-size: ${locale === "en" ? "11pt" : locale === "zh-CN" ? "11pt" : "11.5pt"};
+            font-size: ${locale === "en" ? "9.5pt" : locale === "zh-CN" ? "10pt" : "10.5pt"};
+            padding: 3px 5px;
+            letter-spacing: 0.01em;
           }
           .poa-v2 {
             width: ${locale === "en" ? "200px" : locale === "zh-CN" ? "190px" : "180px"};
@@ -2192,8 +2207,12 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             word-wrap: break-word;
             overflow-wrap: break-word;
             overflow: hidden;
+            white-space: normal;
+            line-height: 1.25;
             font-family: ${fontFamily};
-            font-size: ${locale === "en" ? "11pt" : locale === "zh-CN" ? "11pt" : "11.5pt"};
+            font-size: ${locale === "en" ? "9.5pt" : locale === "zh-CN" ? "10pt" : "10.5pt"};
+            padding: 3px 5px;
+            letter-spacing: 0.01em;
           }
           .poa-center {
             text-align: center;
@@ -2205,13 +2224,15 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           .poa-k-addr {
             width: ${locale === "en" ? "140px" : locale === "zh-CN" ? "130px" : "120px"};
             text-align: center;
-            letter-spacing: 0.55em;
-            text-indent: 0.55em;
+            letter-spacing: ${locale === "en" ? "0.1em" : locale === "zh-CN" ? "0.1em" : "0.55em"};
+            text-indent: ${locale === "en" ? "0.1em" : locale === "zh-CN" ? "0.1em" : "0.55em"};
             font-weight: 600;
-            white-space: nowrap;
-            overflow: visible;
+            white-space: normal;
+            overflow: hidden;
             font-family: ${fontFamily};
-            font-size: ${locale === "en" ? "11pt" : locale === "zh-CN" ? "11pt" : "12pt"};
+            font-size: ${locale === "en" ? "10pt" : locale === "zh-CN" ? "10pt" : "11.5pt"};
+            line-height: 1.2;
+            padding: 4px 4px;
           }
           .poa-v-addr {
             width: auto;
@@ -2219,19 +2240,25 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             word-wrap: break-word;
             overflow-wrap: break-word;
             overflow: hidden;
+            white-space: normal;
+            line-height: 1.25;
             font-family: ${fontFamily};
-            font-size: ${locale === "en" ? "11pt" : locale === "zh-CN" ? "11pt" : "11.5pt"};
+            font-size: ${locale === "en" ? "9.5pt" : locale === "zh-CN" ? "10pt" : "10.5pt"};
+            padding: 3px 5px;
+            letter-spacing: 0.01em;
           }
           .poa-k2-small {
             width: ${locale === "en" ? "180px" : locale === "zh-CN" ? "170px" : "160px"};
             text-align: center;
-            letter-spacing: 0.55em;
-            text-indent: 0.55em;
+            letter-spacing: ${locale === "en" ? "0.1em" : locale === "zh-CN" ? "0.1em" : "0.55em"};
+            text-indent: ${locale === "en" ? "0.1em" : locale === "zh-CN" ? "0.1em" : "0.55em"};
             font-weight: 600;
-            white-space: nowrap;
-            overflow: visible;
+            white-space: normal;
+            overflow: hidden;
             font-family: ${fontFamily};
-            font-size: ${locale === "en" ? "11pt" : locale === "zh-CN" ? "11pt" : "12pt"};
+            font-size: ${locale === "en" ? "10pt" : locale === "zh-CN" ? "10pt" : "11.5pt"};
+            line-height: 1.2;
+            padding: 4px 4px;
           }
           .poa-v2-small {
             width: ${locale === "en" ? "200px" : locale === "zh-CN" ? "190px" : "180px"};
@@ -2239,8 +2266,12 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             word-wrap: break-word;
             overflow-wrap: break-word;
             overflow: hidden;
+            white-space: normal;
+            line-height: 1.25;
             font-family: ${fontFamily};
-            font-size: ${locale === "en" ? "11pt" : locale === "zh-CN" ? "11pt" : "11.5pt"};
+            font-size: ${locale === "en" ? "9.5pt" : locale === "zh-CN" ? "10pt" : "10.5pt"};
+            padding: 3px 5px;
+            letter-spacing: 0.01em;
           }
           .poa-work {
             width: ${locale === "en" ? "700px" : locale === "zh-CN" ? "695px" : "688px"};
@@ -2257,28 +2288,34 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             box-sizing: border-box;
           }
           .poa-wlbl {
-            width: 136px;
+            width: ${locale === "en" ? "120px" : locale === "zh-CN" ? "125px" : "130px"};
             text-align: center;
-            letter-spacing: 0.75em;
-            text-indent: 0.75em;
-            font-weight: 700;
+            letter-spacing: ${locale === "ko" ? "0.25em" : locale === "zh-CN" ? "0.15em" : "0.08em"};
+            text-indent: ${locale === "ko" ? "0.25em" : locale === "zh-CN" ? "0.15em" : "0.08em"};
+            font-weight: 600;
             font-size: 11pt;
             font-family: ${fontFamily};
+            line-height: 1.3;
+            padding: 4px 2px;
+            overflow: hidden;
+            word-wrap: break-word;
           }
           .poa-wbody {
-            padding: 6px 10px;
-            line-height: 1.5;
+            padding: 5px 8px;
+            line-height: 1.4;
             letter-spacing: 0.01em;
-            font-size: 11pt;
+            font-size: ${locale === "en" ? "10pt" : "10.5pt"};
             font-family: ${fontFamily};
+            overflow: hidden;
+            word-wrap: break-word;
           }
           .poa-cb {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            margin-right: 20px;
+            gap: 3px;
+            margin-right: ${locale === "en" ? "12px" : "15px"};
             white-space: nowrap;
-            font-size: 11pt;
+            font-size: ${locale === "en" ? "10pt" : "10.5pt"};
           }
           .poa-box {
             width: 14px;
@@ -2299,58 +2336,71 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           }
           .poa-sentence {
             width: ${locale === "en" ? "700px" : locale === "zh-CN" ? "695px" : "688px"};
-            margin: 10px 0 15px 0;
-            font-size: 11.5pt;
+            margin: ${locale === "en" ? "6px" : "10px"} 0 ${locale === "en" ? "10px" : "15px"} 0;
+            font-size: ${locale === "en" ? "10.5pt" : "11.5pt"};
             letter-spacing: 0.01em;
-            line-height: 1.5;
+            line-height: 1.4;
             font-family: ${fontFamily};
           }
           .poa-date {
             width: ${locale === "en" ? "700px" : locale === "zh-CN" ? "695px" : "688px"};
             text-align: center;
-            font-size: 12pt;
-            margin: 15px 0 15px 0;
+            font-size: ${locale === "en" ? "11pt" : "12pt"};
+            margin: ${locale === "en" ? "10px" : "15px"} 0 ${locale === "en" ? "10px" : "15px"} 0;
             letter-spacing: 0.25em;
             font-family: ${fontFamily};
           }
           .poa-sign {
             width: ${locale === "en" ? "700px" : locale === "zh-CN" ? "695px" : "688px"};
-            font-size: 11.5pt;
-            line-height: 1.7;
-            margin-bottom: 10px;
+            font-size: ${locale === "en" ? "10.5pt" : "11.5pt"};
+            line-height: 1.6;
+            margin-bottom: ${locale === "en" ? "6px" : "10px"};
             font-family: ${fontFamily};
+            display: flex;
+            flex-direction: column;
+            align-items: center;
           }
           .poa-sign-line {
             display: flex;
-            justify-content: space-between;
-            gap: 23px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: ${locale === "en" ? "550px" : locale === "zh-CN" ? "540px" : "530px"};
+            margin: 0 auto;
             margin-bottom: 3px;
+            padding: 0 ${locale === "en" ? "75px" : locale === "zh-CN" ? "78px" : "79px"};
+            box-sizing: border-box;
           }
           .poa-sign-left {
             white-space: nowrap;
+            flex: 1;
+            text-align: left;
           }
           .poa-sign-right {
             width: 83px;
             text-align: right;
+            flex-shrink: 0;
           }
           .poa-footer {
             width: ${locale === "en" ? "700px" : locale === "zh-CN" ? "695px" : "688px"};
-            margin-top: 3px;
+            margin-top: 8px;
             padding-top: 3px;
             text-align: center;
             color: #111;
             font-family: ${fontFamily};
             position: relative;
+            min-height: 80px;
           }
           .poa-footer .rule {
             border-top: 2px solid #3f3f3f;
             margin-bottom: 10px;
           }
           .poa-footer .f1 {
-            font-size: 16pt;
-            font-weight: 900;
-            letter-spacing: 0.05em;
-            line-height: 1.2;
+            font-size: 15pt;
+            font-weight: 700;
+            letter-spacing: ${locale === "ko" ? "0.08em" : locale === "zh-CN" ? "0.05em" : "0.03em"};
+            line-height: 1.3;
+            font-family: ${fontFamily};
           }
           .poa-footer .f2 {
             margin-top: 5px;
@@ -2397,7 +2447,7 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           <tbody>
           <tr>
             <td className="poa-k" style={{ fontFamily }}>{t.name}</td>
-            <td className="poa-v poa-center" style={{ fontFamily, fontWeight: 700, letterSpacing: "0.55em", textIndent: "0.55em" }}>{locale === "ko" ? "이 택 기" : locale === "zh-CN" ? "李택기" : "Lee Taek-gi"}</td>
+            <td className="poa-v poa-center" style={{ fontFamily, fontWeight: 500, letterSpacing: locale === "ko" ? "0.2em" : locale === "zh-CN" ? "0.1em" : "0.03em", textIndent: locale === "ko" ? "0.2em" : locale === "zh-CN" ? "0.1em" : "0.03em" }}>{locale === "ko" ? "이 택 기" : locale === "zh-CN" ? "李택기" : "Lee Taek-gi"}</td>
             <td className="poa-k2" style={{ fontFamily }}>{t.residentId}</td>
             <td className="poa-v2 poa-center poa-mono" style={{ fontFamily: monoFont }}>710409-1******</td>
           </tr>
@@ -2411,7 +2461,7 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             <td className="poa-k" style={{ fontFamily }}>{t.businessName}</td>
             <td className="poa-v" style={{ fontFamily }}>{locale === "ko" ? "법률사무소 세종" : locale === "zh-CN" ? "世宗律师事务所" : "Sejoong Law Office"}</td>
             <td className="poa-k2" style={{ fontFamily }}>{t.position}</td>
-            <td className="poa-v2 poa-center" style={{ fontFamily, letterSpacing: "0.45em", textIndent: "0.45em" }}>{locale === "ko" ? "대 표 변 호 사" : locale === "zh-CN" ? "代表律师" : "Representative Attorney"}</td>
+            <td className="poa-v2 poa-center" style={{ fontFamily, fontWeight: 500, letterSpacing: locale === "ko" ? "0.15em" : locale === "zh-CN" ? "0.08em" : "0.03em", textIndent: locale === "ko" ? "0.15em" : locale === "zh-CN" ? "0.08em" : "0.03em" }}>{locale === "ko" ? "대 표 변 호 사" : locale === "zh-CN" ? "代表律师" : "Representative Attorney"}</td>
           </tr>
           <tr>
             <td className="poa-k" style={{ fontFamily }}>{t.businessReg}</td>
@@ -2426,7 +2476,7 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           <tbody>
           <tr>
             <td className="poa-k" style={{ fontFamily }}>{t.name}</td>
-            <td className="poa-v poa-center" style={{ fontFamily, fontWeight: 700, letterSpacing: "0.55em", textIndent: "0.55em" }}>{locale === "ko" ? "주 성 규" : locale === "zh-CN" ? "朱성규" : "Joo Sung-gyu"}</td>
+            <td className="poa-v poa-center" style={{ fontFamily, fontWeight: 500, letterSpacing: locale === "ko" ? "0.2em" : locale === "zh-CN" ? "0.1em" : "0.03em", textIndent: locale === "ko" ? "0.2em" : locale === "zh-CN" ? "0.1em" : "0.03em" }}>{locale === "ko" ? "주 성 규" : locale === "zh-CN" ? "朱성규" : "Joo Sung-gyu"}</td>
             <td className="poa-k2" style={{ fontFamily }}>{t.residentId}</td>
             <td className="poa-v2 poa-center poa-mono" style={{ fontFamily: monoFont }}>620613-1******</td>
           </tr>
@@ -2434,7 +2484,7 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             <td className="poa-k-addr" rowSpan={2} style={{ fontFamily }}>{locale === "ko" ? "주 소" : locale === "zh-CN" ? "地址" : "Address"}</td>
             <td className="poa-v-addr" style={{ fontFamily }}>{locale === "ko" ? "안산시 단원구 원곡로 45" : locale === "zh-CN" ? "安山市檀园区原谷路45号" : "45 Wongok-ro, Danwon-gu, Ansan-si"}</td>
             <td className="poa-k2-small" style={{ fontFamily }}>{t.position}</td>
-            <td className="poa-v2-small poa-center" style={{ fontFamily, letterSpacing: "0.45em", textIndent: "0.45em" }}>{locale === "ko" ? "국 장" : locale === "zh-CN" ? "局长" : "Director"}</td>
+            <td className="poa-v2-small poa-center" style={{ fontFamily, fontWeight: 500, letterSpacing: locale === "ko" ? "0.15em" : locale === "zh-CN" ? "0.08em" : "0.03em", textIndent: locale === "ko" ? "0.15em" : locale === "zh-CN" ? "0.08em" : "0.03em" }}>{locale === "ko" ? "국 장" : locale === "zh-CN" ? "局长" : "Director"}</td>
           </tr>
           <tr>
             <td className="poa-v-addr" style={{ fontFamily }}>{locale === "ko" ? "2층 세종법률사무소" : locale === "zh-CN" ? "2层世宗律师事务所" : "2F Sejoong Law Office"}</td>
@@ -2535,7 +2585,7 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
         </div>
 
         {/* Footer */}
-        <div className="poa-footer" style={{ fontFamily }}>
+        <div className="poa-footer" style={{ fontFamily, marginTop: "auto", flexShrink: 0 }}>
           <div className="rule"></div>
           <div className="f1" style={{ fontFamily }}>{t.footerTitle}</div>
           <div className="f2" style={{ fontFamily }}>{t.footerAddress}</div>
@@ -2546,7 +2596,7 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
   }
 )
 
-// 변호인선임서 OLD-case 미리보기
+// 변호인선임서 SEJOONG 미리보기
 const AttorneyAppointmentOldPreview = forwardRef<HTMLDivElement, PreviewComponentProps & { data: AttorneyAppointmentData }>(
   function AttorneyAppointmentOldPreview({ data, locale, fontClass, getValue, formatDate }, ref) {
     // Locale에 따른 폰트 설정
@@ -3285,7 +3335,7 @@ const AttorneyAppointmentOldPreview = forwardRef<HTMLDivElement, PreviewComponen
   }
 )
 
-// 소송위임장 OLD-case 미리보기
+// 소송위임장 SEJOONG 미리보기
 const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentProps & { data: LitigationPowerData; getCheckboxValue: (key: string) => boolean }>(
   function LitigationPowerOldPreview({ data, locale, fontClass, getValue, getCheckboxValue, formatDate }, ref) {
     // Locale에 따른 폰트 설정
@@ -3471,43 +3521,47 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           maxHeight: "1123px",
           position: "relative",
           backgroundColor: "#ffffff",
-          padding: "50px 50px 35px 50px",
+          padding: "35px 50px 20px 50px",
           boxSizing: "border-box",
           fontFamily,
-          color: "#111"
+          color: "#111",
+          display: "flex",
+          flexDirection: "column"
         }}
       >
         <style>{`
           .litigation-form {
             width: 694px;
-            height: 1008px;
+            flex: 1;
             table-layout: fixed;
-            border: 1.3px solid #4b4b4b;
+            border: 1px solid #4b4b4b;
             margin: 0 auto;
             border-collapse: collapse;
           }
           .litigation-form td {
-            border: 1.3px solid #4b4b4b;
+            border: 1px solid #4b4b4b;
             vertical-align: top;
             padding: 0;
           }
-          .litigation-c-l { width: 150px; }
-          .litigation-c-m { width: 544px; }
-          .litigation-r-title { height: 65px; }
-          .litigation-r-info { height: 80px; }
-          .litigation-r-sent { height: 55px; }
-          .litigation-r-suw { height: 120px; }
-          .litigation-r-skw { height: 500px; }
-          .litigation-r-bottom { height: 140px; }
+          .litigation-c-l { width: ${locale === "en" ? "85px" : "70px"}; }
+          .litigation-c-m { width: ${locale === "en" ? "609px" : "624px"}; }
+          .litigation-r-title { height: ${locale === "en" ? "75px" : "85px"}; }
+          .litigation-r-info { height: ${locale === "en" ? "70px" : "80px"}; }
+          .litigation-r-sent { height: ${locale === "en" ? "50px" : "55px"}; }
+          .litigation-r-suw { height: ${locale === "en" ? "90px" : "100px"}; }
+          .litigation-r-skw { height: auto; min-height: ${locale === "en" ? "380px" : "400px"}; }
+          .litigation-r-bottom { height: ${locale === "en" ? "90px" : "100px"}; }
           .litigation-title {
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28pt;
+            padding-top: 10px;
+            font-size: ${locale === "ko" ? "24pt" : locale === "zh-CN" ? "23pt" : "22pt"};
             font-weight: 700;
-            letter-spacing: 0.55em;
-            text-indent: 0.55em;
+            letter-spacing: ${locale === "ko" ? "0.2em" : locale === "zh-CN" ? "0.15em" : "0.08em"};
+            text-indent: ${locale === "ko" ? "0.2em" : locale === "zh-CN" ? "0.15em" : "0.08em"};
+            line-height: 1.3;
           }
           .litigation-mini {
             width: 100%;
@@ -3517,24 +3571,33 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             font-size: 13.5pt;
           }
           .litigation-mini td {
-            border: 1.3px solid #4b4b4b;
+            border: none;
+            border-bottom: 1px solid #4b4b4b;
             vertical-align: middle;
+            height: ${locale === "en" ? "28px" : "26px"};
+          }
+          .litigation-mini tr:last-child td {
+            border-bottom: none;
           }
           .litigation-mini .k {
-            width: 150px;
-            text-align: left;
-            padding-left: 35px;
-            letter-spacing: 0.7em;
-            text-indent: 0.7em;
+            width: ${locale === "en" ? "85px" : "70px"};
+            text-align: center;
+            padding: 3px 5px;
+            letter-spacing: ${locale === "ko" ? "0.2em" : locale === "zh-CN" ? "0.1em" : "0.02em"};
+            text-indent: 0;
             font-weight: 600;
-            font-size: 13.5pt;
+            font-size: ${locale === "en" ? "10.5pt" : "12pt"};
+            border-right: 1px solid #4b4b4b;
           }
           .litigation-mini .v {
-            width: 544px;
-            padding: 0 25px;
+            width: ${locale === "en" ? "609px" : "624px"};
+            padding: 0 20px;
             text-align: center;
-            letter-spacing: 0.06em;
-            font-size: 13.5pt;
+            letter-spacing: ${locale === "ko" ? "0.1em" : locale === "zh-CN" ? "0.05em" : "0.02em"};
+            font-size: ${locale === "en" ? "12pt" : "13pt"};
+            overflow: hidden;
+            word-wrap: break-word;
+            line-height: 1.3;
           }
           .litigation-sent {
             padding: 12px 25px;
@@ -3548,166 +3611,211 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18pt;
+            text-align: center;
+            font-size: ${locale === "ko" ? "12pt" : locale === "zh-CN" ? "11.5pt" : "9pt"};
             font-weight: 600;
-            letter-spacing: 0.7em;
-            text-indent: 0.7em;
+            letter-spacing: ${locale === "ko" ? "0.1em" : locale === "zh-CN" ? "0.05em" : "0.01em"};
+            text-indent: 0;
+            line-height: 1.2;
+            padding: 3px 3px;
+            word-break: ${locale === "en" ? "break-word" : "normal"};
           }
           .litigation-suw-wrap {
             height: 100%;
-            padding: 20px 25px 12px 25px;
+            padding: 15px 18px 10px 18px;
             box-sizing: border-box;
             text-align: center;
+            overflow: hidden;
+            word-wrap: break-word;
           }
           .litigation-lawoffice {
-            font-size: 18pt;
-            font-weight: 700;
-            letter-spacing: 0.65em;
-            text-indent: 0.65em;
+            font-size: ${locale === "ko" ? "13.5pt" : locale === "zh-CN" ? "13pt" : "12.5pt"};
+            font-weight: 400;
+            letter-spacing: ${locale === "ko" ? "0.05em" : locale === "zh-CN" ? "0.03em" : "0.01em"};
+            text-indent: 0;
             margin-top: 2px;
+            line-height: 1.5;
           }
           .litigation-lawyer {
-            font-size: 18pt;
-            font-weight: 700;
-            letter-spacing: 0.55em;
-            text-indent: 0.55em;
+            font-size: ${locale === "ko" ? "13.5pt" : locale === "zh-CN" ? "13pt" : "12.5pt"};
+            font-weight: 400;
+            letter-spacing: ${locale === "ko" ? "0.05em" : locale === "zh-CN" ? "0.03em" : "0.01em"};
+            text-indent: 0;
             margin-top: 10px;
+            line-height: 1.5;
           }
           .litigation-dash {
             margin: 15px 0 12px 0;
-            border-top: 1.3px dashed #4b4b4b;
+            border-top: 1px dashed #4b4b4b;
           }
           .litigation-addr {
-            font-size: 14pt;
-            letter-spacing: 0.02em;
+            font-size: ${locale === "en" ? "11pt" : "11.5pt"};
+            letter-spacing: 0.01em;
             margin-top: 6px;
+            line-height: 1.4;
+            overflow: hidden;
+            word-wrap: break-word;
           }
           .litigation-tel {
-            font-size: 14pt;
-            margin-top: 12px;
-            letter-spacing: 0.04em;
+            font-size: ${locale === "en" ? "11pt" : "11.5pt"};
+            margin-top: 10px;
+            letter-spacing: 0.02em;
+            line-height: 1.4;
+            overflow: hidden;
+            word-wrap: break-word;
           }
           .litigation-skw {
-            padding: 20px 22px 15px 22px;
+            padding: 15px 18px 10px 18px;
             box-sizing: border-box;
-            font-size: 12.4pt;
-            line-height: 1.7;
+            font-size: ${locale === "en" ? "11pt" : "11.5pt"};
+            line-height: 1.5;
             letter-spacing: 0.01em;
+            overflow: hidden;
+            word-wrap: break-word;
+            max-height: 100%;
+            overflow-y: auto;
           }
           .litigation-skw .item {
-            margin: 5px 0;
+            margin: 4px 0;
+            word-break: keep-all;
+            overflow-wrap: break-word;
           }
           .litigation-skw .num {
           }
           .litigation-special {
             width: 100%;
-            margin-top: 25px;
+            margin-top: 20px;
             table-layout: fixed;
             border-collapse: separate;
             border-spacing: 0;
-            font-size: 12pt;
+            font-size: ${locale === "en" ? "10.5pt" : "11pt"};
             border: none;
+            overflow: hidden;
           }
           .litigation-special td,
           .litigation-special th {
-            border: 1.3px solid #4b4b4b;
+            border: 1px solid #4b4b4b;
             padding: 0;
           }
           .litigation-special th:first-child,
           .litigation-special td:first-child {
-            border-left: 1.3px solid #4b4b4b;
+            border-left: 1px solid #4b4b4b;
           }
           .litigation-special th:last-child,
           .litigation-special td:last-child {
-            border-right: 1.3px solid #4b4b4b;
+            border-right: 1px solid #4b4b4b;
           }
           .litigation-special tr:first-child th,
           .litigation-special tr:first-child td {
-            border-top: 1.3px solid #4b4b4b;
+            border-top: 1px solid #4b4b4b;
           }
           .litigation-special tr:last-child th,
           .litigation-special tr:last-child td {
-            border-bottom: 1.3px solid #4b4b4b;
+            border-bottom: 1px solid #4b4b4b;
           }
           .litigation-special th {
             font-weight: 700;
             text-align: center;
-            height: 35px;
-            letter-spacing: 0.06em;
+            height: ${locale === "en" ? "20px" : "24px"};
+            letter-spacing: 0.02em;
+            font-size: ${locale === "en" ? "8pt" : "9.5pt"};
+            white-space: nowrap;
           }
           .litigation-sp-k {
-            width: 100px;
+            width: ${locale === "en" ? "85px" : "90px"};
             text-align: center;
             vertical-align: middle;
             font-weight: 600;
+            font-size: ${locale === "en" ? "8pt" : "9.5pt"};
+            padding: 2px 2px;
+            overflow: hidden;
+            word-wrap: break-word;
+            line-height: 1.2;
           }
           .litigation-sp-v {
-            width: auto;
-            padding: 7px 10px;
+            width: ${locale === "en" ? "350px" : "380px"};
+            padding: 2px 4px;
             vertical-align: middle;
+            font-size: ${locale === "en" ? "8pt" : "9.5pt"};
+            line-height: 1.2;
+            overflow: hidden;
+            word-wrap: break-word;
           }
           .litigation-sp-yn {
-            width: 80px;
+            width: ${locale === "en" ? "60px" : "50px"};
             text-align: center;
             vertical-align: middle;
-            font-size: 13pt;
+            font-size: ${locale === "en" ? "9pt" : "10pt"};
+            white-space: nowrap;
           }
           .litigation-note {
-            margin-top: 15px;
-            font-size: 12.3pt;
+            margin-top: ${locale === "en" ? "5px" : "8px"};
+            font-size: ${locale === "en" ? "9pt" : "10pt"};
             letter-spacing: 0.01em;
           }
           .litigation-bottom {
             height: 100%;
-            padding: 20px 25px;
+            padding: 5px 15px 2px 15px;
             box-sizing: border-box;
+            width: 100%;
           }
           .litigation-date {
             text-align: center;
-            font-size: 22pt;
-            font-weight: 700;
-            letter-spacing: 0.35em;
-            margin-top: 6px;
+            font-size: ${locale === "ko" ? "11pt" : locale === "zh-CN" ? "10pt" : "9pt"};
+            font-weight: 600;
+            letter-spacing: ${locale === "ko" ? "0.06em" : locale === "zh-CN" ? "0.04em" : "0.02em"};
+            margin-bottom: 3px;
+            line-height: 1.2;
           }
           .litigation-who {
-            margin-top: 30px;
-            font-size: 13.5pt;
-            line-height: 1.9;
-            letter-spacing: 0.02em;
+            margin-top: 2px;
+            font-size: ${locale === "en" ? "9pt" : "9.5pt"};
+            line-height: 1.2;
+            letter-spacing: 0.01em;
+            text-align: left;
           }
           .litigation-to {
-            margin-top: 30px;
-            font-size: 15pt;
-            letter-spacing: 0.08em;
+            margin-top: 2px;
+            margin-bottom: 0;
+            font-size: ${locale === "en" ? "9.5pt" : "10pt"};
+            letter-spacing: ${locale === "ko" ? "0.02em" : locale === "zh-CN" ? "0.02em" : "0.01em"};
+            text-align: left;
           }
           .litigation-footer {
             width: 694px;
-            margin: 20px auto 0 auto;
+            margin: 5px auto 0 auto;
             text-align: center;
             color: #111;
+            padding-bottom: 0;
+            flex-shrink: 0;
           }
           .litigation-footer .line {
             border-top: 2px solid #4b4b4b;
-            margin-bottom: 15px;
+            margin-bottom: 6px;
           }
           .litigation-footer .t1 {
-            font-size: 18pt;
-            font-weight: 800;
-            letter-spacing: 0.06em;
+            font-size: 12pt;
+            font-weight: 700;
+            letter-spacing: ${locale === "ko" ? "0.05em" : locale === "zh-CN" ? "0.03em" : "0.02em"};
+            line-height: 1.2;
           }
           .litigation-footer .t2 {
-            margin-top: 8px;
-            font-size: 11.5pt;
-            letter-spacing: 0.02em;
+            margin-top: 3px;
+            font-size: 10pt;
+            letter-spacing: 0.01em;
           }
           .litigation-footer .t3 {
-            margin-top: 6px;
-            font-size: 11.5pt;
-            letter-spacing: 0.02em;
+            margin-top: 2px;
+            font-size: 10pt;
+            letter-spacing: 0.01em;
           }
         `}</style>
         
         <table className="litigation-form">
+          <colgroup>
+            <col style={{ width: "70px" }} />
+            <col style={{ width: "624px" }} />
+          </colgroup>
           <tbody>
           {/* Title */}
           <tr className="litigation-r-title">
@@ -3747,13 +3855,13 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
 
           {/* 수임인 */}
           <tr className="litigation-r-suw">
-            <td className="litigation-c-l">
+            <td className="litigation-c-l" style={{ width: "70px" }}>
               <div className="litigation-biglbl" style={{ fontFamily: gungsuhFont }}>{t.suwonin}</div>
             </td>
-            <td className="litigation-c-m" style={{ padding: 0 }}>
+            <td className="litigation-c-m" style={{ padding: 0, width: "624px" }}>
               <div className="litigation-suw-wrap">
-                <div className="litigation-lawoffice" style={{ fontFamily: gungsuhFont }}>{t.lawOffice}</div>
-                <div className="litigation-lawyer" style={{ fontFamily: gungsuhFont }}>{t.lawyer}</div>
+                <div className="litigation-lawoffice" style={{ fontFamily }}>{t.lawOffice}</div>
+                <div className="litigation-lawyer" style={{ fontFamily }}>{t.lawyer}</div>
                 <div className="litigation-dash"></div>
                 <div className="litigation-addr" style={{ fontFamily }}>{t.address}</div>
                 <div className="litigation-tel" style={{ fontFamily }}>{t.tel} <span style={{ fontFamily: monoFont }}>031-8044-8805~8</span>, {t.fax} <span style={{ fontFamily: monoFont }}>031-491-3817</span></div>
@@ -3763,10 +3871,10 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
 
           {/* 수권사항 */}
           <tr className="litigation-r-skw">
-            <td className="litigation-c-l">
+            <td className="litigation-c-l" style={{ width: "70px" }}>
               <div className="litigation-biglbl" style={{ fontFamily: gungsuhFont }}>{t.sukwon}</div>
             </td>
-            <td className="litigation-c-m" style={{ padding: 0 }}>
+            <td className="litigation-c-m" style={{ padding: 0, width: "624px" }}>
               <div className="litigation-skw" style={{ fontFamily }}>
                 <div className="item" style={{ fontFamily }}><span className="num" style={{ fontFamily: monoFont }}>1.</span> {t.power1}</div>
                 <div className="item" style={{ fontFamily }}><span className="num" style={{ fontFamily: monoFont }}>2.</span> {t.power2}</div>
@@ -3775,6 +3883,11 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
                 <div className="item" style={{ fontFamily }}><span className="num" style={{ fontFamily: monoFont }}>5.</span> {t.power5}</div>
 
                 <table className="litigation-special">
+                  <colgroup>
+                    <col style={{ width: locale === "en" ? "85px" : "90px" }} />
+                    <col style={{ width: locale === "en" ? "350px" : "380px" }} />
+                    <col style={{ width: locale === "en" ? "60px" : "50px" }} />
+                  </colgroup>
                   <tbody>
                   <tr>
                     <th colSpan={2} style={{ fontFamily }}>{t.specialAuth}</th>
@@ -3817,7 +3930,7 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           <tr className="litigation-r-bottom">
             <td className="litigation-c-l" colSpan={2}>
               <div className="litigation-bottom" style={{ fontFamily: gungsuhFont }}>
-                <div className="litigation-date" style={{ fontFamily: monoFont }}>{year || ""}.&nbsp;&nbsp;{month || "&nbsp;&nbsp;"}.&nbsp;&nbsp;{day || "&nbsp;&nbsp;"}.</div>
+                <div className="litigation-date" style={{ fontFamily: monoFont }}>{year || "    "}.{"\u00A0\u00A0"}{month || "  "}.{"\u00A0\u00A0"}{day || "  "}.</div>
                 <div className="litigation-who" style={{ fontFamily: gungsuhFont }}>
                   {t.principalName} : <span style={{ fontFamily: monoFont }}>{getValue("principal_name") || ""}</span><br/>
                   {t.idNumber} : <span style={{ fontFamily: monoFont }}>{getValue("principal_id_number") || ""}</span>
@@ -3841,7 +3954,7 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
   }
 )
 
-// 사망보험금지급동의 OLD-case 미리보기
+// 사망보험금지급동의 SEJOONG 미리보기
 const InsuranceConsentOldPreview = forwardRef<HTMLDivElement, PreviewComponentProps & { data: InsuranceConsentData }>(
   function InsuranceConsentOldPreview({ data, locale, fontClass, getValue, formatDate }, ref) {
     // Locale에 따른 폰트 설정
@@ -3860,115 +3973,118 @@ const InsuranceConsentOldPreview = forwardRef<HTMLDivElement, PreviewComponentPr
     // 번역 텍스트
     const translations = {
       ko: {
-        title: "사망보험금 지급 등의 법정상속인 확인서",
+        title: "사망보험금 지급 청구에 관한 법정상속인 확인서",
         recipient: "수 신",
         sender: "발 신",
         address: "주 소",
         subject: "제  목",
         name: "성 명",
-        residenceReg: "거소신고",
+        residenceReg: "거소신고번호",
         birthdate: "생년월일",
         gender: "성 별",
         male: "남",
         female: "여",
-        para: "귀 사로부터 고인",
-        para2: "님의 사망보험금을 수령함에 있어 법정 상속인",
-        para3: "아래와 같이 사망보험금 수령 사실을 통보하고 동의 의사를 확인하였기에 귀사에 이를 안내하여 드립니다.",
+        representative: "대표자",
+        para: "귀하께서 보험계약을 체결하신 고인",
+        para2: "님의 사망으로 인한 사망보험금 지급 청구와 관련하여, 당해 피보험자의 법정상속인",
+        para3: "은(는) 아래와 같이 사망보험금 수령 사실을 통보하고 지급에 동의하는 바, 이에 귀하께 안내드립니다.",
         below: "- 아 래 -",
-        section1: "1. 보험계약사항,",
+        section1: "1. 보험계약 사항",
         section1a: "가. 보험상품명 :",
         section1b: "나. 보험계약자 :",
-        section1c: "다. 피 보 험 자 :",
-        section1d: "라. 계 약 일 자 :",
-        section2: "2. 예정 지급보험금.",
-        section2Text: "상기 보험계약과 관련하여 피보험자의 법정상속인의 확인 서명을 기재하여 첨부 서류와 함께 제출하오니 사망보험금을 보험증권에 명기되어 있는 사망보험금 수익자인",
-        section2Text2: "님에게 지급하여 주시기 바랍니다.",
-        section3: "3. [피 보험자의 법적 상속인].",
+        section1c: "다. 피보험자 :",
+        section1d: "라. 계약일자 :",
+        section2: "2. 사망보험금 지급 청구",
+        section2Text: "위 보험계약과 관련하여 피보험자의 법정상속인으로서 확인 서명을 기재한 본 확인서를 첨부 서류와 함께 제출하오니, 보험증권에 명시된 사망보험금 수익자",
+        section2Text2: "에게 사망보험금을 지급하여 주시기 바랍니다.",
+        section3: "3. 피보험자의 법정상속인",
         tableNo: "",
-        tableName: "본 국 성 명",
+        tableName: "본국 성명",
         tableId: "본국 신분증번호",
-        tableRel: "보험자와의 관계",
+        tableRel: "피보험자와의 관계",
         father: "부",
         mother: "모",
         section4: "4. 별 첨",
-        attach1: "1. 신분증사본 1부",
-        attach2: "2. 가족관계 증명서 1부",
+        attach1: "1. 신분증 사본 1부",
+        attach2: "2. 가족관계증명서 1부",
         to: "귀하",
         businessReg: "사업자등록번호"
       },
       en: {
-        title: "Confirmation of Legal Heirs for Payment of Death Insurance Benefits, etc.",
+        title: "Confirmation of Statutory Heirs for Death Benefit Claim",
         recipient: "To",
         sender: "From",
         address: "Address",
         subject: "Subject",
-        name: "Name",
-        residenceReg: "Residence Report No.",
+        name: "Full Name",
+        residenceReg: "Resident Registration No.",
         birthdate: "Date of Birth",
-        gender: "Sex",
+        gender: "Gender",
         male: "Male",
         female: "Female",
-        para: "In connection with the receipt of the death insurance benefits for the late",
-        para2: "the legal heirs hereby notify and confirm, as follows, the fact of receipt and the consent to payment, and provide this notice to your company.",
-        para3: "",
-        below: "Details -",
-        section1: "Policy Information",
-        section1a: "a. Product Name :",
-        section1b: "b. Policyholder :",
-        section1c: "c. Insured :",
-        section1d: "d. Policy Dates :",
-        section2: "Expected Payment",
-        section2Text: "The legal heirs' confirmation signatures are provided and submitted together with the attached documents. Please pay the death insurance benefits to the designated beneficiary on the policy certificate:",
+        representative: "Representative",
+        para: "In connection with the claim for death benefits following the demise of the late",
+        para2: ", who was insured under a policy issued by your company, we, as the statutory heirs of the deceased insured,",
+        para3: "hereby notify you of the fact of receipt and consent to payment of the death benefits as set forth below.",
+        below: "Details",
+        section1: "1. Policy Information",
+        section1a: "a. Insurance Product Name :",
+        section1b: "b. Policy Owner :",
+        section1c: "c. Insured Person :",
+        section1d: "d. Policy Date :",
+        section2: "2. Death Benefit Claim",
+        section2Text: "In connection with the above policy, we, as the statutory heirs of the insured, hereby submit this confirmation document with our signatures, together with the attached documents. We respectfully request that the death benefits be paid to the beneficiary designated in the policy certificate:",
         section2Text2: "",
-        section3: "[Legal Heirs of the Insured]",
+        section3: "3. Statutory Heirs of the Insured",
         tableNo: "",
         tableName: "Name (Home Country)",
-        tableId: "National ID No.",
-        tableRel: "Relationship",
+        tableId: "National ID Number",
+        tableRel: "Relationship to Insured",
         father: "Father",
         mother: "Mother",
-        section4: "Attachments",
-        attach1: "(1) Copy of ID 1 set",
-        attach2: "(2) Family Relationship Certificate 1 set",
-        to: "To:",
-        businessReg: "Business Reg. No."
+        section4: "4. Attachments",
+        attach1: "(1) Copy of Identification Document (1 set)",
+        attach2: "(2) Family Relationship Certificate (1 set)",
+        to: "Respectfully Yours,",
+        businessReg: "Business Registration No."
       },
       "zh-CN": {
-        title: "身故保险金支付等之法定继承人确认书",
-        recipient: "（收信）",
-        sender: "（发信）",
-        address: "（地址）",
-        subject: "（题目）",
-        name: "姓 名",
-        residenceReg: "居所申报",
+        title: "死亡保险金给付申请之法定继承人确认书",
+        recipient: "收件人",
+        sender: "发件人",
+        address: "地址",
+        subject: "事由",
+        name: "姓名",
+        residenceReg: "居所申报号码",
         birthdate: "出生年月日",
-        gender: "性 别",
+        gender: "性别",
         male: "男",
         female: "女",
-        para: "就贵司被保险人故",
-        para2: "之身故保险金领取事宜，作为法定继承人之",
-        para3: "现如下通知并确认身故保险金领取事实及同意意思，特此告知。",
-        below: "以 下 -",
-        section1: "保险合同事项",
-        section1a: "가. 保险商品名 :",
-        section1b: "나. 保险合同人 :",
-        section1c: "다. 被保险人 :",
-        section1d: "라. 合同日期 :",
-        section2: "预计给付保险金",
-        section2Text: "关于上述保险合同，已在附件文件中记载被保险人法定继承人确认签名并一并提交。请将身故保险金支付给保险凭证所记载之身故保险金受益人",
-        section2Text2: "。",
-        section3: "[被保险人的法定继承人]",
+        representative: "法定代表人",
+        para: "就贵公司承保之已故被保险人",
+        para2: "的死亡保险金给付申请事宜，作为该被保险人的法定继承人",
+        para3: "，现就死亡保险金领取事实及给付同意事项通知如下，特此告知。",
+        below: "以下",
+        section1: "1. 保险合同事项",
+        section1a: "a. 保险产品名称：",
+        section1b: "b. 保险合同人：",
+        section1c: "c. 被保险人：",
+        section1d: "d. 合同日期：",
+        section2: "2. 死亡保险金给付申请",
+        section2Text: "就上述保险合同，作为被保险人的法定继承人，现提交载有确认签名的本确认书及附件文件。请将死亡保险金支付给保险凭证上记载的死亡保险金受益人：",
+        section2Text2: "",
+        section3: "3. 被保险人的法定继承人",
         tableNo: "",
         tableName: "本国姓名",
         tableId: "本国身份证号码",
-        tableRel: "与被保险人关系",
+        tableRel: "与被保险人的关系",
         father: "父",
         mother: "母",
-        section4: "附 件",
-        attach1: "身份证复印件 1份",
-        attach2: "亲属关系证明书 1份",
-        to: "敬启",
-        businessReg: "营业者登记号"
+        section4: "4. 附件",
+        attach1: "(1) 身份证复印件 1份",
+        attach2: "(2) 亲属关系证明书 1份",
+        to: "此致",
+        businessReg: "营业执照注册号"
       }
     }
     
@@ -4056,13 +4172,14 @@ const InsuranceConsentOldPreview = forwardRef<HTMLDivElement, PreviewComponentPr
           }
           .ic-row {
             display: flex;
-            gap: 25px;
+            gap: ${locale === "en" ? "30px" : "25px"};
             align-items: baseline;
             margin: 2px 0;
           }
           .ic-k {
-            width: 68px;
+            width: ${locale === "en" ? "85px" : locale === "zh-CN" ? "75px" : "68px"};
             white-space: nowrap;
+            flex-shrink: 0;
             font-family: ${fontFamily} !important;
           }
           .ic-v {
@@ -4085,12 +4202,20 @@ const InsuranceConsentOldPreview = forwardRef<HTMLDivElement, PreviewComponentPr
           }
           .ic-info .line {
             margin: 2px 0;
+            display: flex;
+            align-items: baseline;
+            gap: ${locale === "en" ? "8px" : locale === "ko" ? "6px" : "4px"};
           }
           .ic-info .k2 {
             display: inline-block;
-            width: 68px;
+            width: ${locale === "en" ? "165px" : locale === "zh-CN" ? "95px" : "90px"};
             white-space: nowrap;
+            flex-shrink: 0;
             font-family: ${fontFamily} !important;
+          }
+          .ic-info .line > span:not(.k2) {
+            word-break: break-word;
+            overflow-wrap: break-word;
           }
           .ic-mono {
             font-family: ${monoFont} !important;
@@ -4194,7 +4319,7 @@ const InsuranceConsentOldPreview = forwardRef<HTMLDivElement, PreviewComponentPr
           </div>
           <div className="ic-row" style={{ fontFamily }}>
             <div className="ic-k" style={{ fontFamily }}>{t.sender} :</div>
-            <div className="ic-v" style={{ fontFamily }}>{getValue("sender_company") || ""} {getValue("sender_company") ? <span style={{ fontFamily }}>(대 표 : {getValue("sender_representative") || ""})</span> : ""} {t.businessReg} : <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span></div>
+            <div className="ic-v" style={{ fontFamily }}>{getValue("sender_company") || ""} {getValue("sender_company") && getValue("sender_representative") ? <span style={{ fontFamily }}>({t.representative} : {getValue("sender_representative")})</span> : ""} {t.businessReg} : <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span></div>
           </div>
           <div className="ic-row" style={{ fontFamily }}>
             <div className="ic-k" style={{ fontFamily }}>{t.address} :</div>
@@ -4206,19 +4331,25 @@ const InsuranceConsentOldPreview = forwardRef<HTMLDivElement, PreviewComponentPr
           {/* 피보험자 정보 */}
           <div className="ic-info" style={{ fontFamily }}>
             <div className="line" style={{ fontFamily }}>
-              <span className="k2" style={{ fontFamily }}>{t.name} :</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("insured_name") || ""}</span> {getValue("insured_name_kr") ? <span style={{ fontFamily }}>({getValue("insured_name_kr")})</span> : ""}
+              <span className="k2" style={{ fontFamily }}>{t.name} :</span>
+              <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("insured_name") || ""}</span>
+              {getValue("insured_name_kr") ? <span style={{ fontFamily }}>({getValue("insured_name_kr")})</span> : ""}
             </div>
             <div className="line" style={{ fontFamily }}>
-              <span className="k2" style={{ fontFamily }}>{t.residenceReg} :</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("insured_registration") || ""}</span>
+              <span className="k2" style={{ fontFamily }}>{t.residenceReg} :</span>
+              <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("insured_registration") || ""}</span>
             </div>
             <div className="line" style={{ fontFamily }}>
-              <span className="k2" style={{ fontFamily }}>{t.birthdate} :</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{birthYear ? `${birthYear}. ${birthMonth}. ${birthDay}.` : ""}</span>
+              <span className="k2" style={{ fontFamily }}>{t.birthdate} :</span>
+              <span className="ic-mono" style={{ fontFamily: monoFont }}>{birthYear ? `${birthYear}. ${birthMonth}. ${birthDay}.` : ""}</span>
             </div>
             <div className="line" style={{ fontFamily }}>
-              <span className="k2" style={{ fontFamily }}>{t.gender} :</span> <span style={{ fontFamily }}>{getValue("insured_gender") === "남" || getValue("insured_gender") === "male" || getValue("insured_gender") === "男" ? t.male : t.female}</span>
+              <span className="k2" style={{ fontFamily }}>{t.gender} :</span>
+              <span style={{ fontFamily }}>{getValue("insured_gender") === "남" || getValue("insured_gender") === "male" || getValue("insured_gender") === "男" ? t.male : t.female}</span>
             </div>
             <div className="line" style={{ fontFamily }}>
-              <span className="k2" style={{ fontFamily }}>{t.address} :</span> <span style={{ fontFamily }}>{getValue("insured_address") || ""}</span>
+              <span className="k2" style={{ fontFamily }}>{t.address} :</span>
+              <span style={{ fontFamily }}>{getValue("insured_address") || ""}</span>
             </div>
           </div>
 
@@ -4226,15 +4357,15 @@ const InsuranceConsentOldPreview = forwardRef<HTMLDivElement, PreviewComponentPr
           <div className="ic-para" style={{ fontFamily }}>
             {locale === "ko" ? (
               <>
-                <span style={{ fontFamily }}>{t.para}</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("insured_name") || ""}</span> {getValue("insured_name_kr") ? <span style={{ fontFamily }}>({getValue("insured_name_kr")})</span> : ""}<span style={{ fontFamily }}>{t.para2}</span> <span style={{ fontFamily }}>{getValue("sender_company") || ""}</span> {getValue("sender_company") ? <span style={{ fontFamily }}>(대표 : {getValue("sender_representative") || ""})</span> : ""} <span style={{ fontFamily }}>{t.businessReg}</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span> <span style={{ fontFamily }}>{t.para3}</span>
+                <span style={{ fontFamily }}>{t.para}</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("insured_name") || ""}</span> {getValue("insured_name_kr") ? <span style={{ fontFamily }}>({getValue("insured_name_kr")})</span> : ""}<span style={{ fontFamily }}>{t.para2}</span> <span style={{ fontFamily }}>{getValue("sender_company") || ""}</span> {getValue("sender_company") && getValue("sender_representative") ? <span style={{ fontFamily }}>({t.representative}: {getValue("sender_representative")})</span> : ""} <span style={{ fontFamily }}>{t.businessReg}</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span> <span style={{ fontFamily }}>{t.para3}</span>
               </>
             ) : locale === "zh-CN" ? (
               <>
-                <span style={{ fontFamily }}>{t.para}</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("insured_name") || ""}</span> {getValue("insured_name_kr") ? <span style={{ fontFamily }}>（{getValue("insured_name_kr")}）</span> : ""}<span style={{ fontFamily }}>{t.para2}</span> <span style={{ fontFamily }}>{getValue("sender_company") || ""}</span> {getValue("sender_company") && getValue("sender_representative") ? <span style={{ fontFamily }}>（代表：{getValue("sender_representative")}，登记号：{getValue("sender_registration") || ""}）</span> : ""}<span style={{ fontFamily }}>，{t.para3}</span>
+                <span style={{ fontFamily }}>{t.para}</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("insured_name") || ""}</span> {getValue("insured_name_kr") ? <span style={{ fontFamily }}>（{getValue("insured_name_kr")}）</span> : ""}<span style={{ fontFamily }}>{t.para2}</span> <span style={{ fontFamily }}>{getValue("sender_company") || ""}</span> {getValue("sender_company") && getValue("sender_representative") ? <span style={{ fontFamily }}>（{t.representative}：{getValue("sender_representative")}，{t.businessReg}：{getValue("sender_registration") || ""}）</span> : ""}<span style={{ fontFamily }}>{t.para3}</span>
               </>
             ) : (
               <>
-                <span style={{ fontFamily }}>{t.para}</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("insured_name") || ""}</span> {getValue("insured_name_kr") ? <span style={{ fontFamily }}>({getValue("insured_name_kr")})</span> : ""}<span style={{ fontFamily }}>, {t.para2}</span>
+                <span style={{ fontFamily }}>{t.para}</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("insured_name") || ""}</span> {getValue("insured_name_kr") ? <span style={{ fontFamily }}>({getValue("insured_name_kr")})</span> : ""}<span style={{ fontFamily }}>{t.para2}</span> <span style={{ fontFamily }}>{getValue("sender_company") || ""}</span> {getValue("sender_company") && getValue("sender_representative") ? <span style={{ fontFamily }}> ({t.representative}: {getValue("sender_representative")}, {t.businessReg}: {getValue("sender_registration") || ""})</span> : ""}<span style={{ fontFamily }}> {t.para3}</span>
               </>
             )}
           </div>
@@ -4246,27 +4377,33 @@ const InsuranceConsentOldPreview = forwardRef<HTMLDivElement, PreviewComponentPr
             <div className="h" style={{ fontFamily }}>{t.section1}</div>
             <div className="ic-sub" style={{ fontFamily }}>
               <div className="sline" style={{ fontFamily }}><span style={{ fontFamily }}>{t.section1a}</span> <span style={{ fontFamily }}>{getValue("insurance_product") || ""}</span></div>
-              <div className="sline" style={{ fontFamily }}><span style={{ fontFamily }}>{t.section1b}</span> <span style={{ fontFamily }}>{getValue("policyholder") || ""}</span> {getValue("sender_representative") ? <span style={{ fontFamily }}>(대 표 : {getValue("sender_representative")})</span> : ""} <span style={{ fontFamily }}>{t.businessReg} :</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span></div>
+              <div className="sline" style={{ fontFamily }}><span style={{ fontFamily }}>{t.section1b}</span> <span style={{ fontFamily }}>{getValue("sender_company") || ""}</span> {getValue("sender_representative") ? <span style={{ fontFamily }}>({t.representative} : {getValue("sender_representative")})</span> : ""} <span style={{ fontFamily }}>{t.businessReg} :</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span></div>
               <div className="sline" style={{ fontFamily }}><span style={{ fontFamily }}>{t.section1c}</span> <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("insured_name") || ""}</span> {getValue("insured_name_kr") ? <span style={{ fontFamily }}>({getValue("insured_name_kr")})</span> : ""}<span style={{ fontFamily }}>.</span></div>
               <div className="sline" style={{ fontFamily }}><span style={{ fontFamily }}>{t.section1d}</span> <span style={{ fontFamily }}>{contract1Str ? `①${contract1Str}` : ""} {contract2Str ? `+ ②${contract2Str}` : ""}</span></div>
             </div>
           </div>
 
-          {/* 2. 예정 지급보험금 */}
+          {/* 2. 사망보험금 지급 청구 */}
           <div className="ic-sec" style={{ fontFamily }}>
             <div className="h" style={{ fontFamily }}>{t.section2}</div>
             <div className="ic-indent" style={{ fontFamily }}>
               {locale === "ko" ? (
                 <>
-                  <span style={{ fontFamily }}>{t.section2Text}</span> <span style={{ fontFamily }}>{getValue("sender_company") || ""}</span> {getValue("sender_representative") ? <span style={{ fontFamily }}>대표 {getValue("sender_representative")}</span> : ""} <span style={{ fontFamily }}>{t.businessReg}:</span><span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span><span style={{ fontFamily }}>{t.section2Text2}</span>
+                  <span style={{ fontFamily }}>{t.section2Text}</span> <span style={{ fontFamily }}>{getValue("sender_company") || ""}</span> {getValue("sender_representative") && (
+                    <span style={{ fontFamily }}>({t.representative}: {getValue("sender_representative")}, {t.businessReg}: <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span>)</span>
+                  )}<span style={{ fontFamily }}>{t.section2Text2}</span>
                 </>
               ) : locale === "zh-CN" ? (
                 <>
-                  <span style={{ fontFamily }}>{t.section2Text}（株）{getValue("sender_company") || ""} 代表 {getValue("sender_representative") || ""}（登记号：</span><span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span><span style={{ fontFamily }}>）{t.section2Text2}</span>
+                  <span style={{ fontFamily }}>{t.section2Text}</span> <span style={{ fontFamily }}>{getValue("sender_company") || ""}</span> {getValue("sender_representative") && (
+                    <span style={{ fontFamily }}>（{t.representative}：{getValue("sender_representative")}，{t.businessReg}：<span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span>）</span>
+                  )}<span style={{ fontFamily }}>{t.section2Text2}</span>
                 </>
               ) : (
                 <>
-                  <span style={{ fontFamily }}>{t.section2Text}</span> <span style={{ fontFamily }}>{getValue("sender_company") || ""}, CEO {getValue("sender_representative") || ""} (Business Reg. No.: </span><span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span><span style={{ fontFamily }}>).</span>
+                  <span style={{ fontFamily }}>{t.section2Text}</span> <span style={{ fontFamily }}>{getValue("sender_company") || ""}</span> {getValue("sender_representative") && (
+                    <span style={{ fontFamily }}> ({t.representative}: {getValue("sender_representative")}, {t.businessReg}: <span className="ic-mono" style={{ fontFamily: monoFont }}>{getValue("sender_registration") || ""}</span>)</span>
+                  )}<span style={{ fontFamily }}>.</span>
                 </>
               )}
             </div>

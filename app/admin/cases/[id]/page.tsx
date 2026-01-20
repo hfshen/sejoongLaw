@@ -199,7 +199,9 @@ export default function CaseDetailPage() {
 
     try {
       setIsDownloadingZip(true)
-      toast.success("서류 이미지를 생성 중입니다. 잠시만 기다려주세요...")
+      
+      // 진행 상황 토스트 생성 (자동 닫힘 방지)
+      const progressToastId = toast.progress("서류 이미지를 생성 중입니다...")
 
       const zip = new JSZip()
       const locales: ("ko" | "en" | "zh-CN")[] = ["ko", "en", "zh-CN"]
@@ -218,6 +220,7 @@ export default function CaseDetailPage() {
             const docResponse = await fetch(`/api/documents/${doc.id}`)
             if (!docResponse.ok) {
               processedCount++
+              toast.update(progressToastId, `진행 중... (${processedCount}/${totalCount})`)
               continue
             }
 
@@ -229,6 +232,7 @@ export default function CaseDetailPage() {
 
             if (!apiDocument) {
               processedCount++
+              toast.update(progressToastId, `진행 중... (${processedCount}/${totalCount})`)
               continue
             }
 
@@ -254,13 +258,16 @@ export default function CaseDetailPage() {
             }
 
             processedCount++
-            toast.success(`진행 중... (${processedCount}/${totalCount})`)
+            toast.update(progressToastId, `진행 중... (${processedCount}/${totalCount})`)
           } catch (error) {
-            toast.error(`문서 이미지 생성 실패: ${doc.document_type} (${locale})`)
             processedCount++
+            toast.update(progressToastId, `진행 중... (${processedCount}/${totalCount})`)
           }
         }
       }
+
+      // 진행 토스트 제거
+      toast.remove(progressToastId)
 
       if (addedCount === 0) {
         toast.error("ZIP에 추가된 이미지가 없습니다. (서류 로딩/이미지 생성 실패)")
