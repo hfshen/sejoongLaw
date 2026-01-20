@@ -1752,6 +1752,8 @@ const AgreementOldPreview = forwardRef<HTMLDivElement, PreviewComponentProps & {
           .agreement-blank {
             display: inline-block;
             min-width: ${locale === "en" ? "200px" : "264.6px"}; /* 70mm, adjusted for English */
+            font-family: ${fontFamily} !important;
+            font-size: 11.5pt !important;
           }
           .agreement-clauses {
             margin: 15px 0 0 0;
@@ -1791,7 +1793,7 @@ const AgreementOldPreview = forwardRef<HTMLDivElement, PreviewComponentProps & {
           </div>
           <div className="agreement-kv">
             <div className="k" style={{ fontFamily }}>{t.name} :</div>
-            <div className="v" style={{ fontFamily }}><span className="agreement-blank">{getValue("party_a_name") || ""}</span></div>
+            <div className="v" style={{ fontFamily }}><span className="agreement-blank" style={{ fontFamily }}>{getValue("party_a_name") || ""}</span></div>
           </div>
           <div className="agreement-kv">
             <div className="k" style={{ fontFamily }}>{t.birthdate} :</div>
@@ -2619,7 +2621,8 @@ const AttorneyAppointmentOldPreview = forwardRef<HTMLDivElement, PreviewComponen
         idNumber: "본국신분증번호",
         relation: "관계",
         attorney: "변호인",
-        attorneyName: "변호사 이택기 (법률사무소 세중)",
+        attorneyName: "변호사 이택기",
+        attorneyFirm: "(법률사무소 세중)",
         court: "의정부지방법원",
         attorneyAddress: "안산시 단원구 원곡로 45, 2층",
         attorneyContact: "전화 031-8044-8805 팩스 031-491-8817"
@@ -2635,7 +2638,8 @@ const AttorneyAppointmentOldPreview = forwardRef<HTMLDivElement, PreviewComponen
         idNumber: "National ID No.",
         relation: "Relationship",
         attorney: "Counsel",
-        attorneyName: "Attorney LEE, Taek Gi (SEJONG LAW OFFICE)",
+        attorneyName: "Attorney LEE, Taek Gi",
+        attorneyFirm: "(SEJONG LAW OFFICE)",
         attorneyAddress: "Address: 2F, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
         attorneyContact: "Tel. 031-8044-8805 Fax. 031-491-8817",
         court: "To: Uijeongbu District Court",
@@ -2652,7 +2656,8 @@ const AttorneyAppointmentOldPreview = forwardRef<HTMLDivElement, PreviewComponen
         idNumber: "本国身份证号码",
         relation: "关 系",
         attorney: "律师",
-        attorneyName: "律师 李泽基（世宗律师事务所）",
+        attorneyName: "律师 李泽基",
+        attorneyFirm: "（世宗律师事务所）",
         attorneyAddress: "地址 京畿道 安山市 檀园区 元谷路 45号 2层",
         attorneyContact: "电话 031-8044-8805 传真 031-491-8817",
         court: "议政府地方法院 敬启",
@@ -3189,7 +3194,11 @@ const AttorneyAppointmentOldPreview = forwardRef<HTMLDivElement, PreviewComponen
                       boxSizing: "border-box"
                     }}
                   >
-                    {t.attorneyName || (locale === "ko" ? "변호사 이택기 (법률사무소 세중)" : locale === "zh-CN" ? "律师 李泽基（世宗律师事务所）" : "Attorney LEE, Taek Gi (SEJONG LAW OFFICE)")}
+                    <div style={{ lineHeight: "1.4" }}>
+                      {t.attorneyName || (locale === "ko" ? "변호사 이택기" : locale === "zh-CN" ? "律师 李泽基" : "Attorney LEE, Taek Gi")}
+                      <br/>
+                      {t.attorneyFirm || (locale === "ko" ? "(법률사무소 세중)" : locale === "zh-CN" ? "（世宗律师事务所）" : "(SEJONG LAW OFFICE)")}
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -3404,26 +3413,26 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
         case: "Case",
         plaintiff: "Plaintiff",
         defendant: "Defendant",
-        sentence: "With respect to the above case, the undersigned appoints the following attorney as the Plaintiff's litigation representative and grants the powers set forth below.",
-        suwonin: "Attorney-in-fact",
+        sentence: "With respect to the above case, the undersigned hereby appoints the following attorney as the Plaintiff's litigation representative and grants the powers and authorities set forth below.",
+        suwonin: "Attorney-in-Fact",
         sukwon: "POWERS GRANTED",
         lawOffice: "SEJONG LAW OFFICE",
         lawyer: "Attorney LEE, Taek Gi",
-        address: "Address 2F, Sejong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
+        address: "Address: 2F, Sejong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
         tel: "Tel.",
         fax: "Fax.",
         specialAuth: "OTHER SPECIAL POWERS",
-        authStatus: "Authorized",
-        withdrawalOfSuit: "Withdrawal of action",
-        withdrawalOfSuitDesc: "Authority to withdraw all or part of the action and terminate the case",
-        withdrawalOfAppeal: "Withdrawal of appeal",
-        withdrawalOfAppealDesc: "Authority to withdraw the appeal while maintaining and finalizing the judgment",
-        waiverOfClaim: "Waiver of claim",
-        waiverOfClaimDesc: "Authority to acknowledge the claim is without grounds and terminate the case",
-        admissionOfClaim: "Admission of claim",
-        admissionOfClaimDesc: "Authority to admit the opposing party's claim and terminate the case",
-        withdrawalFromSuit: "Withdrawal from suit",
-        withdrawalFromSuitDesc: "Authority to withdraw from the suit upon third-party intervention (CCP Art.80)",
+        authStatus: "Authorization",
+        withdrawalOfSuit: "Withdrawal of Action",
+        withdrawalOfSuitDesc: "Authority to withdraw all or part of the action filed and thereby terminate the litigation",
+        withdrawalOfAppeal: "Withdrawal of Appeal",
+        withdrawalOfAppealDesc: "Authority to withdraw the appeal while maintaining and finalizing the judgment of the lower court",
+        waiverOfClaim: "Waiver of Claim",
+        waiverOfClaimDesc: "Authority to acknowledge that the principal's claim is without merit and thereby terminate the litigation",
+        admissionOfClaim: "Admission of Claim",
+        admissionOfClaimDesc: "Authority to admit that the opposing party's claim is well-founded and thereby terminate the litigation",
+        withdrawalFromSuit: "Withdrawal from Suit",
+        withdrawalFromSuitDesc: "Authority to withdraw from the suit when a third party intervenes in the litigation (Civil Procedure Act, Article 80)",
         note: "Other special powers (mark \"O\" if granted; mark \"X\" if reserved)",
         principalName: "Family Representative of the Principal",
         idNumber: "National ID No.",
@@ -3433,11 +3442,11 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
         footerAddress: "(15378) 2F, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do (Wongok-dong, Sejong Bldg.)",
         footerTel: "Tel.",
         footerFax: "Fax.",
-        power1: "All litigation acts (including filing counterclaims and appeals; and all applications and objection procedures under the Civil Execution Act, such as provisional attachment, injunction, auction/execution, etc.)",
-        power2: "Inspection/copying of records, receipt of payment, appointment of a sub-agent (substitute counsel)",
+        power1: "All litigation acts (including filing counterclaims and appeals; and all applications and objection procedures under the Civil Execution Act, such as provisional attachment, provisional disposition, compulsory execution, auction, etc.)",
+        power2: "Inspection and copying of case records, receipt of payment, and appointment of a sub-agent (substitute counsel)",
         power3: "Settlement in court or out of court",
-        power4: "Exercise of security rights and demand notice; application for determination of litigation costs",
-        power5: "Deposit (court deposit) applications and payments; claims for withdrawal/return of deposited funds and receipt of deposit notices; inspection/copying of deposit records; applications for certificates of facts and receipt thereof, and all related acts"
+        power4: "Exercise of security rights and application for demand notice; application for determination of litigation costs",
+        power5: "Application for court deposit and payment of deposit money; request for withdrawal/return of deposited funds and receipt of deposit notices; inspection and copying of deposit records; application for certificates of facts and receipt thereof, and all related acts"
       },
       "zh-CN": {
         title: "诉 讼 委 任 状",
@@ -3449,35 +3458,35 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
         sukwon: "【授 权 事 项】",
         lawOffice: "世宗律师事务所",
         lawyer: "律师 李泽基",
-        address: "地址 京畿道 安山市 檀园区 元谷路 45号，世宗大厦 2层",
+        address: "地址：京畿道 安山市 檀园区 元谷路 45号，世宗大厦 2层",
         tel: "电话",
         fax: "传真",
         specialAuth: "【其 他 特 别 授 权 事 项】",
-        authStatus: "【授权与否】",
+        authStatus: "【授 权 与 否】",
         withdrawalOfSuit: "撤回起诉",
         withdrawalOfSuitDesc: "撤回已提起之诉讼全部或一部，从而终结诉讼之权限",
         withdrawalOfAppeal: "撤回上诉",
-        withdrawalOfAppealDesc: "在维持并确定原审的同时撤回上诉申请之权限",
+        withdrawalOfAppealDesc: "在维持并确定原审判决的同时撤回上诉申请之权限",
         waiverOfClaim: "放弃请求",
-        waiverOfClaimDesc: "认可委任人请求无理由并终结诉讼之权限",
+        waiverOfClaimDesc: "认可委任人之请求无理由并终结诉讼之权限",
         admissionOfClaim: "认可请求",
-        admissionOfClaimDesc: "认可对方请求有理由并终结诉讼之权限",
+        admissionOfClaimDesc: "认可对方当事人之请求有理由并终结诉讼之权限",
         withdrawalFromSuit: "诉讼退出",
-        withdrawalFromSuitDesc: "第三人参加诉讼时退出该诉讼之权限(民事诉讼法第80条)",
+        withdrawalFromSuitDesc: "第三人参加诉讼时退出该诉讼之权限（民事诉讼法第80条）",
         note: "其他特别授权事项（授予则标记 O，保留则标记 X）",
         principalName: "委任人 家属代表 姓名",
         idNumber: "本国身份证号码",
         court: "议政府地方法院",
         to: "敬启",
         footerTitle: "世宗律师事务所 律师",
-        footerAddress: "(15378) 京畿道 安山市 檀园区 元谷路 45号 2层(元谷洞, 世宗大厦)",
+        footerAddress: "(15378) 京畿道 安山市 檀园区 元谷路 45号 2层（元谷洞，世宗大厦）",
         footerTel: "电话",
         footerFax: "传真",
-        power1: "一切诉讼行为（提起反诉及上诉，以及假扣押、假处分、强制执行/拍卖等民事执行法项下的申请及异议程序等全部事项）",
-        power2: "阅卷/复制，受领清偿，选任转委代理人(再代理人)",
+        power1: "一切诉讼行为（包括提起反诉及上诉；以及假扣押、假处分、强制执行、拍卖等民事执行法项下的申请及异议程序等全部事项）",
+        power2: "案卷查阅及复制、受领清偿、选任转委代理人（再代理人）",
         power3: "诉讼上或诉讼外和解",
-        power4: "担保权行使及催告申请，申请确定诉讼费用",
-        power5: "提存申请及提存金缴纳行为，提存金领取/回收请求及受领提存通知书，提存记录阅览/复制，事实证明申请及受领等一切行为"
+        power4: "担保权行使及催告申请、诉讼费用确定申请",
+        power5: "提存申请及提存金缴纳行为、提存金领取/回收请求及受领提存通知书、提存记录查阅/复制、事实证明申请及受领等一切行为"
       }
     }
     
@@ -3508,6 +3517,9 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
       return "0"
     }
     
+    // 하단 패딩 계산 (영어는 더 많은 공간 필요)
+    const bottomPadding = locale === "en" ? "50px" : "40px"
+    
     return (
       <div 
         ref={ref} 
@@ -3518,10 +3530,10 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           width: "794px",
           height: "1123px",
           minHeight: "1123px",
-          maxHeight: "1123px",
+          maxHeight: "none",
           position: "relative",
           backgroundColor: "#ffffff",
-          padding: "35px 50px 20px 50px",
+          padding: `35px 50px ${bottomPadding} 50px`,
           boxSizing: "border-box",
           fontFamily,
           color: "#111",
@@ -3550,7 +3562,7 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           .litigation-r-sent { height: ${locale === "en" ? "50px" : "55px"}; }
           .litigation-r-suw { height: ${locale === "en" ? "90px" : "100px"}; }
           .litigation-r-skw { height: auto; min-height: ${locale === "en" ? "380px" : "400px"}; }
-          .litigation-r-bottom { height: ${locale === "en" ? "90px" : "100px"}; }
+          .litigation-r-bottom { height: ${locale === "en" ? "110px" : "105px"}; }
           .litigation-title {
             height: 100%;
             display: flex;
@@ -3755,7 +3767,7 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           }
           .litigation-bottom {
             height: 100%;
-            padding: 5px 15px 2px 15px;
+            padding: 5px 15px ${locale === "en" ? "8px" : "5px"} 15px;
             box-sizing: border-box;
             width: 100%;
           }
@@ -3776,14 +3788,14 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           }
           .litigation-to {
             margin-top: 2px;
-            margin-bottom: 0;
+            margin-bottom: ${locale === "en" ? "3px" : "2px"};
             font-size: ${locale === "en" ? "9.5pt" : "10pt"};
             letter-spacing: ${locale === "ko" ? "0.02em" : locale === "zh-CN" ? "0.02em" : "0.01em"};
             text-align: left;
           }
           .litigation-footer {
             width: 694px;
-            margin: 5px auto 0 auto;
+            margin: ${locale === "en" ? "8px" : "5px"} auto 0 auto;
             text-align: center;
             color: #111;
             padding-bottom: 0;

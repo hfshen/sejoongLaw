@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { Save, ArrowLeft, Loader2, Globe, Image as ImageIcon } from "lucide-react"
+import { Save, ArrowLeft, Loader2, Globe, Image as ImageIcon, FileText } from "lucide-react"
 import Button from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import {
@@ -209,6 +209,37 @@ export default function DocumentForm({
     } catch (error) {
       console.error("Error downloading image:", error)
       toast.error("이미지 다운로드에 실패했습니다.")
+    }
+  }
+
+  const handleDownloadPDF = async () => {
+    if (!documentId) {
+      toast.error("문서 ID가 없습니다.")
+      return
+    }
+
+    try {
+      toast.success("PDF 생성 중입니다. 잠시만 기다려주세요...")
+
+      const response = await fetch(`/api/documents/${documentId}/pdf?locale=${locale}`)
+      if (!response.ok) {
+        throw new Error("PDF 생성에 실패했습니다.")
+      }
+
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.download = `${initialData?.name || "document"}_${locale}_${new Date().toISOString().split("T")[0]}.pdf`
+      link.href = url
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+
+      toast.success("PDF 다운로드가 완료되었습니다.")
+    } catch (error) {
+      console.error("Error downloading PDF:", error)
+      toast.error("PDF 다운로드에 실패했습니다.")
     }
   }
 
@@ -538,16 +569,28 @@ export default function DocumentForm({
           </div>
 
           {documentId && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleDownloadJPEG}
-              className="h-9 flex-shrink-0"
-            >
-              <ImageIcon className="w-4 h-4 mr-2" />
-              <span className="hidden sm:inline">이미지 다운로드</span>
-              <span className="sm:hidden">다운로드</span>
-            </Button>
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleDownloadJPEG}
+                className="h-9 flex-shrink-0"
+              >
+                <ImageIcon className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">이미지 다운로드</span>
+                <span className="sm:hidden">다운로드</span>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleDownloadPDF}
+                className="h-9 flex-shrink-0"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">PDF 다운로드</span>
+                <span className="sm:hidden">PDF</span>
+              </Button>
+            </>
           )}
           <Button 
             type="button" 
