@@ -2123,7 +2123,7 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           maxHeight: "1123px",
           position: "relative",
           backgroundColor: "#ffffff",
-          padding: `${locale === "en" ? "35px" : "40px"} 53px ${locale === "en" ? "35px" : "30px"} 53px`,
+          padding: `${locale === "en" ? "35px" : "40px"} 53px ${locale === "en" ? "60px" : locale === "zh-CN" ? "55px" : "50px"} 53px`,
           boxSizing: "border-box",
           fontFamily,
           color: "#111",
@@ -2387,11 +2387,14 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             width: ${locale === "en" ? "700px" : locale === "zh-CN" ? "695px" : "688px"};
             margin-top: 8px;
             padding-top: 3px;
+            padding-bottom: 0;
             text-align: center;
             color: #111;
             font-family: ${fontFamily};
             position: relative;
             min-height: 80px;
+            flex-shrink: 0;
+            margin-bottom: 0;
           }
           .poa-footer .rule {
             border-top: 2px solid #3f3f3f;
@@ -2625,7 +2628,7 @@ const AttorneyAppointmentOldPreview = forwardRef<HTMLDivElement, PreviewComponen
         attorneyFirm: "(법률사무소 세중)",
         court: "의정부지방법원",
         attorneyAddress: "안산시 단원구 원곡로 45, 2층",
-        attorneyContact: "전화 031-8044-8805 팩스 031-491-8817"
+        attorneyContact: "전화: 031-8044-8805 팩스: 031-491-8817"
       },
       en: {
         title: "NOTICE OF APPOINTMENT OF COUNSEL",
@@ -2641,7 +2644,7 @@ const AttorneyAppointmentOldPreview = forwardRef<HTMLDivElement, PreviewComponen
         attorneyName: "Attorney LEE, Taek Gi",
         attorneyFirm: "(SEJONG LAW OFFICE)",
         attorneyAddress: "Address: 2F, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
-        attorneyContact: "Tel. 031-8044-8805 Fax. 031-491-8817",
+        attorneyContact: "Tel.: 031-8044-8805 Fax.: 031-491-8817",
         court: "To: Uijeongbu District Court",
         footerAddress: "2F, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do"
       },
@@ -2658,8 +2661,8 @@ const AttorneyAppointmentOldPreview = forwardRef<HTMLDivElement, PreviewComponen
         attorney: "律师",
         attorneyName: "律师 李泽基",
         attorneyFirm: "（世宗律师事务所）",
-        attorneyAddress: "地址 京畿道 安山市 檀园区 元谷路 45号 2层",
-        attorneyContact: "电话 031-8044-8805 传真 031-491-8817",
+        attorneyAddress: "地址：京畿道 安山市 檀园区 元谷路 45号 2层",
+        attorneyContact: "电话：031-8044-8805 传真：031-491-8817",
         court: "议政府地方法院 敬启",
         footerAddress: "京畿道 安山市 檀园区 元谷路 45号 2层"
       }
@@ -3517,8 +3520,8 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
       return "0"
     }
     
-    // 하단 패딩 계산 (영어는 더 많은 공간 필요)
-    const bottomPadding = locale === "en" ? "50px" : "40px"
+    // 하단 패딩 계산 (하단 텍스트가 모두 보이도록 충분한 공간 확보)
+    const bottomPadding = locale === "en" ? "90px" : locale === "zh-CN" ? "85px" : "80px"
     
     return (
       <div 
@@ -3562,7 +3565,7 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           .litigation-r-sent { height: ${locale === "en" ? "50px" : "55px"}; }
           .litigation-r-suw { height: ${locale === "en" ? "90px" : "100px"}; }
           .litigation-r-skw { height: auto; min-height: ${locale === "en" ? "380px" : "400px"}; }
-          .litigation-r-bottom { height: ${locale === "en" ? "110px" : "105px"}; }
+          .litigation-r-bottom { height: ${locale === "en" ? "150px" : locale === "zh-CN" ? "145px" : "140px"}; }
           .litigation-title {
             height: 100%;
             display: flex;
@@ -3634,11 +3637,14 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           }
           .litigation-suw-wrap {
             height: 100%;
-            padding: 15px 18px 10px 18px;
+            padding: 15px 20px 10px 20px;
             box-sizing: border-box;
             text-align: center;
-            overflow: hidden;
+            overflow: visible;
+            width: 100%;
+            min-width: 0;
             word-wrap: break-word;
+            overflow-wrap: break-word;
           }
           .litigation-lawoffice {
             font-size: ${locale === "ko" ? "13.5pt" : locale === "zh-CN" ? "13pt" : "12.5pt"};
@@ -3665,16 +3671,29 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
             letter-spacing: 0.01em;
             margin-top: 6px;
             line-height: 1.4;
-            overflow: hidden;
+            overflow: visible;
             word-wrap: break-word;
+            overflow-wrap: break-word;
+            width: 100%;
+            min-width: 0;
+            padding: 0 2px;
+            box-sizing: border-box;
           }
           .litigation-tel {
             font-size: ${locale === "en" ? "11pt" : "11.5pt"};
             margin-top: 10px;
             letter-spacing: 0.02em;
             line-height: 1.4;
-            overflow: hidden;
+            overflow: visible;
+            width: 100%;
+            min-width: 0;
+            padding: 0 2px;
+            box-sizing: border-box;
             word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
           }
           .litigation-skw {
             padding: 15px 18px 10px 18px;
@@ -3767,9 +3786,15 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           }
           .litigation-bottom {
             height: 100%;
-            padding: 5px 15px ${locale === "en" ? "8px" : "5px"} 15px;
+            padding: 5px 20px ${locale === "en" ? "15px" : "12px"} 20px;
             box-sizing: border-box;
             width: 100%;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: ${locale === "en" ? "140px" : locale === "zh-CN" ? "135px" : "130px"};
+            overflow: visible;
           }
           .litigation-date {
             text-align: center;
@@ -3781,17 +3806,34 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           }
           .litigation-who {
             margin-top: 2px;
+            margin-bottom: 2px;
             font-size: ${locale === "en" ? "9pt" : "9.5pt"};
-            line-height: 1.2;
+            line-height: 1.4;
             letter-spacing: 0.01em;
             text-align: left;
+            overflow: visible;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            width: 100%;
+            min-width: 0;
+            padding: 0 2px;
+            box-sizing: border-box;
           }
           .litigation-to {
             margin-top: 2px;
-            margin-bottom: ${locale === "en" ? "3px" : "2px"};
+            margin-bottom: ${locale === "en" ? "5px" : "3px"};
             font-size: ${locale === "en" ? "9.5pt" : "10pt"};
             letter-spacing: ${locale === "ko" ? "0.02em" : locale === "zh-CN" ? "0.02em" : "0.01em"};
             text-align: left;
+            overflow: visible;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            width: 100%;
+            min-width: 0;
+            padding: 0 2px;
+            box-sizing: border-box;
           }
           .litigation-footer {
             width: 694px;
@@ -3875,8 +3917,8 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
                 <div className="litigation-lawoffice" style={{ fontFamily }}>{t.lawOffice}</div>
                 <div className="litigation-lawyer" style={{ fontFamily }}>{t.lawyer}</div>
                 <div className="litigation-dash"></div>
-                <div className="litigation-addr" style={{ fontFamily }}>{t.address}</div>
-                <div className="litigation-tel" style={{ fontFamily }}>{t.tel} <span style={{ fontFamily: monoFont }}>031-8044-8805~8</span>, {t.fax} <span style={{ fontFamily: monoFont }}>031-491-3817</span></div>
+                <div className="litigation-addr" style={{ fontFamily }}><span style={{ fontFamily }}>{t.address}</span></div>
+                <div className="litigation-tel" style={{ fontFamily }}><span style={{ fontFamily }}>{t.tel}</span>: <span style={{ fontFamily: monoFont }}>031-8044-8805~8</span>, <span style={{ fontFamily }}>{t.fax}</span>: <span style={{ fontFamily: monoFont }}>031-491-3817</span></div>
               </div>
             </td>
           </tr>
@@ -3940,12 +3982,12 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
 
           {/* 하단 */}
           <tr className="litigation-r-bottom">
-            <td className="litigation-c-l" colSpan={2}>
+            <td className="litigation-c-l" colSpan={2} style={{ width: "100%", maxWidth: "100%", padding: 0 }}>
               <div className="litigation-bottom" style={{ fontFamily: gungsuhFont }}>
                 <div className="litigation-date" style={{ fontFamily: monoFont }}>{year || "    "}.{"\u00A0\u00A0"}{month || "  "}.{"\u00A0\u00A0"}{day || "  "}.</div>
                 <div className="litigation-who" style={{ fontFamily: gungsuhFont }}>
-                  {t.principalName} : <span style={{ fontFamily: monoFont }}>{getValue("principal_name") || ""}</span><br/>
-                  {t.idNumber} : <span style={{ fontFamily: monoFont }}>{getValue("principal_id_number") || ""}</span>
+                  <span style={{ fontFamily: gungsuhFont }}>{t.principalName}</span> : <span style={{ fontFamily: monoFont }}>{getValue("principal_name") || ""}</span><br/>
+                  <span style={{ fontFamily: gungsuhFont }}>{t.idNumber}</span> : <span style={{ fontFamily: monoFont }}>{getValue("principal_id_number") || ""}</span>
                 </div>
                 <div className="litigation-to" style={{ fontFamily: gungsuhFont }}>{getValue("court") || t.court}&nbsp;&nbsp;{t.to}</div>
               </div>
@@ -4187,17 +4229,24 @@ const InsuranceConsentOldPreview = forwardRef<HTMLDivElement, PreviewComponentPr
             gap: ${locale === "en" ? "30px" : "25px"};
             align-items: baseline;
             margin: 2px 0;
+            overflow: visible;
+            width: 100%;
           }
           .ic-k {
             width: ${locale === "en" ? "85px" : locale === "zh-CN" ? "75px" : "68px"};
             white-space: nowrap;
             flex-shrink: 0;
             font-family: ${fontFamily} !important;
+            overflow: visible;
           }
           .ic-v {
             flex: 1;
             min-width: 0;
             font-family: ${fontFamily} !important;
+            overflow: visible;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
           }
           .ic-title {
             margin: 12px 0 8px 0;

@@ -222,9 +222,31 @@ export async function generateDocumentImage(
       return null
     }
 
-    // 폰트 로딩 대기
+    // 폰트 로딩 대기 (더 긴 대기 시간)
     await document.fonts.ready
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    
+    // 모든 텍스트 노드가 렌더링되었는지 확인
+    const textNodes = Array.from(previewElement.querySelectorAll('*'))
+    let allTextRendered = true
+    textNodes.forEach((node) => {
+      const htmlNode = node as HTMLElement
+      if (htmlNode.textContent && htmlNode.textContent.trim()) {
+        const computed = window.getComputedStyle(htmlNode)
+        if (computed.fontFamily && !computed.fontFamily.includes('fallback')) {
+          // 폰트가 로드되었는지 확인
+          const fontLoaded = document.fonts.check(`12px ${computed.fontFamily}`)
+          if (!fontLoaded) {
+            allTextRendered = false
+          }
+        }
+      }
+    })
+    
+    // 추가 대기 시간 (텍스트 렌더링 안정화)
+    if (!allTextRendered) {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
 
     // (중요) SVG 로고는 html2canvas/캔버스에서 누락되는 경우가 있어 PNG로 변환해서 사용
     let logoPng = await getLogoPngDataUrl()
@@ -347,13 +369,47 @@ export async function generateDocumentImage(
         clonedElement.style.maxHeight = "1123px"
         clonedElement.style.minWidth = "794px"
         clonedElement.style.minHeight = "1123px"
-        clonedElement.style.overflow = "hidden"
+        clonedElement.style.overflow = "visible"
         clonedElement.style.position = "relative"
         clonedElement.style.display = "flex"
         clonedElement.style.flexDirection = "column"
         clonedElement.style.boxSizing = "border-box"
         clonedElement.style.margin = "0"
         // padding은 DocumentPreview의 inline style을 그대로 유지 (중복 적용 금지)
+        
+        // 모든 텍스트 요소에 폰트 강제 적용 및 overflow 방지
+        const allTextElements = clonedDoc.querySelectorAll('*')
+        allTextElements.forEach((el) => {
+          const htmlEl = el as HTMLElement
+          if (htmlEl.textContent && htmlEl.textContent.trim()) {
+            const computed = cloneWin.getComputedStyle(htmlEl)
+            // 폰트가 명시적으로 설정되어 있으면 유지
+            if (computed.fontFamily && computed.fontFamily !== 'initial') {
+              htmlEl.style.fontFamily = computed.fontFamily
+            }
+            // 텍스트가 잘리지 않도록 설정
+            htmlEl.style.whiteSpace = computed.whiteSpace || 'normal'
+            htmlEl.style.overflow = 'visible'
+            htmlEl.style.textOverflow = 'clip'
+            htmlEl.style.wordWrap = 'break-word'
+            htmlEl.style.overflowWrap = 'break-word'
+          }
+        })
+        
+        // flexbox 컨테이너의 텍스트가 잘리지 않도록 설정
+        const flexContainers = clonedDoc.querySelectorAll('.ic-row, .ic-info .line, .agreement-kv')
+        flexContainers.forEach((container) => {
+          const htmlContainer = container as HTMLElement
+          htmlContainer.style.overflow = 'visible'
+          htmlContainer.style.whiteSpace = 'normal'
+          // 자식 요소들도 확인
+          const children = htmlContainer.querySelectorAll('*')
+          children.forEach((child) => {
+            const htmlChild = child as HTMLElement
+            htmlChild.style.overflow = 'visible'
+            htmlChild.style.textOverflow = 'clip'
+          })
+        })
         
         // body와 모든 부모 요소를 흰색 배경으로 설정
         clonedDoc.body.style.backgroundColor = "#ffffff"
