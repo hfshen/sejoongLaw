@@ -30,19 +30,28 @@ const logger = winston.createLogger({
   format: logFormat,
   defaultMeta: { service: "sejoong-admin" },
   transports: [
-    // 에러 로그 파일
-    new winston.transports.File({
-      filename: "logs/error.log",
-      level: "error",
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
-    }),
-    // 모든 로그 파일
-    new winston.transports.File({
-      filename: "logs/combined.log",
-      maxsize: 5242880, // 5MB
-      maxFiles: 5,
-    }),
+    ...(isDevelopment
+      ? [
+        // 에러 로그 파일 (개발 환경만)
+        new winston.transports.File({
+          filename: "logs/error.log",
+          level: "error",
+          maxsize: 5242880, // 5MB
+          maxFiles: 5,
+        }),
+        // 모든 로그 파일 (개발 환경만)
+        new winston.transports.File({
+          filename: "logs/combined.log",
+          maxsize: 5242880, // 5MB
+          maxFiles: 5,
+        }),
+      ]
+      : [
+        // 프로덕션 환경에서는 콘솔 출력
+        new winston.transports.Console({
+          format: consoleFormat,
+        }),
+      ]),
   ],
 })
 
