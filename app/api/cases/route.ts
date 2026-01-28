@@ -8,12 +8,35 @@ import type { DocumentType } from "@/lib/documents/templates"
 
 export async function GET(request: NextRequest) {
   try {
+    // 환경 변수 확인
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      logger.error("Supabase environment variables are not set")
+      return createNextErrorResponse(
+        NextResponse,
+        new Error("데이터베이스 설정이 올바르지 않습니다."),
+        "데이터베이스 설정 오류",
+        500
+      )
+    }
+
     const isAdmin = await isAdminAuthenticated()
     if (!isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const supabase = await createClient()
+    let supabase
+    try {
+      supabase = await createClient()
+    } catch (clientError) {
+      logger.error("Failed to create Supabase client", { error: clientError })
+      return createNextErrorResponse(
+        NextResponse,
+        clientError,
+        "데이터베이스 연결에 실패했습니다.",
+        500
+      )
+    }
+
     const { searchParams } = new URL(request.url)
     
     const caseNumber = searchParams.get("case_number")
@@ -41,7 +64,23 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query
 
     if (error) {
-      logger.error("Failed to fetch cases", { error })
+      logger.error("Failed to fetch cases", { 
+        error: error.message || error,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      })
+      
+      // 타임아웃 에러 처리
+      if (error.message?.includes("timeout") || error.message?.includes("ConnectTimeoutError")) {
+        return createNextErrorResponse(
+          NextResponse,
+          error,
+          "데이터베이스 연결 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.",
+          503
+        )
+      }
+      
       return createNextErrorResponse(
         NextResponse,
         error,
@@ -53,7 +92,28 @@ export async function GET(request: NextRequest) {
     logger.info("Cases fetched successfully", { count: data?.length || 0 })
     return createSuccessResponse({ cases: data || [] })
   } catch (error) {
-    logger.error("Error fetching cases", { error })
+    logger.error("Error fetching cases", { 
+      error: error instanceof Error ? {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      } : error
+    })
+    
+    // 타임아웃 에러 처리
+    if (error instanceof Error && (
+      error.message.includes("timeout") || 
+      error.message.includes("ConnectTimeoutError") ||
+      error.message.includes("fetch failed")
+    )) {
+      return createNextErrorResponse(
+        NextResponse,
+        error,
+        "데이터베이스 연결 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.",
+        503
+      )
+    }
+    
     return createNextErrorResponse(
       NextResponse,
       error,
@@ -65,12 +125,35 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // 환경 변수 확인
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      logger.error("Supabase environment variables are not set")
+      return createNextErrorResponse(
+        NextResponse,
+        new Error("데이터베이스 설정이 올바르지 않습니다."),
+        "데이터베이스 설정 오류",
+        500
+      )
+    }
+
     const isAdmin = await isAdminAuthenticated()
     if (!isAdmin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const supabase = await createClient()
+    let supabase
+    try {
+      supabase = await createClient()
+    } catch (clientError) {
+      logger.error("Failed to create Supabase client", { error: clientError })
+      return createNextErrorResponse(
+        NextResponse,
+        clientError,
+        "데이터베이스 연결에 실패했습니다.",
+        500
+      )
+    }
+
     const body = await request.json()
 
     const { case_number, case_name, case_data, document_types } = body
@@ -180,7 +263,28 @@ export async function POST(request: NextRequest) {
     logger.info("Case created successfully", { caseId: caseRecord.id, case_name })
     return createSuccessResponse({ case: caseRecord }, "케이스가 생성되었습니다.", 201)
   } catch (error) {
-    logger.error("Error creating case", { error })
+    logger.error("Error creating case", { 
+      error: error instanceof Error ? {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      } : error
+    })
+    
+    // 타임아웃 에러 처리
+    if (error instanceof Error && (
+      error.message.includes("timeout") || 
+      error.message.includes("ConnectTimeoutError") ||
+      error.message.includes("fetch failed")
+    )) {
+      return createNextErrorResponse(
+        NextResponse,
+        error,
+        "데이터베이스 연결 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.",
+        503
+      )
+    }
+    
     return createNextErrorResponse(
       NextResponse,
       error,
