@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already exists
-    const { data: existingUser } = await supabase.auth.admin.getUserByEmail(email)
+      const { data: existingUser } = await (supabase.auth.admin as any).getUserByEmail(email)
     if (existingUser?.user) {
       return NextResponse.json(
         { error: "이미 등록된 이메일입니다." },

@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user by email
-    const { data: userData, error: userError } = await supabase.auth.admin.getUserByEmail(
+    const { data: userData, error: userError } = await (supabase.auth.admin as any).getUserByEmail(
       invitation.email
     )
 

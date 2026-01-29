@@ -117,8 +117,8 @@ export async function PUT(
           .eq("id", id)
           .single()
 
-        if (!profile?.activated_at) {
-          await supabase
+        if (!(profile as any)?.activated_at) {
+          await (supabase as any)
             .from("profiles")
             .update({ activated_at: new Date().toISOString() })
             .eq("id", id)
@@ -133,7 +133,7 @@ export async function PUT(
       )
     }
 
-    const { data: user, error } = await supabase
+    const { data: user, error } = await (supabase as any)
       .from("profiles")
       .update(updateData)
       .eq("id", id)
@@ -185,7 +185,7 @@ export async function POST(
     const supabase = getServiceClient()
 
     if (action === "activate") {
-      const { data: user, error } = await supabase
+      const { data: user, error } = await (supabase as any)
         .from("profiles")
         .update({
           status: "active",
@@ -213,7 +213,7 @@ export async function POST(
     }
 
     if (action === "suspend") {
-      const { data: user, error } = await supabase
+      const { data: user, error } = await (supabase as any)
         .from("profiles")
         .update({ status: "suspended" })
         .eq("id", id)

@@ -186,7 +186,7 @@ export default function EditDocumentPage() {
     }
   }, [activeTab, id, currentVersionId, document])
 
-  const handleLocaleChange = (newLocale: "ko" | "en" | "zh-CN") => {
+  const handleLocaleChange = (newLocale: "ko" | "en" | "zh-CN" | "si" | "ta") => {
     setLocale(newLocale)
     router.push(`/admin/documents/${id}?locale=${newLocale}`, { scroll: false })
   }
