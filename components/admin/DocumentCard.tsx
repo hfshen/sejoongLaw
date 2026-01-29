@@ -73,14 +73,18 @@ export default function DocumentCard({
                     케이스 연결됨
                   </span>
                   {caseId && (
-                    <Link
+                    <a
                       href={`/admin/cases/${caseId}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-primary hover:underline flex items-center gap-1"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        window.location.href = `/admin/cases/${caseId}`
+                      }}
+                      className="text-primary hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       케이스로
                       <ArrowRight className="w-3 h-3" />
-                    </Link>
+                    </a>
                   )}
                 </>
               )}

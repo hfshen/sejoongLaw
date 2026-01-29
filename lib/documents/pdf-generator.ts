@@ -6,7 +6,7 @@ interface PDFData {
 }
 
 // 합의서.pdf와 유사한 양식으로 PDF 생성
-export function generateAgreementPDF(data: PDFData, locale: "ko" | "en" | "zh-CN" = "ko") {
+export function generateAgreementPDF(data: PDFData, locale: "ko" | "en" | "zh-CN" | "si" | "ta" = "ko") {
   const doc = new jsPDF()
   let yPos = 20
 
@@ -196,7 +196,7 @@ export function generateAgreementPDF(data: PDFData, locale: "ko" | "en" | "zh-CN
 }
 
 // 위임장 PDF 생성
-export function generatePowerOfAttorneyPDF(data: PDFData, locale: "ko" | "en" | "zh-CN" = "ko") {
+export function generatePowerOfAttorneyPDF(data: PDFData, locale: "ko" | "en" | "zh-CN" | "si" | "ta" = "ko") {
   const doc = new jsPDF()
   let yPos = 20
 
@@ -364,7 +364,7 @@ export function generatePowerOfAttorneyPDF(data: PDFData, locale: "ko" | "en" | 
 }
 
 // 변호인선임서 PDF 생성
-export function generateAttorneyAppointmentPDF(data: PDFData, locale: "ko" | "en" | "zh-CN" = "ko") {
+export function generateAttorneyAppointmentPDF(data: PDFData, locale: "ko" | "en" | "zh-CN" | "si" | "ta" = "ko") {
   const doc = new jsPDF()
   let yPos = 20
 
@@ -446,7 +446,7 @@ export function generateAttorneyAppointmentPDF(data: PDFData, locale: "ko" | "en
 }
 
 // 소송위임장 PDF 생성
-export function generateLitigationPowerPDF(data: PDFData, locale: "ko" | "en" | "zh-CN" = "ko") {
+export function generateLitigationPowerPDF(data: PDFData, locale: "ko" | "en" | "zh-CN" | "si" | "ta" = "ko") {
   const doc = new jsPDF()
   let yPos = 20
 
@@ -568,7 +568,7 @@ export function generateLitigationPowerPDF(data: PDFData, locale: "ko" | "en" | 
 }
 
 // 사망보험금지급동의 PDF 생성
-export function generateInsuranceConsentPDF(data: PDFData, locale: "ko" | "en" | "zh-CN" = "ko") {
+export function generateInsuranceConsentPDF(data: PDFData, locale: "ko" | "en" | "zh-CN" | "si" | "ta" = "ko") {
   const doc = new jsPDF()
   let yPos = 20
 
@@ -666,7 +666,7 @@ export function generateInsuranceConsentPDF(data: PDFData, locale: "ko" | "en" |
 export function generatePDF(
   documentType: DocumentType,
   data: PDFData,
-  locale: "ko" | "en" | "zh-CN" = "ko"
+  locale: "ko" | "en" | "zh-CN" | "si" | "ta" = "ko"
 ): jsPDF {
   switch (documentType) {
     case "agreement":

@@ -16,7 +16,7 @@ export async function GET(
 
     const { id } = await params
     const { searchParams } = new URL(request.url)
-    const locale = (searchParams.get("locale") || "ko") as "ko" | "en" | "zh-CN"
+    const locale = (searchParams.get("locale") || "ko") as "ko" | "en" | "zh-CN" | "si" | "ta"
 
     const supabase = await createClient()
 

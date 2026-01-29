@@ -16,12 +16,12 @@ import type {
 interface DocumentPreviewProps {
   documentType: DocumentType
   data: DocumentData
-  locale: "ko" | "en" | "zh-CN"
+  locale: "ko" | "en" | "zh-CN" | "si" | "ta"
 }
 
 interface PreviewComponentProps {
   data: DocumentData
-  locale: "ko" | "en" | "zh-CN"
+  locale: "ko" | "en" | "zh-CN" | "si" | "ta"
   fontClass?: string
   getValue: (key: string) => string
   formatDate: (date: string | undefined) => string
@@ -46,20 +46,26 @@ function getWatermarkStyle() {
   } as const
 }
 
-function DocumentFooter({ locale }: { locale: "ko" | "en" | "zh-CN" }) {
+function DocumentFooter({ locale }: { locale: "ko" | "en" | "zh-CN" | "si" | "ta" }) {
   const fontFamily =
     locale === "ko"
       ? '"Noto Sans KR", sans-serif'
       : locale === "zh-CN"
         ? '"FangSong", "STFangsong", serif'
-        : "system-ui, sans-serif"
+        : locale === "si" || locale === "ta"
+          ? '"Noto Sans", "Arial", sans-serif' // Sinhala/Tamil fonts
+          : "system-ui, sans-serif"
 
   const text =
     locale === "ko"
       ? "법무법인 세중 | 경기도 안산시 단원구 원곡로 45 세중빌딩 2층 | 전화: 031-8044-8805 | 이메일: contact@sejoonglaw.kr"
       : locale === "en"
         ? "Sejoong Law Firm | 2F Sejoong Building, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do | Phone: 031-8044-8805 | Email: contact@sejoonglaw.kr"
-        : "世中律师事务所 | 京畿道安山市檀园区元谷路45号世中大厦2层 | 电话: 031-8044-8805 | 邮箱: contact@sejoonglaw.kr"
+        : locale === "zh-CN"
+          ? "世中律师事务所 | 京畿道安山市檀园区元谷路45号世中大厦2层 | 电话: 031-8044-8805 | 邮箱: contact@sejoonglaw.kr"
+          : locale === "si"
+            ? "සේජූං නීති සමාගම | ග්යොංගි-දෝ, අන්සන්-සි, දන්වොන්-ගු, වොන්ගොක්-රෝ 45, සේජූං ගොඩනැගිල්ල 2වන මහල | දුරකථන: 031-8044-8805 | විද්‍යුත් තැපෑල: contact@sejoonglaw.kr"
+            : "சேஜூங் சட்ட நிறுவனம் | கியோங்கி-டோ, அன்சன்-சி, டான்வான்-கு, வோன்கோக்-ரோ 45, சேஜூங் கட்டிடம் 2வது மாடி | தொலைபேசி: 031-8044-8805 | மின்னஞ்சல்: contact@sejoonglaw.kr"
 
   return (
     <div
@@ -318,8 +324,11 @@ const DocumentPreview = forwardRef<HTMLDivElement, DocumentPreviewProps>(
           return format(date, "yyyy년 MM월 dd일")
         } else if (locale === "en") {
           return format(date, "MMMM d, yyyy")
-        } else {
+        } else if (locale === "zh-CN") {
           return format(date, "yyyy年M月d日")
+        } else {
+          // si, ta: Use English format
+          return format(date, "MMMM d, yyyy")
         }
       } catch {
         return dateStr || ""
@@ -327,7 +336,11 @@ const DocumentPreview = forwardRef<HTMLDivElement, DocumentPreviewProps>(
     }
 
     // 언어별 폰트 클래스
-    const fontClass = locale === "ko" ? "font-korean" : locale === "zh-CN" ? "font-chinese" : "font-sans"
+    const fontClass = 
+      locale === "ko" ? "font-korean" 
+      : locale === "zh-CN" ? "font-chinese"
+      : locale === "si" || locale === "ta" ? "font-sans" // Sinhala/Tamil use sans-serif
+      : "font-sans"
 
     const showWatermark = !String(documentType).endsWith("_old")
 
@@ -1512,7 +1525,7 @@ const InsuranceConsentPreview = forwardRef<HTMLDivElement, PreviewComponentProps
 // ============================================================================
 
 // 공통 스타일
-const oldCaseFontFamily = (locale: "ko" | "en" | "zh-CN") =>
+const oldCaseFontFamily = (locale: "ko" | "en" | "zh-CN" | "si" | "ta") =>
   locale === "ko"
     ? '"Noto Sans KR", sans-serif'
     : locale === "zh-CN"
@@ -1671,10 +1684,80 @@ const AgreementOldPreview = forwardRef<HTMLDivElement, PreviewComponentProps & {
         conclusion3: "死亡相关事宜不再提出异议。",
         conclusion4: "为此，双方在本协议上签名盖章。",
         court: "敬启"
+      },
+      si: {
+        title: "එකඟතාවය",
+        partyA: "\"පාර්ශ්වය A\" පවුලේ නියෝජිත",
+        partyB: "\"පාර්ශ්වය B\" සමාගමේ නියෝජිත",
+        nationality: "ජාතිකත්වය",
+        name: "නම",
+        birthdate: "උපන් දිනය",
+        idNumber: "ජාතික හැඳුනුම්පත් අංකය",
+        relation: "මියගිය පුද්ගලයා සමඟ සම්බන්ධතාවය",
+        address: "මව්රට ලිපිනය",
+        addressPartyB: "ලිපිනය",
+        companyName: "සමාගමේ නම",
+        representative: "නියෝජිත",
+        bizNumber: "ව්‍යාපාර ලියාපදිංචි අංකය",
+        incidentTime: "දිනය/වේලාව",
+        foreignerId: "අන්යජාතික ලියාපදිංචි අංකය",
+        occurred: "සිදුවූ",
+        deceased: "ඉහත සඳහන් පුද්ගලයාගේ මරණය සම්බන්ධයෙන්,",
+        related: "",
+        partyADesc: "",
+        partyBDesc: "",
+        agree: "",
+        agree2: "පාර්ශ්වය A (පවුලේ නියෝජිත) සහ පාර්ශ්වය B (කර්මාන්තශාලා/සමාගමේ නියෝජිත) පහත පරිදි එකඟ වේ:",
+        clause1: "පාර්ශ්වය A සහ පාර්ශ්වය B මෘදු එකඟතාවයකට පැමිණ ඇත. පාර්ශ්වය A මෙම සිද්ධියට සම්බන්ධ ඕනෑම සිවිල් හෝ අපරාධ කාරණා සම්බන්ධයෙන් අනාගතයේදී කිසිදු අභියෝගයක් ඉදිරිපත් නොකරයි.",
+        clause1_2: "",
+        clause2: "පාර්ශ්වය A මෙම සිද්ධියට සම්බන්ධව පාර්ශ්වය B හි නියෝජිතයාට දඬුවම් ඉල්ලා සිටීමට අවශ්‍ය නොවන අතර මෙම එකඟතාවය සමඟ එක්ව දඬුවම් නොකිරීමේ ප්‍රකාශනයක් ඉදිරිපත් කරයි.",
+        clause2_2: "",
+        clause2_3: "",
+        clause2_4: "",
+        conclusion: "පාර්ශ්වයන් සිවිල් සහ අපරාධ අංශ දෙකෙහිම තමන්ගේම නිදහස් අදහසින් මෙම එකඟතාවය සාදා ඇති අතර කිසිදු අභියෝගයක් නොමැති බව තහවුරු කරයි.",
+        conclusion2: "පාර්ශ්වයන් තවදුරටත් තහවුරු කරන්නේ",
+        conclusion3: "",
+        conclusion4: "සාක්ෂියක් ලෙස, පාර්ශ්වයන් මෙම එකඟතාවයේ අත්සන තබා මුද්‍රා තබයි.",
+        court: "වෙත:"
+      },
+      ta: {
+        title: "ஒப்பந்தம்",
+        partyA: "\"கட்சி A\" (குடும்ப பிரதிநிதி)",
+        partyB: "\"கட்சி B\" (நிறுவன பிரதிநிதி)",
+        nationality: "தேசியம்",
+        name: "பெயர்",
+        birthdate: "பிறந்த தேதி",
+        idNumber: "தேசிய அடையாள அட்டை எண்",
+        relation: "இறந்தவருடன் உறவு",
+        address: "தாய்நாட்டு முகவரி",
+        addressPartyB: "முகவரி",
+        companyName: "நிறுவனத்தின் பெயர்",
+        representative: "பிரதிநிதி",
+        bizNumber: "வணிக பதிவு எண்",
+        incidentTime: "தேதி/நேரம்",
+        foreignerId: "வெளிநாட்டவர் பதிவு எண்",
+        occurred: "நடந்தது",
+        deceased: "மேலே குறிப்பிடப்பட்ட நபரின் மரணம் தொடர்பாக,",
+        related: "",
+        partyADesc: "",
+        partyBDesc: "",
+        agree: "",
+        agree2: "கட்சி A (குடும்ப பிரதிநிதி) மற்றும் கட்சி B (பணியிடம்/நிறுவன பிரதிநிதி) பின்வருமாறு ஒப்புக்கொள்கின்றனர்:",
+        clause1: "கட்சி A மற்றும் கட்சி B நல்லிணக்க ஒப்பந்தத்தை அடைந்துள்ளனர். கட்சி A இந்த சம்பவத்துடன் தொடர்புடைய எந்தவொரு சிவில் அல்லது குற்றவியல் விஷயங்களிலும் எதிர்காலத்தில் எந்தவொரு ஆட்சேபனையையும் முன்வைக்க மாட்டார்.",
+        clause1_2: "",
+        clause2: "கட்சி A இந்த சம்பவத்துடன் தொடர்புடைய கட்சி B இன் பிரதிநிதிக்கு தண்டனை கோர விரும்பவில்லை மற்றும் இந்த ஒப்பந்தத்துடன் சேர்த்து தண்டனை இல்லாத அறிக்கையை சமர்ப்பிக்கிறார்.",
+        clause2_2: "",
+        clause2_3: "",
+        clause2_4: "",
+        conclusion: "கட்சிகள் சிவில் மற்றும் குற்றவியல் அம்சங்கள் இரண்டிலும் தங்கள் சொந்த சுதந்திர விருப்பத்தின் பேரில் இந்த ஒப்பந்தத்தை செய்துள்ளனர் மற்றும் எந்தவொரு ஆட்சேபனையும் இல்லை என்பதை உறுதிப்படுத்துகின்றனர்.",
+        conclusion2: "கட்சிகள் மேலும் உறுதிப்படுத்துகின்றனர்",
+        conclusion3: "",
+        conclusion4: "ஆதாரமாக, கட்சிகள் இந்த ஒப்பந்தத்தில் கையெழுத்திட்டு முத்திரை இடுகின்றனர்.",
+        court: "வரை:"
       }
     }
 
-    const t = translations[locale]
+    const t = translations[locale] || translations["en"] || translations["ko"]
 
     // 날짜 파싱
     const agreementDate = getValue("agreement_date") || getValue("signature_date") || getValue("date")
@@ -2073,10 +2156,94 @@ const PowerOfAttorneyOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
           departure_insurance: "出国保险请求及受领行为",
           funeral_expenses: "丧葬费请求等"
         }
+      },
+      si: {
+        title: "අධිකරණ නියෝජිත බලය",
+        principal: "අධිකරණ නියෝජිත",
+        agent: "නීතිඥ",
+        subAgent: "උප නියෝජිත (නීතිඥගේ)",
+        name: "නම",
+        birthdate: "උපන් දිනය",
+        passport: "රැකියා අංකය",
+        idNumber: "ජාතික හැඳුනුම්පත් අංකය",
+        address: "මව්රට ලිපිනය",
+        residentId: "නිවාස ලියාපදිංචි අංකය",
+        contact: "සම්බන්ධකම්",
+        businessName: "ව්‍යාපාර නම",
+        position: "තනතුර",
+        businessReg: "ව්‍යාපාර ලියාපදිංචි අංකය",
+        delegatedTasks: "අනුමත කාර්යයන්",
+        sentence: "අධිකරණ නියෝජිත මෙයින් ඉහත කාරණා සැකසීම සඳහා නීතිඥ සහ උප නියෝජිතවරයාට අධිකාරිය ලබා දෙයි.",
+        principalSign: "අධිකරණ නියෝජිත (අන්යජාතික පියා/මව)",
+        agentSign: "නීතිඥ ලී, තේක් ගි",
+        subAgentSign: "උප නියෝජිත ජූ, සොං ග්යු",
+        seal: "(මුද්‍රාව/අත්සන)",
+        footerTitle: "සේජූං නීති කාර්යාලය, නීතිඥ",
+        footerAddress: "(15378) 2වන මහල, 45 වොන්ගොක්-රෝ, ඩන්වොන්-ගු, අන්සන්-සි, ග්යොංගි-දෝ (වොන්ගොක්-ඩොං, සේජූං ගොඩනැගිල්ල)",
+        footerTel: "දුරකථන",
+        footerFax: "ෆැක්ස්",
+        tasks: {
+          civil_criminal: "සිවිල්/අපරාධ නඩු කටයුතු",
+          labor_complaint: "කම්කරු සුභසාධන සේවා ලේඛන (කම්කරු සුභසාධන සංස්ථාව)",
+          wage_claim: "වැටුප් ණය සහ ලැබීම",
+          damages_claim: "හානි හිමිකම්",
+          death_insurance: "මරණ රක්ෂණ ප්‍රතිලාභ හිමිකම් සහ ලැබීම (සම්පූර්ණ අධිකාරිය)",
+          insurance_claim: "රක්ෂණ හිමිකම් සහ ලැබීම",
+          deposit_withdrawal: "අධිකරණ තැන්පතුව ආපසු ගැනීම සහ ලැබීම",
+          criminal_settlement: "අපරාධ එකඟතාවය",
+          severance_pay: "විශ්‍රාම වැටුප් හිමිකම් සහ වැටුප් ගණනය ලැබීම",
+          financial_confirmation: "මූල්‍ය ගනුදෙනු වාර්තා සත්‍යාපනය",
+          civil_settlement: "සිවිල් එකඟතාවය",
+          insurance_settlement: "රක්ෂක එකඟතාවය",
+          departure_insurance: "පිටවීමේ රක්ෂණ හිමිකම් සහ ලැබීම",
+          funeral_expenses: "අවමංගල්‍ය වියදම් හිමිකම්, ආදිය"
+        }
+      },
+      ta: {
+        title: "அதிகார பத்திரம்",
+        principal: "முதன்மை",
+        agent: "வழக்கறிஞர்",
+        subAgent: "துணை நியமிப்பாளர் (வழக்கறிஞரின்)",
+        name: "பெயர்",
+        birthdate: "பிறந்த தேதி",
+        passport: "கடவுச்சீட்டு எண்",
+        idNumber: "தேசிய அடையாள அட்டை எண்",
+        address: "தாய்நாட்டு முகவரி",
+        residentId: "வாழ்விட பதிவு எண்",
+        contact: "தொடர்பு",
+        businessName: "வணிகத்தின் பெயர்",
+        position: "பதவி",
+        businessReg: "வணிக பதிவு எண்",
+        delegatedTasks: "அங்கீகரிக்கப்பட்ட பணிகள்",
+        sentence: "முதன்மை இதன் மூலம் மேலே உள்ள விஷயங்களை கையாள்வதற்கு வழக்கறிஞர் மற்றும் துணை நியமிப்பாளருக்கு அதிகாரம் அளிக்கிறார்.",
+        principalSign: "முதன்மை (வெளிநாட்டவர் தந்தை/தாய்)",
+        agentSign: "வழக்கறிஞர் லீ, தேக் கி",
+        subAgentSign: "துணை நியமிப்பாளர் ஜூ, சியோங் க்யூ",
+        seal: "(முத்திரை/கையெழுத்து)",
+        footerTitle: "சேஜூங் சட்ட அலுவலகம், வழக்கறிஞர்",
+        footerAddress: "(15378) 2வது மாடி, 45 வோன்கோக்-ரோ, டான்வான்-கு, அன்சன்-சி, கியோங்கி-டோ (வோன்கோக்-டோங், சேஜூங் கட்டிடம்)",
+        footerTel: "தொலைபேசி",
+        footerFax: "தொலைநகல்",
+        tasks: {
+          civil_criminal: "சிவில்/குற்றவியல் வழக்கு விஷயங்கள்",
+          labor_complaint: "தொழிலாளர் நலன்பாடு சேவை ஆவணங்கள் (தொழிலாளர் நலன்பாடு கழகம்)",
+          wage_claim: "சம்பள கடன் மற்றும் பெறுதல்",
+          damages_claim: "சேதம் கோரிக்கை",
+          death_insurance: "மரண காப்பீட்டு நன்மை கோரிக்கை மற்றும் பெறுதல் (முழு அதிகாரம்)",
+          insurance_claim: "காப்பீட்டு கோரிக்கை மற்றும் பெறுதல்",
+          deposit_withdrawal: "நீதிமன்ற வைப்பு திரும்பப்பெறுதல் மற்றும் பெறுதல்",
+          criminal_settlement: "குற்றவியல் ஒப்பந்தம்",
+          severance_pay: "ஓய்வூதிய கோரிக்கை மற்றும் சம்பள தீர்வு பெறுதல்",
+          financial_confirmation: "நிதி பரிவர்த்தனை பதிவுகள் சரிபார்ப்பு",
+          civil_settlement: "சிவில் ஒப்பந்தம்",
+          insurance_settlement: "காப்பீட்டாளர் ஒப்பந்தம்",
+          departure_insurance: "வெளியேறும் காப்பீட்டு கோரிக்கை மற்றும் பெறுதல்",
+          funeral_expenses: "இறுதி சடங்கு செலவு கோரிக்கை, முதலியன"
+        }
       }
     }
 
-    const t = translations[locale]
+    const t = translations[locale] || translations["en"] || translations["ko"]
 
     // 날짜 파싱
     const powerDate = getValue("power_date")
@@ -2665,14 +2832,48 @@ const AttorneyAppointmentOldPreview = forwardRef<HTMLDivElement, PreviewComponen
         attorneyContact: "电话：031-8044-8805 传真：031-491-8817",
         court: "议政府地方法院 敬启",
         footerAddress: "京畿道 安山市 檀园区 元谷路 45号 2层"
+      },
+      si: {
+        title: "නීතිඥ පත් කිරීමේ දැන්වීම",
+        case: "නඩුව",
+        victim: "අනතුරට ලක්වූ/පැමිණිලිකරු",
+        mainText: "ඉහත නඩුව සම්බන්ධයෙන්, පහත දැක්වෙන පරිදි නීතිඥවරයෙකු පත් කර ඇති අතර, මෙයින් මෙම නීතිඥ පත් කිරීමේ දැන්වීම ඉදිරිපත් කරයි.",
+        attachedDocuments: "ඇමුණුම්",
+        familyRepresentative: "පත් කරන්නා (පවුලේ නියෝජිත)",
+        name: "නම",
+        idNumber: "ජාතික හැඳුනුම්පත් අංකය",
+        relation: "සම්බන්ධතාවය",
+        attorney: "නීතිඥ",
+        attorneyName: "නීතිඥ ලී, තේක් ගි",
+        attorneyFirm: "(සේජූං නීති කාර්යාලය)",
+        court: "වෙත: උයිජොංබු දිස්ත්‍රික් අධිකරණය",
+        attorneyAddress: "ලිපිනය: 2වන මහල, 45 වොන්ගොක්-රෝ, ඩන්වොන්-ගු, අන්සන්-සි, ග්යොංගි-දෝ",
+        attorneyContact: "දුරකථන: 031-8044-8805 ෆැක්ස්: 031-491-8817"
+      },
+      ta: {
+        title: "வழக்கறிஞர் நியமன அறிவிப்பு",
+        case: "வழக்கு எண்",
+        victim: "பாதிக்கப்பட்டவர்/புகாரளிப்பவர்",
+        mainText: "மேலே உள்ள வழக்கு தொடர்பாக, கீழே குறிப்பிடப்பட்டுள்ளபடி வழக்கறிஞர் நியமிக்கப்பட்டுள்ளார் மற்றும் இதன் மூலம் இந்த வழக்கறிஞர் நியமன அறிவிப்பை சமர்ப்பிக்கிறேன்.",
+        attachedDocuments: "இணைப்புகள்",
+        familyRepresentative: "நியமிப்பவர் (குடும்ப பிரதிநிதி)",
+        name: "பெயர்",
+        idNumber: "தேசிய அடையாள அட்டை எண்",
+        relation: "உறவு",
+        attorney: "வழக்கறிஞர்",
+        attorneyName: "வழக்கறிஞர் லீ, தேக் கி",
+        attorneyFirm: "(சேஜூங் சட்ட அலுவலகம்)",
+        court: "வரை: உய்ஜோங்பு மாவட்ட நீதிமன்றம்",
+        attorneyAddress: "முகவரி: 2வது மாடி, 45 வோன்கோக்-ரோ, டான்வான்-கு, அன்சன்-சி, கியோங்கி-டோ",
+        attorneyContact: "தொலைபேசி: 031-8044-8805 தொலைநகல்: 031-491-8817"
       }
     }
 
-    const t = translations[locale]
+    const t = translations[locale] || translations["en"] || translations["ko"]
 
     // 변호사 정보 (고정값)
     const attorneyInfo = {
-      name: locale === "ko" ? "이택기" : locale === "zh-CN" ? "李泽基" : "Lee Taek-gi",
+      name: locale === "ko" ? "이택기" : locale === "zh-CN" ? "李泽基" : locale === "si" ? "ලී, තේක් ගි" : locale === "ta" ? "லீ, தேக் கி" : "Lee Taek-gi",
       firm: locale === "ko" ? "법률사무소 세중" : locale === "zh-CN" ? "世宗律师事务所" : "Sejoong Law Office",
       address: locale === "ko" ? "안산시 단원구 원곡로 45, 2층" : locale === "zh-CN" ? "京畿道 安山市 檀园区 元谷路 45号 2层" : "2F, 45 Wongok-ro, Danwon-gu, Ansan-si, Gyeonggi-do",
       phone: "031-8044-8805",
@@ -3491,10 +3692,90 @@ const LitigationPowerOldPreview = forwardRef<HTMLDivElement, PreviewComponentPro
         power3: "诉讼上或诉讼外和解",
         power4: "担保权行使及催告申请、诉讼费用确定申请",
         power5: "提存申请及提存金缴纳行为、提存金领取/回收请求及受领提存通知书、提存记录查阅/复制、事实证明申请及受领等一切行为"
+      },
+      si: {
+        title: "නඩු පැවරීමේ බලය",
+        case: "නඩුව",
+        plaintiff: "පෙළඹවීම්කරු",
+        defendant: "චෝදනාකරු",
+        sentence: "ඉහත නඩුව සම්බන්ධයෙන්, පහත සඳහන් නියෝජිතවරයා පෙළඹවීම්කරුගේ නඩු නියෝජිතයා ලෙස පත් කර පහත සඳහන් අධිකාරිය ලබා දෙයි.",
+        suwonin: "නියෝජිත",
+        sukwon: "අනුමත ක්‍රියා",
+        lawOffice: "සේජූං නීති කාර්යාලය",
+        lawyer: "නීතිඥ ලී, තේක් ගි",
+        address: "2වන මහල, 45 වොන්ගොක්-රෝ, ඩන්වොන්-ගු, අන්සන්-සි, සේජූං ගොඩනැගිල්ල",
+        tel: "දුරකථන",
+        fax: "ෆැක්ස්",
+        specialAuth: "විශේෂ අධිකාරිය",
+        authStatus: "අධිකාරිය ලබා දී ඇත්ද",
+        withdrawalOfSuit: "නඩුව ඉවත් කිරීම",
+        withdrawalOfSuitDesc: "ඉදිරිපත් කරන ලද නඩුවේ සම්පූර්ණය හෝ කොටසක් ඉවත් කර නඩුව අවසන් කිරීමේ අධිකාරිය",
+        withdrawalOfAppeal: "අභියාචනය ඉවත් කිරීම",
+        withdrawalOfAppealDesc: "මූලික තීරණය පවත්වාගෙන යන අතරම අභියාචනයේ අයදුම ඉවත් කිරීමේ අධිකාරිය",
+        waiverOfClaim: "හිමිකම් අත්හැරීම",
+        waiverOfClaimDesc: "නියෝජිතයාගේ හිමිකම හේතුවක් නොමැති බව පිළිගෙන නඩුව අවසන් කිරීමේ අධිකාරිය",
+        admissionOfClaim: "හිමිකම පිළිගැනීම",
+        admissionOfClaimDesc: "විරුද්ධ පාර්ශ්වයේ හිමිකම හේතු සහිත බව පිළිගෙන නඩුව අවසන් කිරීමේ අධිකාරිය",
+        withdrawalFromSuit: "නඩුවෙන් ඉවත් වීම",
+        withdrawalFromSuitDesc: "තෙවන පාර්ශ්වයක් නඩුවට සහභාගී වූ විට එම නඩුවෙන් ඉවත් වීමේ අධිකාරිය (සිවිල් නඩු පනතේ 80 වන වගන්තියට අනුව ඉවත් වීම)",
+        note: "වෙනත් විශේෂ අධිකාරිය (අධිකාරිය ලබා දෙන්නේ නම් O සලකුණ, රඳවා තබන්නේ නම් X සලකුණ)",
+        principalName: "නියෝජිත පවුලේ නියෝජිත නම",
+        idNumber: "ජාතික හැඳුනුම්පත් අංකය",
+        court: "උයිජොංබු දිස්ත්‍රික් අධිකරණය",
+        to: "වෙත:",
+        footerTitle: "සේජූං නීති කාර්යාලය, නීතිඥ",
+        footerAddress: "(15378) ග්යොංගි-දෝ, අන්සන්-සි, ඩන්වොන්-ගු, වොන්ගොක්-රෝ 45, 2වන මහල (වොන්ගොක්-ඩොං, සේජූං ගොඩනැගිල්ල)",
+        footerTel: "දුරකථන",
+        footerFax: "ෆැක්ස්",
+        power1: "සියලුම නඩු ක්‍රියා (ප්‍රතිනඩුව සහ අභියාචනය ඉදිරිපත් කිරීම, අත්පත් කිරීම, තාවකාලික නියෝග, විකුණුම්, ආදිය සිවිල් ක්‍රියාත්මක කිරීමේ පනතට අනුව අයදුම් සහ අභියෝග ක්‍රියාවලිය සියල්ල)",
+        power2: "වාර්තා පිටපත් කිරීම සහ නැරඹීම, ගෙවීම් ලැබීම, උප නියෝජිතවරයා පත් කිරීම",
+        power3: "අධිකරණයේ හෝ අධිකරණයෙන් පිටත එකඟතාවය",
+        power4: "ආධාරක අයිතිවාසිකම් ක්‍රියාත්මක කිරීම සහ අවසන් අනතුරු ඇඟවීමේ අයදුම, නඩු වියදම් තහවුරු කිරීමේ අයදුම",
+        power5: "තැන්පතුව අයදුම් කිරීම සහ තැන්පතු මුදල් ගෙවීමේ ක්‍රියා, තැන්පතු මුදල් ආපසු ගැනීමේ ඉල්ලීම සහ තැන්පතු දැන්වීම් ලැබීමේ ක්‍රියා, තැන්පතු වාර්තා නැරඹීම/පිටපත් කිරීම, කරුණු සාක්ෂි අයදුම් සහ ලැබීමේ ක්‍රියා සියල්ල"
+      },
+      ta: {
+        title: "வழக்கு அதிகாரம்",
+        case: "வழக்கு",
+        plaintiff: "வாதி",
+        defendant: "பிரதிவாதி",
+        sentence: "மேலே உள்ள வழக்கு தொடர்பாக, கீழே குறிப்பிடப்பட்டுள்ள நியமிப்பாளர் வாதியின் வழக்கு பிரதிநிதியாக நியமிக்கப்பட்டு, கீழே குறிப்பிடப்பட்டுள்ள அதிகாரம் வழங்கப்படுகிறது.",
+        suwonin: "நியமிப்பாளர்",
+        sukwon: "அங்கீகரிக்கப்பட்ட செயல்கள்",
+        lawOffice: "சேஜூங் சட்ட அலுவலகம்",
+        lawyer: "வழக்கறிஞர் லீ, தேக் கி",
+        address: "2வது மாடி, 45 வோன்கோக்-ரோ, டான்வான்-கு, அன்சன்-சி, சேஜூங் கட்டிடம்",
+        tel: "தொலைபேசி",
+        fax: "தொலைநகல்",
+        specialAuth: "சிறப்பு அதிகாரம்",
+        authStatus: "அதிகாரம் வழங்கப்பட்டுள்ளதா",
+        withdrawalOfSuit: "வழக்கு திரும்பப்பெறுதல்",
+        withdrawalOfSuitDesc: "தாக்கல் செய்யப்பட்ட வழக்கின் முழுமையையோ அல்லது ஒரு பகுதியையோ திரும்பப்பெற்று வழக்கை முடிக்கும் அதிகாரம்",
+        withdrawalOfAppeal: "மேல்முறையீட்டை திரும்பப்பெறுதல்",
+        withdrawalOfAppealDesc: "முதன்மை தீர்ப்பை பராமரிக்கும் போது மேல்முறையீட்டு விண்ணப்பத்தை திரும்பப்பெறும் அதிகாரம்",
+        waiverOfClaim: "கோரிக்கை கைவிடுதல்",
+        waiverOfClaimDesc: "நியமிப்பாளரின் கோரிக்கைக்கு காரணம் இல்லை என்பதை ஒப்புக்கொண்டு வழக்கை முடிக்கும் அதிகாரம்",
+        admissionOfClaim: "கோரிக்கையை ஒப்புக்கொள்ளுதல்",
+        admissionOfClaimDesc: "எதிர் தரப்பின் கோரிக்கைக்கு காரணம் உள்ளது என்பதை ஒப்புக்கொண்டு வழக்கை முடிக்கும் அதிகாரம்",
+        withdrawalFromSuit: "வழக்கிலிருந்து விலகுதல்",
+        withdrawalFromSuitDesc: "மூன்றாம் தரப்பு வழக்கில் பங்கேற்றால் அந்த வழக்கிலிருந்து விலகும் அதிகாரம் (சிவில் வழக்கு சட்டத்தின் 80வது பிரிவின்படி விலகுதல்)",
+        note: "வேறு சிறப்பு அதிகாரம் (அதிகாரம் வழங்கப்பட்டால் O குறி, ஒத்திவைக்கப்பட்டால் X குறி)",
+        principalName: "நியமிப்பாளர் குடும்ப பிரதிநிதி பெயர்",
+        idNumber: "தேசிய அடையாள அட்டை எண்",
+        court: "உய்ஜோங்பு மாவட்ட நீதிமன்றம்",
+        to: "வரை:",
+        footerTitle: "சேஜூங் சட்ட அலுவலகம், வழக்கறிஞர்",
+        footerAddress: "(15378) கியோங்கி-டோ, அன்சன்-சி, டான்வான்-கு, வோன்கோக்-ரோ 45, 2வது மாடி (வோன்கோக்-டோங், சேஜூங் கட்டிடம்)",
+        footerTel: "தொலைபேசி",
+        footerFax: "தொலைநகல்",
+        power1: "அனைத்து வழக்கு செயல்கள் (எதிர் வழக்கு மற்றும் மேல்முறையீட்டை தாக்கல் செய்தல், கைப்பற்றுதல், தற்காலிக உத்தரவு, ஏலம், முதலியன சிவில் செயல்படுத்தல் சட்டத்தின்படி விண்ணப்பங்கள் மற்றும் எதிர்ப்பு நடைமுறைகள் அனைத்தும்)",
+        power2: "பதிவுகளை நகலெடுத்தல் மற்றும் பார்வையிடுதல், செலுத்துதலை பெறுதல், துணை நியமிப்பாளரை நியமித்தல்",
+        power3: "நீதிமன்றத்தில் அல்லது நீதிமன்றத்திற்கு வெளியே ஒப்பந்தம்",
+        power4: "உத்தரவாத உரிமைகளை பயன்படுத்துதல் மற்றும் இறுதி அறிவுறுத்தல் விண்ணப்பம், வழக்கு செலவுகளை உறுதிப்படுத்தும் விண்ணப்பம்",
+        power5: "வைப்பு விண்ணப்பம் மற்றும் வைப்பு பணம் செலுத்தும் செயல், வைப்பு பணம் திரும்பப்பெறும் கோரிக்கை மற்றும் வைப்பு அறிவிப்பை பெறும் செயல், வைப்பு பதிவுகளை பார்வையிடுதல்/நகலெடுத்தல், உண்மை சான்று விண்ணப்பம் மற்றும் பெறும் செயல்கள் அனைத்தும்"
       }
     }
 
-    const t = translations[locale]
+    const t = translations[locale] || translations["en"] || translations["ko"]
 
     // 날짜 파싱
     const powerDate = getValue("power_date")
@@ -4145,10 +4426,86 @@ const InsuranceConsentOldPreview = forwardRef<HTMLDivElement, PreviewComponentPr
         attach2: "(2) 亲属关系证明书 1份",
         to: "此致",
         businessReg: "营业执照注册号"
+      },
+      si: {
+        title: "මරණ රක්ෂණ ප්‍රතිලාභ ගෙවීම් එකඟතාවය සඳහා නීතිමය උරුමක්කාරයන්ගේ තහවුරුකිරීම",
+        recipient: "ලබන්නා",
+        sender: "යවන්නා",
+        address: "ලිපිනය",
+        subject: "විෂය",
+        name: "සම්පූර්ණ නම",
+        residenceReg: "නිවාස ලියාපදිංචි අංකය",
+        birthdate: "උපන් දිනය",
+        gender: "ලිංගභේදය",
+        male: "පිරිමි",
+        female: "ගැහැණු",
+        representative: "නියෝජිත",
+        para: "ඔබගේ සමාගම විසින් නිකුත් කරන ලද රක්ෂණ ප්‍රතිපාදනය යටතේ රක්ෂණය කරන ලද මියගිය",
+        para2: "ගේ මරණ රක්ෂණ ප්‍රතිලාභ ගෙවීම් ඉල්ලීම සම්බන්ධයෙන්, මියගිය රක්ෂණය කරන ලද පුද්ගලයාගේ නීතිමය උරුමක්කාරයන් ලෙස,",
+        para3: "පහත සඳහන් පරිදි මරණ රක්ෂණ ප්‍රතිලාභ ලැබීමේ කරුණ සහ ගෙවීම් එකඟතාවය පිළිබඳ දැනුම් දෙනු ලැබේ.",
+        below: "විස්තර",
+        section1: "1. රක්ෂණ ප්‍රතිපාදනයේ තොරතුරු",
+        section1a: "අ. රක්ෂණ නිෂ්පාදන නම:",
+        section1b: "ආ. රක්ෂණ ප්‍රතිපාදන හිමිකරු:",
+        section1c: "ඇ. රක්ෂණය කරන ලද පුද්ගලයා:",
+        section1d: "ඈ. ප්‍රතිපාදන දිනය:",
+        section2: "2. මරණ රක්ෂණ ප්‍රතිලාභ ගෙවීම් ඉල්ලීම",
+        section2Text: "ඉහත රක්ෂණ ප්‍රතිපාදනයට සම්බන්ධව, රක්ෂණය කරන ලද පුද්ගලයාගේ නීතිමය උරුමක්කාරයන් ලෙස, අපගේ අත්සන් සහිත මෙම තහවුරුකිරීමේ ලේඛනය ඇමුණුම් ලේඛන සමඟ ඉදිරිපත් කරන අතර, රක්ෂණ සහතිකයේ දක්වා ඇති මරණ රක්ෂණ ප්‍රතිලාභ ලාභාංශකයාට මරණ රක්ෂණ ප්‍රතිලාභ ගෙවීමට කරුණාකරලන්න:",
+        section2Text2: "",
+        section3: "3. රක්ෂණය කරන ලද පුද්ගලයාගේ නීතිමය උරුමක්කාරයන්",
+        tableNo: "",
+        tableName: "මව්රට නම",
+        tableId: "මව්රට හැඳුනුම්පත් අංකය",
+        tableRel: "රක්ෂණය කරන ලද පුද්ගලයා සමඟ සම්බන්ධතාවය",
+        father: "පියා",
+        mother: "මව",
+        section4: "4. ඇමුණුම්",
+        attach1: "(1) හැඳුනුම්පත් පිටපත 1 කොටස",
+        attach2: "(2) පවුල් සම්බන්ධතා සාක්ෂි 1 කොටස",
+        to: "වෙත:",
+        businessReg: "ව්‍යාපාර ලියාපදිංචි අංකය"
+      },
+      ta: {
+        title: "மரண காப்பீட்டு நன்மை செலுத்துதல் ஒப்புதல் சட்ட வாரிசுகள் உறுதிப்படுத்தல்",
+        recipient: "பெறுநர்",
+        sender: "அனுப்புநர்",
+        address: "முகவரி",
+        subject: "விஷயம்",
+        name: "முழு பெயர்",
+        residenceReg: "வாழ்விட பதிவு எண்",
+        birthdate: "பிறந்த தேதி",
+        gender: "பாலினம்",
+        male: "ஆண்",
+        female: "பெண்",
+        representative: "பிரதிநிதி",
+        para: "உங்கள் நிறுவனத்தால் வழங்கப்பட்ட காப்பீட்டு கொள்கையின் கீழ் காப்பீடு செய்யப்பட்ட இறந்த",
+        para2: "இன் மரண காப்பீட்டு நன்மை செலுத்துதல் கோரிக்கை தொடர்பாக, இறந்த காப்பீடு செய்யப்பட்டவரின் சட்ட வாரிசுகள் என,",
+        para3: "மரண காப்பீட்டு நன்மை பெறுதல் மற்றும் செலுத்துதல் ஒப்புதல் தொடர்பான உண்மையை பின்வருமாறு அறிவிக்கிறோம்.",
+        below: "விவரங்கள்",
+        section1: "1. காப்பீட்டு கொள்கை தகவல்",
+        section1a: "அ. காப்பீட்டு தயாரிப்பு பெயர்:",
+        section1b: "ஆ. காப்பீட்டு கொள்கை உரிமையாளர்:",
+        section1c: "இ. காப்பீடு செய்யப்பட்ட நபர்:",
+        section1d: "ஈ. கொள்கை தேதி:",
+        section2: "2. மரண காப்பீட்டு நன்மை செலுத்துதல் கோரிக்கை",
+        section2Text: "மேலே உள்ள காப்பீட்டு கொள்கை தொடர்பாக, காப்பீடு செய்யப்பட்டவரின் சட்ட வாரிசுகள் என, எங்கள் கையெழுத்துடன் இந்த உறுதிப்படுத்தல் ஆவணத்தை இணைப்பு ஆவணங்களுடன் சமர்ப்பிக்கிறோம். காப்பீட்டு சான்றிதழில் குறிப்பிடப்பட்டுள்ள மரண காப்பீட்டு நன்மை பயனாளிக்கு மரண காப்பீட்டு நன்மையை செலுத்துமாறு மரியாதையுடன் கோருகிறோம்:",
+        section2Text2: "",
+        section3: "3. காப்பீடு செய்யப்பட்டவரின் சட்ட வாரிசுகள்",
+        tableNo: "",
+        tableName: "தாய்நாட்டு பெயர்",
+        tableId: "தாய்நாட்டு அடையாள அட்டை எண்",
+        tableRel: "காப்பீடு செய்யப்பட்டவருடன் உறவு",
+        father: "தந்தை",
+        mother: "தாய்",
+        section4: "4. இணைப்புகள்",
+        attach1: "(1) அடையாள அட்டை நகல் 1 பிரதி",
+        attach2: "(2) குடும்ப உறவு சான்றிதழ் 1 பிரதி",
+        to: "வரை:",
+        businessReg: "வணிக பதிவு எண்"
       }
     }
 
-    const t = translations[locale]
+    const t = translations[locale] || translations["en"] || translations["ko"]
 
     // 날짜 파싱
     const consentDate = getValue("consent_date") || getValue("contract_date_1")

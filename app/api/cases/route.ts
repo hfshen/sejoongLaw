@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { getServiceClient } from "@/lib/supabase/service"
 import { isAdminAuthenticated } from "@/lib/admin/auth"
 import { createNextErrorResponse, handleApiError } from "@/lib/utils/error-handler"
 import { createSuccessResponse } from "@/lib/utils/api-response"
@@ -141,16 +142,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    // Always use service role client to bypass RLS
+    // We've already verified admin_session cookie, so this is safe
     let supabase
+    let user = null
+    
     try {
-      supabase = await createClient()
-    } catch (clientError) {
-      logger.error("Failed to create Supabase client", { error: clientError })
-      return createNextErrorResponse(
-        NextResponse,
-        clientError,
-        "데이터베이스 연결에 실패했습니다.",
-        500
+      supabase = getServiceClient()
+      logger.info("Using service role client for case creation")
+      
+      // Try to get user from regular client for created_by field
+      try {
+        const regularClient = await createClient()
+        const { data: { user: authUser } } = await regularClient.auth.getUser()
+        user = authUser
+      } catch {
+        // No Supabase session, user will be null (created_by will be null)
+        logger.info("No Supabase auth session, created_by will be null")
+      }
+    } catch (serviceError) {
+      logger.error("Failed to get service client", { error: serviceError })
+      return NextResponse.json(
+        { error: "서버 설정 오류", details: "Service Role Key가 설정되지 않았습니다." },
+        { status: 500 }
       )
     }
 
@@ -173,17 +187,48 @@ export async function POST(request: NextRequest) {
           case_number: case_number || null,
           case_name,
           case_data: case_data || {},
+          created_by: user?.id || null,
         },
       ])
       .select()
       .single()
 
     if (caseError) {
-      logger.error("Failed to create case", { error: caseError, case_name: body.case_name })
+      logger.error("Failed to create case", {
+        error: caseError,
+        errorCode: caseError.code,
+        errorMessage: caseError.message,
+        errorDetails: caseError.details,
+        errorHint: caseError.hint,
+        case_name: body.case_name,
+        userId: user?.id,
+      })
+      
+      // RLS 정책 위반 에러인 경우 더 자세한 메시지
+      if (caseError.code === "42501") {
+        logger.error("RLS policy violation", {
+          errorCode: caseError.code,
+          errorMessage: caseError.message,
+          errorDetails: caseError.details,
+          errorHint: caseError.hint,
+          userId: user?.id,
+          case_name: body.case_name,
+        })
+        return NextResponse.json(
+          {
+            error: "권한이 없습니다. RLS 정책을 확인하세요.",
+            details: caseError.message,
+            hint: caseError.hint || "사용자 역할이 올바르게 설정되었는지 확인하세요. 015_fix_rls_permissive.sql 마이그레이션을 실행하세요.",
+            code: caseError.code,
+          },
+          { status: 403 }
+        )
+      }
+      
       return createNextErrorResponse(
         NextResponse,
         caseError,
-        "케이스 생성에 실패했습니다.",
+        caseError.message || "케이스 생성에 실패했습니다.",
         500
       )
     }

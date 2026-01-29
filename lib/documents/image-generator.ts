@@ -172,7 +172,7 @@ function setupWatermarkTiles(
 export async function generateDocumentImage(
   docData: any,
   docType: DocumentType,
-  locale: "ko" | "en" | "zh-CN"
+  locale: "ko" | "en" | "zh-CN" | "si" | "ta"
 ): Promise<Blob | null> {
   try {
     const shouldWatermark = !String(docType).endsWith("_old")

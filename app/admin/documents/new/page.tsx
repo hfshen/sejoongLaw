@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/Card"
 export default function NewDocumentPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [locale, setLocale] = useState<"ko" | "en" | "zh-CN">("ko")
+  const [locale, setLocale] = useState<"ko" | "en" | "zh-CN" | "si" | "ta">("ko")
   const [documentType, setDocumentType] = useState<DocumentType | null>(
     (searchParams.get("type") as DocumentType) || null
   )

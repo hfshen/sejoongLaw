@@ -75,6 +75,7 @@ export default function AdminLayout({
     { href: "/admin/board", label: "게시판", icon: ClipboardList },
     { href: "/admin/content", label: "콘텐츠", icon: ClipboardList },
     { href: "/admin/members", label: "구성원", icon: Users },
+    { href: "/admin/users", label: "사용자 관리", icon: Users },
   ] as const
 
   const isActive = (href: string) => {
@@ -90,6 +91,7 @@ export default function AdminLayout({
     if (pathname.startsWith("/admin/board")) return "게시판"
     if (pathname.startsWith("/admin/content")) return "콘텐츠"
     if (pathname.startsWith("/admin/members")) return "구성원"
+    if (pathname.startsWith("/admin/users")) return "사용자 관리"
     return "관리자"
   })()
 

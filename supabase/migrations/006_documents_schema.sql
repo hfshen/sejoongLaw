@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS documents (
   date DATE NOT NULL,
   data JSONB NOT NULL DEFAULT '{}',
   locale TEXT NOT NULL DEFAULT 'ko' CHECK (locale IN ('ko', 'en', 'zh-CN')),
+  created_by UUID REFERENCES auth.users(id),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -36,6 +37,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_documents_updated_at ON documents;
 CREATE TRIGGER update_documents_updated_at
   BEFORE UPDATE ON documents
   FOR EACH ROW
@@ -46,6 +48,8 @@ ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
 
 -- Only authenticated admin users can access documents
 -- For now, we'll allow all authenticated users (can be restricted later)
+-- Note: This policy will be replaced by more specific policies in 011_workflow_rls.sql
+DROP POLICY IF EXISTS "Admin users can manage documents" ON documents;
 CREATE POLICY "Admin users can manage documents"
   ON documents FOR ALL
   USING (true)

@@ -35,8 +35,8 @@ interface DocumentFormProps {
   }
   isCaseLinked?: boolean
   caseName?: string
-  locale: "ko" | "en" | "zh-CN"
-  onLocaleChange: (locale: "ko" | "en" | "zh-CN") => void
+  locale: "ko" | "en" | "zh-CN" | "si" | "ta"
+  onLocaleChange: (locale: "ko" | "en" | "zh-CN" | "si" | "ta") => void
 }
 
 export default function DocumentForm({
@@ -153,11 +153,23 @@ export default function DocumentForm({
 
       if (documentId) {
         // 수정
-        await fetch(`/api/documents/${documentId}`, {
+        const response = await fetch(`/api/documents/${documentId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         })
+        
+        if (!response.ok) {
+          const errorData = await response.json()
+          const errorMessage = errorData.error || errorData.details || `서류 수정 실패 (${response.status})`
+          toast.error(errorMessage)
+          console.error("Document update error:", errorData)
+          return
+        }
+        
+        toast.success("저장되었습니다.")
+        // 목록 페이지로 이동하거나 새로고침
+        router.refresh()
       } else {
         // 생성
         const response = await fetch("/api/documents", {
@@ -165,17 +177,30 @@ export default function DocumentForm({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         })
+        
+        if (!response.ok) {
+          const errorData = await response.json()
+          const errorMessage = errorData.error || errorData.details || `서류 생성 실패 (${response.status})`
+          toast.error(errorMessage)
+          console.error("Document creation error:", errorData)
+          return
+        }
+        
         const result = await response.json()
         // 새로운 API 응답 형식 지원: { success: true, data: { document: {...} } }
         const createdDocument = result?.data?.document || result?.document
         if (createdDocument?.id) {
+          toast.success("저장되었습니다.")
+          // 문서 상세 페이지로 이동
           router.push(`/admin/documents/${createdDocument.id}`)
           return
+        } else {
+          toast.error("서류가 생성되었지만 응답 형식이 올바르지 않습니다.")
+          console.error("Unexpected response format:", result)
         }
       }
-
-      toast.success("저장되었습니다.")
     } catch (error) {
+      console.error("Document save error:", error)
       toast.error("저장에 실패했습니다.")
     } finally {
       setSaving(false)
@@ -245,7 +270,8 @@ export default function DocumentForm({
 
   const renderField = useCallback((field: FieldDefinition) => {
     const fieldKey = field.key
-    const label = field.label[locale]
+    // Fallback to English if si/ta label not available
+    const label = field.label[locale] || field.label["en"] || field.label["ko"]
     const isRequired = field.required
 
     switch (field.type) {
@@ -356,7 +382,7 @@ export default function DocumentForm({
                             : "border-gray-300 bg-white text-secondary hover:border-primary hover:bg-gray-50"
                         }`}
                       >
-                        {option.label[locale]}
+                        {option.label[locale] || option.label["en"] || option.label["ko"]}
                       </button>
                     )
                   })}
@@ -377,7 +403,7 @@ export default function DocumentForm({
                         : "border-gray-300 bg-white text-secondary hover:border-primary"
                     }`}
                   >
-                    {option.label[locale]}
+                    {option.label[locale] || option.label["en"] || option.label["ko"]}
                   </button>
                 ))}
               </div>
@@ -393,10 +419,16 @@ export default function DocumentForm({
                   }
                 }}
               >
-                <option value="">선택하세요</option>
+                <option value="">{
+                  locale === "ko" ? "선택하세요" 
+                  : locale === "en" ? "Select" 
+                  : locale === "zh-CN" ? "请选择"
+                  : locale === "si" ? "තෝරන්න"
+                  : "தேர்ந்தெடுக்கவும்"
+                }</option>
                 {field.options?.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {option.label[locale]}
+                    {option.label[locale] || option.label["en"] || option.label["ko"]}
                   </option>
                 ))}
               </select>
@@ -452,7 +484,7 @@ export default function DocumentForm({
                       }}
                       className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                     />
-                    <span className="text-sm text-secondary">{option.label[locale]}</span>
+                    <span className="text-sm text-secondary">{option.label[locale] || option.label["en"] || option.label["ko"]}</span>
                   </label>
                 )
               })}
@@ -477,24 +509,126 @@ export default function DocumentForm({
     }, {} as Record<string, FieldDefinition[]>)
   }, [template.fields])
 
-  const groupLabels: Record<string, Record<"ko" | "en" | "zh-CN", string>> = {
-    deceased: { ko: "고인 정보", en: "Deceased Information", "zh-CN": "死者信息" },
-    party_a: { ko: "갑 (유가족 대표)", en: "Party A (Family Representative)", "zh-CN": "甲方（家属代表）" },
-    party_b: { ko: "을 (사업장 대표)", en: "Party B (Company Representative)", "zh-CN": "乙方（公司代表）" },
-    principal: { ko: "위임인", en: "Principal", "zh-CN": "委托人" },
-    attorney: { ko: "수임인", en: "Attorney", "zh-CN": "受托人" },
-    sub_attorney: { ko: "복 대리인", en: "Sub-Attorney", "zh-CN": "复代理人" },
-    tasks: { ko: "위임업무", en: "Authorized Tasks", "zh-CN": "委托业务" },
-    case: { ko: "사건 정보", en: "Case Information", "zh-CN": "案件信息" },
-    appointer: { ko: "선임인", en: "Appointer", "zh-CN": "任命人" },
-    authorized: { ko: "수권사항", en: "Authorized Actions", "zh-CN": "授权事项" },
-    special: { ko: "기타 특별수권사항", en: "Special Authority", "zh-CN": "其他特别授权事项" },
-    recipient: { ko: "수신 정보", en: "Recipient Information", "zh-CN": "收件信息" },
-    insured: { ko: "피보험자 정보", en: "Insured Information", "zh-CN": "被保险人信息" },
-    insurance: { ko: "보험계약 정보", en: "Insurance Contract", "zh-CN": "保险合同信息" },
-    beneficiary: { ko: "수익자 정보", en: "Beneficiary Information", "zh-CN": "受益人信息" },
-    heirs: { ko: "법정상속인 정보", en: "Legal Heirs", "zh-CN": "法定继承人信息" },
-    general: { ko: "기본 정보", en: "General Information", "zh-CN": "基本信息" },
+  const groupLabels: Record<string, Record<"ko" | "en" | "zh-CN" | "si" | "ta", string>> = {
+    deceased: { 
+      ko: "고인 정보", 
+      en: "Deceased Information", 
+      "zh-CN": "死者信息",
+      si: "මියගිය පුද්ගලයාගේ තොරතුරු",
+      ta: "இறந்தவரின் தகவல்"
+    },
+    party_a: { 
+      ko: "갑 (유가족 대표)", 
+      en: "Party A (Family Representative)", 
+      "zh-CN": "甲方（家属代表）",
+      si: "පාර්ශ්වය A (පවුලේ නියෝජිත)",
+      ta: "கட்சி A (குடும்ப பிரதிநிதி)"
+    },
+    party_b: { 
+      ko: "을 (사업장 대표)", 
+      en: "Party B (Company Representative)", 
+      "zh-CN": "乙方（公司代表）",
+      si: "පාර්ශ්වය B (සමාගමේ නියෝජිත)",
+      ta: "கட்சி B (நிறுவன பிரதிநிதி)"
+    },
+    principal: { 
+      ko: "위임인", 
+      en: "Principal", 
+      "zh-CN": "委托人",
+      si: "අධිකරණ නියෝජිත",
+      ta: "முதன்மை"
+    },
+    attorney: { 
+      ko: "수임인", 
+      en: "Attorney", 
+      "zh-CN": "受托人",
+      si: "නීතිඥ",
+      ta: "வழக்கறிஞர்"
+    },
+    sub_attorney: { 
+      ko: "복 대리인", 
+      en: "Sub-Attorney", 
+      "zh-CN": "复代理人",
+      si: "උප නීතිඥ",
+      ta: "துணை வழக்கறிஞர்"
+    },
+    tasks: { 
+      ko: "위임업무", 
+      en: "Authorized Tasks", 
+      "zh-CN": "委托业务",
+      si: "අනුමත කාර්යයන්",
+      ta: "அங்கீகரிக்கப்பட்ட பணிகள்"
+    },
+    case: { 
+      ko: "사건 정보", 
+      en: "Case Information", 
+      "zh-CN": "案件信息",
+      si: "නඩුවේ තොරතුරු",
+      ta: "வழக்கு தகவல்"
+    },
+    appointer: { 
+      ko: "선임인", 
+      en: "Appointer", 
+      "zh-CN": "任命人",
+      si: "නම් කරන්නා",
+      ta: "நியமிப்பவர்"
+    },
+    authorized: { 
+      ko: "수권사항", 
+      en: "Authorized Actions", 
+      "zh-CN": "授权事项",
+      si: "අනුමත ක්‍රියා",
+      ta: "அங்கீகரிக்கப்பட்ட செயல்கள்"
+    },
+    special: { 
+      ko: "기타 특별수권사항", 
+      en: "Special Authority", 
+      "zh-CN": "其他特别授权事项",
+      si: "විශේෂ අධිකාරිය",
+      ta: "சிறப்பு அதிகாரம்"
+    },
+    recipient: { 
+      ko: "수신 정보", 
+      en: "Recipient Information", 
+      "zh-CN": "收件信息",
+      si: "ලබන්නාගේ තොරතුරු",
+      ta: "பெறுநர் தகவல்"
+    },
+    insured: { 
+      ko: "피보험자 정보", 
+      en: "Insured Information", 
+      "zh-CN": "被保险人信息",
+      si: "විශුරණය කරන ලද පුද්ගලයාගේ තොරතුරු",
+      ta: "காப்பீடு செய்யப்பட்டவரின் தகவல்"
+    },
+    insurance: { 
+      ko: "보험계약 정보", 
+      en: "Insurance Contract", 
+      "zh-CN": "保险合同信息",
+      si: "විශුරණ ගිවිසුමේ තොරතුරු",
+      ta: "காப்பீட்டு ஒப்பந்த தகவல்"
+    },
+    beneficiary: { 
+      ko: "수익자 정보", 
+      en: "Beneficiary Information", 
+      "zh-CN": "受益人信息",
+      si: "ලාභාංශකයාගේ තොරතුරු",
+      ta: "பயனாளி தகவல்"
+    },
+    heirs: { 
+      ko: "법정상속인 정보", 
+      en: "Legal Heirs", 
+      "zh-CN": "法定继承人信息",
+      si: "නීතිමය උරුමක්කාරයන්ගේ තොරතුරු",
+      ta: "சட்ட வாரிசுகளின் தகவல்"
+    },
+    general: { 
+      ko: "기본 정보", 
+      en: "General Information", 
+      "zh-CN": "基本信息",
+      si: "සාමාන්‍ය තොරතුරු",
+      ta: "பொதுவான தகவல்"
+    },
   }
 
   const fieldSpanClass = (field: FieldDefinition) => {
@@ -532,7 +666,7 @@ export default function DocumentForm({
         </div>
         <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
           {/* 언어 선택 */}
-          <div className="flex items-center gap-1 border border-gray-300 rounded-lg p-1 flex-shrink-0">
+          <div className="flex items-center gap-1 border border-gray-300 rounded-lg p-1 flex-shrink-0 flex-wrap">
             <button
               type="button"
               onClick={() => onLocaleChange("ko")}
@@ -565,6 +699,28 @@ export default function DocumentForm({
               }`}
             >
               中文
+            </button>
+            <button
+              type="button"
+              onClick={() => onLocaleChange("si")}
+              className={`px-2 py-1 rounded text-xs h-7 flex-shrink-0 ${
+                locale === "si"
+                  ? "bg-primary text-white"
+                  : "text-secondary hover:bg-gray-100"
+              }`}
+            >
+              සිංහල
+            </button>
+            <button
+              type="button"
+              onClick={() => onLocaleChange("ta")}
+              className={`px-2 py-1 rounded text-xs h-7 flex-shrink-0 ${
+                locale === "ta"
+                  ? "bg-primary text-white"
+                  : "text-secondary hover:bg-gray-100"
+              }`}
+            >
+              தமிழ்
             </button>
           </div>
 

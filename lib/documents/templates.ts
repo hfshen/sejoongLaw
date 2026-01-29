@@ -20,10 +20,10 @@ export interface DocumentTemplate {
 
 export interface FieldDefinition {
   key: string
-  label: Record<"ko" | "en" | "zh-CN", string>
+  label: Record<"ko" | "en" | "zh-CN" | "si" | "ta", string>
   type: "text" | "date" | "number" | "textarea" | "select" | "checkbox"
   required?: boolean
-  options?: Array<{ value: string; label: Record<"ko" | "en" | "zh-CN", string> }>
+  options?: Array<{ value: string; label: Record<"ko" | "en" | "zh-CN" | "si" | "ta", string> }>
   group?: string
 }
 
@@ -604,20 +604,80 @@ export function getTemplate(type: DocumentType): DocumentTemplate {
 
 export function getDocumentTypeLabel(
   type: DocumentType,
-  locale: "ko" | "en" | "zh-CN" = "ko"
+  locale: "ko" | "en" | "zh-CN" | "si" | "ta" = "ko"
 ): string {
-  const labels: Record<DocumentType, Record<"ko" | "en" | "zh-CN", string>> = {
-    agreement: { ko: "합의서", en: "Agreement", "zh-CN": "协议" },
-    power_of_attorney: { ko: "위임장", en: "Power of Attorney", "zh-CN": "委托书" },
-    attorney_appointment: { ko: "변호인선임서", en: "Attorney Appointment", "zh-CN": "律师任命书" },
-    litigation_power: { ko: "소송위임장", en: "Litigation Power", "zh-CN": "诉讼委托书" },
-    insurance_consent: { ko: "사망보험금지급동의", en: "Insurance Consent", "zh-CN": "死亡保险金支付同意书" },
-    agreement_old: { ko: "합의서(SEJOONG)", en: "Agreement (SEJOONG)", "zh-CN": "协议（旧版）" },
-    power_of_attorney_old: { ko: "위임장(SEJOONG)", en: "Power of Attorney (SEJOONG)", "zh-CN": "委托书（旧版）" },
-    attorney_appointment_old: { ko: "변호인선임서(SEJOONG)", en: "Attorney Appointment (SEJOONG)", "zh-CN": "律师任命书（旧版）" },
-    litigation_power_old: { ko: "소송위임장(SEJOONG)", en: "Litigation Power (SEJOONG)", "zh-CN": "诉讼委托书（旧版）" },
-    insurance_consent_old: { ko: "사망보험금지급동의(SEJOONG)", en: "Insurance Consent (SEJOONG)", "zh-CN": "死亡保险金支付同意书（旧版）" },
+  const labels: Record<DocumentType, Record<"ko" | "en" | "zh-CN" | "si" | "ta", string>> = {
+    agreement: { 
+      ko: "합의서", 
+      en: "Agreement", 
+      "zh-CN": "协议",
+      si: "එකඟතාවය",
+      ta: "ஒப்பந்தம்"
+    },
+    power_of_attorney: { 
+      ko: "위임장", 
+      en: "Power of Attorney", 
+      "zh-CN": "委托书",
+      si: "අධිකරණ නියෝජිත බලය",
+      ta: "அதிகார பத்திரம்"
+    },
+    attorney_appointment: { 
+      ko: "변호인선임서", 
+      en: "Attorney Appointment", 
+      "zh-CN": "律师任命书",
+      si: "නීතිඥ පත් කිරීම",
+      ta: "வழக்கறிஞர் நியமனம்"
+    },
+    litigation_power: { 
+      ko: "소송위임장", 
+      en: "Litigation Power", 
+      "zh-CN": "诉讼委托书",
+      si: "නඩු පැවරීමේ බලය",
+      ta: "வழக்கு அதிகாரம்"
+    },
+    insurance_consent: { 
+      ko: "사망보험금지급동의", 
+      en: "Insurance Consent", 
+      "zh-CN": "死亡保险金支付同意书",
+      si: "විශුරණ ගෙවීම් එකඟතාවය",
+      ta: "காப்பீட்டு ஒப்புதல்"
+    },
+    agreement_old: { 
+      ko: "합의서(SEJOONG)", 
+      en: "Agreement (SEJOONG)", 
+      "zh-CN": "协议（旧版）",
+      si: "එකඟතාවය (SEJOONG)",
+      ta: "ஒப்பந்தம் (SEJOONG)"
+    },
+    power_of_attorney_old: { 
+      ko: "위임장(SEJOONG)", 
+      en: "Power of Attorney (SEJOONG)", 
+      "zh-CN": "委托书（旧版）",
+      si: "අධිකරණ නියෝජිත බලය (SEJOONG)",
+      ta: "அதிகார பத்திரம் (SEJOONG)"
+    },
+    attorney_appointment_old: { 
+      ko: "변호인선임서(SEJOONG)", 
+      en: "Attorney Appointment (SEJOONG)", 
+      "zh-CN": "律师任命书（旧版）",
+      si: "නීතිඥ පත් කිරීම (SEJOONG)",
+      ta: "வழக்கறிஞர் நியமனம் (SEJOONG)"
+    },
+    litigation_power_old: { 
+      ko: "소송위임장(SEJOONG)", 
+      en: "Litigation Power (SEJOONG)", 
+      "zh-CN": "诉讼委托书（旧版）",
+      si: "නඩු පැවරීමේ බලය (SEJOONG)",
+      ta: "வழக்கு அதிகாரம் (SEJOONG)"
+    },
+    insurance_consent_old: { 
+      ko: "사망보험금지급동의(SEJOONG)", 
+      en: "Insurance Consent (SEJOONG)", 
+      "zh-CN": "死亡保险金支付同意书（旧版）",
+      si: "විශුරණ ගෙවීම් එකඟතාවය (SEJOONG)",
+      ta: "காப்பீட்டு ஒப்புதல் (SEJOONG)"
+    },
   }
-  return labels[type][locale]
+  return labels[type][locale] || labels[type]["en"] // Fallback to English if locale not found
 }
 
