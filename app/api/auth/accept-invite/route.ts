@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Find invitation by token
-    const { data: invitation, error: invitationError } = await supabase
+    const { data: invitation, error: invitationError } = await (supabase as any)
       .from("user_invitations")
       .select("*")
       .eq("token", token)
@@ -46,7 +46,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if invitation is expired
-    if (new Date(invitation.expires_at) < new Date()) {
+    const inv = invitation as any
+    if (new Date(inv.expires_at) < new Date()) {
       return NextResponse.json(
         { error: "초대 링크가 만료되었습니다. 관리자에게 다시 요청해주세요." },
         { status: 400 }
@@ -55,13 +56,13 @@ export async function POST(request: NextRequest) {
 
     // Get user by email
     const { data: userData, error: userError } = await (supabase.auth.admin as any).getUserByEmail(
-      invitation.email
+      inv.email
     )
 
     if (userError || !userData?.user) {
       logger.error("User not found for invitation", {
         error: userError,
-        email: invitation.email,
+        email: inv.email,
       })
       return NextResponse.json(
         { error: "사용자를 찾을 수 없습니다." },
@@ -109,18 +110,18 @@ export async function POST(request: NextRequest) {
     }
 
     // If profile doesn't exist, create it
-    const { error: profileError } = await supabase.from("profiles").upsert(
+    const { error: profileError } = await (supabase as any).from("profiles").upsert(
       {
         id: userId,
-        email: invitation.email,
-        name: name || invitation.email.split("@")[0],
+        email: inv.email,
+        name: name || inv.email.split("@")[0],
         phone: phone || null,
-        role: invitation.role,
-        country: invitation.country || null,
-        organization: invitation.organization || null,
+        role: inv.role,
+        country: inv.country || null,
+        organization: inv.organization || null,
         status: "active",
-        invited_by: invitation.invited_by,
-        invited_at: invitation.invited_at,
+        invited_by: inv.invited_by,
+        invited_at: inv.invited_at,
         activated_at: new Date().toISOString(),
       },
       {
@@ -137,26 +138,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Mark invitation as accepted
-    const { error: acceptError } = await supabase
+    const { error: acceptError } = await (supabase as any)
       .from("user_invitations")
       .update({
         accepted_at: new Date().toISOString(),
         user_id: userId,
       })
-      .eq("id", invitation.id)
+      .eq("id", inv.id)
 
     if (acceptError) {
       logger.error("Failed to mark invitation as accepted", {
         error: acceptError,
-        invitationId: invitation.id,
+        invitationId: inv.id,
       })
       // Don't fail - user is already activated
     }
 
     logger.info("Invitation accepted successfully", {
       userId,
-      email: invitation.email,
-      role: invitation.role,
+      email: inv.email,
+      role: inv.role,
     })
 
     return createSuccessResponse(

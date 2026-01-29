@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       .from("user_invitations")
       .select("*")
       .eq("email", email)
-      .eq("accepted_at", null)
+      .is("accepted_at", null)
       .gt("expires_at", new Date().toISOString())
       .single()
 
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Save invitation record
-    const { data: invitation, error: invitationError } = await supabase
+    const { data: invitation, error: invitationError } = await (supabase as any)
       .from("user_invitations")
       .insert([
         {
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
 
     // Update profile if user was created
     if (invitedUser?.user?.id) {
-      const { error: profileError } = await supabase.from("profiles").upsert(
+      const { error: profileError } = await (supabase as any).from("profiles").upsert(
         {
           id: invitedUser.user.id,
           email: invitedUser.user.email || email,

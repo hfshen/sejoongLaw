@@ -138,8 +138,8 @@ export async function PUT(request: NextRequest) {
           .eq("id", userId)
           .single()
 
-        if (!profile?.activated_at) {
-          await supabase
+        if (!(profile as any)?.activated_at) {
+          await (supabase as any)
             .from("profiles")
             .update({ activated_at: new Date().toISOString() })
             .eq("id", userId)
@@ -154,7 +154,7 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    const { data: user, error } = await supabase
+    const { data: user, error } = await (supabase as any)
       .from("profiles")
       .update(updateData)
       .eq("id", userId)
@@ -208,7 +208,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Soft delete: set status to suspended
-    const { data: user, error } = await supabase
+    const { data: user, error } = await (supabase as any)
       .from("profiles")
       .update({ status: "suspended" })
       .eq("id", userId)
