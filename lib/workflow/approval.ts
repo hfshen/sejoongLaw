@@ -25,8 +25,8 @@ export interface CreateApprovalParams {
   role: UserRole
   decision: "approved" | "rejected"
   comment?: string
-  ipAddress?: string
-  userAgent?: string
+  ipAddress?: string | null
+  userAgent?: string | null
 }
 
 /**

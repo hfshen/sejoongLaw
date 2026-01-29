@@ -18,7 +18,7 @@ export interface CreateVersionParams {
   documentId: string
   storagePath: string
   fileContent: Buffer | string
-  createdBy: string
+  createdBy: string | null
 }
 
 /**

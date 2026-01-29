@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { data: member, error } = await supabase
+    const { data: member, error } = await (supabase as any)
       .from("members")
       .insert([
         {

@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { data: document, error } = await supabase
+    const { data: document, error } = await (supabase as any)
       .from("documents")
       .insert([
         {
@@ -259,7 +259,7 @@ export async function POST(request: NextRequest) {
       })
 
       // Update document's current_version_id to the new version
-      await supabase
+      await (supabase as any)
         .from("documents")
         .update({ current_version_id: version.id })
         .eq("id", document.id)
@@ -327,7 +327,7 @@ export async function POST(request: NextRequest) {
                   .filter((r) => r.success)
                   .map((r) => r.lang.toUpperCase())
 
-                for (const lawyer of foreignLawyers) {
+                  for (const lawyer of foreignLawyers as any[]) {
                   if (lawyer.email) {
                     await sendTranslationReadyEmail({
                       lawyerEmail: lawyer.email,

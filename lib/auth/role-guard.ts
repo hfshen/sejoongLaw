@@ -37,7 +37,7 @@ export async function getCurrentUserProfile(): Promise<UserProfile | null> {
 
     // Use service client to bypass RLS for profile lookup
     const serviceClient = getServiceClient()
-    const { data: profile, error } = await serviceClient
+    const { data: profile, error } = await (serviceClient as any)
       .from("profiles")
       .select("*")
       .eq("id", user.id)
@@ -48,14 +48,15 @@ export async function getCurrentUserProfile(): Promise<UserProfile | null> {
       return null
     }
 
+    const profileData = profile as any
     return {
-      id: profile.id,
-      email: profile.email,
-      name: profile.name,
-      role: (profile.role as UserRole) || "family_viewer",
-      status: (profile.status as "active" | "pending" | "suspended") || "pending",
-      country: profile.country,
-      organization: profile.organization,
+      id: profileData.id,
+      email: profileData.email,
+      name: profileData.name,
+      role: (profileData.role as UserRole) || "family_viewer",
+      status: (profileData.status as "active" | "pending" | "suspended") || "pending",
+      country: profileData.country,
+      organization: profileData.organization,
     }
   } catch (error) {
     logger.error("Error getting user profile", { error })

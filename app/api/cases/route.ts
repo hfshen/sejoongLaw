@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
 
     // Always use service role client to bypass RLS
     // We've already verified admin_session cookie, so this is safe
-    let supabase
+    let supabase: any
     let user = null
     
     try {
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 케이스 생성
-    const { data: caseRecord, error: caseError } = await supabase
+    const { data: caseRecord, error: caseError } = await (supabase as any)
       .from("cases")
       .insert([
         {
@@ -268,7 +268,7 @@ export async function POST(request: NextRequest) {
         documentTypes: documentsToInsert.map(d => d.document_type)
       })
 
-      const { data: createdDocuments, error: docsError } = await supabase
+      const { data: createdDocuments, error: docsError } = await (supabase as any)
         .from("documents")
         .insert(documentsToInsert)
         .select()

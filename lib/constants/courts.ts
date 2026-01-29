@@ -229,7 +229,7 @@ function isSubsequence(haystack: string, needle: string) {
   return i === needle.length
 }
 
-export type CourtLocale = "ko" | "en" | "zh-CN"
+export type CourtLocale = "ko" | "en" | "zh-CN" | "si" | "ta"
 
 export type CourtSuggestion = {
   label: string
@@ -238,8 +238,13 @@ export type CourtSuggestion = {
 
 function getCourtLabel(nameKo: string, locale: CourtLocale) {
   if (locale === "ko") return nameKo
+  if (locale === "si" || locale === "ta") {
+    // For Sinhala and Tamil, use English translation as fallback
+    const t = translateCourtKoToEnZh(nameKo)
+    return t["en"] || nameKo
+  }
   const t = translateCourtKoToEnZh(nameKo)
-  return t[locale]
+  return (t as any)[locale] || nameKo
 }
 
 export function getCourtSuggestions(query: string, locale: CourtLocale = "ko", limit = 12): CourtSuggestion[] {

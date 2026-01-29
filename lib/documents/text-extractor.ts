@@ -33,7 +33,7 @@ export function extractReadableText(
       fields.forEach((field) => {
         const value = data[field.key]
         if (value !== undefined && value !== null && value !== "") {
-          const label = field.label[locale] || field.label.ko || field.key
+          const label = (field.label as any)[locale] || (field.label as any).ko || field.key
           
           if (typeof value === "boolean") {
             if (value) {

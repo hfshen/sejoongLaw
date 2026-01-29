@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { motion, HTMLMotionProps } from "framer-motion"
 
 interface ButtonProps extends Omit<HTMLMotionProps<"button">, "onDrag" | "onDragStart" | "onDragEnd"> {
-  variant?: "primary" | "secondary" | "outline" | "ghost"
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive"
   size?: "sm" | "md" | "lg"
   isLoading?: boolean
 }
@@ -30,6 +30,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       secondary: "premium-button-secondary",
       outline: "premium-button-outline",
       ghost: "bg-transparent hover:bg-gray-100 text-secondary",
+      destructive: "bg-red-600 hover:bg-red-700 text-white",
     }
 
     const sizes = {

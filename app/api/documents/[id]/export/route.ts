@@ -80,7 +80,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     // Return PDF as response
-    return new NextResponse(packageResult.buffer, {
+    return new NextResponse(new Uint8Array(packageResult.buffer), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="document-package-${versionId}.pdf"`,

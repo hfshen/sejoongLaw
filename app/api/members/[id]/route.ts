@@ -109,7 +109,7 @@ export async function PUT(
     if (career !== undefined) updateData.career = career
     if (order_index !== undefined) updateData.order_index = order_index
 
-    const { data: member, error } = await supabase
+    const { data: member, error } = await (supabase as any)
       .from("members")
       .update(updateData)
       .eq("id", id)
