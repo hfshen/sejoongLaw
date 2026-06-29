@@ -15,6 +15,9 @@ const WeChatMeta = dynamic(() => import("@/components/seo/WeChatMeta"), {
   ssr: false,
 })
 
+const naverVerification =
+  process.env.NAVER_VERIFICATION || "4b2239cc06cc691737ed84c58435872218578bb0"
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
 }
@@ -25,7 +28,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sejoonglaw.com"
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sejoonglaw.kr"
 
   return {
     title: {
@@ -96,7 +99,7 @@ export async function generateMetadata({
     verification: {
       google: process.env.GOOGLE_VERIFICATION,
       other: {
-        "naver-site-verification": process.env.NAVER_VERIFICATION || "",
+        "naver-site-verification": naverVerification,
       },
     },
   }
@@ -134,4 +137,3 @@ export default async function LocaleLayout({
     </>
   )
 }
-
