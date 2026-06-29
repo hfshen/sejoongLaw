@@ -17,7 +17,8 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-}
+  additionalMetaTags: [{ name: "naver-site-verification", content: "4b2239cc06cc691737ed84c58435872218578bb0" }],
+};
 
 export default function RootLayout({
   children,
