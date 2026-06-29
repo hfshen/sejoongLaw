@@ -3,6 +3,9 @@ import { inter, playfair, notoSansKR, notoSerifSC } from "@/lib/fonts"
 import PasswordResetRedirect from "@/components/auth/PasswordResetRedirect"
 import "./globals.css"
 
+const naverVerification =
+  process.env.NAVER_VERIFICATION || "4b2239cc06cc691737ed84c58435872218578bb0"
+
 export const metadata: Metadata = {
   title: {
     default: "법무법인 세중 | 전문 법률 서비스",
@@ -11,14 +14,18 @@ export const metadata: Metadata = {
   description:
     "법무법인 세중은 부동산, 이혼, 상속, 비자, 기업자문 등 다양한 법률 서비스를 제공하는 전문 법무법인입니다.",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://sejoonglaw.com"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://sejoonglaw.kr"
   ),
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  additionalMetaTags: [{ name: "naver-site-verification", content: "4b2239cc06cc691737ed84c58435872218578bb0" }],
-};
+  verification: {
+    other: {
+      "naver-site-verification": naverVerification,
+    },
+  },
+}
 
 export default function RootLayout({
   children,
@@ -37,4 +44,3 @@ export default function RootLayout({
     </html>
   )
 }
-
