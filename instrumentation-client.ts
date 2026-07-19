@@ -13,7 +13,7 @@ Sentry.init({
   replaysSessionSampleRate: dsn ? 0.01 : 0,
   beforeSend(event) {
     if (event.request?.data) event.request.data = "[Filtered]"
-    if (event.request?.cookies) event.request.cookies = "[Filtered]"
+    if (event.request?.cookies) event.request.cookies = {}
     return event
   },
 })
