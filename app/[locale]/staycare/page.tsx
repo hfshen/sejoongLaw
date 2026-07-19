@@ -7,7 +7,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sejoonglaw.kr"
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.sejoonglaw.kr"
 
   const english = locale === "en"
   const title = english

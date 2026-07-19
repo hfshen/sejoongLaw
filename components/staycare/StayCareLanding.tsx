@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import {
   ArrowRight,
@@ -8,7 +10,6 @@ import {
   CheckCircle2,
   ChevronRight,
   FileLock2,
-  Globe2,
   HeartPulse,
   Landmark,
   Languages,
@@ -19,6 +20,7 @@ import {
   Sparkles,
   WalletCards,
 } from "lucide-react"
+import StayCareLanguageSwitcher from "@/components/staycare/StayCareLanguageSwitcher"
 import {
   journeyPhases,
   oneStopServices,
@@ -26,6 +28,10 @@ import {
   t,
   type StayCareLanguage,
 } from "@/lib/staycare/lifecycle-model"
+import {
+  useStayCareLanguage,
+  type StayCarePreferredLanguage,
+} from "@/lib/staycare/language-preference"
 
 const serviceIcons = {
   identity: FileLock2,
@@ -47,75 +53,139 @@ const localized = {
     badge: "스리랑카 근로자를 위한 한국생활 원스톱 플랫폼",
     title1: "한국에 오기 전부터",
     title2: "귀국할 때까지 한곳에서.",
-    description: "정부와 EPS가 처리하는 공식 모집·고용·입국 절차는 정확히 연결하고, 비자 발급 이후 통신, 공항수령, 숙소배송, 외국인등록, 은행, 보험, 본국송금, 체류연장, 병원, AI 통역과 귀국준비를 세중 플랫폼에서 통합합니다.",
+    description:
+      "정부와 EPS가 처리하는 공식 모집·고용·입국 절차는 정확히 연결하고, 비자 발급 이후 통신, 공항수령, 숙소배송, 외국인등록, 은행, 보험, 본국송금, 체류연장, 병원, AI 통역과 귀국준비를 세중 플랫폼에서 통합합니다.",
     openApp: "원스톱 앱 열기",
     journey: "전체 준비과정 보기",
-    threeLanguages: "한국어·English·සිංහල",
+    threeLanguages: "한국어 · English · සිංහල",
     officialBoundary: "정부 공식절차와 민간서비스를 구분",
     reuse: "한 번 입력한 자료를 동의 후 재사용",
     journeyEyebrow: "Sri Lanka to Korea lifecycle",
     journeyTitle: "현지 준비부터 한국생활·체류·귀국까지",
-    journeyDescription: "특정 인원이나 특정 일정이 아니라, 한 명의 근로자가 실제로 지나가는 전체 생애주기를 기준으로 설계했습니다.",
+    journeyDescription:
+      "한 명의 근로자가 실제로 지나가는 전체 생애주기를 기준으로 설계했습니다.",
     servicesEyebrow: "One-stop services",
     servicesTitle: "비자 발급 이후 필요한 서비스를 한 화면에서",
-    servicesDescription: "세중이 신청과 진행상태를 통합하고, 실제 개통·금융·송금은 공식기관 또는 인가·제휴 사업자가 수행합니다.",
+    servicesDescription:
+      "세중이 신청과 진행상태를 통합하고, 실제 개통·금융·송금은 공식기관 또는 인가·제휴 사업자가 수행합니다.",
     boundaryEyebrow: "Clear responsibility",
     boundaryTitle: "정부가 하는 일은 연결하고, 빈틈은 세중이 채웁니다",
     government: "정부·공공기관",
-    governmentText: "시험, 구직자 명부, 표준근로계약, 사전교육, 사증·입국 진행, 취업교육과 고용허가제 보험 등 공식 승인·처리 영역",
+    governmentText:
+      "시험, 구직자 명부, 표준근로계약, 사전교육, 사증·입국 진행, 취업교육과 고용허가제 보험 등 공식 승인·처리 영역",
     sejoong: "세중 원스톱",
-    sejoongText: "공식 상태 안내, 서류 준비, 일정·만료 관리, 생활서비스 신청, 상담·사건 접수, 파트너 연결과 진행 추적",
+    sejoongText:
+      "공식 상태 안내, 서류 준비, 일정·만료 관리, 생활서비스 신청, 상담·사건 접수, 파트너 연결과 진행 추적",
     partner: "인가·제휴 사업자",
-    partnerText: "통신 개통, 은행계좌, 해외송금, 배송, 보험·의료·숙소 등 허가와 본인확인이 필요한 실제 서비스 수행",
+    partnerText:
+      "통신 개통, 은행계좌, 해외송금, 배송, 보험·의료·숙소 등 허가와 본인확인이 필요한 실제 서비스 수행",
     aiTitle: "AI 통역을 앱의 기본 기능으로",
-    aiText: "한국어·영어·싱할라어 텍스트와 브라우저 음성을 변환하고, 공항·사업장·병원·은행·출입국·숙소·송금 상황의 다음 행동을 안내합니다.",
+    aiText:
+      "한국어·영어·싱할라어 텍스트와 브라우저 음성을 변환하고, 공항·사업장·병원·은행·출입국·숙소·송금 상황의 다음 행동을 안내합니다.",
     securityTitle: "여권과 체류정보를 다루는 수준의 보안",
-    securityText: "비공개 문서함, 역할·조직별 접근통제, 짧은 만료 URL, 번호 마스킹, 공유동의와 조회·다운로드 감사기록을 전제로 합니다.",
+    securityText:
+      "비공개 문서함, 역할·조직별 접근통제, 짧은 만료 URL, 번호 마스킹, 공유동의와 조회·다운로드 감사기록을 전제로 합니다.",
     closeTitle: "한국생활에 필요한 것을 하나의 계정으로 시작합니다.",
-    closeText: "스리랑카에서 로그인하면 지금 준비할 것과 다음 단계를 확인하고, 한국 도착 후 같은 계정으로 생활·체류·송금·귀국업무를 이어갑니다.",
+    closeText:
+      "스리랑카에서 로그인하면 지금 준비할 것과 다음 단계를 확인하고, 한국 도착 후 같은 계정으로 생활·체류·송금·귀국업무를 이어갑니다.",
   },
   en: {
     badge: "Korea-life one-stop platform for Sri Lankan workers",
     title1: "From before Korea",
     title2: "until the return home.",
-    description: "The platform links official government and EPS recruitment, employment and entry processes, then integrates post-visa connectivity, pickup or delivery, registration, banking, insurance, remittance, stay extension, healthcare, AI interpretation and return preparation.",
+    description:
+      "The platform connects official government and EPS recruitment, employment and entry processes, then integrates post-visa connectivity, pickup or delivery, registration, banking, insurance, remittance, stay extension, healthcare, AI interpretation and return preparation.",
     openApp: "Open one-stop app",
     journey: "View full journey",
     threeLanguages: "한국어 · English · සිංහල",
-    officialBoundary: "Clear public/private boundary",
+    officialBoundary: "Clear public and private responsibility",
     reuse: "Reuse verified data with consent",
     journeyEyebrow: "Sri Lanka to Korea lifecycle",
     journeyTitle: "From local preparation to work, stay and return",
-    journeyDescription: "Designed around the real lifecycle of each worker, not a specific headcount, meeting or arrival date.",
+    journeyDescription:
+      "Designed around the real lifecycle of each worker from Sri Lanka to Korea and back home.",
     servicesEyebrow: "One-stop services",
     servicesTitle: "Post-visa Korea-life services in one screen",
-    servicesDescription: "Sejoong orchestrates applications and status; authorities and licensed providers perform regulated services.",
+    servicesDescription:
+      "Sejoong orchestrates applications and status while authorities and licensed providers perform regulated services.",
     boundaryEyebrow: "Clear responsibility",
     boundaryTitle: "Link official systems and fill the gaps with Sejoong",
     government: "Government and public authorities",
-    governmentText: "Official approval and processing such as testing, roster placement, standard contracts, pre-departure training, visa/entry progress, employment training and EPS insurance.",
+    governmentText:
+      "Official approval and processing such as testing, roster placement, standard contracts, pre-departure training, visa and entry progress, employment training and EPS insurance.",
     sejoong: "Sejoong one-stop",
-    sejoongText: "Explain official status, prepare records, manage deadlines, route life-service requests, receive cases and track providers.",
+    sejoongText:
+      "Explain official status, prepare records, manage deadlines, route life-service requests, receive cases and track providers.",
     partner: "Licensed or contracted providers",
-    partnerText: "Perform identity-verified telecom, banking, remittance, delivery, insurance, healthcare and accommodation services.",
+    partnerText:
+      "Perform identity-verified telecom, banking, remittance, delivery, insurance, healthcare and accommodation services.",
     aiTitle: "AI interpretation as a core app function",
-    aiText: "Translate Korean, English and Sinhala text or browser-captured speech and explain next actions for airports, workplaces, hospitals, banks, immigration, housing and remittance.",
+    aiText:
+      "Translate Korean, English and Sinhala text or browser-captured speech and explain next actions for airports, workplaces, hospitals, banks, immigration, housing and remittance.",
     securityTitle: "Security suitable for passport and stay records",
-    securityText: "Private document storage, role and organization access controls, expiring URLs, masked identifiers, sharing consent and access/download audit logs.",
+    securityText:
+      "Private document storage, role and organization access controls, expiring URLs, masked identifiers, sharing consent and access or download audit logs.",
     closeTitle: "Start Korea life with one account.",
-    closeText: "Log in from Sri Lanka to see what to prepare and continue with the same account for life, stay, remittance and return tasks after arrival.",
+    closeText:
+      "Log in from Sri Lanka to see what to prepare and continue with the same account for life, stay, remittance and return tasks after arrival.",
+  },
+  si: {
+    badge: "ශ්‍රී ලාංකික සේවකයන් සඳහා කොරියානු ජීවිත එක්-තැනක වේදිකාව",
+    title1: "කොරියාවට පැමිණීමට පෙර සිට",
+    title2: "ආපසු ශ්‍රී ලංකාවට යන තෙක්.",
+    description:
+      "රජය සහ EPS විසින් පාලනය කරන නිල බඳවාගැනීම්, රැකියා සහ ඇතුළුවීමේ ක්‍රියාවලිය සම්බන්ධ කර, වීසා නිකුත් වූ පසු දුරකථන සම්බන්ධතාව, ගුවන් තොටුපළ ලබාගැනීම, නවාතැන් බෙදාහැරීම, විදේශික ලියාපදිංචිය, බැංකු, රක්ෂණ, මුදල් යැවීම, රැඳී සිටීම දිගු කිරීම, වෛද්‍ය සේවා, AI භාෂා සහාය සහ ආපසු යාම එක් වේදිකාවකින් කළමනාකරණය කරයි.",
+    openApp: "එක්-තැනක යෙදුම විවෘත කරන්න",
+    journey: "සම්පූර්ණ ගමන බලන්න",
+    threeLanguages: "한국어 · English · සිංහල",
+    officialBoundary: "නිල ක්‍රියාවලිය සහ පෞද්ගලික සේවා වෙන් කරයි",
+    reuse: "අනුමැතියෙන් තහවුරු කළ දත්ත නැවත භාවිතා කරන්න",
+    journeyEyebrow: "ශ්‍රී ලංකාවෙන් කොරියාවට ජීවිත ගමන",
+    journeyTitle: "දේශීය සූදානමෙන් කොරියානු ජීවිතය, රැඳී සිටීම සහ ආපසු යාම දක්වා",
+    journeyDescription:
+      "ශ්‍රී ලංකාවේ සිට කොරියාවට පැමිණ ආපසු යන එක් සේවකයෙකුගේ සැබෑ ජීවිත ගමන අනුව නිර්මාණය කර ඇත.",
+    servicesEyebrow: "එක්-තැනක සේවා",
+    servicesTitle: "වීසා පසු අවශ්‍ය කොරියානු ජීවිත සේවා එකම තිරයකින්",
+    servicesDescription:
+      "Sejoong අයදුම් සහ තත්ත්වය එකතු කරයි. නියාමිත සේවා රජයේ ආයතන හෝ බලපත්‍රලාභී හවුල්කරුවන් විසින් සිදු කරයි.",
+    boundaryEyebrow: "පැහැදිලි වගකීම",
+    boundaryTitle: "නිල පද්ධති සම්බන්ධ කර හිස්තැන් Sejoong පුරවයි",
+    government: "රජය සහ රාජ්‍ය ආයතන",
+    governmentText:
+      "පරීක්ෂණ, රැකියා ලැයිස්තුගත කිරීම, සම්මත සේවා ගිවිසුම්, පිටත්වීමට පෙර පුහුණුව, වීසා සහ ඇතුළුවීම, රැකියා පුහුණුව සහ EPS රක්ෂණය වැනි නිල අනුමැතිය සහ ක්‍රියාත්මක කිරීම.",
+    sejoong: "Sejoong එක්-තැනක සේවාව",
+    sejoongText:
+      "නිල තත්ත්වය පැහැදිලි කිරීම, ලේඛන සූදානම් කිරීම, අවසන් දින කළමනාකරණය, ජීවිත සේවා අයදුම්, නඩු හෝ විමසීම් භාරගැනීම සහ සේවා සපයන්නන් අනුගමනය කිරීම.",
+    partner: "බලපත්‍රලාභී හෝ ගිවිසුම්ගත සේවා සපයන්නන්",
+    partnerText:
+      "දුරකථන සම්බන්ධතාව, බැංකු ගිණුම්, විදේශ මුදල් යැවීම, බෙදාහැරීම, රක්ෂණ, වෛද්‍ය සහ නවාතැන් සේවා සිදු කරයි.",
+    aiTitle: "AI භාෂා සහාය යෙදුමේ මූලික අංගයක් ලෙස",
+    aiText:
+      "කොරියානු, ඉංග්‍රීසි සහ සිංහල පෙළ හෝ හඬ පරිවර්තනය කර ගුවන් තොටුපළ, සේවා ස්ථානය, රෝහල, බැංකුව, ආගමන, නවාතැන් සහ මුදල් යැවීමේදී ඊළඟ ක්‍රියාව පැහැදිලි කරයි.",
+    securityTitle: "ගමන් බලපත්‍ර සහ රැඳී සිටීමේ දත්ත සඳහා සුදුසු ආරක්ෂාව",
+    securityText:
+      "පෞද්ගලික ලේඛන ගබඩාව, භූමිකා සහ ආයතන අනුව ප්‍රවේශ පාලනය, කල් ඉකුත් වන සබැඳි, අංක සැඟවීම, බෙදාගැනීමේ අනුමැතිය සහ ප්‍රවේශ වාර්තා භාවිතා කරයි.",
+    closeTitle: "එකම ගිණුමකින් කොරියානු ජීවිතය ආරම්භ කරන්න.",
+    closeText:
+      "ශ්‍රී ලංකාවේ සිට පිවිසී දැන් සූදානම් කළ යුතු දේ බලන්න. කොරියාවට පැමිණි පසු එම ගිණුමෙන්ම ජීවිත, රැඳී සිටීම, මුදල් යැවීම සහ ආපසු යාම කළමනාකරණය කරන්න.",
   },
 } as const
 
+function appHref(locale: string, language: StayCarePreferredLanguage) {
+  return `/${locale}/staycare/app?lang=${language}`
+}
+
 export default function StayCareLanding({ locale }: { locale: string }) {
-  const language: StayCareLanguage = locale === "en" ? "en" : "ko"
+  const initialLanguage: StayCarePreferredLanguage = locale === "en" ? "en" : "ko"
+  const { language, setLanguage } = useStayCareLanguage(initialLanguage)
   const copy = localized[language]
+  const modelLanguage = language as StayCareLanguage
 
   return (
     <main className="min-h-screen bg-[#f7f7f5] text-slate-950">
       <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-[#f7f7f5]/95 backdrop-blur-xl">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <Link href={`/${locale}`} className="flex items-center gap-3">
+        <div className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+          <Link href={`/${locale}/staycare`} className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#bb271a] font-black text-white">S</span>
             <span>
               <span className="block font-black tracking-tight">Sejoong StayCare</span>
@@ -128,9 +198,12 @@ export default function StayCareLanding({ locale }: { locale: string }) {
             <a href="#boundary" className="hover:text-slate-950">Responsibility</a>
             <a href="#platform" className="hover:text-slate-950">AI & Security</a>
           </nav>
-          <Link href={`/${locale}/staycare/app`} className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#bb271a]">
-            {copy.openApp} <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="flex items-center gap-2">
+            <StayCareLanguageSwitcher value={language} onChange={setLanguage} compact />
+            <Link href={appHref(locale, language)} className="hidden items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#bb271a] sm:inline-flex">
+              {copy.openApp} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -147,7 +220,7 @@ export default function StayCareLanding({ locale }: { locale: string }) {
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-600">{copy.description}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href={`/${locale}/staycare/app`} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#bb271a] px-6 py-4 font-bold text-white shadow-lg shadow-red-900/10 transition hover:bg-[#9a1f14]">
+              <Link href={appHref(locale, language)} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#bb271a] px-6 py-4 font-bold text-white shadow-lg shadow-red-900/10 transition hover:bg-[#9a1f14]">
                 {copy.openApp} <ArrowRight className="h-5 w-5" />
               </Link>
               <a href="#journey" className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-4 font-bold text-slate-800 hover:border-slate-400">
@@ -165,13 +238,8 @@ export default function StayCareLanding({ locale }: { locale: string }) {
             <div className="absolute -left-8 top-12 h-40 w-40 rounded-full bg-red-200/50 blur-3xl" />
             <div className="relative rounded-[2rem] border border-white/70 bg-white p-4 shadow-2xl shadow-slate-900/10">
               <div className="rounded-[1.5rem] bg-slate-950 p-6 text-white">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">My Korea journey</p>
-                    <p className="mt-2 text-2xl font-black">After visa · Before departure</p>
-                  </div>
-                  <Plane className="h-7 w-7 text-emerald-400" />
-                </div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">My Korea journey</p>
+                <p className="mt-2 text-2xl font-black">Sri Lanka → Korea → Home</p>
                 <div className="mt-6 grid grid-cols-3 gap-3">
                   {[["Ready", "8"], ["In progress", "4"], ["Attention", "1"]].map(([label, value]) => (
                     <div key={label} className="rounded-2xl bg-white/10 p-3">
@@ -217,10 +285,10 @@ export default function StayCareLanding({ locale }: { locale: string }) {
             <article key={phase.id} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex items-center justify-between">
                 <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-50 font-black text-[#bb271a]">{phase.order}</span>
-                <span className="text-xs font-bold text-slate-400">{t(phase.location, language)}</span>
+                <span className="text-xs font-bold text-slate-400">{t(phase.location, modelLanguage)}</span>
               </div>
-              <h3 className="mt-6 text-xl font-black">{t(phase.title, language)}</h3>
-              <p className="mt-3 text-sm leading-7 text-slate-600">{t(phase.description, language)}</p>
+              <h3 className="mt-6 text-xl font-black">{t(phase.title, modelLanguage)}</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-600">{t(phase.description, modelLanguage)}</p>
             </article>
           ))}
         </div>
@@ -242,10 +310,14 @@ export default function StayCareLanding({ locale }: { locale: string }) {
                     <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-[#bb271a]"><Icon className="h-6 w-6" /></span>
                     <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-500">{service.integrationStatus}</span>
                   </div>
-                  <h3 className="mt-5 text-xl font-black">{t(service.title, language)}</h3>
-                  <p className="mt-3 text-sm leading-7 text-slate-600">{t(service.description, language)}</p>
+                  <h3 className="mt-5 text-xl font-black">{t(service.title, modelLanguage)}</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-600">{t(service.description, modelLanguage)}</p>
                   <div className="mt-5 flex flex-wrap gap-2">
-                    {service.ownership.map((owner) => <span key={owner} className="rounded-lg bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-500">{t(responsibilityLabels[owner], language)}</span>)}
+                    {service.ownership.map((owner) => (
+                      <span key={owner} className="rounded-lg bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-500">
+                        {t(responsibilityLabels[owner], modelLanguage)}
+                      </span>
+                    ))}
                   </div>
                 </article>
               )
@@ -268,7 +340,9 @@ export default function StayCareLanding({ locale }: { locale: string }) {
             const IconComponent = Icon as typeof Landmark
             return (
               <article key={String(title)} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <span className={`flex h-12 w-12 items-center justify-center rounded-2xl ${tone === "blue" ? "bg-blue-50 text-blue-700" : tone === "emerald" ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-[#bb271a]"}`}><IconComponent className="h-6 w-6" /></span>
+                <span className={`flex h-12 w-12 items-center justify-center rounded-2xl ${tone === "blue" ? "bg-blue-50 text-blue-700" : tone === "emerald" ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-[#bb271a]"}`}>
+                  <IconComponent className="h-6 w-6" />
+                </span>
                 <h3 className="mt-5 text-xl font-black">{String(title)}</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-600">{String(text)}</p>
               </article>
@@ -283,14 +357,18 @@ export default function StayCareLanding({ locale }: { locale: string }) {
             <Bot className="h-9 w-9 text-violet-300" />
             <h2 className="mt-5 text-2xl font-black">{copy.aiTitle}</h2>
             <p className="mt-4 text-sm leading-8 text-slate-300">{copy.aiText}</p>
-            <Link href={`/${locale}/staycare/app`} className="mt-6 inline-flex items-center rounded-2xl bg-violet-400/15 px-5 py-3 text-sm font-black text-violet-200">AI interpreter <ArrowRight className="ml-2 h-4 w-4" /></Link>
+            <Link href={appHref(locale, language)} className="mt-6 inline-flex items-center rounded-2xl bg-violet-400/15 px-5 py-3 text-sm font-black text-violet-200">
+              AI interpreter <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
           </article>
           <article className="rounded-[2rem] border border-white/10 bg-white/5 p-7">
             <ShieldCheck className="h-9 w-9 text-emerald-300" />
             <h2 className="mt-5 text-2xl font-black">{copy.securityTitle}</h2>
             <p className="mt-4 text-sm leading-8 text-slate-300">{copy.securityText}</p>
             <div className="mt-6 grid grid-cols-2 gap-3 text-xs font-bold text-slate-300">
-              {["Private Storage", "RLS", "Consent", "Audit log"].map((item) => <div key={item} className="rounded-xl bg-white/5 p-3"><CheckCircle2 className="mb-2 h-4 w-4 text-emerald-400" />{item}</div>)}
+              {["Private Storage", "RLS", "Consent", "Audit log"].map((item) => (
+                <div key={item} className="rounded-xl bg-white/5 p-3"><CheckCircle2 className="mb-2 h-4 w-4 text-emerald-400" />{item}</div>
+              ))}
             </div>
           </article>
         </div>
@@ -303,7 +381,7 @@ export default function StayCareLanding({ locale }: { locale: string }) {
             <h2 className="mt-3 text-3xl font-black">{copy.closeTitle}</h2>
             <p className="mt-4 max-w-3xl leading-7 text-slate-600">{copy.closeText}</p>
           </div>
-          <Link href={`/${locale}/staycare/app`} className="inline-flex items-center justify-center rounded-2xl bg-[#bb271a] px-6 py-4 font-bold text-white">
+          <Link href={appHref(locale, language)} className="inline-flex items-center justify-center rounded-2xl bg-[#bb271a] px-6 py-4 font-bold text-white">
             {copy.openApp} <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { cookies } from "next/headers"
 import StayCareOnboarding from "@/components/staycare/StayCareOnboarding"
 import StayCareProductionApp, {
   type ProductionApplication,
@@ -8,6 +9,7 @@ import StayCareProductionApp, {
   type ProductionWorker,
 } from "@/components/staycare/StayCareProductionApp"
 import { requireWorkerContext } from "@/lib/staycare/auth"
+import { normalizeStayCareLanguage } from "@/lib/staycare/language"
 
 export const dynamic = "force-dynamic"
 
@@ -19,14 +21,34 @@ export const metadata: Metadata = {
 
 export default async function StayCareAppPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>
+  searchParams?: Promise<{ lang?: string | string[] }>
 }) {
   const { locale } = await params
+  const query = searchParams ? await searchParams : undefined
+  const queryLanguage = normalizeStayCareLanguage(
+    Array.isArray(query?.lang) ? query?.lang[0] : query?.lang
+  )
+  const cookieLanguage = normalizeStayCareLanguage(
+    cookies().get("staycare_language")?.value
+  )
   const context = await requireWorkerContext(locale)
 
+  const preferredLanguage =
+    queryLanguage ||
+    cookieLanguage ||
+    normalizeStayCareLanguage(context.worker?.preferred_language) ||
+    (locale === "en" ? "en" : "ko")
+
   if (!context.worker) {
-    return <StayCareOnboarding locale={locale} email={context.user.email} />
+    return (
+      <StayCareOnboarding
+        locale={preferredLanguage}
+        email={context.user.email}
+      />
+    )
   }
 
   const [stepsResult, servicesResult, documentsResult, applicationsResult] = await Promise.all([
@@ -66,11 +88,16 @@ export default async function StayCareAppPage({
   const firstError = [stepsResult.error, servicesResult.error, documentsResult.error, applicationsResult.error].find(Boolean)
   if (firstError) throw firstError
 
+  const worker = {
+    ...context.worker,
+    preferred_language: preferredLanguage,
+  } as ProductionWorker
+
   return (
     <StayCareProductionApp
       locale={locale}
       userEmail={context.user.email}
-      worker={context.worker as ProductionWorker}
+      worker={worker}
       initialSteps={(stepsResult.data || []) as ProductionStep[]}
       services={(servicesResult.data || []) as ProductionService[]}
       documents={(documentsResult.data || []) as ProductionDocument[]}

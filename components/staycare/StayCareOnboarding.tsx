@@ -3,6 +3,11 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowRight, CheckCircle2, Loader2, ShieldCheck } from "lucide-react"
+import StayCareLanguageSwitcher from "@/components/staycare/StayCareLanguageSwitcher"
+import {
+  useStayCareLanguage,
+  type StayCarePreferredLanguage,
+} from "@/lib/staycare/language-preference"
 
 const copy = {
   ko: {
@@ -47,7 +52,8 @@ const copy = {
 } as const
 
 export default function StayCareOnboarding({ locale, email }: { locale: string; email?: string }) {
-  const language = locale === "en" ? "en" : locale === "si" ? "si" : "ko"
+  const initialLanguage: StayCarePreferredLanguage = locale === "en" ? "en" : locale === "si" ? "si" : "ko"
+  const { language, setLanguage } = useStayCareLanguage(initialLanguage)
   const text = copy[language]
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -67,7 +73,7 @@ export default function StayCareOnboarding({ locale, email }: { locale: string; 
         body: JSON.stringify({
           fullName: form.get("fullName"),
           fullNameEn: form.get("fullNameEn"),
-          preferredLanguage: form.get("preferredLanguage"),
+          preferredLanguage: language,
           nationalityCode: "LK",
           visaType: form.get("visaType"),
           occupation: form.get("occupation"),
@@ -86,6 +92,9 @@ export default function StayCareOnboarding({ locale, email }: { locale: string; 
 
   return (
     <main className="min-h-screen bg-[#f5f5f3] px-4 py-10 text-slate-950 sm:py-16">
+      <div className="mx-auto mb-4 flex max-w-3xl justify-end">
+        <StayCareLanguageSwitcher value={language} onChange={setLanguage} />
+      </div>
       <div className="mx-auto max-w-3xl overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl">
         <div className="bg-slate-950 p-7 text-white sm:p-10">
           <p className="text-sm font-black uppercase tracking-[0.18em] text-red-300">Sejoong StayCare</p>
@@ -106,7 +115,7 @@ export default function StayCareOnboarding({ locale, email }: { locale: string; 
             </label>
             <label className="block">
               <span className="text-sm font-black">{text.language}</span>
-              <select name="preferredLanguage" defaultValue={language === "ko" ? "si" : language} className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3.5">
+              <select value={language} onChange={(event) => setLanguage(event.target.value as StayCarePreferredLanguage)} className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3.5">
                 <option value="si">සිංහල</option>
                 <option value="en">English</option>
                 <option value="ko">한국어</option>
