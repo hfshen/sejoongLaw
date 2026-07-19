@@ -1,75 +1,82 @@
-import createMiddleware from "next-intl/middleware"
-import { routing } from "./lib/routing"
+import createIntlMiddleware from "next-intl/middleware"
+import { createServerClient } from "@supabase/ssr"
 import { NextRequest, NextResponse } from "next/server"
+import { routing } from "./lib/routing"
 
-const intlMiddleware = createMiddleware({
+const intlMiddleware = createIntlMiddleware({
   locales: routing.locales,
   defaultLocale: routing.defaultLocale,
   localePrefix: routing.localePrefix,
   localeDetection: true,
 })
 
-// Rate limiting store
-const rateLimitStore: Record<
-  string,
-  { count: number; resetTime: number }
-> = {}
-
-function rateLimit(req: NextRequest): NextResponse | null {
-  const ip =
-    req.headers.get("x-forwarded-for") ||
-    req.headers.get("x-real-ip") ||
-    "unknown"
-  const key = `rate_limit_${ip}`
-  const now = Date.now()
-  const maxRequests = 100
-  const windowMs = 60000
-
-  if (!rateLimitStore[key] || now > rateLimitStore[key].resetTime) {
-    rateLimitStore[key] = {
-      count: 1,
-      resetTime: now + windowMs,
-    }
-    return null
-  }
-
-  if (rateLimitStore[key].count >= maxRequests) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 })
-  }
-
-  rateLimitStore[key].count++
-  return null
+function localeFromPath(pathname: string) {
+  const first = pathname.split("/").filter(Boolean)[0]
+  return routing.locales.includes(first as (typeof routing.locales)[number])
+    ? first
+    : routing.defaultLocale
 }
 
-export default function middleware(req: NextRequest) {
-  const pathname = req.nextUrl.pathname
+export default async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+  let response: NextResponse
 
-  // Admin 경로는 locale 라우팅에서 제외
   if (pathname.startsWith("/admin")) {
-    // Rate limiting만 적용
-    if (pathname.startsWith("/api")) {
-      const rateLimitResult = rateLimit(req)
-      if (rateLimitResult) {
-        return rateLimitResult
-      }
-    }
-    return NextResponse.next()
+    response = NextResponse.next({ request })
+  } else {
+    response = intlMiddleware(request)
   }
 
-  // Rate limiting for API routes
-  if (pathname.startsWith("/api")) {
-    const rateLimitResult = rateLimit(req)
-    if (rateLimitResult) {
-      return rateLimitResult
-    }
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseKey) return response
+
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll()
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+        cookiesToSet.forEach(({ name, value, options }) =>
+          response.cookies.set(name, value, options)
+        )
+      },
+    },
+  })
+
+  const { data: { user } } = await supabase.auth.getUser()
+  const protectedStayCare =
+    pathname.includes("/staycare/app") || pathname.includes("/staycare/admin")
+  const loginPath = pathname.includes("/staycare/login")
+
+  if (protectedStayCare && !user) {
+    const locale = localeFromPath(pathname)
+    const loginUrl = request.nextUrl.clone()
+    loginUrl.pathname = `/${locale}/staycare/login`
+    loginUrl.searchParams.set("next", pathname)
+    return NextResponse.redirect(loginUrl)
   }
 
-  return intlMiddleware(req)
+  if (loginPath && user) {
+    const locale = localeFromPath(pathname)
+    const next = request.nextUrl.searchParams.get("next")
+    const appUrl = request.nextUrl.clone()
+    appUrl.pathname = next?.startsWith("/") ? next : `/${locale}/staycare/app`
+    appUrl.search = ""
+    return NextResponse.redirect(appUrl)
+  }
+
+  if (protectedStayCare || loginPath) {
+    response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  }
+
+  return response
 }
 
 export const config = {
-  matcher: [
-    // Match all routes except static files and API routes
-    "/((?!api|_next|_vercel|.*\\..*).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|_vercel|favicon.ico|.*\\..*).*)"],
 }

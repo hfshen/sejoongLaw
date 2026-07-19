@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useCallback, useEffect, useState } from "react"
 import Link from "next/link"
-import { Plus, Search, Filter, MoreVertical, UserCheck, UserX, Clock } from "lucide-react"
+import { Plus, Search, UserCheck, UserX } from "lucide-react"
 import Button from "@/components/ui/Button"
 import { Card, CardContent } from "@/components/ui/Card"
 import { toast } from "@/components/ui/Toast"
@@ -35,24 +34,19 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 }
 
 export default function UsersPage() {
-  const router = useRouter()
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState<string>("")
   const [statusFilter, setStatusFilter] = useState<string>("")
 
-  useEffect(() => {
-    fetchUsers()
-  }, [roleFilter, statusFilter])
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async (search = "") => {
     try {
       setLoading(true)
       const params = new URLSearchParams()
       if (roleFilter) params.append("role", roleFilter)
       if (statusFilter) params.append("status", statusFilter)
-      if (searchTerm) params.append("search", searchTerm)
+      if (search) params.append("search", search)
 
       const response = await fetch(`/api/admin/users?${params.toString()}`)
       const data = await response.json()
@@ -63,16 +57,21 @@ export default function UsersPage() {
 
       const usersData = data.data?.users || data.users || []
       setUsers(usersData)
-    } catch (error: any) {
-      toast.error(error.message || "사용자 목록을 불러오는데 실패했습니다.")
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "사용자 목록을 불러오는데 실패했습니다."
+      toast.error(message)
       console.error("Fetch users error:", error)
     } finally {
       setLoading(false)
     }
-  }
+  }, [roleFilter, statusFilter])
+
+  useEffect(() => {
+    void fetchUsers()
+  }, [fetchUsers])
 
   const handleSearch = () => {
-    fetchUsers()
+    void fetchUsers(searchTerm)
   }
 
   const handleStatusChange = async (userId: string, newStatus: string) => {
@@ -88,9 +87,10 @@ export default function UsersPage() {
       }
 
       toast.success("상태가 변경되었습니다.")
-      fetchUsers()
-    } catch (error: any) {
-      toast.error(error.message || "상태 변경에 실패했습니다.")
+      await fetchUsers(searchTerm)
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "상태 변경에 실패했습니다."
+      toast.error(message)
       console.error("Status change error:", error)
     }
   }
@@ -118,7 +118,6 @@ export default function UsersPage() {
         </Link>
       </div>
 
-      {/* Filters */}
       <Card className="mb-6">
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -127,9 +126,9 @@ export default function UsersPage() {
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") handleSearch()
+                onChange={(event) => setSearchTerm(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") handleSearch()
                 }}
                 className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="이메일 또는 이름으로 검색..."
@@ -137,7 +136,7 @@ export default function UsersPage() {
             </div>
             <select
               value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
+              onChange={(event) => setRoleFilter(event.target.value)}
               className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">모든 역할</option>
@@ -149,7 +148,7 @@ export default function UsersPage() {
             </select>
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(event) => setStatusFilter(event.target.value)}
               className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">모든 상태</option>
@@ -166,7 +165,6 @@ export default function UsersPage() {
         </CardContent>
       </Card>
 
-      {/* Users Table */}
       <Card>
         <CardContent className="pt-6">
           {loading ? (
@@ -202,11 +200,7 @@ export default function UsersPage() {
                         </span>
                       </td>
                       <td className="py-3 px-4">
-                        <span
-                          className={`px-2 py-1 rounded text-sm ${
-                            statusLabels[user.status]?.color || "bg-gray-100 text-gray-800"
-                          }`}
-                        >
+                        <span className={`px-2 py-1 rounded text-sm ${statusLabels[user.status]?.color || "bg-gray-100 text-gray-800"}`}>
                           {statusLabels[user.status]?.label || user.status}
                         </span>
                       </td>
@@ -225,6 +219,7 @@ export default function UsersPage() {
                               size="sm"
                               onClick={() => handleStatusChange(user.id, "suspended")}
                               className="text-red-600 border-red-600 hover:bg-red-50"
+                              aria-label="사용자 정지"
                             >
                               <UserX className="h-4 w-4" />
                             </Button>
@@ -234,6 +229,7 @@ export default function UsersPage() {
                               size="sm"
                               onClick={() => handleStatusChange(user.id, "active")}
                               className="text-green-600 border-green-600 hover:bg-green-50"
+                              aria-label="사용자 활성화"
                             >
                               <UserCheck className="h-4 w-4" />
                             </Button>

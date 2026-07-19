@@ -1,118 +1,246 @@
-# 법무법인 세중 웹사이트
+# 법무법인 세중 웹사이트·Sejoong StayCare
 
-법무법인 세중의 본사, 의정부, 안산 지점을 위한 통합 웹사이트입니다.
+법무법인 세중의 웹사이트와 스리랑카 근로자 한국생활 원스톱 플랫폼을 위한 Next.js 애플리케이션입니다.
 
 ## 기술 스택
 
-- Next.js 14+ (App Router)
+- Next.js 14 App Router
 - TypeScript
 - Tailwind CSS
-- Supabase (PostgreSQL, Auth)
-- Vercel (배포)
+- Supabase PostgreSQL·Auth·Storage·RLS
+- Vercel
+- OpenAI Responses API
+- Upstash Redis rate limit
+- Resend email
+- Cloudflare Turnstile
 
-## 시작하기
-
-### 1. 의존성 설치
-
-```bash
-npm install
-```
-
-### 2. 환경 변수 설정
-
-`.env.local` 파일을 생성하고 다음 변수들을 설정하세요:
-
-#### 필수 환경 변수
-
-```env
-# Supabase 설정 (필수)
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-
-# 사이트 URL (필수)
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-```
-
-#### 선택 환경 변수
-
-```env
-# 카카오 맵 API (지도 기능 사용 시)
-NEXT_PUBLIC_KAKAO_MAP_API_KEY=your_kakao_map_api_key
-
-# SMS 인증 (CoolSMS)
-COOLSMS_API_KEY=your_coolsms_api_key
-COOLSMS_API_SECRET=your_coolsms_api_secret
-COOLSMS_SENDER_PHONE=01012345678
-
-# 이메일 전송 설정
-# 방법 1: Gmail SMTP (무료, 추천)
-# EMAIL_PROVIDER=smtp
-# GMAIL_USER=contact@sejoonglaw.kr
-# GMAIL_APP_PASSWORD=your_gmail_app_password
-
-# 방법 2: Resend (월 3,000건 무료, 이후 과금) - 자세한 설정은 docs/RESEND_SETUP.md 참고
-EMAIL_PROVIDER=resend
-RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
-RESEND_FROM_EMAIL=onboarding@resend.dev
-
-# Google Analytics
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-
-# Google Search Console
-GOOGLE_VERIFICATION=your_google_verification_code
-
-# OpenAI API (AI 챗봇 기능 사용 시)
-OPENAI_API_KEY=your_openai_api_key
-
-# Sentry (에러 모니터링)
-NEXT_PUBLIC_SENTRY_DSN=your_sentry_dsn
-```
-
-**참고**: 
-- Supabase 설정은 Supabase 대시보드 > Settings > API에서 확인할 수 있습니다.
-- 각 서비스의 API 키는 해당 서비스의 개발자 콘솔에서 발급받을 수 있습니다.
-- 선택 환경 변수는 해당 기능을 사용하지 않으면 설정하지 않아도 됩니다.
-- **이메일 전송**: 
-  - **Gmail SMTP (무료)**: Gmail 앱 비밀번호를 발급받아 사용합니다. [Gmail 앱 비밀번호 발급 방법](https://support.google.com/accounts/answer/185833)
-  - **Resend (추천)**: 월 3,000건 무료, 이후 과금. [Resend](https://resend.com)에서 API 키를 발급받을 수 있습니다. 자세한 설정 방법은 `docs/RESEND_SETUP.md`를 참고하세요.
-  - 상담 요청과 예약 요청은 `contact@sejoonglaw.kr`으로 자동 전송됩니다.
-
-### 3. Supabase 데이터베이스 설정
-
-`supabase/migrations/001_initial_schema.sql` 파일의 마이그레이션을 Supabase에 실행하세요.
-
-### 4. 개발 서버 실행
+## 로컬 시작
 
 ```bash
+npm install --legacy-peer-deps
+cp .env.example .env.local
+npm run check:staycare-env
 npm run dev
 ```
 
-브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인하세요.
+전체 환경값과 발급처:
 
-## 프로젝트 구조
-
-- `app/` - Next.js App Router 페이지 및 라우트
-- `components/` - 재사용 가능한 React 컴포넌트
-- `lib/` - 유틸리티 함수 및 Supabase 클라이언트
-- `types/` - TypeScript 타입 정의
-- `supabase/` - Supabase 마이그레이션 파일
-
-## 주요 기능
-
-- 지점별 페이지 (본사, 의정부, 안산)
-- 법인소개, 소송업무, 기업자문, 해외이주, 외국인센터, 상담게시판
-- 인증 시스템 (카카오, 네이버 OAuth, SMS 인증)
-- 게시판 시스템 (문의, 칼럼, 뉴스)
-- 관리자 시스템 (콘텐츠 관리, 구성원 관리)
-
-## 배포
-
-Vercel에 배포할 수 있습니다:
-
-```bash
-vercel
+```text
+docs/staycare/08_ENVIRONMENT_AND_VENDOR_SETUP.md
 ```
 
-환경 변수를 Vercel 대시보드에서 설정하세요.
+## Sejoong StayCare
 
+스리랑카 근로자가 현지에서 한국 취업을 준비하는 단계부터 한국 입국, 초기정착, 생활·근로, 체류연장, 본국송금과 귀국까지 필요한 정보를 확인하고 서비스를 신청·추적하는 한국어·영어·싱할라어 원스톱 플랫폼입니다.
+
+정부·EPS의 공식 모집·고용·비자·입국 절차는 대체하지 않습니다. 공식기관의 상태·자료·마감일을 연결하고, 비자 이후의 통신·은행·송금·체류행정·보험·숙소·병원·AI 언어지원과 귀국준비를 세중 플랫폼에서 통합합니다.
+
+### 사용자 라우트
+
+```text
+/{locale}/staycare        공개 서비스 소개
+/{locale}/staycare/login  이메일·휴대전화 OTP 로그인
+/{locale}/staycare/app    인증된 근로자 애플리케이션
+/{locale}/staycare/admin  역할기반 세중 운영센터
+/{locale}/staycare/demo   /staycare/app 호환 리다이렉트
+```
+
+### 운영 API
+
+```text
+POST       /api/staycare/onboarding
+GET|POST   /api/staycare/applications
+PATCH      /api/staycare/admin/applications/[id]
+PATCH      /api/staycare/journey/steps/[id]
+POST       /api/staycare/documents/upload-url
+POST       /api/staycare/documents/complete
+GET        /api/staycare/documents/[id]/download
+GET|PATCH  /api/staycare/notifications
+POST       /api/staycare/ai
+POST       /api/staycare/providers/[provider]/webhook
+GET|POST   /api/cron/staycare-notifications
+GET        /api/health/staycare
+```
+
+## 전체 생애주기
+
+1. 스리랑카 현지 공식 모집·교육 준비
+2. 정부·EPS 시험·구직·근로계약·사증·입국 절차
+3. 비자 발급 후 디지털 프로필·통신·이동 사전신청
+4. 한국 도착·통신 활성화·교육·숙소 인계
+5. 초기 90일 외국인등록·계좌·보험·통신·생활기반
+6. 급여·본국송금·병원·숙소·노동·생활관리
+7. 체류기간·주소·여권·계약·사업장 변경 관리
+8. 보험금·퇴직금·최종송금·서비스 종료·귀국지원
+
+## 구현된 상용 기반
+
+### 계정·권한
+
+- Supabase Auth 이메일·휴대전화 OTP
+- PKCE callback과 cookie session refresh
+- Cloudflare Turnstile 로그인 보호
+- 근로자·세중·운영사·고용주·현지기관·공급자 역할
+- 테넌트·조직·회원·배정업무 RLS
+- 세중 운영자 부트스트랩 스크립트
+
+### 실제 데이터
+
+- 근로자 온보딩
+- 개인별 8단계 journey 생성
+- 단계·기한·책임주체
+- 서비스 신청과 idempotency
+- 통신 order와 체류행정 case
+- 운영자 처리 큐와 상태전이
+- 공급자 manual·sandbox·api 모드
+- 서명검증·중복방지 provider webhook
+
+### 문서
+
+- Supabase private Storage
+- signed upload URL
+- SHA-256 기록
+- 검수대기 상태
+- 60초 signed download
+- 파일종류·15MB 제한
+- 조회·다운로드 감사기록
+
+### AI
+
+- 한국어·영어·싱할라어 번역·생활가이드
+- 인증 사용자만 호출
+- Upstash 분산 rate limit
+- 여권·외국인등록·계좌·카드번호 형태 차단
+- 서버 전용 API key
+- `store:false`
+- 법률·의료·출입국 중요결정의 사람 검토 안내
+
+### 알림
+
+- in-app 알림 데이터
+- Resend email
+- CoolSMS SMS 선택지원
+- 원자적 queue claim
+- 실패 재시도와 최대시도 제한
+- Cron secret 보호
+
+## 통신·은행·송금·배송
+
+공급자 API 계약 전:
+
+```env
+TELECOM_PROVIDER_MODE=manual
+BANK_PROVIDER_MODE=manual
+REMITTANCE_PROVIDER_MODE=manual
+DELIVERY_PROVIDER_MODE=manual
+```
+
+근로자 신청은 실제 DB와 세중 운영 큐에 저장되고 운영자가 공급자 포털·전화·이메일로 처리한 뒤 결과를 입력합니다.
+
+계약 후:
+
+```env
+*_PROVIDER_MODE=sandbox
+*_PROVIDER_BASE_URL=
+*_PROVIDER_API_KEY=
+*_PROVIDER_WEBHOOK_SECRET=
+```
+
+검증 완료 후 `MODE=api`로 전환합니다.
+
+- 통신개통은 통신사 또는 공식 판매점
+- 계좌개설은 은행
+- 해외송금은 외국환업무취급기관 또는 등록 송금사업자
+- 정부 승인·출입국 결정은 관계기관
+- StayCare는 자금을 직접 보유·환전·송금하지 않음
+
+## Supabase
+
+Migration 적용순서:
+
+```text
+supabase/migrations/012_staycare_platform_v1.sql
+supabase/migrations/013_staycare_production_hardening.sql
+supabase/migrations/014_staycare_notification_delivery.sql
+```
+
+운영 DB에 즉시 적용하지 말고 새 Staging Supabase에서 전체 migration을 처음부터 검증합니다.
+
+주요 데이터:
+
+- tenant·organization·membership
+- worker·journey·step
+- consent·private document
+- service catalog·application·event
+- provider connection·webhook event
+- telecom·delivery order
+- remittance beneficiary·intent
+- immigration case
+- ticket·notification·return plan
+- append-only audit event
+
+## 첫 세중 관리자
+
+관리자 이메일로 `/ko/staycare/login`에서 먼저 로그인한 뒤 실행합니다.
+
+```bash
+npm run bootstrap:staycare-admin -- --email admin@sejoonglaw.kr
+```
+
+역할 지정:
+
+```bash
+npm run bootstrap:staycare-admin -- \
+  --email lawyer@sejoonglaw.kr \
+  --role sejoong_lawyer
+```
+
+## 검증
+
+```bash
+npm run check:staycare-env
+npm run check:staycare-env:strict
+npm run typecheck
+npx jest __tests__/staycare --runInBand
+npm run build
+```
+
+Health:
+
+```text
+GET /api/health/staycare
+```
+
+실제 사용자 초대 전 `status: ready`를 확인합니다.
+
+## 운영문서
+
+```text
+docs/staycare/00_PRODUCT_VISION.md
+docs/staycare/01_END_TO_END_LIFECYCLE.md
+docs/staycare/02_GOVERNMENT_SEJOONG_BOUNDARY.md
+docs/staycare/03_TELECOM_BANK_REMITTANCE_INTEGRATIONS.md
+docs/staycare/04_AI_LANGUAGE_ARCHITECTURE.md
+docs/staycare/05_SECURITY_AND_RELEASE_GATE.md
+docs/staycare/06_RETURN_HOME_WORKFLOW.md
+docs/staycare/07_IMPLEMENTATION_ROADMAP.md
+docs/staycare/08_ENVIRONMENT_AND_VENDOR_SETUP.md
+docs/staycare/09_PRODUCTION_RUNBOOK.md
+docs/staycare/10_GO_LIVE_CHECKLIST.md
+```
+
+## 현재 출시판정
+
+코드는 합성 화면이 아니라 인증·DB·Storage·서비스 신청·운영센터·알림·공급자 연동경계를 갖춘 **Production Candidate**입니다.
+
+실제 개통 전 외부 완료사항:
+
+- Production Supabase와 Migration 적용
+- Vercel Production 환경값 입력
+- Resend 도메인 인증
+- OpenAI·Upstash·Turnstile·Sentry 운영키
+- 세중 관리자·운영자 계정
+- 한국어·영어·싱할라어 약관과 현지검수
+- 통신·은행·송금·배송 수동 SOP 또는 제휴계약
+- 10~20명 Closed Beta
+- 개인정보·보안·백업·복구 최종승인

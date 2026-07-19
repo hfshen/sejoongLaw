@@ -1,0 +1,107 @@
+name: StayCare CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: staycare-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NEXT_PUBLIC_SITE_URL: https://sejoonglaw.kr
+      STAYCARE_TENANT_SLUG: sejoong-staycare
+      STAYCARE_DEFAULT_LOCALE: ko
+      STAYCARE_SUPPORT_EMAIL: staycare@sejoonglaw.kr
+      STAYCARE_STORAGE_BUCKET: staycare-private
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: test-publishable-key
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: test-anon-key
+      SUPABASE_SERVICE_ROLE_KEY: test-service-role-key-for-ci-only
+      STAYCARE_WEBHOOK_SECRET: test-webhook-secret-for-ci-only
+      STAYCARE_CRON_SECRET: test-cron-secret-for-ci-only
+      STAYCARE_FIELD_ENCRYPTION_KEY: test-field-encryption-key-for-ci-only
+      OPENAI_API_KEY: test-openai-key
+      OPENAI_TRANSLATION_MODEL: gpt-5
+      TELECOM_PROVIDER_MODE: manual
+      BANK_PROVIDER_MODE: manual
+      REMITTANCE_PROVIDER_MODE: manual
+      DELIVERY_PROVIDER_MODE: manual
+      GOOGLE_VERIFICATION: test
+      NAVER_VERIFICATION: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps --silent --no-audit --no-fund
+
+      - name: Validate core environment contract
+        run: npm run check:staycare-env 2>&1 | tee staycare-env.log
+
+      - name: TypeScript check
+        id: typecheck
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          npm run typecheck 2>&1 | tee typecheck.log
+
+      - name: Publish TypeScript diagnostics
+        if: steps.typecheck.outcome == 'failure' && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          {
+            echo '## StayCare TypeScript diagnostics'
+            echo
+            echo '```text'
+            sed -n '1,180p' typecheck.log
+            echo '```'
+            echo
+            echo "Commit: $GITHUB_SHA"
+          } > /tmp/staycare-typecheck-comment.md
+          gh pr comment "$PR_NUMBER" --body-file /tmp/staycare-typecheck-comment.md
+
+      - name: Enforce TypeScript result
+        if: steps.typecheck.outcome == 'failure'
+        run: exit 1
+
+      - name: Run StayCare tests
+        run: |
+          set -o pipefail
+          npx jest __tests__/staycare --runInBand 2>&1 | tee staycare-tests.log
+
+      - name: Build application
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee build.log
+
+      - name: Upload validation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staycare-validation-${{ github.run_id }}
+          path: |
+            staycare-env.log
+            typecheck.log
+            staycare-tests.log
+            build.log
+          if-no-files-found: ignore
+          retention-days: 7
