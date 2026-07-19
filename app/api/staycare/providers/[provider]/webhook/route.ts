@@ -32,7 +32,7 @@ export async function POST(
     request.headers.get("x-staycare-signature") ||
     request.headers.get("x-provider-signature")
 
-  if (!verifyProviderSignature({ provider: undefined as never, kind: provider, rawBody, timestamp, signature })) {
+  if (!verifyProviderSignature({ kind: provider, rawBody, timestamp, signature })) {
     return NextResponse.json({ error: "Invalid webhook signature" }, { status: 401 })
   }
 
@@ -148,7 +148,9 @@ export async function POST(
       .select("id, status, external_reference, fulfilled_at")
       .single()
 
-    if (updateError || !updated) throw updateError || new Error("Unable to update application")
+    if (updateError || !updated) {
+      throw updateError || new Error("Unable to update application")
+    }
 
     await admin.from("staycare_application_events").insert({
       tenant_id: tenant.id,
