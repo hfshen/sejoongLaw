@@ -1,9 +1,13 @@
 import "server-only"
-import { createClient as createSupabaseClient } from "@supabase/supabase-js"
+import { createClient as createSupabaseClient, type SupabaseClient } from "@supabase/supabase-js"
 
-let serviceClient: ReturnType<typeof createSupabaseClient> | null = null
+// The repository contains legacy and newly migrated StayCare tables but does not yet
+// commit a generated Supabase Database type. Keep the client schema-open until
+// `supabase gen types` is introduced, otherwise current supabase-js versions infer
+// every table mutation as `never` and block production builds.
+let serviceClient: SupabaseClient<any, "public", any> | null = null
 
-export function getServiceClient() {
+export function getServiceClient(): SupabaseClient<any, "public", any> {
   if (serviceClient) return serviceClient
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -15,7 +19,7 @@ export function getServiceClient() {
     )
   }
 
-  serviceClient = createSupabaseClient(supabaseUrl, serviceRoleKey, {
+  serviceClient = createSupabaseClient<any>(supabaseUrl, serviceRoleKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
