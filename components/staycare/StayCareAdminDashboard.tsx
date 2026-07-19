@@ -6,10 +6,15 @@ import {
   AlertTriangle,
   CheckCircle2,
   Clock3,
+  Database,
   FileSearch,
   Loader2,
   RefreshCw,
   Send,
+  Server,
+  Settings2,
+  ShieldAlert,
+  ShieldCheck,
   UsersRound,
 } from "lucide-react"
 
@@ -35,6 +40,34 @@ interface AdminApplication {
   } | null
 }
 
+interface EnvironmentItem {
+  id: string
+  label: string
+  keys: string[]
+  group: "core" | "production" | "optional" | "provider"
+  required: boolean
+  state: "configured" | "missing" | "manual" | "partial"
+  detail: string
+  publicValue?: string
+}
+
+interface EnvironmentReport {
+  environment: string
+  commitSha: string | null
+  generatedAt: string
+  items: EnvironmentItem[]
+  summary: {
+    coreConfigured: number
+    coreTotal: number
+    productionConfigured: number
+    productionTotal: number
+    overallConfigured: number
+    overallTotal: number
+    percentage: number
+    releaseState: "blocked" | "internal-pilot" | "limited-production" | "production-ready"
+  }
+}
+
 function localized(value: Record<string, string> | string | undefined) {
   if (!value) return "Service"
   if (typeof value === "string") return value
@@ -47,9 +80,39 @@ function statusClass(status: string) {
   return "border-amber-200 bg-amber-50 text-amber-700"
 }
 
+function environmentStateClass(state: EnvironmentItem["state"]) {
+  if (state === "configured") return "border-emerald-200 bg-emerald-50 text-emerald-700"
+  if (state === "manual") return "border-blue-200 bg-blue-50 text-blue-700"
+  if (state === "partial") return "border-amber-200 bg-amber-50 text-amber-700"
+  return "border-red-200 bg-red-50 text-red-700"
+}
+
+function environmentStateLabel(state: EnvironmentItem["state"]) {
+  if (state === "configured") return "설정됨"
+  if (state === "manual") return "수동운영"
+  if (state === "partial") return "일부설정"
+  return "미설정"
+}
+
+function releaseStateCopy(state: EnvironmentReport["summary"]["releaseState"]) {
+  if (state === "production-ready") return { label: "상용 운영 준비", className: "bg-emerald-500 text-white" }
+  if (state === "limited-production") return { label: "제한 상용 운영", className: "bg-blue-600 text-white" }
+  if (state === "internal-pilot") return { label: "내부 파일럿 가능", className: "bg-amber-400 text-amber-950" }
+  return { label: "출시 차단", className: "bg-red-600 text-white" }
+}
+
+const environmentGroupLabels: Record<EnvironmentItem["group"], string> = {
+  core: "핵심 인프라",
+  production: "상용 운영 필수",
+  provider: "외부 공급자",
+  optional: "선택 기능",
+}
+
 export default function StayCareAdminDashboard({
   applications: initialApplications,
   metrics,
+  environment,
+  databaseStatus,
 }: {
   applications: AdminApplication[]
   metrics: {
@@ -57,6 +120,11 @@ export default function StayCareAdminDashboard({
     openApplications: number
     reviewDocuments: number
     urgentTickets: number
+  }
+  environment: EnvironmentReport
+  databaseStatus: {
+    connected: boolean
+    tenantCount: number
   }
 }) {
   const [applications, setApplications] = useState(initialApplications)
@@ -66,6 +134,7 @@ export default function StayCareAdminDashboard({
   const [externalReference, setExternalReference] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [showEnvironment, setShowEnvironment] = useState(true)
   const router = useRouter()
 
   const save = async () => {
@@ -103,6 +172,9 @@ export default function StayCareAdminDashboard({
     [AlertTriangle, "P0/P1 tickets", metrics.urgentTickets],
   ] as const
 
+  const release = releaseStateCopy(environment.summary.releaseState)
+  const missingRequired = environment.items.filter((item) => item.required && item.state !== "configured")
+
   return (
     <main className="min-h-screen bg-[#f4f5f7] p-4 text-slate-950 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
@@ -110,11 +182,19 @@ export default function StayCareAdminDashboard({
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#bb271a]">Sejoong StayCare Operations</p>
             <h1 className="mt-2 text-3xl font-black">통합 운영센터</h1>
-            <p className="mt-2 text-sm text-slate-500">실제 회원·문서·서비스 신청·공급자 처리상태를 관리합니다.</p>
+            <p className="mt-2 text-sm text-slate-500">실제 회원·문서·서비스 신청·공급자 처리상태와 운영 환경을 관리합니다.</p>
           </div>
-          <button onClick={() => router.refresh()} className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black">
-            <RefreshCw className="mr-2 h-4 w-4" /> 새로고침
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setShowEnvironment((current) => !current)}
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black"
+            >
+              <Settings2 className="mr-2 h-4 w-4" /> 환경설정
+            </button>
+            <button onClick={() => router.refresh()} className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black">
+              <RefreshCw className="mr-2 h-4 w-4" /> 새로고침
+            </button>
+          </div>
         </header>
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -128,6 +208,92 @@ export default function StayCareAdminDashboard({
             </article>
           ))}
         </section>
+
+        {showEnvironment ? (
+          <section className="mt-6 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+            <div className="grid gap-5 border-b border-slate-200 p-5 lg:grid-cols-[1fr_auto] lg:items-center">
+              <div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <h2 className="text-lg font-black">상용 환경 준비상태</h2>
+                  <span className={`rounded-full px-3 py-1 text-xs font-black ${release.className}`}>{release.label}</span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  비밀값 자체는 표시하지 않고, Vercel 런타임에 입력되었는지와 공개 가능한 호스트·모드만 보여줍니다.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3 text-xs font-bold text-slate-600">
+                <span className="rounded-xl bg-slate-100 px-3 py-2">환경 {environment.environment}</span>
+                <span className="rounded-xl bg-slate-100 px-3 py-2">Commit {environment.commitSha || "local"}</span>
+                <span className="rounded-xl bg-slate-100 px-3 py-2">점검 {environment.summary.percentage}%</span>
+              </div>
+            </div>
+
+            <div className="grid gap-4 border-b border-slate-100 p-5 md:grid-cols-3">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-center gap-3"><Database className="h-5 w-5 text-emerald-600" /><p className="font-black">Database</p></div>
+                <p className="mt-3 text-2xl font-black text-slate-950">{databaseStatus.connected ? "Connected" : "Unavailable"}</p>
+                <p className="mt-1 text-xs text-slate-500">활성 tenant membership {databaseStatus.tenantCount}개</p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-center gap-3"><Server className="h-5 w-5 text-blue-600" /><p className="font-black">Core environment</p></div>
+                <p className="mt-3 text-2xl font-black text-slate-950">{environment.summary.coreConfigured}/{environment.summary.coreTotal}</p>
+                <p className="mt-1 text-xs text-slate-500">DB·Storage·암호화·내부 보안값</p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-center gap-3"><ShieldCheck className="h-5 w-5 text-violet-600" /><p className="font-black">Production services</p></div>
+                <p className="mt-3 text-2xl font-black text-slate-950">{environment.summary.productionConfigured}/{environment.summary.productionTotal}</p>
+                <p className="mt-1 text-xs text-slate-500">AI·Rate limit·Email·Bot protection·Monitoring</p>
+              </div>
+            </div>
+
+            {missingRequired.length ? (
+              <div className="flex gap-3 border-b border-red-100 bg-red-50 px-5 py-4 text-sm leading-6 text-red-900">
+                <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0" />
+                <div>
+                  <p className="font-black">필수 설정 {missingRequired.length}개가 남아 있습니다.</p>
+                  <p className="mt-1">{missingRequired.map((item) => item.label).join(" · ")}</p>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-left text-sm">
+                <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                  <tr>
+                    <th className="px-5 py-3">구분</th>
+                    <th className="px-5 py-3">서비스</th>
+                    <th className="px-5 py-3">환경변수</th>
+                    <th className="px-5 py-3">공개 정보</th>
+                    <th className="px-5 py-3">상태</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {environment.items.map((item) => (
+                    <tr key={item.id} className="align-top hover:bg-slate-50/60">
+                      <td className="whitespace-nowrap px-5 py-4 text-xs font-black text-slate-500">{environmentGroupLabels[item.group]}</td>
+                      <td className="px-5 py-4">
+                        <p className="font-black text-slate-900">{item.label}</p>
+                        <p className="mt-1 max-w-lg text-xs leading-5 text-slate-500">{item.detail}</p>
+                      </td>
+                      <td className="px-5 py-4">
+                        <div className="flex max-w-md flex-wrap gap-1.5">
+                          {item.keys.map((key) => <code key={key} className="rounded bg-slate-100 px-2 py-1 text-[11px] text-slate-600">{key}</code>)}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 text-xs font-semibold text-slate-600">{item.publicValue || "비밀값 비공개"}</td>
+                      <td className="px-5 py-4">
+                        <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-black ${environmentStateClass(item.state)}`}>{environmentStateLabel(item.state)}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="border-t border-slate-100 px-5 py-4 text-xs leading-5 text-slate-500">
+              마지막 서버 점검: {new Date(environment.generatedAt).toLocaleString("ko-KR")} · 값 변경 후에는 Vercel 재배포가 필요합니다.
+            </div>
+          </section>
+        ) : null}
 
         <section className="mt-6 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-5 py-4">
@@ -166,11 +332,11 @@ export default function StayCareAdminDashboard({
 
       {selected ? (
         <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/50 backdrop-blur-sm">
-          <button className="absolute inset-0" onClick={() => setSelected(null)} />
+          <button className="absolute inset-0" onClick={() => setSelected(null)} aria-label="닫기" />
           <aside className="relative z-10 h-full w-full max-w-xl overflow-y-auto bg-white shadow-2xl">
             <div className="sticky top-0 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4">
               <div><p className="text-xs font-black text-[#bb271a]">{selected.application_no}</p><h2 className="mt-1 text-xl font-black">{localized(selected.service?.name)}</h2></div>
-              <button onClick={() => setSelected(null)} className="rounded-xl border border-slate-200 p-2">×</button>
+              <button onClick={() => setSelected(null)} className="rounded-xl border border-slate-200 p-2" aria-label="닫기">×</button>
             </div>
             <div className="space-y-5 p-5">
               <div className="rounded-2xl bg-slate-950 p-5 text-sm leading-7 text-slate-300">
