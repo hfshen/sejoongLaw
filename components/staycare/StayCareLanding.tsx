@@ -6,6 +6,7 @@ import {
   Bot,
   Building2,
   CheckCircle2,
+  ChevronRight,
   FileLock2,
   Globe2,
   HeartPulse,
