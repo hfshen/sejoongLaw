@@ -66,11 +66,49 @@ IMMUTABLE
 AS $$
   SELECT previous = requested OR CASE previous
     WHEN 'draft' THEN requested IN ('submitted', 'cancelled')
-    WHEN 'submitted' THEN requested IN ('reviewing', 'waiting_worker', 'waiting_authority', 'waiting_provider', 'cancelled')
-    WHEN 'reviewing' THEN requested IN ('waiting_worker', 'waiting_authority', 'waiting_provider', 'approved', 'rejected', 'cancelled')
-    WHEN 'waiting_worker' THEN requested IN ('reviewing', 'waiting_authority', 'waiting_provider', 'approved', 'rejected', 'cancelled')
-    WHEN 'waiting_authority' THEN requested IN ('reviewing', 'waiting_worker', 'approved', 'rejected', 'cancelled')
-    WHEN 'waiting_provider' THEN requested IN ('reviewing', 'waiting_worker', 'approved', 'fulfilled', 'rejected', 'cancelled')
+    WHEN 'submitted' THEN requested IN (
+      'reviewing',
+      'waiting_worker',
+      'waiting_authority',
+      'waiting_provider',
+      'approved',
+      'fulfilled',
+      'rejected',
+      'cancelled'
+    )
+    WHEN 'reviewing' THEN requested IN (
+      'waiting_worker',
+      'waiting_authority',
+      'waiting_provider',
+      'approved',
+      'fulfilled',
+      'rejected',
+      'cancelled'
+    )
+    WHEN 'waiting_worker' THEN requested IN (
+      'reviewing',
+      'waiting_authority',
+      'waiting_provider',
+      'approved',
+      'rejected',
+      'cancelled'
+    )
+    WHEN 'waiting_authority' THEN requested IN (
+      'reviewing',
+      'waiting_worker',
+      'approved',
+      'fulfilled',
+      'rejected',
+      'cancelled'
+    )
+    WHEN 'waiting_provider' THEN requested IN (
+      'reviewing',
+      'waiting_worker',
+      'approved',
+      'fulfilled',
+      'rejected',
+      'cancelled'
+    )
     WHEN 'approved' THEN requested IN ('waiting_provider', 'fulfilled', 'cancelled')
     WHEN 'fulfilled' THEN false
     WHEN 'rejected' THEN false
@@ -112,6 +150,19 @@ CREATE TRIGGER staycare_audit_events_immutable
 BEFORE UPDATE OR DELETE ON staycare_audit_events
 FOR EACH ROW EXECUTE FUNCTION staycare_prevent_audit_mutation();
 
+CREATE OR REPLACE FUNCTION staycare_try_uuid(value TEXT)
+RETURNS UUID
+LANGUAGE plpgsql
+IMMUTABLE
+STRICT
+AS $$
+BEGIN
+  RETURN value::UUID;
+EXCEPTION WHEN invalid_text_representation THEN
+  RETURN NULL;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION staycare_can_manage_storage_worker(target_worker UUID)
 RETURNS BOOLEAN
 LANGUAGE sql
@@ -119,7 +170,7 @@ STABLE
 SECURITY DEFINER
 SET search_path = public
 AS $$
-  SELECT EXISTS (
+  SELECT target_worker IS NOT NULL AND EXISTS (
     SELECT 1
     FROM staycare_workers w
     WHERE w.id = target_worker
@@ -139,7 +190,9 @@ AS $$
   );
 $$;
 
+REVOKE ALL ON FUNCTION staycare_try_uuid(TEXT) FROM PUBLIC;
 REVOKE ALL ON FUNCTION staycare_can_manage_storage_worker(UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION staycare_try_uuid(TEXT) TO authenticated;
 GRANT EXECUTE ON FUNCTION staycare_can_manage_storage_worker(UUID) TO authenticated;
 
 DROP POLICY IF EXISTS staycare_applications_update ON staycare_service_applications;
@@ -158,11 +211,14 @@ USING (
     ]::staycare_role[]
   )
   OR (
-    EXISTS (
-      SELECT 1 FROM staycare_workers w
-      WHERE w.id = worker_id AND w.auth_user_id = auth.uid()
+    status IN ('draft', 'waiting_worker')
+    AND EXISTS (
+      SELECT 1
+      FROM staycare_workers w
+      WHERE w.id = worker_id
+        AND w.tenant_id = tenant_id
+        AND w.auth_user_id = auth.uid()
     )
-    AND status IN ('draft', 'waiting_worker')
   )
 )
 WITH CHECK (
@@ -178,8 +234,11 @@ WITH CHECK (
     ]::staycare_role[]
   )
   OR EXISTS (
-    SELECT 1 FROM staycare_workers w
-    WHERE w.id = worker_id AND w.auth_user_id = auth.uid()
+    SELECT 1
+    FROM staycare_workers w
+    WHERE w.id = worker_id
+      AND w.tenant_id = tenant_id
+      AND w.auth_user_id = auth.uid()
   )
 );
 
@@ -189,7 +248,12 @@ ALTER TABLE staycare_push_devices ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS staycare_webhook_events_read ON staycare_webhook_events;
 CREATE POLICY staycare_webhook_events_read ON staycare_webhook_events
 FOR SELECT TO authenticated
-USING (staycare_has_role(tenant_id, ARRAY['sejoong_admin', 'operator_manager', 'auditor']::staycare_role[]));
+USING (
+  staycare_has_role(
+    tenant_id,
+    ARRAY['sejoong_admin', 'operator_manager', 'auditor']::staycare_role[]
+  )
+);
 
 -- Webhook inserts and updates are service-role only.
 
@@ -222,7 +286,9 @@ FOR SELECT TO authenticated
 USING (
   bucket_id = 'staycare-private'
   AND array_length(storage.foldername(name), 1) >= 2
-  AND staycare_can_read_worker(((storage.foldername(name))[2])::UUID)
+  AND staycare_can_read_worker(
+    staycare_try_uuid((storage.foldername(name))[2])
+  )
 );
 
 DROP POLICY IF EXISTS staycare_storage_insert ON storage.objects;
@@ -231,7 +297,9 @@ FOR INSERT TO authenticated
 WITH CHECK (
   bucket_id = 'staycare-private'
   AND array_length(storage.foldername(name), 1) >= 2
-  AND staycare_can_manage_storage_worker(((storage.foldername(name))[2])::UUID)
+  AND staycare_can_manage_storage_worker(
+    staycare_try_uuid((storage.foldername(name))[2])
+  )
 );
 
 DROP POLICY IF EXISTS staycare_storage_update ON storage.objects;
@@ -240,12 +308,16 @@ FOR UPDATE TO authenticated
 USING (
   bucket_id = 'staycare-private'
   AND array_length(storage.foldername(name), 1) >= 2
-  AND staycare_can_manage_storage_worker(((storage.foldername(name))[2])::UUID)
+  AND staycare_can_manage_storage_worker(
+    staycare_try_uuid((storage.foldername(name))[2])
+  )
 )
 WITH CHECK (
   bucket_id = 'staycare-private'
   AND array_length(storage.foldername(name), 1) >= 2
-  AND staycare_can_manage_storage_worker(((storage.foldername(name))[2])::UUID)
+  AND staycare_can_manage_storage_worker(
+    staycare_try_uuid((storage.foldername(name))[2])
+  )
 );
 
 DROP POLICY IF EXISTS staycare_storage_delete ON storage.objects;
@@ -255,7 +327,7 @@ USING (
   bucket_id = 'staycare-private'
   AND array_length(storage.foldername(name), 1) >= 2
   AND staycare_has_role(
-    ((storage.foldername(name))[1])::UUID,
+    staycare_try_uuid((storage.foldername(name))[1]),
     ARRAY['sejoong_admin', 'operator_manager']::staycare_role[]
   )
 );
@@ -263,6 +335,6 @@ USING (
 COMMENT ON COLUMN staycare_service_applications.idempotency_key IS
   'Client-generated key used to prevent duplicate service applications.';
 COMMENT ON TABLE staycare_webhook_events IS
-  'Deduplicated provider webhook envelope. Raw payload should be minimized or stored outside the database when sensitive.';
+  'Deduplicated provider webhook envelope. Raw payload should be minimized when sensitive.';
 COMMENT ON TABLE staycare_push_devices IS
   'Encrypted push-token references. Never store a plaintext FCM token in this table.';
