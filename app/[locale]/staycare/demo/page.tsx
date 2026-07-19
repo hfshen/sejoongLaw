@@ -1,15 +1,20 @@
 import type { Metadata } from "next"
-import StayCarePortal from "@/components/staycare/StayCarePortal"
+import StayCareCompletePortal from "@/components/staycare/StayCareCompletePortal"
 
 export const metadata: Metadata = {
-  title: "StayCare 운영 데모",
-  description: "법무법인 세중 StayCare의 역할별 외국인 근로자 운영관리 Reference Implementation",
+  title: "StayCare 통합 운영 플랫폼",
+  description: "법무법인 세중이 주최하고 위탁 운영사가 실행하는 외국인 근로자 통합관리 플랫폼",
   robots: {
     index: false,
     follow: false,
   },
 }
 
-export default function StayCareDemoPage() {
-  return <StayCarePortal />
+export default async function StayCareDemoPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  return <StayCareCompletePortal locale={locale} />
 }
