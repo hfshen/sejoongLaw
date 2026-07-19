@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "check:staycare-env": "node scripts/check-staycare-env.mjs",
+    "check:staycare-env:strict": "node scripts/check-staycare-env.mjs --strict",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
