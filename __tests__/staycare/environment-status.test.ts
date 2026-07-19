@@ -1,3 +1,5 @@
+jest.mock("server-only", () => ({}))
+
 describe("StayCare environment readiness", () => {
   const originalEnv = process.env
 
