@@ -16,12 +16,25 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       NEXT_PUBLIC_SITE_URL: https://sejoonglaw.kr
+      STAYCARE_TENANT_SLUG: sejoong-staycare
+      STAYCARE_DEFAULT_LOCALE: ko
+      STAYCARE_SUPPORT_EMAIL: staycare@sejoonglaw.kr
+      STAYCARE_STORAGE_BUCKET: staycare-private
       NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: test-publishable-key
       NEXT_PUBLIC_SUPABASE_ANON_KEY: test-anon-key
-      SUPABASE_SERVICE_ROLE_KEY: test-service-role-key
+      SUPABASE_SERVICE_ROLE_KEY: test-service-role-key-for-ci-only
+      STAYCARE_WEBHOOK_SECRET: test-webhook-secret-for-ci-only
+      STAYCARE_CRON_SECRET: test-cron-secret-for-ci-only
+      OPENAI_API_KEY: test-openai-key
+      OPENAI_TRANSLATION_MODEL: gpt-5
+      TELECOM_PROVIDER_MODE: manual
+      BANK_PROVIDER_MODE: manual
+      REMITTANCE_PROVIDER_MODE: manual
+      DELIVERY_PROVIDER_MODE: manual
       GOOGLE_VERIFICATION: test
       NAVER_VERIFICATION: test
     steps:
@@ -37,8 +50,14 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Run StayCare lifecycle tests
-        run: npx jest __tests__/staycare/lifecycle-model.test.ts --runInBand
+      - name: Validate core environment contract
+        run: npm run check:staycare-env
+
+      - name: TypeScript check
+        run: npm run typecheck
+
+      - name: Run StayCare tests
+        run: npx jest __tests__/staycare --runInBand
 
       - name: Build application
         run: npm run build
