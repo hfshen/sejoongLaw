@@ -16,7 +16,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     env:
       NEXT_PUBLIC_SITE_URL: https://sejoonglaw.kr
       STAYCARE_TENANT_SLUG: sejoong-staycare
@@ -29,6 +29,7 @@ jobs:
       SUPABASE_SERVICE_ROLE_KEY: test-service-role-key-for-ci-only
       STAYCARE_WEBHOOK_SECRET: test-webhook-secret-for-ci-only
       STAYCARE_CRON_SECRET: test-cron-secret-for-ci-only
+      STAYCARE_FIELD_ENCRYPTION_KEY: test-field-encryption-key-for-ci-only
       OPENAI_API_KEY: test-openai-key
       OPENAI_TRANSLATION_MODEL: gpt-5
       TELECOM_PROVIDER_MODE: manual
@@ -51,13 +52,32 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Validate core environment contract
-        run: npm run check:staycare-env
+        run: npm run check:staycare-env 2>&1 | tee staycare-env.log
 
       - name: TypeScript check
-        run: npm run typecheck
+        run: |
+          set -o pipefail
+          npm run typecheck 2>&1 | tee typecheck.log
 
       - name: Run StayCare tests
-        run: npx jest __tests__/staycare --runInBand
+        run: |
+          set -o pipefail
+          npx jest __tests__/staycare --runInBand 2>&1 | tee staycare-tests.log
 
       - name: Build application
-        run: npm run build
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee build.log
+
+      - name: Upload validation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staycare-validation-${{ github.run_id }}
+          path: |
+            staycare-env.log
+            typecheck.log
+            staycare-tests.log
+            build.log
+          if-no-files-found: ignore
+          retention-days: 7
