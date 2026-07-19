@@ -12,5 +12,5 @@ export function createClient() {
     )
   }
 
-  return createBrowserClient(url, key)
+  return createBrowserClient<any>(url, key)
 }
