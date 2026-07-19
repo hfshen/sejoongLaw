@@ -9,7 +9,7 @@ import StayCareProductionApp, {
   type ProductionWorker,
 } from "@/components/staycare/StayCareProductionApp"
 import { requireWorkerContext } from "@/lib/staycare/auth"
-import { normalizeStayCareLanguage } from "@/lib/staycare/language-preference"
+import { normalizeStayCareLanguage } from "@/lib/staycare/language"
 
 export const dynamic = "force-dynamic"
 
