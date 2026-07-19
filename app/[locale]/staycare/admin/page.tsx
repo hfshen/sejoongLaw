@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import StayCareAdminDashboard from "@/components/staycare/StayCareAdminDashboard"
+import { getStayCareEnvironmentReport } from "@/lib/env/staycare-status"
 import { requireStaffContext } from "@/lib/staycare/auth"
 
 export const dynamic = "force-dynamic"
@@ -16,7 +17,13 @@ export default async function StayCareAdminPage({
 }) {
   const { locale } = await params
   const context = await requireStaffContext(locale)
-  const tenantIds = [...new Set(context.memberships.map((membership) => membership.tenant_id))]
+  const tenantIds = Array.from(
+    new Set<string>(context.memberships.map((membership) => String(membership.tenant_id)))
+  )
+
+  if (!tenantIds.length) {
+    throw new Error("StayCare staff account has no active tenant membership.")
+  }
 
   const [applicationsResult, workersResult, documentsResult, ticketsResult] = await Promise.all([
     context.supabase
@@ -52,6 +59,11 @@ export default async function StayCareAdminPage({
   return (
     <StayCareAdminDashboard
       applications={(applicationsResult.data || []) as never[]}
+      environment={getStayCareEnvironmentReport()}
+      databaseStatus={{
+        connected: true,
+        tenantCount: tenantIds.length,
+      }}
       metrics={{
         workers: workersResult.count || 0,
         openApplications: applicationsResult.data?.length || 0,
