@@ -1,15 +1,20 @@
 import { NextResponse } from "next/server"
 import { getServiceClient } from "@/lib/supabase/service"
 import { productionReadiness } from "@/lib/env/staycare"
+import { providerReadiness } from "@/lib/staycare/providers/registry"
+import type { ProviderKind } from "@/lib/staycare/providers/types"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
+
+const providerKinds: ProviderKind[] = ["telecom", "bank", "remittance", "delivery"]
 
 export async function GET() {
   const startedAt = Date.now()
 
   try {
     const readiness = productionReadiness()
+    const providers = providerKinds.map(providerReadiness)
     const tenantSlug = process.env.STAYCARE_TENANT_SLUG || "sejoong-staycare"
     const { data: tenant, error } = await getServiceClient()
       .from("staycare_tenants")
@@ -21,6 +26,7 @@ export async function GET() {
     const checks = {
       ...readiness.checks,
       database,
+      providers: providers.every((provider) => provider.configured),
     }
     const ready = Object.values(checks).every(Boolean)
 
@@ -29,6 +35,7 @@ export async function GET() {
         service: "sejoong-staycare",
         status: ready ? "ready" : "degraded",
         checks,
+        providers,
         latencyMs: Date.now() - startedAt,
         timestamp: new Date().toISOString(),
       },
