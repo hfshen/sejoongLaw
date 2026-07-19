@@ -48,13 +48,18 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm install --legacy-peer-deps --silent --no-audit --no-fund
 
       - name: Validate core environment contract
         run: npm run check:staycare-env
 
       - name: TypeScript check
-        run: npm run typecheck
+        run: |
+          npm run typecheck > /tmp/staycare-typecheck.log 2>&1 || {
+            cat /tmp/staycare-typecheck.log
+            exit 1
+          }
+          cat /tmp/staycare-typecheck.log
 
       - name: Run StayCare tests
         run: npx jest __tests__/staycare --runInBand
