@@ -2,7 +2,7 @@ import { MetadataRoute } from "next"
 import { locales } from "@/lib/i18n"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sejoonglaw.com"
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sejoonglaw.kr"
 
   const routes = [
     "",
@@ -26,6 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/immigration/immigrant",
     "/foreigner/visa",
     "/foreigner/stay",
+    "/staycare",
     "/board",
   ]
 
@@ -37,11 +38,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
         url: `${baseUrl}/${locale}${route}`,
         lastModified: new Date(),
         changeFrequency: route === "" ? "daily" : "weekly",
-        priority: route === "" ? 1 : 0.8,
+        priority: route === "" ? 1 : route === "/staycare" ? 0.9 : 0.8,
       })
     })
   })
 
   return sitemapEntries
 }
-
