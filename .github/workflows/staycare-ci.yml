@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 concurrency:
   group: staycare-ci-${{ github.ref }}
@@ -54,12 +55,32 @@ jobs:
         run: npm run check:staycare-env
 
       - name: TypeScript check
+        id: typecheck
+        continue-on-error: true
+        run: npm run typecheck > /tmp/staycare-typecheck.log 2>&1
+
+      - name: Publish TypeScript diagnostics
+        if: steps.typecheck.outcome == 'failure' && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          npm run typecheck > /tmp/staycare-typecheck.log 2>&1 || {
-            cat /tmp/staycare-typecheck.log
-            exit 1
-          }
+          {
+            echo '## StayCare TypeScript diagnostics'
+            echo
+            echo '```text'
+            sed -n '1,180p' /tmp/staycare-typecheck.log
+            echo '```'
+            echo
+            echo "Commit: $GITHUB_SHA"
+          } > /tmp/staycare-typecheck-comment.md
+          gh pr comment "$PR_NUMBER" --body-file /tmp/staycare-typecheck-comment.md
+
+      - name: Enforce TypeScript result
+        if: steps.typecheck.outcome == 'failure'
+        run: |
           cat /tmp/staycare-typecheck.log
+          exit 1
 
       - name: Run StayCare tests
         run: npx jest __tests__/staycare --runInBand
