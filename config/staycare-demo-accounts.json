@@ -1,0 +1,136 @@
+{
+  "tenantSlug": "sejoong-staycare-demo",
+  "sharedPassword": "StayCareDemo!2026",
+  "accounts": [
+    {
+      "id": "worker",
+      "role": "worker",
+      "email": "demo.worker@sejoonglaw.kr",
+      "target": "app",
+      "group": "worker",
+      "label": { "ko": "일반 근로자", "en": "Worker", "si": "සේවකයා" },
+      "description": {
+        "ko": "개인 준비과정, 서류, 서비스 신청과 AI 언어지원을 확인합니다.",
+        "en": "Review the personal journey, documents, service requests and AI language support.",
+        "si": "පුද්ගලික ගමන, ලේඛන, සේවා අයදුම් සහ AI භාෂා සහාය බලන්න."
+      }
+    },
+    {
+      "id": "sejoong-admin",
+      "role": "sejoong_admin",
+      "email": "demo.admin@sejoonglaw.kr",
+      "target": "admin",
+      "group": "sejoong",
+      "label": { "ko": "세중 총괄 관리자", "en": "Sejoong administrator", "si": "Sejoong පරිපාලක" },
+      "description": {
+        "ko": "전체 근로자, 신청, 문서, 긴급티켓과 운영환경을 관리합니다.",
+        "en": "Manage workers, applications, documents, urgent tickets and operating readiness.",
+        "si": "සේවකයින්, අයදුම්, ලේඛන, හදිසි ටිකට් සහ මෙහෙයුම් තත්ත්වය පාලනය කරන්න."
+      }
+    },
+    {
+      "id": "sejoong-lawyer",
+      "role": "sejoong_lawyer",
+      "email": "demo.lawyer@sejoonglaw.kr",
+      "target": "admin",
+      "group": "sejoong",
+      "label": { "ko": "세중 변호사", "en": "Sejoong lawyer", "si": "Sejoong නීතිඥ" },
+      "description": {
+        "ko": "법률·노무·체류 검토가 필요한 신청과 사건을 확인합니다.",
+        "en": "Review applications and cases requiring legal, labor or stay analysis.",
+        "si": "නීති, කම්කරු හෝ රැඳී සිටීමේ විමර්ශනය අවශ්‍ය අයදුම් බලන්න."
+      }
+    },
+    {
+      "id": "immigration-manager",
+      "role": "immigration_manager",
+      "email": "demo.immigration@sejoonglaw.kr",
+      "target": "admin",
+      "group": "sejoong",
+      "label": { "ko": "출입국 업무 관리자", "en": "Immigration manager", "si": "ආගමන කළමනාකරු" },
+      "description": {
+        "ko": "외국인등록, 체류연장, 변경과 귀국 행정업무를 관리합니다.",
+        "en": "Manage registration, stay extension, changes and departure administration.",
+        "si": "ලියාපදිංචිය, රැඳී සිටීම දිගු කිරීම, වෙනස්කම් සහ පිටත්වීම පාලනය කරන්න."
+      }
+    },
+    {
+      "id": "operator-manager",
+      "role": "operator_manager",
+      "email": "demo.operator.manager@sejoonglaw.kr",
+      "target": "admin",
+      "group": "operator",
+      "label": { "ko": "운영사 매니저", "en": "Operator manager", "si": "මෙහෙයුම් කළමනාකරු" },
+      "description": {
+        "ko": "온보딩, CS, 공급자 전달, SLA와 일상 운영을 총괄합니다.",
+        "en": "Coordinate onboarding, support, provider handoff, SLA and daily operations.",
+        "si": "Onboarding, සහාය, සේවා සපයන්නන්, SLA සහ දෛනික මෙහෙයුම් පාලනය කරන්න."
+      }
+    },
+    {
+      "id": "operator-agent",
+      "role": "operator_agent",
+      "email": "demo.operator.agent@sejoonglaw.kr",
+      "target": "admin",
+      "group": "operator",
+      "label": { "ko": "운영사 담당자", "en": "Operator agent", "si": "මෙහෙයුම් නිලධාරියා" },
+      "description": {
+        "ko": "근로자 문의, 보완요청과 서비스 진행상태를 처리합니다.",
+        "en": "Handle worker inquiries, corrections and service-status updates.",
+        "si": "සේවක විමසීම්, අඩුපාඩු සහ සේවා තත්ත්ව යාවත්කාලීන කරන්න."
+      }
+    },
+    {
+      "id": "employer",
+      "role": "employer_admin",
+      "email": "demo.employer@sejoonglaw.kr",
+      "target": "portal",
+      "group": "external",
+      "label": { "ko": "고용주 담당자", "en": "Employer administrator", "si": "සේවායෝජක පරිපාලක" },
+      "description": {
+        "ko": "소속 근로자의 준비도와 고용주 공유범위의 진행상태를 확인합니다.",
+        "en": "Review assigned workers and employer-visible readiness and status.",
+        "si": "අදාළ සේවකයින් සහ සේවායෝජකයාට පෙනෙන සූදානම හා තත්ත්වය බලන්න."
+      }
+    },
+    {
+      "id": "institution",
+      "role": "institution_admin",
+      "email": "demo.institution@sejoonglaw.kr",
+      "target": "portal",
+      "group": "external",
+      "label": { "ko": "스리랑카 현지기관", "en": "Sri Lanka institution", "si": "ශ්‍රී ලංකා ආයතනය" },
+      "description": {
+        "ko": "후보자 교육·출국준비와 현지기관 공유범위의 상태를 확인합니다.",
+        "en": "Track candidate training, departure preparation and institution-visible status.",
+        "si": "අපේක්ෂක පුහුණුව, පිටත්වීමේ සූදානම සහ ආයතනයට පෙනෙන තත්ත්වය බලන්න."
+      }
+    },
+    {
+      "id": "provider",
+      "role": "provider_agent",
+      "email": "demo.provider@sejoonglaw.kr",
+      "target": "portal",
+      "group": "external",
+      "label": { "ko": "제휴 서비스사", "en": "Service provider", "si": "සේවා සපයන්නා" },
+      "description": {
+        "ko": "배정된 통신·배송·금융 서비스 신청만 확인하고 처리합니다.",
+        "en": "Review and process only provider-assigned telecom, delivery or finance requests.",
+        "si": "පවරා ඇති දුරකථන, බෙදාහැරීම හෝ මූල්‍ය සේවා ඉල්ලීම් පමණක් බලන්න."
+      }
+    },
+    {
+      "id": "auditor",
+      "role": "auditor",
+      "email": "demo.auditor@sejoonglaw.kr",
+      "target": "admin",
+      "group": "audit",
+      "label": { "ko": "감사·품질관리", "en": "Auditor", "si": "විගණක" },
+      "description": {
+        "ko": "운영현황과 감사기록을 읽기 전용 관점에서 확인합니다.",
+        "en": "Review operating status and audit records from a read-only perspective.",
+        "si": "මෙහෙයුම් තත්ත්වය සහ විගණන සටහන් කියවීම පමණක් සඳහා බලන්න."
+      }
+    }
+  ]
+}
