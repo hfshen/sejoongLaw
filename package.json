@@ -11,6 +11,7 @@
     "check:staycare-env": "node scripts/check-staycare-env.mjs",
     "check:staycare-env:strict": "node scripts/check-staycare-env.mjs --strict",
     "bootstrap:staycare-admin": "node scripts/bootstrap-staycare-admin.mjs",
+    "seed:staycare-demo": "node scripts/seed-staycare-demo.mjs",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"

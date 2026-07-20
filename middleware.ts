@@ -48,9 +48,13 @@ export default async function middleware(request: NextRequest) {
     },
   })
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
   const protectedStayCare =
-    pathname.includes("/staycare/app") || pathname.includes("/staycare/admin")
+    pathname.includes("/staycare/app") ||
+    pathname.includes("/staycare/admin") ||
+    pathname.includes("/staycare/portal")
   const loginPath = pathname.includes("/staycare/login")
 
   if (protectedStayCare && !user) {
@@ -61,15 +65,8 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  if (loginPath && user) {
-    const locale = localeFromPath(pathname)
-    const next = request.nextUrl.searchParams.get("next")
-    const appUrl = request.nextUrl.clone()
-    appUrl.pathname = next?.startsWith("/") ? next : `/${locale}/staycare/app`
-    appUrl.search = ""
-    return NextResponse.redirect(appUrl)
-  }
-
+  // The login page resolves worker/staff/external destinations from tenant memberships.
+  // Do not redirect authenticated users here because middleware does not load role data.
   if (protectedStayCare || loginPath) {
     response.headers.set("Cache-Control", "private, no-store, max-age=0")
   }

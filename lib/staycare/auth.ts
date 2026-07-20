@@ -11,6 +11,12 @@ export const stayCareStaffRoles = [
   "auditor",
 ] as const
 
+export const stayCareExternalRoles = [
+  "employer_admin",
+  "institution_admin",
+  "provider_agent",
+] as const
+
 export async function getAuthenticatedUser() {
   const supabase = await createClient()
   const {
@@ -20,6 +26,39 @@ export async function getAuthenticatedUser() {
 
   if (error || !user) return null
   return { supabase, user }
+}
+
+export async function resolveStayCareDestination(locale = "ko") {
+  const context = await getAuthenticatedUser()
+  if (!context) return null
+
+  const { data: worker, error: workerError } = await context.supabase
+    .from("staycare_workers")
+    .select("id")
+    .eq("auth_user_id", context.user.id)
+    .maybeSingle()
+
+  if (workerError) throw workerError
+  if (worker) return `/${locale}/staycare/app`
+
+  const { data: memberships, error: membershipError } = await context.supabase
+    .from("staycare_memberships")
+    .select("role")
+    .eq("user_id", context.user.id)
+    .eq("status", "active")
+
+  if (membershipError) throw membershipError
+  const roles = new Set((memberships || []).map((membership) => String(membership.role)))
+
+  if (stayCareStaffRoles.some((role) => roles.has(role))) {
+    return `/${locale}/staycare/admin`
+  }
+
+  if (stayCareExternalRoles.some((role) => roles.has(role))) {
+    return `/${locale}/staycare/portal`
+  }
+
+  return `/${locale}/staycare/app`
 }
 
 export async function requireAuthenticatedUser(locale = "ko") {
@@ -76,6 +115,38 @@ export async function getStaffContext() {
 
 export async function requireStaffContext(locale = "ko") {
   const context = await getStaffContext()
-  if (!context) redirect(`/${locale}/staycare/app`)
+  if (!context) {
+    const destination = await resolveStayCareDestination(locale)
+    redirect(destination || `/${locale}/staycare/login`)
+  }
+  return context
+}
+
+export async function getExternalPortalContext() {
+  const context = await getAuthenticatedUser()
+  if (!context) return null
+
+  const { data: memberships, error } = await context.supabase
+    .from("staycare_memberships")
+    .select("tenant_id, organization_id, role, status")
+    .eq("user_id", context.user.id)
+    .eq("status", "active")
+    .in("role", [...stayCareExternalRoles])
+
+  if (error) throw error
+  if (!memberships?.length) return null
+
+  return {
+    ...context,
+    memberships,
+  }
+}
+
+export async function requireExternalPortalContext(locale = "ko") {
+  const context = await getExternalPortalContext()
+  if (!context) {
+    const destination = await resolveStayCareDestination(locale)
+    redirect(destination || `/${locale}/staycare/login`)
+  }
   return context
 }
