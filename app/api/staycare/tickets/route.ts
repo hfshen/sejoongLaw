@@ -18,7 +18,7 @@ const createSchema = z.object({
     "emergency_followup",
     "return",
   ]),
-  priority: z.enum(["P1", "P2", "P3", "P4"]).default("P3"),
+  priority: z.enum(["P1", "P2", "P3"]).default("P3"),
   description: z.string().trim().min(10).max(4000),
 })
 
