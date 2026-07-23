@@ -18,7 +18,7 @@ const createSchema = z.object({
     "emergency_followup",
     "return",
   ]),
-  priority: z.enum(["P1", "P2", "P3"]).default("P3"),
+  priority: z.enum(["P1", "P2", "P3", "P4"]).default("P3"),
   description: z.string().trim().min(10).max(4000),
 })
 
@@ -58,10 +58,14 @@ export async function POST(request: NextRequest) {
     }
 
     const body = createSchema.parse(await request.json())
+    // The current database enum supports P0-P3. A worker-facing P4 information
+    // request is normalized to the standard P3 queue while the requested level
+    // is retained in the event and audit metadata.
+    const priority = body.priority === "P4" ? "P3" : body.priority
     const admin = getServiceClient()
     const now = Date.now()
-    const firstResponseHours = body.priority === "P1" ? 2 : body.priority === "P2" ? 8 : 24
-    const resolutionHours = body.priority === "P1" ? 24 : body.priority === "P2" ? 72 : 120
+    const firstResponseHours = priority === "P1" ? 2 : priority === "P2" ? 8 : 24
+    const resolutionHours = priority === "P1" ? 24 : priority === "P2" ? 72 : 120
 
     const { data: ticket, error } = await admin
       .from("staycare_tickets")
@@ -71,7 +75,7 @@ export async function POST(request: NextRequest) {
         ticket_no: ticketNumber(),
         title: body.title,
         category: body.category,
-        priority: body.priority,
+        priority,
         status: "open",
         intake_channel: "app",
         description: body.description,
@@ -91,7 +95,11 @@ export async function POST(request: NextRequest) {
       event_type: "ticket_created",
       worker_visible: true,
       employer_visible: false,
-      body: { message: "Support request submitted", priority: body.priority },
+      body: {
+        message: "Support request submitted",
+        priority,
+        requestedPriority: body.priority,
+      },
       created_by: context.user.id,
     })
 
@@ -102,7 +110,12 @@ export async function POST(request: NextRequest) {
       action: "ticket.created",
       entity_type: "staycare_tickets",
       entity_id: ticket.id,
-      metadata: { category: body.category, priority: body.priority, ticketNo: ticket.ticket_no },
+      metadata: {
+        category: body.category,
+        priority,
+        requestedPriority: body.priority,
+        ticketNo: ticket.ticket_no,
+      },
     })
 
     return NextResponse.json({ ticket }, { status: 201 })
