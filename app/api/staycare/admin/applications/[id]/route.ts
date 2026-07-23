@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { getStaffContext } from "@/lib/staycare/auth"
+import { getStayCareRoleCapabilities } from "@/lib/staycare/role-capabilities"
 import { getServiceClient } from "@/lib/supabase/service"
 import { requireTrustedOrigin } from "@/lib/security/request"
 
@@ -29,9 +30,20 @@ export async function PATCH(
     const context = await getStaffContext()
     if (!context) return NextResponse.json({ error: "Staff access required" }, { status: 403 })
 
+    const canManage = context.memberships.some((membership) =>
+      getStayCareRoleCapabilities(membership.role).canManageApplications
+    )
+    if (!canManage) {
+      return NextResponse.json({ error: "Your role has read-only application access" }, { status: 403 })
+    }
+
     const body = schema.parse(await request.json())
+    if (body.status === "rejected" && !body.rejectionReason) {
+      return NextResponse.json({ error: "A rejection reason is required" }, { status: 400 })
+    }
+
     const { id } = await params
-    const tenantIds = [...new Set(context.memberships.map((membership) => membership.tenant_id))]
+    const tenantIds = Array.from(new Set(context.memberships.map((membership) => String(membership.tenant_id))))
     const admin = getServiceClient()
 
     const { data: current, error: currentError } = await admin
@@ -50,9 +62,10 @@ export async function PATCH(
         external_reference: body.externalReference || null,
         rejected_reason: body.status === "rejected" ? body.rejectionReason || "Not approved" : null,
         fulfilled_at: body.status === "fulfilled" ? new Date().toISOString() : null,
+        assigned_user_id: context.user.id,
       })
       .eq("id", current.id)
-      .select("id, application_no, status, external_reference, fulfilled_at")
+      .select("id, application_no, status, external_reference, rejected_reason, fulfilled_at, assigned_user_id")
       .single()
 
     if (error || !updated) throw error || new Error("Unable to update application")
@@ -66,9 +79,25 @@ export async function PATCH(
         previousStatus: current.status,
         status: body.status,
         message: body.workerVisibleMessage || null,
+        externalReference: body.externalReference || null,
       },
       created_by: context.user.id,
     })
+
+    if (body.workerVisibleMessage) {
+      await admin.from("staycare_notifications").insert({
+        tenant_id: current.tenant_id,
+        worker_id: current.worker_id,
+        channel: "in_app",
+        language: "en",
+        template_code: "application_updated",
+        subject: `Application ${current.application_no}`,
+        body: body.workerVisibleMessage,
+        status: "sent",
+        sent_at: new Date().toISOString(),
+        metadata: { applicationId: current.id, status: body.status },
+      })
+    }
 
     await admin.from("staycare_audit_events").insert({
       tenant_id: current.tenant_id,
