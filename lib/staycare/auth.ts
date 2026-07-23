@@ -74,7 +74,7 @@ export async function getWorkerContext() {
   const { data: worker, error: workerError } = await context.supabase
     .from("staycare_workers")
     .select(
-      "id, tenant_id, member_no, full_name, full_name_en, preferred_language, visa_type, occupation, status, current_phase, profile_completion, expected_arrival_date, visa_expires_at, passport_expires_at, phone_number, next_action, next_action_due_at"
+      "id, tenant_id, member_no, full_name, full_name_en, preferred_language, visa_type, occupation, status, current_phase, profile_completion, expected_arrival_date, visa_expires_at, passport_expires_at, phone_number, accommodation_summary, next_action, next_action_due_at"
     )
     .eq("auth_user_id", context.user.id)
     .maybeSingle()
