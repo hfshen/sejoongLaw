@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { getWorkerContext } from "@/lib/staycare/auth"
 import { getServiceClient } from "@/lib/supabase/service"
-import { getRequestIp, requireIdempotencyKey, requireTrustedOrigin } from "@/lib/security/request"
-import { rateLimit } from "@/lib/security/rate-limit"
+import {
+  getRequestIp,
+  requireIdempotencyKey,
+  requireTrustedOrigin,
+} from "@/lib/security/request"
+import { rateLimit, rateLimitFailureResponse } from "@/lib/security/rate-limit"
 import {
   getProviderAdapter,
   providerKindForCategory,
@@ -29,6 +33,34 @@ const createSchema = z.object({
   sharedDocumentIds: z.array(z.string().uuid()).max(20).default([]),
 })
 
+const telecomSchema = z.object({
+  simType: z.enum(["esim", "physical_sim", "resident_plan"]),
+  deviceModel: z.string().max(120).optional(),
+  imeiLast6: z.string().regex(/^\d{6}$/).optional(),
+  deliveryMethod: z.enum(["digital", "airport", "accommodation", "branch"]),
+  arrivalAirport: z.string().max(80).optional(),
+  arrivalTerminal: z.string().max(40).optional(),
+  deliveryAddressSummary: z.string().max(300).optional(),
+})
+
+const immigrationSchema = z.object({
+  caseType: z.enum([
+    "foreigner_registration",
+    "stay_extension",
+    "address_change",
+    "workplace_change",
+    "visa_change",
+    "departure",
+    "certificate",
+    "other",
+  ]),
+  deadlineAt: z.string().max(40).optional(),
+  description: z.string().max(2000).optional(),
+})
+
+type TelecomPayload = z.infer<typeof telecomSchema>
+type ImmigrationPayload = z.infer<typeof immigrationSchema>
+
 function applicationNumber() {
   return `APP-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`
 }
@@ -38,6 +70,32 @@ function normalizeOptionalDateTime(value?: string) {
   const parsed = new Date(value)
   if (Number.isNaN(parsed.getTime())) throw new Error("Invalid deadline date")
   return parsed.toISOString()
+}
+
+async function compensateApplication(applicationId: string) {
+  const admin = getServiceClient()
+  await Promise.all([
+    admin.from("staycare_telecom_orders").delete().eq("application_id", applicationId),
+    admin.from("staycare_delivery_orders").delete().eq("application_id", applicationId),
+    admin.from("staycare_remittance_intents").delete().eq("application_id", applicationId),
+    admin.from("staycare_immigration_cases").delete().eq("application_id", applicationId),
+  ])
+  await admin.from("staycare_service_applications").delete().eq("id", applicationId)
+}
+
+async function existingApplication(
+  tenantId: string,
+  workerId: string,
+  idempotencyKey: string
+) {
+  const { data } = await getServiceClient()
+    .from("staycare_service_applications")
+    .select("id, application_no, status, external_reference, created_at")
+    .eq("tenant_id", tenantId)
+    .eq("worker_id", workerId)
+    .eq("idempotency_key", idempotencyKey)
+    .maybeSingle()
+  return data
 }
 
 export async function GET() {
@@ -78,19 +136,17 @@ export async function POST(request: NextRequest) {
       windowSeconds: 3600,
     })
     if (!limited.allowed) {
-      return NextResponse.json({ error: "Too many service applications" }, { status: 429 })
+      return rateLimitFailureResponse(limited, "Too many service applications")
     }
 
     const body = createSchema.parse(await request.json())
     const admin = getServiceClient()
 
-    const { data: existing } = await admin
-      .from("staycare_service_applications")
-      .select("id, application_no, status, external_reference, created_at")
-      .eq("tenant_id", context.worker.tenant_id)
-      .eq("idempotency_key", idempotencyKey)
-      .maybeSingle()
-
+    const existing = await existingApplication(
+      context.worker.tenant_id,
+      context.worker.id,
+      idempotencyKey
+    )
     if (existing) {
       return NextResponse.json({ application: existing, idempotent: true })
     }
@@ -107,6 +163,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Service is unavailable" }, { status: 404 })
     }
 
+    let telecom: TelecomPayload | null = null
+    let immigration: ImmigrationPayload | null = null
+    if (service.category === "telecom") {
+      telecom = telecomSchema.parse(body.submittedData)
+    }
+    if (service.category === "immigration") {
+      immigration = immigrationSchema.parse(body.submittedData)
+    }
+
     if (body.sharedDocumentIds.length) {
       const { count, error: documentError } = await admin
         .from("staycare_documents")
@@ -114,6 +179,7 @@ export async function POST(request: NextRequest) {
         .eq("tenant_id", context.worker.tenant_id)
         .eq("worker_id", context.worker.id)
         .in("id", body.sharedDocumentIds)
+        .in("status", ["review_required", "approved"])
 
       if (documentError || count !== body.sharedDocumentIds.length) {
         return NextResponse.json(
@@ -142,23 +208,19 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (applicationError || !application) {
+      const duplicate = await existingApplication(
+        context.worker.tenant_id,
+        context.worker.id,
+        idempotencyKey
+      )
+      if (duplicate) {
+        return NextResponse.json({ application: duplicate, idempotent: true })
+      }
       throw applicationError || new Error("Unable to create application")
     }
     createdApplicationId = application.id
 
-    if (service.category === "telecom") {
-      const telecom = z
-        .object({
-          simType: z.enum(["esim", "physical_sim", "resident_plan"]),
-          deviceModel: z.string().max(120).optional(),
-          imeiLast6: z.string().regex(/^\d{6}$/).optional(),
-          deliveryMethod: z.enum(["digital", "airport", "accommodation", "branch"]),
-          arrivalAirport: z.string().max(80).optional(),
-          arrivalTerminal: z.string().max(40).optional(),
-          deliveryAddressSummary: z.string().max(300).optional(),
-        })
-        .parse(body.submittedData)
-
+    if (telecom) {
       const { error } = await admin.from("staycare_telecom_orders").insert({
         tenant_id: context.worker.tenant_id,
         application_id: application.id,
@@ -175,24 +237,7 @@ export async function POST(request: NextRequest) {
       if (error) throw error
     }
 
-    if (service.category === "immigration") {
-      const immigration = z
-        .object({
-          caseType: z.enum([
-            "foreigner_registration",
-            "stay_extension",
-            "address_change",
-            "workplace_change",
-            "visa_change",
-            "departure",
-            "certificate",
-            "other",
-          ]),
-          deadlineAt: z.string().max(40).optional(),
-          description: z.string().max(2000).optional(),
-        })
-        .parse(body.submittedData)
-
+    if (immigration) {
       const { error } = await admin.from("staycare_immigration_cases").insert({
         tenant_id: context.worker.tenant_id,
         application_id: application.id,
@@ -232,7 +277,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Core records are complete. Provider failure must not delete the worker's request.
+    // The core request is durable. Provider failure falls back to the manual queue.
     createdApplicationId = null
     let responseApplication = application
     const providerKind = providerKindForCategory(service.category)
@@ -260,16 +305,22 @@ export async function POST(request: NextRequest) {
             external_reference: dispatch.externalReference || null,
           })
           .eq("id", application.id)
+          .eq("status", "submitted")
           .select("id, application_no, status, external_reference, created_at")
-          .single()
+          .maybeSingle()
 
-        if (updateError || !updated) throw updateError || new Error("Unable to save provider state")
+        if (updateError || !updated) {
+          throw updateError || new Error("Unable to save provider state")
+        }
         responseApplication = updated
 
         await admin.from("staycare_application_events").insert({
           tenant_id: context.worker.tenant_id,
           application_id: application.id,
-          event_type: adapter.mode === "manual" ? "manual_queue_created" : "provider_dispatched",
+          event_type:
+            adapter.mode === "manual"
+              ? "manual_queue_created"
+              : "provider_dispatched",
           visible_to_worker: true,
           body: {
             status: dispatch.status,
@@ -283,14 +334,17 @@ export async function POST(request: NextRequest) {
         })
       } catch (providerError) {
         const fallbackMessage =
-          providerError instanceof Error ? providerError.message : "Provider dispatch failed"
+          providerError instanceof Error
+            ? providerError.message
+            : "Provider dispatch failed"
 
         const { data: fallback } = await admin
           .from("staycare_service_applications")
           .update({ status: "reviewing" })
           .eq("id", application.id)
+          .eq("status", "submitted")
           .select("id, application_no, status, external_reference, created_at")
-          .single()
+          .maybeSingle()
 
         if (fallback) responseApplication = fallback
 
@@ -300,7 +354,7 @@ export async function POST(request: NextRequest) {
           event_type: "provider_dispatch_failed_manual_fallback",
           visible_to_worker: true,
           body: {
-            status: "reviewing",
+            status: fallback?.status || responseApplication.status,
             providerKind,
             message: "The request is being handled manually by Sejoong.",
           },
@@ -326,10 +380,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ application: responseApplication }, { status: 201 })
   } catch (error) {
     if (createdApplicationId) {
-      await getServiceClient()
-        .from("staycare_service_applications")
-        .delete()
-        .eq("id", createdApplicationId)
+      await compensateApplication(createdApplicationId)
     }
 
     if (error instanceof z.ZodError) {
