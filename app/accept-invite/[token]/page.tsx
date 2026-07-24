@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { use, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { Loader2, CheckCircle, XCircle, Lock } from "lucide-react"
@@ -15,7 +15,12 @@ interface AcceptInviteFormData {
   phone?: string
 }
 
-export default function AcceptInvitePage({ params }: { params: { token: string } }) {
+export default function AcceptInvitePage({
+  params,
+}: {
+  params: Promise<{ token: string }>
+}) {
+  const { token } = use(params)
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
@@ -51,10 +56,10 @@ export default function AcceptInvitePage({ params }: { params: { token: string }
       }
     }
 
-    if (params.token) {
+    if (token) {
       verifyToken()
     }
-  }, [params.token])
+  }, [token])
 
   const onSubmit = async (data: AcceptInviteFormData) => {
     if (data.password !== data.confirmPassword) {
@@ -70,7 +75,7 @@ export default function AcceptInvitePage({ params }: { params: { token: string }
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          token: params.token,
+          token: token,
           password: data.password,
           name: data.name || undefined,
           phone: data.phone || undefined,

@@ -39,10 +39,11 @@ async function getPost(id: string) {
 export default async function BoardPostPage({
   params,
 }: {
-  params: { id: string; locale: string }
+  params: Promise<{ id: string; locale: string }>
 }) {
+  const { id } = await params
   const t = await getTranslations()
-  const post = await getPost(params.id)
+  const post = await getPost(id)
 
   if (!post) {
     notFound()

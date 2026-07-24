@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { use, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { ArrowLeft, Loader2, Save, UserCheck, UserX } from "lucide-react"
@@ -32,7 +32,12 @@ const statusOptions = [
   { value: "suspended", label: "정지" },
 ]
 
-export default function UserDetailPage({ params }: { params: { id: string } }) {
+export default function UserDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = use(params)
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -50,7 +55,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
     const fetchUser = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/admin/users/${params.id}`)
+        const response = await fetch(`/api/admin/users/${id}`)
         const data = await response.json()
 
         if (!response.ok) {
@@ -76,15 +81,15 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
       }
     }
 
-    if (params.id) {
+    if (id) {
       fetchUser()
     }
-  }, [params.id, setValue])
+  }, [id, setValue])
 
   const onSubmit = async (data: UserFormData) => {
     setSaving(true)
     try {
-      const response = await fetch(`/api/admin/users/${params.id}`, {
+      const response = await fetch(`/api/admin/users/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -114,7 +119,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
     const action = newStatus === "active" ? "activate" : "suspend"
 
     try {
-      const response = await fetch(`/api/admin/users/${params.id}?action=${action}`, {
+      const response = await fetch(`/api/admin/users/${id}?action=${action}`, {
         method: "POST",
       })
 

@@ -76,11 +76,12 @@ const getCaseStudies = (t: any): CaseStudy[] => [
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string; locale: string }
+  params: Promise<{ id: string; locale: string }>
 }): Promise<Metadata> {
+  const { id } = await params
   const t = await getTranslations()
   const caseStudies = getCaseStudies(t)
-  const caseStudy = caseStudies.find((c) => c.id === params.id)
+  const caseStudy = caseStudies.find((c) => c.id === id)
   
   if (!caseStudy) {
     return {
@@ -97,12 +98,12 @@ export async function generateMetadata({
 export default async function CaseDetailPage({
   params,
 }: {
-  params: { id: string; locale: string }
+  params: Promise<{ id: string; locale: string }>
 }) {
+  const { id, locale } = await params
   const t = await getTranslations()
-  const locale = params.locale
   const caseStudies = getCaseStudies(t)
-  const caseStudy = caseStudies.find((c) => c.id === params.id)
+  const caseStudy = caseStudies.find((c) => c.id === id)
 
   if (!caseStudy) {
     notFound()

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { use, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { Save, ArrowLeft, Loader2, Upload, X, Trash2 } from "lucide-react"
@@ -20,7 +20,12 @@ interface MemberFormData {
   order_index: number
 }
 
-export default function EditMemberPage({ params }: { params: { id: string } }) {
+export default function EditMemberPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = use(params)
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -53,7 +58,7 @@ export default function EditMemberPage({ params }: { params: { id: string } }) {
     const fetchMember = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/members/${params.id}`)
+        const response = await fetch(`/api/members/${id}`)
         const data = await response.json()
 
         if (!response.ok) {
@@ -84,10 +89,10 @@ export default function EditMemberPage({ params }: { params: { id: string } }) {
       }
     }
 
-    if (params.id) {
+    if (id) {
       fetchMember()
     }
-  }, [params.id, setValue])
+  }, [id, setValue])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -187,7 +192,7 @@ export default function EditMemberPage({ params }: { params: { id: string } }) {
   const onSubmit = async (data: MemberFormData) => {
     setSaving(true)
     try {
-      const response = await fetch(`/api/members/${params.id}`, {
+      const response = await fetch(`/api/members/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -219,7 +224,7 @@ export default function EditMemberPage({ params }: { params: { id: string } }) {
 
     setDeleting(true)
     try {
-      const response = await fetch(`/api/members/${params.id}`, {
+      const response = await fetch(`/api/members/${id}`, {
         method: "DELETE",
       })
 
