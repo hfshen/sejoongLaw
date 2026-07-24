@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, Suspense } from "react"
+import Link from "next/link"
+import { Suspense, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { Loader2, Mail, Lock, AlertCircle } from "lucide-react"
+import { AlertCircle, Loader2, Lock, Mail } from "lucide-react"
 import Button from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { toast } from "@/components/ui/Toast"
@@ -40,28 +41,25 @@ function LoginForm() {
 
     try {
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      const supabasePublicKey =
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-      if (!supabaseUrl || !supabaseAnonKey) {
+      if (!supabaseUrl || !supabasePublicKey) {
         throw new Error("Supabase 설정이 올바르지 않습니다.")
       }
 
-      const supabase = createClient(supabaseUrl, supabaseAnonKey)
+      const supabase = createClient(supabaseUrl, supabasePublicKey)
 
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      })
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email: data.email.trim().toLowerCase(),
+          password: data.password,
+        })
 
-      if (authError) {
-        throw authError
-      }
+      if (authError) throw authError
+      if (!authData.user) throw new Error("로그인에 실패했습니다.")
 
-      if (!authData.user) {
-        throw new Error("로그인에 실패했습니다.")
-      }
-
-      // Check user profile status
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("status, role")
@@ -69,29 +67,25 @@ function LoginForm() {
         .single()
 
       if (profileError) {
-        console.warn("Profile not found, redirecting anyway", { error: profileError })
-      } else {
-        if (profile.status !== "active") {
-          await supabase.auth.signOut()
-          throw new Error("계정이 비활성화되었습니다. 관리자에게 문의하세요.")
-        }
+        console.warn("Profile not found, redirecting anyway", {
+          error: profileError.message,
+        })
+      } else if (profile.status !== "active") {
+        await supabase.auth.signOut()
+        throw new Error("계정이 비활성화되었습니다. 관리자에게 문의하세요.")
       }
 
       toast.success("로그인되었습니다.")
-      
-      // Redirect based on role or to admin dashboard
-      const redirectUrl = profile?.role === "admin" 
-        ? "/admin/dashboard" 
-        : "/admin/documents"
-      
-      router.push(redirectUrl)
+      router.push(profile?.role === "admin" ? "/admin/dashboard" : "/admin/documents")
       router.refresh()
-    } catch (err: any) {
+    } catch (caught: unknown) {
       const errorMessage =
-        err.message || "로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요."
+        caught instanceof Error
+          ? caught.message
+          : "로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요."
       setError(errorMessage)
       toast.error(errorMessage)
-      console.error("Login error:", err)
+      console.error("Login error:", errorMessage)
     } finally {
       setLoading(false)
     }
@@ -129,6 +123,7 @@ function LoginForm() {
                     },
                   })}
                   type="email"
+                  autoComplete="email"
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary pl-10"
                   placeholder="이메일을 입력하세요"
                 />
@@ -149,13 +144,16 @@ function LoginForm() {
                     required: "비밀번호는 필수입니다.",
                   })}
                   type="password"
+                  autoComplete="current-password"
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary pl-10"
                   placeholder="비밀번호를 입력하세요"
                 />
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               </div>
               {errors.password && (
-                <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
@@ -174,12 +172,12 @@ function LoginForm() {
           <div className="mt-6 text-center text-sm text-gray-600">
             <p>
               비밀번호를 잊으셨나요?{" "}
-              <a
+              <Link
                 href="/admin/reset-password"
                 className="text-primary hover:underline"
               >
                 비밀번호 재설정
-              </a>
+              </Link>
             </p>
           </div>
         </CardContent>
@@ -190,14 +188,16 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">로딩 중...</p>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+            <p className="text-gray-600">로딩 중...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <LoginForm />
     </Suspense>
   )

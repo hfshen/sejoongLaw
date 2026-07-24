@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { useCallback, useEffect, useState } from "react"
 import { Clock } from "lucide-react"
+import { Card } from "@/components/ui/Card"
 
 interface AuditTrailProps {
   caseId: string
@@ -13,7 +13,7 @@ interface AuditEvent {
   entity_type: string
   entity_id: string
   action: string
-  meta: Record<string, any>
+  meta: Record<string, unknown>
   actor: string | null
   created_at: string
 }
@@ -21,27 +21,32 @@ interface AuditEvent {
 export default function AuditTrail({ caseId }: AuditTrailProps) {
   const [events, setEvents] = useState<AuditEvent[]>([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState<string>("all")
+  const [filter, setFilter] = useState("all")
 
-  useEffect(() => {
-    fetchAuditTrail()
-  }, [caseId])
-
-  const fetchAuditTrail = async () => {
+  const fetchAuditTrail = useCallback(async () => {
+    setLoading(true)
     try {
-      // Note: This would need a proper API endpoint
-      // For now, this is a placeholder
-      const res = await fetch(`/api/cases/${caseId}/audit`)
-      const data = await res.json()
-      if (data.success && data.data?.events) {
+      const response = await fetch(`/api/cases/${caseId}/audit`, {
+        cache: "no-store",
+      })
+      if (!response.ok) {
+        throw new Error(`Unable to load audit trail: ${response.status}`)
+      }
+      const data = await response.json()
+      if (data.success && Array.isArray(data.data?.events)) {
         setEvents(data.data.events)
       }
     } catch (error) {
       console.error("Failed to fetch audit trail", error)
+      setEvents([])
     } finally {
       setLoading(false)
     }
-  }
+  }, [caseId])
+
+  useEffect(() => {
+    void fetchAuditTrail()
+  }, [fetchAuditTrail])
 
   const filteredEvents =
     filter === "all"
@@ -63,8 +68,9 @@ export default function AuditTrail({ caseId }: AuditTrailProps) {
           <h3 className="text-lg font-semibold">Audit Trail / 감사 추적</h3>
           <select
             value={filter}
-            onChange={(e) => setFilter(e.target.value)}
+            onChange={(event) => setFilter(event.target.value)}
             className="p-2 border rounded"
+            aria-label="감사 이벤트 유형 필터"
           >
             <option value="all">All Events</option>
             <option value="document">Documents</option>
@@ -78,7 +84,9 @@ export default function AuditTrail({ caseId }: AuditTrailProps) {
 
         <div className="space-y-3">
           {filteredEvents.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No audit events found.</p>
+            <p className="text-gray-500 text-center py-8">
+              No audit events found.
+            </p>
           ) : (
             filteredEvents.map((event) => (
               <div
@@ -99,11 +107,15 @@ export default function AuditTrail({ caseId }: AuditTrailProps) {
                     </span>
                   </div>
                   {event.actor && (
-                    <p className="text-xs text-gray-500 mt-1">Actor: {event.actor.substring(0, 8)}...</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Actor: {event.actor.substring(0, 8)}...
+                    </p>
                   )}
                   {Object.keys(event.meta).length > 0 && (
                     <details className="mt-2">
-                      <summary className="text-xs text-gray-600 cursor-pointer">Metadata</summary>
+                      <summary className="text-xs text-gray-600 cursor-pointer">
+                        Metadata
+                      </summary>
                       <pre className="text-xs bg-gray-100 p-2 mt-1 rounded overflow-auto">
                         {JSON.stringify(event.meta, null, 2)}
                       </pre>

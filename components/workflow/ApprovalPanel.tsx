@@ -1,12 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
-import Button from "@/components/ui/Button"
-import Input from "@/components/ui/Input"
-import Textarea from "@/components/ui/Textarea"
+import { useCallback, useEffect, useState } from "react"
+import { Check, Clock, MessageSquare, X } from "lucide-react"
 import { Badge } from "@/components/ui/Badge"
-import { Check, X, Clock, MessageSquare } from "lucide-react"
+import Button from "@/components/ui/Button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import Textarea from "@/components/ui/Textarea"
 
 interface ApprovalPanelProps {
   documentId: string
@@ -29,14 +28,15 @@ interface ApprovalStatus {
   approvals: Approval[]
 }
 
-export default function ApprovalPanel({ documentId, versionId }: ApprovalPanelProps) {
+export default function ApprovalPanel({
+  documentId,
+  versionId,
+}: ApprovalPanelProps) {
   const [sourceStatus, setSourceStatus] = useState<ApprovalStatus | null>(null)
   const [translationStatuses, setTranslationStatuses] = useState<
     Record<string, ApprovalStatus>
   >({})
   const [loading, setLoading] = useState(true)
-  
-  // 각 언어별로 독립적인 comment 상태 관리
   const [comments, setComments] = useState<Record<string, string>>({
     source: "",
     en: "",
@@ -50,51 +50,59 @@ export default function ApprovalPanel({ documentId, versionId }: ApprovalPanelPr
     ta: false,
   })
 
-  useEffect(() => {
-    fetchApprovalStatus()
-  }, [documentId, versionId])
-
-  const fetchApprovalStatus = async () => {
+  const fetchApprovalStatus = useCallback(async () => {
+    setLoading(true)
     try {
-      // Fetch source approval status
-      const sourceRes = await fetch(
-        `/api/documents/${documentId}/approve?versionId=${versionId}&targetLang=source`
+      const sourceResponse = await fetch(
+        `/api/documents/${documentId}/approve?versionId=${encodeURIComponent(versionId)}&targetLang=source`,
+        { cache: "no-store" }
       )
-      const sourceData = await sourceRes.json()
-      if (sourceData.success) {
-        setSourceStatus(sourceData.data.status)
+      if (!sourceResponse.ok) {
+        throw new Error(`Unable to load source approval: ${sourceResponse.status}`)
       }
+      const sourceData = await sourceResponse.json()
+      if (sourceData.success) setSourceStatus(sourceData.data.status)
 
-      // Fetch translation approval statuses
-      const langs = ["en", "si", "ta"]
-      const statuses: Record<string, ApprovalStatus> = {}
-
-      for (const lang of langs) {
-        try {
-          const res = await fetch(
-            `/api/documents/${documentId}/approve?versionId=${versionId}&targetLang=${lang}`
+      const languages = ["en", "si", "ta"]
+      const entries = await Promise.all(
+        languages.map(async (language) => {
+          const response = await fetch(
+            `/api/documents/${documentId}/approve?versionId=${encodeURIComponent(versionId)}&targetLang=${language}`,
+            { cache: "no-store" }
           )
-          const data = await res.json()
-          if (data.success) {
-            statuses[lang] = data.data.status
-          }
-        } catch (error) {
-          console.error(`Failed to fetch ${lang} approval status`, error)
-        }
-      }
+          if (!response.ok) return null
+          const data = await response.json()
+          return data.success
+            ? ([language, data.data.status] as const)
+            : null
+        })
+      )
 
-      setTranslationStatuses(statuses)
+      setTranslationStatuses(
+        Object.fromEntries(
+          entries.filter(
+            (entry): entry is readonly [string, ApprovalStatus] => entry !== null
+          )
+        )
+      )
     } catch (error) {
       console.error("Failed to fetch approval status", error)
     } finally {
       setLoading(false)
     }
-  }
+  }, [documentId, versionId])
 
-  const handleApprove = async (targetLang: string, decision: "approved" | "rejected") => {
-    setSubmitting((prev) => ({ ...prev, [targetLang]: true }))
+  useEffect(() => {
+    void fetchApprovalStatus()
+  }, [fetchApprovalStatus])
+
+  const handleApprove = async (
+    targetLang: string,
+    decision: "approved" | "rejected"
+  ) => {
+    setSubmitting((previous) => ({ ...previous, [targetLang]: true }))
     try {
-      const res = await fetch(`/api/documents/${documentId}/approve`, {
+      const response = await fetch(`/api/documents/${documentId}/approve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -105,27 +113,30 @@ export default function ApprovalPanel({ documentId, versionId }: ApprovalPanelPr
         }),
       })
 
-      const data = await res.json()
-      if (data.success) {
-        setComments((prev) => ({ ...prev, [targetLang]: "" }))
-        await fetchApprovalStatus()
-      } else {
-        alert(data.error || "승인 제출에 실패했습니다.")
+      const data = await response.json()
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "승인 제출에 실패했습니다.")
       }
+
+      setComments((previous) => ({ ...previous, [targetLang]: "" }))
+      await fetchApprovalStatus()
     } catch (error) {
       console.error("Failed to submit approval", error)
-      alert("승인 제출에 실패했습니다.")
+      alert(error instanceof Error ? error.message : "승인 제출에 실패했습니다.")
     } finally {
-      setSubmitting((prev) => ({ ...prev, [targetLang]: false }))
+      setSubmitting((previous) => ({ ...previous, [targetLang]: false }))
     }
   }
 
   const getStatusBadge = (status: ApprovalStatus | null) => {
     if (!status) return null
-    
+
     if (status.approved) {
       return (
-        <Badge variant="default" className="bg-green-100 text-green-800 border-green-300">
+        <Badge
+          variant="default"
+          className="bg-green-100 text-green-800 border-green-300"
+        >
           <Check className="w-3 h-3 mr-1" />
           승인됨
         </Badge>
@@ -140,28 +151,33 @@ export default function ApprovalPanel({ documentId, versionId }: ApprovalPanelPr
       )
     }
     return (
-      <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border-yellow-300">
+      <Badge
+        variant="secondary"
+        className="bg-yellow-100 text-yellow-800 border-yellow-300"
+      >
         <Clock className="w-3 h-3 mr-1" />
         대기 중
       </Badge>
     )
   }
 
-  const getLanguageLabel = (lang: string) => {
+  const getLanguageLabel = (language: string) => {
     const labels: Record<string, string> = {
       source: "원문 (한국어)",
       en: "영어",
       si: "싱할라어",
       ta: "타밀어",
     }
-    return labels[lang] || lang
+    return labels[language] || language
   }
 
   if (loading) {
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="text-center text-gray-500">승인 상태를 불러오는 중...</div>
+          <div className="text-center text-gray-500">
+            승인 상태를 불러오는 중...
+          </div>
         </CardContent>
       </Card>
     )
@@ -173,19 +189,23 @@ export default function ApprovalPanel({ documentId, versionId }: ApprovalPanelPr
         <CardTitle className="text-xl font-semibold">승인 상태</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Source Document Approval */}
         <div className="border-b pb-6">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="font-medium text-lg">{getLanguageLabel("source")}</h4>
+            <h4 className="font-medium text-lg">
+              {getLanguageLabel("source")}
+            </h4>
             {getStatusBadge(sourceStatus)}
           </div>
 
-          {sourceStatus && sourceStatus.pending && (
+          {sourceStatus?.pending && (
             <div className="mt-4 space-y-3">
               <Textarea
                 value={comments.source}
-                onChange={(e) =>
-                  setComments((prev) => ({ ...prev, source: e.target.value }))
+                onChange={(event) =>
+                  setComments((previous) => ({
+                    ...previous,
+                    source: event.target.value,
+                  }))
                 }
                 placeholder="의견을 입력하세요 (선택사항)"
                 className="w-full"
@@ -210,7 +230,6 @@ export default function ApprovalPanel({ documentId, versionId }: ApprovalPanelPr
             </div>
           )}
 
-          {/* Approval History */}
           {sourceStatus && sourceStatus.approvals.length > 0 && (
             <div className="mt-4 space-y-2">
               <h5 className="text-sm font-medium text-gray-700 flex items-center gap-2">
@@ -228,14 +247,17 @@ export default function ApprovalPanel({ documentId, versionId }: ApprovalPanelPr
                 >
                   <div className="flex justify-between items-start mb-1">
                     <span className="font-medium">
-                      {approval.decision === "approved" ? "✓" : "✗"} {approval.role}
+                      {approval.decision === "approved" ? "✓" : "✗"}{" "}
+                      {approval.role}
                     </span>
                     <span className="text-gray-500 text-xs">
                       {new Date(approval.created_at).toLocaleString("ko-KR")}
                     </span>
                   </div>
                   {approval.comment && (
-                    <p className="text-gray-600 mt-2 text-xs">{approval.comment}</p>
+                    <p className="text-gray-600 mt-2 text-xs">
+                      {approval.comment}
+                    </p>
                   )}
                 </div>
               ))}
@@ -243,22 +265,24 @@ export default function ApprovalPanel({ documentId, versionId }: ApprovalPanelPr
           )}
         </div>
 
-        {/* Translation Approvals */}
         <div className="space-y-6">
           <h4 className="font-medium text-lg">번역본</h4>
-          {Object.entries(translationStatuses).map(([lang, status]) => (
-            <div key={lang} className="border-b pb-6 last:border-b-0">
+          {Object.entries(translationStatuses).map(([language, status]) => (
+            <div key={language} className="border-b pb-6 last:border-b-0">
               <div className="flex items-center justify-between mb-4">
-                <h5 className="font-medium">{getLanguageLabel(lang)}</h5>
+                <h5 className="font-medium">{getLanguageLabel(language)}</h5>
                 {getStatusBadge(status)}
               </div>
 
               {status.pending && (
                 <div className="mt-4 space-y-3">
                   <Textarea
-                    value={comments[lang]}
-                    onChange={(e) =>
-                      setComments((prev) => ({ ...prev, [lang]: e.target.value }))
+                    value={comments[language]}
+                    onChange={(event) =>
+                      setComments((previous) => ({
+                        ...previous,
+                        [language]: event.target.value,
+                      }))
                     }
                     placeholder="의견을 입력하세요 (선택사항)"
                     className="w-full"
@@ -266,24 +290,23 @@ export default function ApprovalPanel({ documentId, versionId }: ApprovalPanelPr
                   />
                   <div className="flex gap-2">
                     <Button
-                      onClick={() => handleApprove(lang, "approved")}
-                      disabled={submitting[lang]}
+                      onClick={() => handleApprove(language, "approved")}
+                      disabled={submitting[language]}
                       className="bg-green-600 hover:bg-green-700 text-white"
                     >
-                      {submitting[lang] ? "처리 중..." : "승인"}
+                      {submitting[language] ? "처리 중..." : "승인"}
                     </Button>
                     <Button
-                      onClick={() => handleApprove(lang, "rejected")}
-                      disabled={submitting[lang]}
+                      onClick={() => handleApprove(language, "rejected")}
+                      disabled={submitting[language]}
                       variant="destructive"
                     >
-                      {submitting[lang] ? "처리 중..." : "거부"}
+                      {submitting[language] ? "처리 중..." : "거부"}
                     </Button>
                   </div>
                 </div>
               )}
 
-              {/* Approval History */}
               {status.approvals.length > 0 && (
                 <div className="mt-4 space-y-2">
                   <h5 className="text-sm font-medium text-gray-700 flex items-center gap-2">
@@ -301,14 +324,17 @@ export default function ApprovalPanel({ documentId, versionId }: ApprovalPanelPr
                     >
                       <div className="flex justify-between items-start mb-1">
                         <span className="font-medium">
-                          {approval.decision === "approved" ? "✓" : "✗"} {approval.role}
+                          {approval.decision === "approved" ? "✓" : "✗"}{" "}
+                          {approval.role}
                         </span>
                         <span className="text-gray-500 text-xs">
                           {new Date(approval.created_at).toLocaleString("ko-KR")}
                         </span>
                       </div>
                       {approval.comment && (
-                        <p className="text-gray-600 mt-2 text-xs">{approval.comment}</p>
+                        <p className="text-gray-600 mt-2 text-xs">
+                          {approval.comment}
+                        </p>
                       )}
                     </div>
                   ))}

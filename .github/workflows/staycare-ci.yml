@@ -17,13 +17,17 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     env:
-      NEXT_PUBLIC_SITE_URL: https://sejoonglaw.kr
+      NEXT_PUBLIC_SITE_URL: https://www.sejoonglaw.kr
       STAYCARE_TENANT_SLUG: sejoong-staycare
       STAYCARE_DEFAULT_LOCALE: ko
       STAYCARE_SUPPORT_EMAIL: staycare@sejoonglaw.kr
       STAYCARE_STORAGE_BUCKET: staycare-private
+      NEXT_PUBLIC_STAYCARE_DEMO_LOGIN_ENABLED: "false"
+      STAYCARE_ALLOW_PRODUCTION_DEMO_LOGIN: "false"
+      STAYCARE_RATE_LIMIT_FAIL_CLOSED: "true"
+      STAYCARE_DOCUMENT_RETENTION_DAYS: "1095"
       NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: test-publishable-key
       NEXT_PUBLIC_SUPABASE_ANON_KEY: test-anon-key
@@ -33,6 +37,14 @@ jobs:
       STAYCARE_FIELD_ENCRYPTION_KEY: test-field-encryption-key-for-ci-only
       OPENAI_API_KEY: test-openai-key
       OPENAI_TRANSLATION_MODEL: gpt-5
+      UPSTASH_REDIS_REST_URL: https://example.upstash.io
+      UPSTASH_REDIS_REST_TOKEN: test-upstash-token
+      EMAIL_PROVIDER: resend
+      RESEND_API_KEY: re_test_ci_only
+      RESEND_FROM_EMAIL: Sejoong StayCare <staycare@example.com>
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+      TURNSTILE_SECRET_KEY: 1x0000000000000000000000000000000AA
+      NEXT_PUBLIC_SENTRY_DSN: https://public@example.ingest.sentry.io/1
       TELECOM_PROVIDER_MODE: manual
       BANK_PROVIDER_MODE: manual
       REMITTANCE_PROVIDER_MODE: manual
@@ -49,11 +61,24 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps --silent --no-audit --no-fund
+      - name: Install locked dependencies
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
 
-      - name: Validate core environment contract
-        run: npm run check:staycare-env 2>&1 | tee staycare-env.log
+      - name: Verify lockfile is reproducible
+        run: git diff --exit-code -- package-lock.json
+
+      - name: Audit critical production dependencies
+        run: |
+          set -o pipefail
+          npm audit --omit=dev --audit-level=critical 2>&1 | tee npm-audit.log
+
+      - name: Validate commercial environment contract
+        run: npm run check:staycare-env:strict 2>&1 | tee staycare-env.log
+
+      - name: Lint application
+        run: |
+          set -o pipefail
+          npm run lint 2>&1 | tee lint.log
 
       - name: TypeScript check
         id: typecheck
@@ -99,9 +124,11 @@ jobs:
         with:
           name: staycare-validation-${{ github.run_id }}
           path: |
+            npm-audit.log
             staycare-env.log
+            lint.log
             typecheck.log
             staycare-tests.log
             build.log
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 14

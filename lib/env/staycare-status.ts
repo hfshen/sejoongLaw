@@ -45,10 +45,15 @@ function safePublicValue(key: string) {
       return "형식 확인 필요"
     }
   }
-
   if (key.includes("EMAIL")) return value
   if (key.endsWith("_MODE")) return value
-  if (key === "STAYCARE_STORAGE_BUCKET" || key === "STAYCARE_TENANT_SLUG") return value
+  if (
+    key === "STAYCARE_STORAGE_BUCKET" ||
+    key === "STAYCARE_TENANT_SLUG" ||
+    key === "STAYCARE_DOCUMENT_RETENTION_DAYS"
+  ) {
+    return value
+  }
   return undefined
 }
 
@@ -62,15 +67,37 @@ function row(input: {
   detail: string
   publicKey?: string
 }): StayCareEnvironmentItem {
-  const configured = (input.mode || "all") === "all" ? hasAll(input.keys) : hasAny(input.keys)
+  const configured =
+    (input.mode || "all") === "all" ? hasAll(input.keys) : hasAny(input.keys)
   return {
     ...input,
     state: configured ? "configured" : "missing",
-    publicValue: input.publicKey ? safePublicValue(input.publicKey) : undefined,
+    publicValue: input.publicKey
+      ? safePublicValue(input.publicKey)
+      : undefined,
   }
 }
 
-function providerRow(kind: "TELECOM" | "BANK" | "REMITTANCE" | "DELIVERY", label: string): StayCareEnvironmentItem {
+function safetyRow(input: {
+  id: string
+  label: string
+  keys: string[]
+  configured: boolean
+  detail: string
+  publicValue?: string
+}): StayCareEnvironmentItem {
+  return {
+    ...input,
+    group: "production",
+    required: true,
+    state: input.configured ? "configured" : "missing",
+  }
+}
+
+function providerRow(
+  kind: "TELECOM" | "BANK" | "REMITTANCE" | "DELIVERY",
+  label: string
+): StayCareEnvironmentItem {
   const modeKey = `${kind}_PROVIDER_MODE`
   const mode = process.env[modeKey]?.trim() || "manual"
   const apiKeys = [
@@ -89,7 +116,7 @@ function providerRow(kind: "TELECOM" | "BANK" | "REMITTANCE" | "DELIVERY", label
       group: "provider",
       required: false,
       state: "manual",
-      detail: "수동 운영 가능 · 제휴 API 연결 전 관리자 포털에서 처리",
+      detail: "수동 운영 가능 · 계약 API 연결 전에는 제한 상용 운영으로 판정",
       publicValue: "manual",
     }
   }
@@ -109,6 +136,11 @@ function providerRow(kind: "TELECOM" | "BANK" | "REMITTANCE" | "DELIVERY", label
 }
 
 export function getStayCareEnvironmentReport(): StayCareEnvironmentReport {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || ""
+  const tenantSlug = process.env.STAYCARE_TENANT_SLUG?.trim() || ""
+  const retentionDays = Number(process.env.STAYCARE_DOCUMENT_RETENTION_DAYS || "")
+  const production = (process.env.VERCEL_ENV || process.env.NODE_ENV) === "production"
+
   const items: StayCareEnvironmentItem[] = [
     row({
       id: "site-url",
@@ -118,6 +150,34 @@ export function getStayCareEnvironmentReport(): StayCareEnvironmentReport {
       required: true,
       detail: "운영 도메인과 인증 리다이렉트 기준 URL",
       publicKey: "NEXT_PUBLIC_SITE_URL",
+    }),
+    safetyRow({
+      id: "https",
+      label: "운영 HTTPS",
+      keys: ["NEXT_PUBLIC_SITE_URL"],
+      configured: !production || siteUrl.startsWith("https://"),
+      detail: "상용 환경은 HTTPS 운영 도메인만 허용",
+      publicValue: siteUrl ? (siteUrl.startsWith("https://") ? "HTTPS" : "HTTP") : undefined,
+    }),
+    safetyRow({
+      id: "production-tenant",
+      label: "실운영 테넌트 분리",
+      keys: ["STAYCARE_TENANT_SLUG"],
+      configured: Boolean(tenantSlug) && !tenantSlug.toLowerCase().includes("demo"),
+      detail: "실회원 데이터가 demo tenant와 분리되어야 함",
+      publicValue: tenantSlug || undefined,
+    }),
+    safetyRow({
+      id: "demo-disabled",
+      label: "공개 데모 로그인 차단",
+      keys: [
+        "NEXT_PUBLIC_STAYCARE_DEMO_LOGIN_ENABLED",
+        "STAYCARE_ALLOW_PRODUCTION_DEMO_LOGIN",
+      ],
+      configured:
+        process.env.NEXT_PUBLIC_STAYCARE_DEMO_LOGIN_ENABLED !== "true" &&
+        process.env.STAYCARE_ALLOW_PRODUCTION_DEMO_LOGIN !== "true",
+      detail: "실운영 배포에서는 공유 데모 계정과 비밀번호를 노출하지 않음",
     }),
     row({
       id: "support",
@@ -178,7 +238,7 @@ export function getStayCareEnvironmentReport(): StayCareEnvironmentReport {
       mode: "any",
       group: "core",
       required: true,
-      detail: "만료알림·재시도·정기점검 작업 보호",
+      detail: "알림·보존·정기점검 작업 보호",
     }),
     row({
       id: "field-encryption",
@@ -186,7 +246,16 @@ export function getStayCareEnvironmentReport(): StayCareEnvironmentReport {
       keys: ["STAYCARE_FIELD_ENCRYPTION_KEY"],
       group: "core",
       required: true,
-      detail: "계좌·수취인 등 추가 애플리케이션 암호화",
+      detail: "계좌·수취인 등 애플리케이션 암호화",
+    }),
+    safetyRow({
+      id: "retention-policy",
+      label: "문서 보존기간 정책",
+      keys: ["STAYCARE_DOCUMENT_RETENTION_DAYS"],
+      configured:
+        Number.isInteger(retentionDays) && retentionDays >= 30 && retentionDays <= 3650,
+      detail: "법률·개인정보 검토를 거쳐 30~3650일 범위로 명시",
+      publicValue: Number.isFinite(retentionDays) ? `${retentionDays}일` : undefined,
     }),
     row({
       id: "openai",
@@ -205,13 +274,20 @@ export function getStayCareEnvironmentReport(): StayCareEnvironmentReport {
       detail: "로그인·AI·업로드·신청 API 남용 방지",
       publicKey: "UPSTASH_REDIS_REST_URL",
     }),
+    safetyRow({
+      id: "rate-limit-fail-closed",
+      label: "Rate Limit 장애 시 차단",
+      keys: ["STAYCARE_RATE_LIMIT_FAIL_CLOSED"],
+      configured: process.env.STAYCARE_RATE_LIMIT_FAIL_CLOSED !== "false",
+      detail: "분산 제한기 장애 시 상용 API가 무제한 우회되지 않음",
+    }),
     row({
       id: "email",
       label: "Resend 이메일",
       keys: ["RESEND_API_KEY", "RESEND_FROM_EMAIL"],
       group: "production",
       required: true,
-      detail: "로그인·신청·보완·완료 알림",
+      detail: "신청·보완·완료 알림",
       publicKey: "RESEND_FROM_EMAIL",
     }),
     row({
@@ -247,45 +323,34 @@ export function getStayCareEnvironmentReport(): StayCareEnvironmentReport {
       required: false,
       detail: "병원·은행·출입국·노동기관 위치",
     }),
-    row({
-      id: "firebase",
-      label: "Firebase Push",
-      keys: ["NEXT_PUBLIC_FIREBASE_PROJECT_ID", "FIREBASE_SERVICE_ACCOUNT_JSON_BASE64"],
-      group: "optional",
-      required: false,
-      detail: "웹·모바일 푸시 알림",
-    }),
-    row({
-      id: "payments",
-      label: "Toss Payments",
-      keys: ["NEXT_PUBLIC_TOSS_PAYMENTS_CLIENT_KEY", "TOSS_PAYMENTS_SECRET_KEY"],
-      group: "optional",
-      required: false,
-      detail: "앱 내 결제를 사용할 때만 활성화",
-    }),
     providerRow("TELECOM", "통신·eSIM 공급자"),
     providerRow("BANK", "은행·급여계좌 공급자"),
     providerRow("REMITTANCE", "스리랑카 송금 공급자"),
     providerRow("DELIVERY", "공항·숙소 배송 공급자"),
   ]
 
-  const isReady = (item: StayCareEnvironmentItem) => item.state === "configured" || item.state === "manual"
+  const isReady = (item: StayCareEnvironmentItem) => item.state === "configured"
   const core = items.filter((item) => item.group === "core")
-  const production = items.filter((item) => item.group === "production")
-  const configured = items.filter(isReady).length
+  const productionItems = items.filter((item) => item.group === "production")
+  const providers = items.filter((item) => item.group === "provider")
+  const configured = items.filter(
+    (item) => item.state === "configured" || item.state === "manual"
+  ).length
   const coreReady = core.every(isReady)
-  const productionReady = production.every(isReady)
-  const providersValid = items
-    .filter((item) => item.group === "provider")
-    .every((item) => item.state === "configured" || item.state === "manual")
+  const productionReady = productionItems.every(isReady)
+  const providersValid = providers.every(
+    (item) => item.state === "configured" || item.state === "manual"
+  )
+  const providersConnected = providers.every((item) => item.state === "configured")
 
-  const releaseState: StayCareEnvironmentReport["summary"]["releaseState"] = !coreReady
-    ? "blocked"
-    : !productionReady
-      ? "internal-pilot"
-      : !providersValid
-        ? "limited-production"
-        : "production-ready"
+  const releaseState: StayCareEnvironmentReport["summary"]["releaseState"] =
+    !coreReady
+      ? "blocked"
+      : !productionReady
+        ? "internal-pilot"
+        : !providersValid || !providersConnected
+          ? "limited-production"
+          : "production-ready"
 
   return {
     environment: process.env.VERCEL_ENV || process.env.NODE_ENV || "unknown",
@@ -295,8 +360,8 @@ export function getStayCareEnvironmentReport(): StayCareEnvironmentReport {
     summary: {
       coreConfigured: core.filter(isReady).length,
       coreTotal: core.length,
-      productionConfigured: production.filter(isReady).length,
-      productionTotal: production.length,
+      productionConfigured: productionItems.filter(isReady).length,
+      productionTotal: productionItems.length,
       overallConfigured: configured,
       overallTotal: items.length,
       percentage: Math.round((configured / items.length) * 100),

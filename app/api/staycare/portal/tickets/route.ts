@@ -1,13 +1,21 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { getExternalPortalContext } from "@/lib/staycare/auth"
-import { requireTrustedOrigin } from "@/lib/security/request"
+import { getRequestIp, requireTrustedOrigin } from "@/lib/security/request"
+import { rateLimit, rateLimitFailureResponse } from "@/lib/security/rate-limit"
 import { getServiceClient } from "@/lib/supabase/service"
 
 const schema = z.object({
   workerId: z.string().uuid().optional().nullable(),
   title: z.string().trim().min(4).max(160),
-  category: z.enum(["coordination", "arrival", "employment", "training", "provider_support", "other"]),
+  category: z.enum([
+    "coordination",
+    "arrival",
+    "employment",
+    "training",
+    "provider_support",
+    "other",
+  ]),
   description: z.string().trim().min(10).max(4000),
 })
 
@@ -20,11 +28,24 @@ export async function POST(request: NextRequest) {
   try {
     requireTrustedOrigin(request)
     const context = await getExternalPortalContext()
-    if (!context) return NextResponse.json({ error: "Partner access required" }, { status: 403 })
+    if (!context) {
+      return NextResponse.json({ error: "Partner access required" }, { status: 403 })
+    }
+
+    const limited = await rateLimit({
+      key: `partner-ticket:${context.user.id}:${getRequestIp(request)}`,
+      limit: 20,
+      windowSeconds: 86400,
+    })
+    if (!limited.allowed) {
+      return rateLimitFailureResponse(limited, "Partner request limit exceeded")
+    }
 
     const body = schema.parse(await request.json())
     const membership = context.memberships[0]
-    if (!membership) return NextResponse.json({ error: "Partner membership required" }, { status: 403 })
+    if (!membership) {
+      return NextResponse.json({ error: "Partner membership required" }, { status: 403 })
+    }
 
     if (body.workerId) {
       const { data: visibleWorker, error } = await context.supabase
@@ -34,7 +55,10 @@ export async function POST(request: NextRequest) {
         .eq("tenant_id", membership.tenant_id)
         .maybeSingle()
       if (error || !visibleWorker) {
-        return NextResponse.json({ error: "Worker is outside your authorized scope" }, { status: 403 })
+        return NextResponse.json(
+          { error: "Worker is outside your authorized scope" },
+          { status: 403 }
+        )
       }
     }
 
@@ -53,16 +77,24 @@ export async function POST(request: NextRequest) {
         description: body.description,
         assigned_department: "Partner Coordination",
         assigned_organization_id: membership.organization_id || null,
-        first_response_due_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-        resolution_due_at: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
-        worker_visible_summary: body.workerId ? "A partner coordination request was submitted." : null,
+        first_response_due_at: new Date(
+          Date.now() + 24 * 60 * 60 * 1000
+        ).toISOString(),
+        resolution_due_at: new Date(
+          Date.now() + 5 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+        worker_visible_summary: body.workerId
+          ? "A partner coordination request was submitted."
+          : null,
         employer_visible_summary: body.description,
         created_by: context.user.id,
       })
       .select("id, ticket_no, title, category, priority, status, created_at")
       .single()
 
-    if (error || !ticket) throw error || new Error("Unable to create partner request")
+    if (error || !ticket) {
+      throw error || new Error("Unable to create partner request")
+    }
 
     await admin.from("staycare_ticket_events").insert({
       tenant_id: membership.tenant_id,
@@ -81,13 +113,20 @@ export async function POST(request: NextRequest) {
       action: "partner.ticket_created",
       entity_type: "staycare_tickets",
       entity_id: ticket.id,
-      metadata: { ticketNo: ticket.ticket_no, category: body.category, workerId: body.workerId || null },
+      metadata: {
+        ticketNo: ticket.ticket_no,
+        category: body.category,
+        workerId: body.workerId || null,
+      },
     })
 
     return NextResponse.json({ ticket }, { status: 201 })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: "Invalid partner request", details: error.flatten() }, { status: 400 })
+      return NextResponse.json(
+        { error: "Invalid partner request", details: error.flatten() },
+        { status: 400 }
+      )
     }
     if (error instanceof Error && error.name === "UntrustedOriginError") {
       return NextResponse.json({ error: error.message }, { status: 403 })

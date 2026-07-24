@@ -4,7 +4,7 @@ import { z } from "zod"
 import { getWorkerContext } from "@/lib/staycare/auth"
 import { getServiceClient } from "@/lib/supabase/service"
 import { getRequestIp, requireTrustedOrigin } from "@/lib/security/request"
-import { rateLimit } from "@/lib/security/rate-limit"
+import { rateLimit, rateLimitFailureResponse } from "@/lib/security/rate-limit"
 
 export const runtime = "nodejs"
 
@@ -14,7 +14,16 @@ const requestSchema = z.object({
   targetLanguage: z.enum(["ko", "en", "si"]).default("ko"),
   mode: z.enum(["translate", "guide"]).default("translate"),
   context: z
-    .enum(["general", "airport", "workplace", "hospital", "bank", "immigration", "housing", "remittance"])
+    .enum([
+      "general",
+      "airport",
+      "workplace",
+      "hospital",
+      "bank",
+      "immigration",
+      "housing",
+      "remittance",
+    ])
     .default("general"),
 })
 
@@ -51,9 +60,9 @@ export async function POST(request: NextRequest) {
       windowSeconds: 3600,
     })
     if (!limited.allowed) {
-      return NextResponse.json(
-        { error: "AI request limit exceeded. Please try again later.", resetAt: limited.resetAt },
-        { status: 429 }
+      return rateLimitFailureResponse(
+        limited,
+        "AI request limit exceeded. Please try again later."
       )
     }
 
@@ -72,12 +81,15 @@ export async function POST(request: NextRequest) {
     const apiKey = process.env.OPENAI_API_KEY
     if (!apiKey) {
       return NextResponse.json(
-        { error: "AI language support is not configured.", code: "AI_NOT_CONFIGURED" },
+        {
+          error: "AI language support is not configured.",
+          code: "AI_NOT_CONFIGURED",
+        },
         { status: 503 }
       )
     }
 
-    const client = new OpenAI({ apiKey })
+    const client = new OpenAI({ apiKey, timeout: 15_000, maxRetries: 1 })
     const model = process.env.OPENAI_TRANSLATION_MODEL || "gpt-5"
     const source = languageName[body.sourceLanguage]
     const target = languageName[body.targetLanguage]
@@ -135,10 +147,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 403 })
     }
 
-    console.error("StayCare AI error", error instanceof Error ? error.message : "unknown")
+    console.error(
+      "StayCare AI error",
+      error instanceof Error ? error.message : "unknown"
+    )
     return NextResponse.json(
       { error: "Unable to process the AI request right now." },
-      { status: 500 }
+      { status: 502 }
     )
   }
 }

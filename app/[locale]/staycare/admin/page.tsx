@@ -7,8 +7,12 @@ import StayCareStaffWorkspace, {
   type StaffTicket,
   type StaffWorker,
 } from "@/components/staycare/StayCareStaffWorkspace"
-import { getStayCareEnvironmentReport } from "@/lib/env/staycare-status"
+import {
+  getStayCareEnvironmentReport,
+  type StayCareEnvironmentReport,
+} from "@/lib/env/staycare-status"
 import { requireStaffContext } from "@/lib/staycare/auth"
+import { membershipsForRole } from "@/lib/staycare/authorization"
 import {
   getStayCareRoleCapabilities,
   isStayCareRole,
@@ -65,6 +69,25 @@ function relationId(value: unknown) {
   return typeof id === "string" ? id : null
 }
 
+function restrictedEnvironmentReport(): StayCareEnvironmentReport {
+  return {
+    environment: "restricted",
+    commitSha: null,
+    generatedAt: new Date().toISOString(),
+    items: [],
+    summary: {
+      coreConfigured: 0,
+      coreTotal: 0,
+      productionConfigured: 0,
+      productionTotal: 0,
+      overallConfigured: 0,
+      overallTotal: 0,
+      percentage: 0,
+      releaseState: "blocked",
+    },
+  }
+}
+
 export default async function StayCareAdminPage({
   params,
 }: {
@@ -72,15 +95,6 @@ export default async function StayCareAdminPage({
 }) {
   const { locale } = await params
   const context = await requireStaffContext(locale)
-  const tenantIds = Array.from(
-    new Set<string>(
-      context.memberships.map((membership) => String(membership.tenant_id))
-    )
-  )
-
-  if (!tenantIds.length) {
-    throw new Error("StayCare staff account has no active tenant membership.")
-  }
 
   const role =
     rolePriority.find((candidate) =>
@@ -88,6 +102,20 @@ export default async function StayCareAdminPage({
     ) || "auditor"
   const safeRole = isStayCareRole(role) ? role : "auditor"
   const capabilities = getStayCareRoleCapabilities(safeRole)
+
+  // A user may hold different roles in different tenants. Only memberships for
+  // the selected workspace role are queried, preventing authority in tenant A
+  // from widening read or mutation scope in tenant B.
+  const roleMemberships = membershipsForRole(context.memberships, safeRole)
+  const tenantIds = Array.from(
+    new Set<string>(
+      roleMemberships.map((membership) => String(membership.tenant_id))
+    )
+  )
+
+  if (!tenantIds.length) {
+    throw new Error("StayCare staff account has no active membership for this role.")
+  }
 
   const [
     applicationsResult,
@@ -140,14 +168,16 @@ export default async function StayCareAdminPage({
       .in("tenant_id", tenantIds)
       .order("deadline_at", { ascending: true, nullsFirst: false })
       .limit(500),
-    context.supabase
-      .from("staycare_audit_events")
-      .select(
-        "id, actor_role, action, entity_type, severity, metadata, occurred_at"
-      )
-      .in("tenant_id", tenantIds)
-      .order("occurred_at", { ascending: false })
-      .limit(300),
+    capabilities.canSeeEnvironment || safeRole === "auditor"
+      ? context.supabase
+          .from("staycare_audit_events")
+          .select(
+            "id, actor_role, action, entity_type, severity, metadata, occurred_at"
+          )
+          .in("tenant_id", tenantIds)
+          .order("occurred_at", { ascending: false })
+          .limit(300)
+      : Promise.resolve({ data: [], error: null }),
   ])
 
   const error = [
@@ -169,7 +199,12 @@ export default async function StayCareAdminPage({
   const allImmigrationCases = (immigrationResult.data || []) as unknown as Array<
     StaffImmigrationCase & {
       assigned_user_id?: string | null
-      worker?: { id?: string; member_no?: string; full_name?: string; full_name_en?: string | null } | null
+      worker?: {
+        id?: string
+        member_no?: string
+        full_name?: string
+        full_name_en?: string | null
+      } | null
     }
   >
 
@@ -253,11 +288,13 @@ export default async function StayCareAdminPage({
     workers = allWorkers.filter((worker) => scopedWorkerIds.has(worker.id))
   }
 
-  if (
-    !["sejoong_admin", "operator_manager", "auditor"].includes(safeRole)
-  ) {
+  if (!["sejoong_admin", "operator_manager", "auditor"].includes(safeRole)) {
     auditEvents = []
   }
+
+  const environment = capabilities.canSeeEnvironment
+    ? getStayCareEnvironmentReport()
+    : restrictedEnvironmentReport()
 
   return (
     <StayCareStaffWorkspace
@@ -270,7 +307,7 @@ export default async function StayCareAdminPage({
       tickets={tickets}
       immigrationCases={immigrationCases}
       auditEvents={auditEvents}
-      environment={getStayCareEnvironmentReport()}
+      environment={environment}
       databaseStatus={{ connected: true, tenantCount: tenantIds.length }}
     />
   )

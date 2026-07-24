@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { isAuthorizedStayCareCron } from "@/lib/staycare/cron-auth"
-import { processDueStayCareNotifications } from "@/lib/staycare/notifications"
+import { runStayCareMaintenance } from "@/lib/staycare/maintenance"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -15,13 +15,14 @@ async function run(request: NextRequest) {
   }
 
   try {
-    const result = await processDueStayCareNotifications(50)
+    const result = await runStayCareMaintenance(100)
     return NextResponse.json(
       {
         ok: result.failed === 0,
-        claimed: result.claimed,
-        sent: result.sent,
+        considered: result.considered,
+        deleted: result.deleted,
         failed: result.failed,
+        skipped: result.skipped,
         timestamp: new Date().toISOString(),
       },
       {
@@ -31,11 +32,11 @@ async function run(request: NextRequest) {
     )
   } catch (error) {
     console.error(
-      "StayCare notification worker failed",
+      "StayCare maintenance worker failed",
       error instanceof Error ? error.message : "unknown"
     )
     return NextResponse.json(
-      { error: "Notification worker failed" },
+      { error: "Maintenance worker failed" },
       { status: 500, headers: { "Cache-Control": "no-store" } }
     )
   }

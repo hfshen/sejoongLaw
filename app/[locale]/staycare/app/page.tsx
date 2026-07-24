@@ -18,7 +18,8 @@ export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
   title: "Sejoong StayCare | Korea Life One-stop App",
-  description: "Secure Sri Lanka-to-Korea preparation, life, stay, service and return management.",
+  description:
+    "Secure Sri Lanka-to-Korea preparation, life, stay, service and return management.",
   robots: { index: false, follow: false },
 }
 
@@ -32,10 +33,11 @@ export default async function StayCareAppPage({
   const { locale } = await params
   const query = searchParams ? await searchParams : undefined
   const queryLanguage = normalizeStayCareLanguage(
-    Array.isArray(query?.lang) ? query?.lang[0] : query?.lang
+    Array.isArray(query?.lang) ? query.lang[0] : query?.lang
   )
+  const cookieStore = await cookies()
   const cookieLanguage = normalizeStayCareLanguage(
-    cookies().get("staycare_language")?.value
+    cookieStore.get("staycare_language")?.value
   )
   const context = await requireWorkerContext(locale)
 
@@ -46,7 +48,12 @@ export default async function StayCareAppPage({
     (locale === "en" ? "en" : "ko")
 
   if (!context.worker) {
-    return <StayCareOnboarding locale={preferredLanguage} email={context.user.email} />
+    return (
+      <StayCareOnboarding
+        locale={preferredLanguage}
+        email={context.user.email}
+      />
+    )
   }
 
   const [
@@ -136,11 +143,21 @@ export default async function StayCareAppPage({
       worker={worker}
       initialSteps={(stepsResult.data || []) as WorkerWorkspaceStep[]}
       services={(servicesResult.data || []) as WorkerWorkspaceService[]}
-      initialDocuments={(documentsResult.data || []) as WorkerWorkspaceDocument[]}
-      initialApplications={(applicationsResult.data || []) as unknown as WorkerWorkspaceApplication[]}
-      initialNotifications={(notificationsResult.data || []) as WorkerWorkspaceNotification[]}
-      initialTickets={(ticketsResult.data || []) as unknown as WorkerWorkspaceTicket[]}
-      returnPlan={(returnPlanResult.data || null) as WorkerWorkspaceReturnPlan | null}
+      initialDocuments={
+        (documentsResult.data || []) as WorkerWorkspaceDocument[]
+      }
+      initialApplications={
+        (applicationsResult.data || []) as unknown as WorkerWorkspaceApplication[]
+      }
+      initialNotifications={
+        (notificationsResult.data || []) as WorkerWorkspaceNotification[]
+      }
+      initialTickets={
+        (ticketsResult.data || []) as unknown as WorkerWorkspaceTicket[]
+      }
+      returnPlan={
+        (returnPlanResult.data || null) as WorkerWorkspaceReturnPlan | null
+      }
     />
   )
 }

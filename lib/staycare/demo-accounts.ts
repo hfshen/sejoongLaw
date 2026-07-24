@@ -18,8 +18,19 @@ export const stayCareDemoTenantSlug = accountConfig.tenantSlug
 export const stayCareDemoPassword = accountConfig.sharedPassword
 export const stayCareDemoAccounts = accountConfig.accounts as StayCareDemoAccount[]
 
+/**
+ * Public demo access must be explicitly enabled. The previous default-on
+ * behavior was unsafe for production deployments because a missing variable
+ * exposed shared demo credentials on the login page.
+ */
 export function isStayCareDemoLoginEnabled() {
-  return process.env.NEXT_PUBLIC_STAYCARE_DEMO_LOGIN_ENABLED !== "false"
+  return process.env.NEXT_PUBLIC_STAYCARE_DEMO_LOGIN_ENABLED === "true"
+}
+
+export function isStayCareProductionDemoAllowed() {
+  if (!isStayCareDemoLoginEnabled()) return false
+  if (process.env.NODE_ENV !== "production") return true
+  return process.env.STAYCARE_ALLOW_PRODUCTION_DEMO_LOGIN === "true"
 }
 
 export function getStayCareDemoTargetPath(

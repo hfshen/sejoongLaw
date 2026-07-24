@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { getStaffContext } from "@/lib/staycare/auth"
-import { getStayCareRoleCapabilities } from "@/lib/staycare/role-capabilities"
-import { requireTrustedOrigin } from "@/lib/security/request"
+import {
+  actorRoleForTenant,
+  tenantIdsForCapability,
+} from "@/lib/staycare/authorization"
+import { getRequestIp, requireTrustedOrigin } from "@/lib/security/request"
+import { rateLimit, rateLimitFailureResponse } from "@/lib/security/rate-limit"
 import { getServiceClient } from "@/lib/supabase/service"
 
 const schema = z.object({
@@ -35,6 +39,37 @@ const schema = z.object({
   passportExpiresAt: z.string().date().optional().nullable().or(z.literal("")),
 })
 
+const transitions: Record<string, string[]> = {
+  invited: ["preparing", "closed"],
+  preparing: ["official_process", "pre_departure", "closed"],
+  official_process: ["preparing", "pre_departure", "closed"],
+  pre_departure: ["official_process", "arrived", "closed"],
+  arrived: ["settling", "active", "returning", "closed"],
+  settling: ["active", "renewal", "returning", "closed"],
+  active: ["renewal", "returning", "closed"],
+  renewal: ["active", "returning", "closed"],
+  returning: ["active", "returned", "closed"],
+  returned: ["closed"],
+  closed: [],
+}
+
+const phaseForStatus: Record<string, string> = {
+  invited: "prepare",
+  preparing: "prepare",
+  official_process: "official",
+  pre_departure: "pre_departure",
+  arrived: "arrival",
+  settling: "settlement",
+  active: "living",
+  renewal: "renewal",
+  returning: "return",
+  returned: "return",
+}
+
+function preferredLanguage(value: unknown): "ko" | "en" | "si" {
+  return value === "ko" || value === "en" || value === "si" ? value : "en"
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -42,29 +77,67 @@ export async function PATCH(
   try {
     requireTrustedOrigin(request)
     const context = await getStaffContext()
-    if (!context) return NextResponse.json({ error: "Staff access required" }, { status: 403 })
+    if (!context) {
+      return NextResponse.json({ error: "Staff access required" }, { status: 403 })
+    }
 
-    const canManage = context.memberships.some((membership) =>
-      getStayCareRoleCapabilities(membership.role).canManageWorkers
-    )
-    if (!canManage) {
-      return NextResponse.json({ error: "Your role cannot edit worker lifecycle data" }, { status: 403 })
+    const tenantIds = tenantIdsForCapability(context.memberships, "canManageWorkers")
+    if (!tenantIds.length) {
+      return NextResponse.json(
+        { error: "Your role cannot edit worker lifecycle data" },
+        { status: 403 }
+      )
+    }
+
+    const limited = await rateLimit({
+      key: `admin-worker:${context.user.id}:${getRequestIp(request)}`,
+      limit: 120,
+      windowSeconds: 3600,
+    })
+    if (!limited.allowed) {
+      return rateLimitFailureResponse(limited, "Worker update limit exceeded")
     }
 
     const body = schema.parse(await request.json())
+    const expectedPhase = phaseForStatus[body.status]
+    if (expectedPhase && body.currentPhase !== expectedPhase) {
+      return NextResponse.json(
+        {
+          error: `Worker status ${body.status} must use the ${expectedPhase} phase`,
+        },
+        { status: 400 }
+      )
+    }
+    if (body.status !== "closed" && !body.nextAction && body.status !== "returned") {
+      return NextResponse.json(
+        { error: "An active worker must have a next action" },
+        { status: 400 }
+      )
+    }
+
     const { id } = await params
-    const tenantIds = Array.from(new Set(context.memberships.map((membership) => String(membership.tenant_id))))
     const admin = getServiceClient()
 
     const { data: current, error: currentError } = await admin
       .from("staycare_workers")
-      .select("id, tenant_id, status, current_phase, member_no, auth_user_id")
+      .select(
+        "id, tenant_id, status, current_phase, member_no, auth_user_id, preferred_language"
+      )
       .eq("id", id)
       .in("tenant_id", tenantIds)
       .single()
 
     if (currentError || !current) {
       return NextResponse.json({ error: "Worker not found" }, { status: 404 })
+    }
+    if (
+      current.status !== body.status &&
+      !transitions[current.status]?.includes(body.status)
+    ) {
+      return NextResponse.json(
+        { error: `Worker cannot move from ${current.status} to ${body.status}` },
+        { status: 409 }
+      )
     }
 
     const { data, error } = await admin
@@ -78,10 +151,20 @@ export async function PATCH(
         passport_expires_at: body.passportExpiresAt || null,
       })
       .eq("id", current.id)
-      .select("id, status, current_phase, next_action, next_action_due_at, visa_expires_at, passport_expires_at")
-      .single()
+      .eq("status", current.status)
+      .eq("current_phase", current.current_phase)
+      .select(
+        "id, status, current_phase, next_action, next_action_due_at, visa_expires_at, passport_expires_at"
+      )
+      .maybeSingle()
 
-    if (error || !data) throw error || new Error("Unable to update worker")
+    if (error) throw error
+    if (!data) {
+      return NextResponse.json(
+        { error: "Worker changed in another session. Refresh and try again." },
+        { status: 409 }
+      )
+    }
 
     if (current.auth_user_id && body.nextAction) {
       await admin.from("staycare_notifications").insert({
@@ -89,20 +172,27 @@ export async function PATCH(
         worker_id: current.id,
         user_id: current.auth_user_id,
         channel: "in_app",
-        language: "en",
+        language: preferredLanguage(current.preferred_language),
         template_code: "worker_next_action_updated",
         subject: "Your next StayCare action",
         body: body.nextAction,
         status: "sent",
         sent_at: new Date().toISOString(),
-        metadata: { workerId: current.id, dueAt: body.nextActionDueAt || null },
+        metadata: {
+          workerId: current.id,
+          dueAt: body.nextActionDueAt || null,
+        },
       })
     }
 
     await admin.from("staycare_audit_events").insert({
       tenant_id: current.tenant_id,
       actor_user_id: context.user.id,
-      actor_role: context.memberships[0]?.role || "staff",
+      actor_role: actorRoleForTenant(
+        context.memberships,
+        String(current.tenant_id),
+        "canManageWorkers"
+      ),
       action: "worker.lifecycle_updated",
       entity_type: "staycare_workers",
       entity_id: current.id,
@@ -118,7 +208,10 @@ export async function PATCH(
     return NextResponse.json({ worker: data })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: "Invalid worker update", details: error.flatten() }, { status: 400 })
+      return NextResponse.json(
+        { error: "Invalid worker update", details: error.flatten() },
+        { status: 400 }
+      )
     }
     if (error instanceof Error && error.name === "UntrustedOriginError") {
       return NextResponse.json({ error: error.message }, { status: 403 })
