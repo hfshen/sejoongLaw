@@ -8,6 +8,11 @@ export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
 const providerKinds: ProviderKind[] = ["telecom", "bank", "remittance", "delivery"]
+const headers = {
+  "Cache-Control": "no-store, max-age=0",
+  "X-Content-Type-Options": "nosniff",
+  "X-Robots-Tag": "noindex, nofollow",
+}
 
 export async function GET() {
   const startedAt = Date.now()
@@ -23,37 +28,33 @@ export async function GET() {
       .maybeSingle()
 
     const database = !error && Boolean(tenant?.id) && tenant?.status === "active"
-    const checks = {
-      ...readiness.checks,
-      database,
-      providers: providers.every((provider) => provider.configured),
-    }
-    const ready = Object.values(checks).every(Boolean)
+    const providerConnections = providers.every((provider) => provider.configured)
+    const ready = readiness.ready && database && providerConnections
 
     return NextResponse.json(
       {
         service: "sejoong-staycare",
         status: ready ? "ready" : "degraded",
-        checks,
-        providers,
+        checks: {
+          configuration: readiness.ready,
+          database,
+          providerConnections,
+        },
+        version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) || "local",
         latencyMs: Date.now() - startedAt,
         timestamp: new Date().toISOString(),
       },
-      {
-        status: ready ? 200 : 503,
-        headers: { "Cache-Control": "no-store" },
-      }
+      { status: ready ? 200 : 503, headers }
     )
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         service: "sejoong-staycare",
         status: "not_ready",
-        error: error instanceof Error ? error.message : "Health check failed",
         latencyMs: Date.now() - startedAt,
         timestamp: new Date().toISOString(),
       },
-      { status: 503, headers: { "Cache-Control": "no-store" } }
+      { status: 503, headers }
     )
   }
 }
