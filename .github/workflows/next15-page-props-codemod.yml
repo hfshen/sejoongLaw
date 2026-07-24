@@ -1,0 +1,81 @@
+name: Next 15 page props codemod
+
+on:
+  push:
+    branches:
+      - hardening/staycare-commercial-release
+
+permissions:
+  contents: write
+
+jobs:
+  codemod:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: hardening/staycare-commercial-release
+
+      - name: Migrate page params
+        shell: python
+        run: |
+          from pathlib import Path
+
+          def replace(path, changes):
+              file = Path(path)
+              text = file.read_text()
+              original = text
+              for old, new in changes:
+                  if old not in text:
+                      raise SystemExit(f"Expected text not found in {path}: {old}")
+                  text = text.replace(old, new)
+              if text != original:
+                  file.write_text(text)
+
+          replace("app/(main)/board/[id]/page.tsx", [
+              ("params: { id: string }", "params: Promise<{ id: string }>"),
+              ("  const post = await getPost(params.id)", "  const { id } = await params\n  const post = await getPost(id)"),
+          ])
+
+          replace("app/[locale]/(main)/board/[id]/page.tsx", [
+              ("params: { id: string; locale: string }", "params: Promise<{ id: string; locale: string }>"),
+              ("  const t = await getTranslations()\n  const post = await getPost(params.id)", "  const { id } = await params\n  const t = await getTranslations()\n  const post = await getPost(id)"),
+          ])
+
+          replace("app/[locale]/(main)/cases/[id]/page.tsx", [
+              ("params: { id: string; locale: string }", "params: Promise<{ id: string; locale: string }>"),
+              ("  const t = await getTranslations()\n  const caseStudies = getCaseStudies(t)\n  const caseStudy = caseStudies.find((c) => c.id === params.id)", "  const { id } = await params\n  const t = await getTranslations()\n  const caseStudies = getCaseStudies(t)\n  const caseStudy = caseStudies.find((c) => c.id === id)"),
+              ("  const t = await getTranslations()\n  const locale = params.locale\n  const caseStudies = getCaseStudies(t)\n  const caseStudy = caseStudies.find((c) => c.id === params.id)", "  const { id, locale } = await params\n  const t = await getTranslations()\n  const caseStudies = getCaseStudies(t)\n  const caseStudy = caseStudies.find((c) => c.id === id)"),
+          ])
+
+          replace("app/admin/users/[id]/page.tsx", [
+              ('import { useState, useEffect } from "react"', 'import { use, useEffect, useState } from "react"'),
+              ("export default function UserDetailPage({ params }: { params: { id: string } }) {\n  const router", "export default function UserDetailPage({\n  params,\n}: {\n  params: Promise<{ id: string }>\n}) {\n  const { id } = use(params)\n  const router"),
+              ("params.id", "id"),
+          ])
+
+          replace("app/admin/members/[id]/page.tsx", [
+              ('import { useState, useEffect } from "react"', 'import { use, useEffect, useState } from "react"'),
+              ("export default function EditMemberPage({ params }: { params: { id: string } }) {\n  const router", "export default function EditMemberPage({\n  params,\n}: {\n  params: Promise<{ id: string }>\n}) {\n  const { id } = use(params)\n  const router"),
+              ("params.id", "id"),
+          ])
+
+          replace("app/accept-invite/[token]/page.tsx", [
+              ('import { useState, useEffect } from "react"', 'import { use, useEffect, useState } from "react"'),
+              ("export default function AcceptInvitePage({ params }: { params: { token: string } }) {\n  const router", "export default function AcceptInvitePage({\n  params,\n}: {\n  params: Promise<{ token: string }>\n}) {\n  const { token } = use(params)\n  const router"),
+              ("params.token", "token"),
+          ])
+
+      - name: Commit migrated pages
+        run: |
+          if git diff --quiet; then
+            echo "No page prop changes required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app
+          git commit -m "compat: migrate dynamic pages to Next.js 15 props"
+          git push origin HEAD:hardening/staycare-commercial-release
