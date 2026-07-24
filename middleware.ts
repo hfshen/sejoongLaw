@@ -17,6 +17,26 @@ function localeFromPath(pathname: string) {
     : routing.defaultLocale
 }
 
+function applyStayCareSecurityHeaders(response: NextResponse) {
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin")
+  response.headers.set("X-Content-Type-Options", "nosniff")
+  response.headers.set("X-Frame-Options", "DENY")
+  response.headers.set("Cross-Origin-Opener-Policy", "same-origin")
+  response.headers.set("Cross-Origin-Resource-Policy", "same-site")
+  response.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  )
+  if (process.env.NODE_ENV === "production") {
+    response.headers.set(
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains"
+    )
+  }
+  return response
+}
+
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   let response: NextResponse
@@ -32,7 +52,16 @@ export default async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  if (!supabaseUrl || !supabaseKey) return response
+  const protectedStayCare =
+    pathname.includes("/staycare/app") ||
+    pathname.includes("/staycare/admin") ||
+    pathname.includes("/staycare/portal")
+  const loginPath = pathname.includes("/staycare/login")
+  const stayCarePath = pathname.includes("/staycare")
+
+  if (!supabaseUrl || !supabaseKey) {
+    return stayCarePath ? applyStayCareSecurityHeaders(response) : response
+  }
 
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
@@ -51,27 +80,20 @@ export default async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  const protectedStayCare =
-    pathname.includes("/staycare/app") ||
-    pathname.includes("/staycare/admin") ||
-    pathname.includes("/staycare/portal")
-  const loginPath = pathname.includes("/staycare/login")
 
   if (protectedStayCare && !user) {
     const locale = localeFromPath(pathname)
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = `/${locale}/staycare/login`
     loginUrl.searchParams.set("next", pathname)
-    return NextResponse.redirect(loginUrl)
+    return applyStayCareSecurityHeaders(NextResponse.redirect(loginUrl))
   }
 
-  // The login page resolves worker/staff/external destinations from tenant memberships.
-  // Do not redirect authenticated users here because middleware does not load role data.
   if (protectedStayCare || loginPath) {
-    response.headers.set("Cache-Control", "private, no-store, max-age=0")
+    return applyStayCareSecurityHeaders(response)
   }
 
-  return response
+  return stayCarePath ? applyStayCareSecurityHeaders(response) : response
 }
 
 export const config = {
