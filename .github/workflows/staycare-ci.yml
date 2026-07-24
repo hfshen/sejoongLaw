@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
 concurrency:
@@ -52,10 +52,8 @@ jobs:
       GOOGLE_VERIFICATION: test
       NAVER_VERIFICATION: test
     steps:
-      - name: Checkout PR head
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -63,21 +61,11 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Refresh dependency lockfile
-        run: npm install --legacy-peer-deps --no-audit --no-fund
+      - name: Install locked dependencies
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
 
-      - name: Persist regenerated lockfile
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        run: |
-          if git diff --quiet -- package-lock.json; then
-            echo "package-lock.json is current"
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json
-          git commit -m "chore: lock patched production dependencies"
-          git push origin "HEAD:${GITHUB_HEAD_REF}"
+      - name: Verify lockfile is reproducible
+        run: git diff --exit-code -- package-lock.json
 
       - name: Audit critical production dependencies
         run: |
@@ -136,7 +124,6 @@ jobs:
         with:
           name: staycare-validation-${{ github.run_id }}
           path: |
-            package-lock.json
             npm-audit.log
             staycare-env.log
             lint.log
