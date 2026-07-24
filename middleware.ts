@@ -17,6 +17,48 @@ function localeFromPath(pathname: string) {
     : routing.defaultLocale
 }
 
+function safeOrigin(value?: string) {
+  if (!value) return null
+  try {
+    return new URL(value).origin
+  } catch {
+    return null
+  }
+}
+
+function stayCareContentSecurityPolicy() {
+  const connectSources = [
+    "'self'",
+    "https://challenges.cloudflare.com",
+    "https://vitals.vercel-insights.com",
+    "https://*.sentry.io",
+  ]
+  const supabaseOrigin = safeOrigin(process.env.NEXT_PUBLIC_SUPABASE_URL)
+  if (supabaseOrigin) {
+    connectSources.push(supabaseOrigin)
+    connectSources.push(supabaseOrigin.replace(/^https:/, "wss:"))
+  }
+
+  return [
+    "default-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "frame-ancestors 'none'",
+    "form-action 'self'",
+    "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://va.vercel-scripts.com",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob: https:",
+    "font-src 'self' data:",
+    `connect-src ${connectSources.join(" ")}`,
+    "frame-src https://challenges.cloudflare.com",
+    "worker-src 'self' blob:",
+    "manifest-src 'self'",
+    process.env.NODE_ENV === "production" ? "upgrade-insecure-requests" : "",
+  ]
+    .filter(Boolean)
+    .join("; ")
+}
+
 function applyStayCareSecurityHeaders(
   response: NextResponse,
   { privateData = false }: { privateData?: boolean } = {}
@@ -26,7 +68,7 @@ function applyStayCareSecurityHeaders(
   }
   response.headers.set(
     "Content-Security-Policy",
-    "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'"
+    stayCareContentSecurityPolicy()
   )
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin")
   response.headers.set("X-Content-Type-Options", "nosniff")
@@ -40,7 +82,7 @@ function applyStayCareSecurityHeaders(
   if (process.env.NODE_ENV === "production") {
     response.headers.set(
       "Strict-Transport-Security",
-      "max-age=63072000; includeSubDomains"
+      "max-age=63072000; includeSubDomains; preload"
     )
   }
   return response
@@ -50,7 +92,9 @@ export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   if (pathname.startsWith("/api/staycare")) {
-    return applyStayCareSecurityHeaders(NextResponse.next(), { privateData: true })
+    return applyStayCareSecurityHeaders(NextResponse.next(), {
+      privateData: true,
+    })
   }
 
   let response: NextResponse
