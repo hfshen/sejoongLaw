@@ -61,8 +61,8 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install locked dependencies
-        run: npm ci --legacy-peer-deps --no-audit --no-fund
+      - name: Refresh dependency lockfile
+        run: npm install --legacy-peer-deps --no-audit --no-fund
 
       - name: Audit critical production dependencies
         run: |
@@ -121,6 +121,7 @@ jobs:
         with:
           name: staycare-validation-${{ github.run_id }}
           path: |
+            package-lock.json
             npm-audit.log
             staycare-env.log
             lint.log
