@@ -17,8 +17,17 @@ function localeFromPath(pathname: string) {
     : routing.defaultLocale
 }
 
-function applyStayCareSecurityHeaders(response: NextResponse) {
-  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+function applyStayCareSecurityHeaders(
+  response: NextResponse,
+  { privateData = false }: { privateData?: boolean } = {}
+) {
+  if (privateData) {
+    response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  }
+  response.headers.set(
+    "Content-Security-Policy",
+    "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'"
+  )
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin")
   response.headers.set("X-Content-Type-Options", "nosniff")
   response.headers.set("X-Frame-Options", "DENY")
@@ -39,8 +48,12 @@ function applyStayCareSecurityHeaders(response: NextResponse) {
 
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
-  let response: NextResponse
 
+  if (pathname.startsWith("/api/staycare")) {
+    return applyStayCareSecurityHeaders(NextResponse.next(), { privateData: true })
+  }
+
+  let response: NextResponse
   if (pathname.startsWith("/admin")) {
     response = NextResponse.next({ request })
   } else {
@@ -86,16 +99,21 @@ export default async function middleware(request: NextRequest) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = `/${locale}/staycare/login`
     loginUrl.searchParams.set("next", pathname)
-    return applyStayCareSecurityHeaders(NextResponse.redirect(loginUrl))
+    return applyStayCareSecurityHeaders(NextResponse.redirect(loginUrl), {
+      privateData: true,
+    })
   }
 
   if (protectedStayCare || loginPath) {
-    return applyStayCareSecurityHeaders(response)
+    return applyStayCareSecurityHeaders(response, { privateData: true })
   }
 
   return stayCarePath ? applyStayCareSecurityHeaders(response) : response
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|_vercel|favicon.ico|.*\\..*).*)"],
+  matcher: [
+    "/api/staycare/:path*",
+    "/((?!api|_next/static|_next/image|_vercel|favicon.ico|.*\\..*).*)",
+  ],
 }
