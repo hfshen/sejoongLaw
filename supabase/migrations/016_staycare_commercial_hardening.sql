@@ -3,6 +3,13 @@
 
 BEGIN;
 
+-- Idempotency is a worker-owned retry boundary. A tenant-wide unique key could
+-- let a colliding key block another worker and made safe lookup harder.
+DROP INDEX IF EXISTS idx_staycare_application_idempotency;
+CREATE UNIQUE INDEX idx_staycare_application_idempotency
+  ON staycare_service_applications (tenant_id, worker_id, idempotency_key)
+  WHERE idempotency_key IS NOT NULL;
+
 -- Service-specific records are derivative of a service application. They must
 -- not survive a compensated or administrative application deletion as orphans.
 ALTER TABLE staycare_delivery_orders
