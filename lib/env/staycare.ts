@@ -14,6 +14,12 @@ const serverSchema = z.object({
   NEXT_PUBLIC_STAYCARE_DEMO_LOGIN_ENABLED: booleanString.default("false"),
   STAYCARE_ALLOW_PRODUCTION_DEMO_LOGIN: booleanString.default("false"),
   STAYCARE_RATE_LIMIT_FAIL_CLOSED: booleanString.default("true"),
+  STAYCARE_DOCUMENT_RETENTION_DAYS: z.coerce
+    .number()
+    .int()
+    .min(30)
+    .max(3650)
+    .default(1095),
 
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: optionalString,
@@ -112,9 +118,12 @@ export function productionReadiness() {
 
   const checks = {
     secureSiteUrl: !production || siteUrl.protocol === "https:",
-    productionTenant: !production || !env.STAYCARE_TENANT_SLUG.includes("demo"),
+    productionTenant:
+      !production || !env.STAYCARE_TENANT_SLUG.toLowerCase().includes("demo"),
     demoAccessDisabled: !production || !demoEnabled,
-    database: Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY),
+    database: Boolean(
+      env.NEXT_PUBLIC_SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY
+    ),
     auth: Boolean(env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY),
     ai: Boolean(env.OPENAI_API_KEY),
     distributedRateLimit: Boolean(
@@ -122,6 +131,9 @@ export function productionReadiness() {
     ),
     rateLimitFailClosed:
       !production || env.STAYCARE_RATE_LIMIT_FAIL_CLOSED === "true",
+    documentRetention:
+      env.STAYCARE_DOCUMENT_RETENTION_DAYS >= 30 &&
+      env.STAYCARE_DOCUMENT_RETENTION_DAYS <= 3650,
     email: Boolean(env.RESEND_API_KEY && env.RESEND_FROM_EMAIL),
     botProtection: Boolean(
       env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY
