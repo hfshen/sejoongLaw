@@ -1,19 +1,13 @@
+import type { Metadata } from "next"
+import { Analytics } from "@vercel/analytics/next"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
 import { notFound } from "next/navigation"
-import { Suspense } from "react"
-import dynamic from "next/dynamic"
-import { locales, type Locale } from "@/lib/i18n"
+import AnalyticsProvider from "@/components/analytics/AnalyticsProvider"
 import LocaleAttributes from "@/components/layout/LocaleAttributes"
 import { StructuredData } from "@/components/seo/StructuredData"
-import AnalyticsProvider from "@/components/analytics/AnalyticsProvider"
-import { Analytics } from "@vercel/analytics/next"
-import type { Metadata } from "next"
-
-// WeChatMeta를 동적으로 로드 (클라이언트 컴포넌트이므로)
-const WeChatMeta = dynamic(() => import("@/components/seo/WeChatMeta"), {
-  ssr: false,
-})
+import WeChatMeta from "@/components/seo/WeChatMeta"
+import { locales, type Locale } from "@/lib/i18n"
 
 const naverVerification =
   process.env.NAVER_VERIFICATION || "4b2239cc06cc691737ed84c58435872218578bb0"
@@ -57,13 +51,11 @@ export async function generateMetadata({
     metadataBase: new URL(baseUrl),
     alternates: {
       canonical: `/${locale}`,
-      languages: Object.fromEntries(
-        locales.map((loc) => [loc, `/${loc}`])
-      ),
+      languages: Object.fromEntries(locales.map((loc) => [loc, `/${loc}`])),
     },
     openGraph: {
       type: "website",
-      locale: locale,
+      locale,
       url: `${baseUrl}/${locale}`,
       title: "법무법인 세중 | 전문 법률 서비스",
       description:
@@ -113,9 +105,7 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  if (!locales.includes(locale as Locale)) {
-    notFound()
-  }
+  if (!locales.includes(locale as Locale)) notFound()
 
   const messages = await getMessages()
 
@@ -126,9 +116,7 @@ export default async function LocaleLayout({
       <StructuredData type="WebSite" locale={locale} />
       <AnalyticsProvider>
         <NextIntlClientProvider messages={messages}>
-          <Suspense fallback={null}>
-            <WeChatMeta />
-          </Suspense>
+          <WeChatMeta />
           <LocaleAttributes />
           {children}
         </NextIntlClientProvider>
