@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import StayCareDemoLogin from "@/components/staycare/StayCareDemoLogin"
 import StayCareLogin from "@/components/staycare/StayCareLogin"
 import { resolveStayCareDestination } from "@/lib/staycare/auth"
+import { isStayCareProductionDemoAllowed } from "@/lib/staycare/demo-accounts"
 
 export const metadata: Metadata = {
   title: "StayCare 로그인",
@@ -18,10 +19,12 @@ export default async function StayCareLoginPage({
   const destination = await resolveStayCareDestination(locale)
   if (destination) redirect(destination)
 
+  const showDemoLogin = isStayCareProductionDemoAllowed()
+
   return (
     <>
       <StayCareLogin locale={locale} />
-      <StayCareDemoLogin locale={locale} />
+      {showDemoLogin ? <StayCareDemoLogin locale={locale} /> : null}
     </>
   )
 }
