@@ -6,6 +6,10 @@ const value = (name) => process.env[name]?.trim() || ""
 const has = (name) => Boolean(value(name))
 const hasEither = (...names) => names.some(has)
 const lengthAtLeast = (name, length) => value(name).length >= length
+const integerInRange = (name, minimum, maximum) => {
+  const number = Number(value(name))
+  return Number.isInteger(number) && number >= minimum && number <= maximum
+}
 
 function validUrl(name, { https = false } = {}) {
   try {
@@ -50,6 +54,10 @@ const productionSafety = [
   [
     "Distributed rate limiting fails closed",
     value("STAYCARE_RATE_LIMIT_FAIL_CLOSED") !== "false",
+  ],
+  [
+    "Document retention policy is explicit (30-3650 days)",
+    integerInRange("STAYCARE_DOCUMENT_RETENTION_DAYS", 30, 3650),
   ],
   ["Field encryption key is strong", lengthAtLeast("STAYCARE_FIELD_ENCRYPTION_KEY", 32)],
 ]
