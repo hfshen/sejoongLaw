@@ -3,94 +3,115 @@ import { withSentryConfig } from "@sentry/nextjs"
 
 const withNextIntl = createNextIntlPlugin("./lib/i18n.ts")
 
+function safeOrigin(value) {
+  if (!value) return null
+  try {
+    return new URL(value).origin
+  } catch {
+    return null
+  }
+}
+
+const supabaseOrigin = safeOrigin(process.env.NEXT_PUBLIC_SUPABASE_URL)
+const connectSources = [
+  "'self'",
+  "https://challenges.cloudflare.com",
+  "https://vitals.vercel-insights.com",
+  "https://*.sentry.io",
+]
+if (supabaseOrigin) {
+  connectSources.push(supabaseOrigin)
+  connectSources.push(supabaseOrigin.replace(/^https:/, "wss:"))
+}
+
+const stayCareCsp = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://va.vercel-scripts.com",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  `connect-src ${connectSources.join(" ")}`,
+  "frame-src https://challenges.cloudflare.com",
+  "worker-src 'self' blob:",
+  "manifest-src 'self'",
+  process.env.NODE_ENV === "production" ? "upgrade-insecure-requests" : "",
+]
+  .filter(Boolean)
+  .join("; ")
+
+const browserSecurityHeaders = [
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+  },
+  ...(process.env.NODE_ENV === "production"
+    ? [
+        {
+          key: "Strict-Transport-Security",
+          value: "max-age=63072000; includeSubDomains; preload",
+        },
+      ]
+    : []),
+]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [],
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60,
   },
+  async headers() {
+    return [
+      {
+        source: "/:locale/staycare/:path*",
+        headers: [
+          ...browserSecurityHeaders,
+          { key: "Content-Security-Policy", value: stayCareCsp },
+        ],
+      },
+      {
+        source: "/api/staycare/:path*",
+        headers: [
+          ...browserSecurityHeaders,
+          { key: "Cache-Control", value: "private, no-store, max-age=0" },
+        ],
+      },
+      {
+        source: "/api/health/staycare",
+        headers: [
+          { key: "Cache-Control", value: "no-store, max-age=0" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
+    ]
+  },
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
-  swcMinify: true,
-  // 성능 최적화
   compiler: {
-    removeConsole: process.env.NODE_ENV === "production" ? {
-      exclude: ["error", "warn"],
-    } : false,
+    removeConsole:
+      process.env.NODE_ENV === "production"
+        ? { exclude: ["error", "warn"] }
+        : false,
   },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion", "@supabase/ssr"],
-    instrumentationHook: true,
-    // 번들 최적화
-    // optimizeCss: true, // critters 패키지 필요로 인해 비활성화
-  },
-  // 번들 분석 및 최적화
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: "all",
-          cacheGroups: {
-            default: false,
-            vendors: false,
-            // 프레임워크 코드 분리
-            framework: {
-              name: "framework",
-              chunks: "all",
-              test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
-              priority: 40,
-              enforce: true,
-            },
-            // 큰 라이브러리 분리
-            lib: {
-              test(module) {
-                return module.size() > 160000 && /node_modules[/\\]/.test(module.identifier())
-              },
-              name(module) {
-                const identifier = module.identifier()
-                return identifier.split("/").pop().replace(/\.(js|ts|tsx|jsx)$/, "")
-              },
-              priority: 30,
-              minChunks: 1,
-              reuseExistingChunk: true,
-            },
-            // 공통 코드
-            commons: {
-              name: "commons",
-              minChunks: 2,
-              priority: 20,
-            },
-            // 공유 모듈
-            shared: {
-              name(module, chunks) {
-                const chunkNames = chunks.map((chunk) => chunk.name).join("-")
-                return `shared-${chunkNames.substring(0, 20)}`
-              },
-              priority: 10,
-              minChunks: 2,
-              reuseExistingChunk: true,
-            },
-          },
-        },
-      }
-    }
-    return config
   },
 }
 
-const sentryWebpackPluginOptions = {
+export default withSentryConfig(withNextIntl(nextConfig), {
   silent: true,
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
-}
-
-export default withSentryConfig(
-  withNextIntl(nextConfig),
-  sentryWebpackPluginOptions
-)
-
+})
