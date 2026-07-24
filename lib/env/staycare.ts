@@ -2,6 +2,7 @@ import { z } from "zod"
 
 const optionalUrl = z.string().url().optional().or(z.literal(""))
 const optionalString = z.string().trim().optional().or(z.literal(""))
+const booleanString = z.enum(["true", "false"])
 
 const serverSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.string().url(),
@@ -9,6 +10,10 @@ const serverSchema = z.object({
   STAYCARE_DEFAULT_LOCALE: z.enum(["ko", "en", "si"]).default("ko"),
   STAYCARE_SUPPORT_EMAIL: z.string().email(),
   STAYCARE_SUPPORT_PHONE: optionalString,
+  STAYCARE_ALLOWED_ORIGINS: optionalString,
+  NEXT_PUBLIC_STAYCARE_DEMO_LOGIN_ENABLED: booleanString.default("false"),
+  STAYCARE_ALLOW_PRODUCTION_DEMO_LOGIN: booleanString.default("false"),
+  STAYCARE_RATE_LIMIT_FAIL_CLOSED: booleanString.default("true"),
 
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: optionalString,
@@ -101,16 +106,31 @@ export function getStayCareEnv(): StayCareServerEnv {
 
 export function productionReadiness() {
   const env = getStayCareEnv()
+  const production = process.env.NODE_ENV === "production"
+  const siteUrl = new URL(env.NEXT_PUBLIC_SITE_URL)
+  const demoEnabled = env.NEXT_PUBLIC_STAYCARE_DEMO_LOGIN_ENABLED === "true"
+
   const checks = {
+    secureSiteUrl: !production || siteUrl.protocol === "https:",
+    productionTenant: !production || !env.STAYCARE_TENANT_SLUG.includes("demo"),
+    demoAccessDisabled: !production || !demoEnabled,
     database: Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY),
     auth: Boolean(env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY),
     ai: Boolean(env.OPENAI_API_KEY),
-    distributedRateLimit: Boolean(env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN),
-    email: env.EMAIL_PROVIDER === "disabled" || Boolean(env.RESEND_API_KEY && env.RESEND_FROM_EMAIL),
-    botProtection: Boolean(env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY),
+    distributedRateLimit: Boolean(
+      env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN
+    ),
+    rateLimitFailClosed:
+      !production || env.STAYCARE_RATE_LIMIT_FAIL_CLOSED === "true",
+    email: Boolean(env.RESEND_API_KEY && env.RESEND_FROM_EMAIL),
+    botProtection: Boolean(
+      env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY
+    ),
     monitoring: Boolean(env.NEXT_PUBLIC_SENTRY_DSN),
     fieldEncryption: Boolean(env.STAYCARE_FIELD_ENCRYPTION_KEY),
-    internalSecrets: Boolean(env.STAYCARE_WEBHOOK_SECRET && env.STAYCARE_CRON_SECRET),
+    internalSecrets: Boolean(
+      env.STAYCARE_WEBHOOK_SECRET && env.STAYCARE_CRON_SECRET
+    ),
   }
 
   return {
