@@ -7,8 +7,15 @@ describe("StayCare environment readiness", () => {
     jest.resetModules()
     process.env = {
       ...originalEnv,
+      NODE_ENV: "production",
+      VERCEL_ENV: "production",
       NEXT_PUBLIC_SITE_URL: "https://sejoonglaw.kr",
+      STAYCARE_TENANT_SLUG: "sejoong-staycare",
       STAYCARE_SUPPORT_EMAIL: "staycare@sejoonglaw.kr",
+      NEXT_PUBLIC_STAYCARE_DEMO_LOGIN_ENABLED: "false",
+      STAYCARE_ALLOW_PRODUCTION_DEMO_LOGIN: "false",
+      STAYCARE_RATE_LIMIT_FAIL_CLOSED: "true",
+      STAYCARE_DOCUMENT_RETENTION_DAYS: "1095",
       NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "publishable",
       SUPABASE_SERVICE_ROLE_KEY: "service-role",
@@ -36,21 +43,49 @@ describe("StayCare environment readiness", () => {
   })
 
   it("marks core and production services as configured without exposing secrets", async () => {
-    const { getStayCareEnvironmentReport } = await import("@/lib/env/staycare-status")
+    const { getStayCareEnvironmentReport } = await import(
+      "@/lib/env/staycare-status"
+    )
     const report = getStayCareEnvironmentReport()
 
     expect(report.summary.coreConfigured).toBe(report.summary.coreTotal)
-    expect(report.summary.productionConfigured).toBe(report.summary.productionTotal)
-    expect(report.items.find((item) => item.id === "supabase-service-key")?.publicValue).toBeUndefined()
-    expect(report.items.find((item) => item.id === "site-url")?.publicValue).toBe("sejoonglaw.kr")
+    expect(report.summary.productionConfigured).toBe(
+      report.summary.productionTotal
+    )
+    expect(
+      report.items.find((item) => item.id === "supabase-service-key")
+        ?.publicValue
+    ).toBeUndefined()
+    expect(
+      report.items.find((item) => item.id === "site-url")?.publicValue
+    ).toBe("sejoonglaw.kr")
+    expect(
+      report.items.find((item) => item.id === "retention-policy")?.state
+    ).toBe("configured")
   })
 
-  it("accepts manual provider operations without API credentials", async () => {
-    const { getStayCareEnvironmentReport } = await import("@/lib/env/staycare-status")
+  it("classifies manual provider operations as limited production", async () => {
+    const { getStayCareEnvironmentReport } = await import(
+      "@/lib/env/staycare-status"
+    )
     const report = getStayCareEnvironmentReport()
     const providers = report.items.filter((item) => item.group === "provider")
 
     expect(providers).toHaveLength(4)
     expect(providers.every((item) => item.state === "manual")).toBe(true)
+    expect(report.summary.releaseState).toBe("limited-production")
+  })
+
+  it("blocks production readiness when public demo access is enabled", async () => {
+    process.env.NEXT_PUBLIC_STAYCARE_DEMO_LOGIN_ENABLED = "true"
+    const { getStayCareEnvironmentReport } = await import(
+      "@/lib/env/staycare-status"
+    )
+    const report = getStayCareEnvironmentReport()
+
+    expect(report.items.find((item) => item.id === "demo-disabled")?.state).toBe(
+      "missing"
+    )
+    expect(report.summary.releaseState).toBe("internal-pilot")
   })
 })
