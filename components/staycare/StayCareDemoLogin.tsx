@@ -1,18 +1,19 @@
 "use client"
 
-import Script from "next/script"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import {
-  BadgeCheck,
   Building2,
   Eye,
   KeyRound,
   Landmark,
   Loader2,
-  ShieldCheck,
+  ShieldAlert,
   UserRound,
   Wrench,
 } from "lucide-react"
+import StayCareTurnstile, {
+  type StayCareTurnstileHandle,
+} from "@/components/staycare/StayCareTurnstile"
 import { createClient } from "@/lib/supabase/client"
 import {
   getStayCareDemoTargetPath,
@@ -27,15 +28,6 @@ import {
   type StayCarePreferredLanguage,
 } from "@/lib/staycare/language-preference"
 
-declare global {
-  interface Window {
-    turnstile?: {
-      render: (container: HTMLElement, options: Record<string, unknown>) => string
-      reset: (widgetId?: string) => void
-    }
-  }
-}
-
 const groupIcons: Record<StayCareDemoGroup, typeof UserRound> = {
   worker: UserRound,
   sejoong: Landmark,
@@ -44,16 +36,26 @@ const groupIcons: Record<StayCareDemoGroup, typeof UserRound> = {
   audit: Eye,
 }
 
+const groupOrder: StayCareDemoGroup[] = [
+  "worker",
+  "sejoong",
+  "operator",
+  "external",
+  "audit",
+]
+
 const copy = {
   ko: {
     eyebrow: "Demo access",
     title: "역할별 데모 계정으로 바로 확인",
-    description: "모든 데모 계정은 실제 운영 데이터와 분리된 전용 테넌트의 합성데이터만 사용합니다.",
+    description:
+      "모든 데모 계정은 실제 운영 데이터와 분리된 전용 테넌트의 합성데이터만 사용합니다.",
     password: "공통 비밀번호",
     signIn: "이 역할로 로그인",
     signingIn: "로그인 중",
     captcha: "데모 로그인 전에 보안 확인을 완료해 주세요.",
-    failed: "데모 계정 로그인이 실패했습니다. Supabase에 데모 계정을 먼저 생성했는지 확인하세요.",
+    failed:
+      "데모 계정 로그인에 실패했습니다. Supabase에 데모 계정이 생성되어 있는지 확인하세요.",
     groups: {
       worker: "근로자",
       sejoong: "법무법인 세중",
@@ -61,17 +63,20 @@ const copy = {
       external: "외부 참여기관",
       audit: "감사·품질",
     },
-    warning: "공개 데모 계정입니다. 실제 개인정보·여권·계좌정보를 입력하지 마세요.",
+    warning:
+      "공개 데모 계정입니다. 실제 개인정보·여권·계좌정보를 입력하지 마세요.",
   },
   en: {
     eyebrow: "Demo access",
     title: "Open the platform with a role-based demo account",
-    description: "Every demo account is isolated in a synthetic-data tenant and cannot access production member data.",
+    description:
+      "Every demo account is isolated in a synthetic-data tenant and cannot access production member data.",
     password: "Shared password",
     signIn: "Sign in as this role",
     signingIn: "Signing in",
     captcha: "Complete the security check before using a demo account.",
-    failed: "Demo sign-in failed. Confirm that the demo users were provisioned in Supabase.",
+    failed:
+      "Demo sign-in failed. Confirm that the demo users were provisioned in Supabase.",
     groups: {
       worker: "Worker",
       sejoong: "Sejoong Law",
@@ -79,17 +84,21 @@ const copy = {
       external: "External organizations",
       audit: "Audit and quality",
     },
-    warning: "These are public demo accounts. Never enter real passport, identity, bank or remittance data.",
+    warning:
+      "These are public demo accounts. Never enter real passport, identity, bank or remittance data.",
   },
   si: {
     eyebrow: "Demo access",
     title: "භූමිකාව අනුව demo ගිණුමකින් පද්ධතිය බලන්න",
-    description: "සියලු demo ගිණුම් සැබෑ දත්තවලින් වෙන් වූ කෘතිම දත්ත tenant එකක් පමණක් භාවිතා කරයි.",
+    description:
+      "සියලු demo ගිණුම් සැබෑ දත්තවලින් වෙන් වූ කෘතිම දත්ත tenant එකක් පමණක් භාවිතා කරයි.",
     password: "පොදු මුරපදය",
     signIn: "මෙම භූමිකාවෙන් පිවිසෙන්න",
     signingIn: "පිවිසෙමින්",
-    captcha: "Demo ගිණුම භාවිතා කිරීමට පෙර ආරක්ෂක පරීක්ෂාව සම්පූර්ණ කරන්න.",
-    failed: "Demo පිවිසීම අසාර්ථකයි. Supabase හි demo users නිර්මාණය කර ඇතිද බලන්න.",
+    captcha:
+      "Demo ගිණුම භාවිතා කිරීමට පෙර ආරක්ෂක පරීක්ෂාව සම්පූර්ණ කරන්න.",
+    failed:
+      "Demo පිවිසීම අසාර්ථකයි. Supabase හි demo users නිර්මාණය කර ඇතිද බලන්න.",
     groups: {
       worker: "සේවකයා",
       sejoong: "Sejoong නීති කාර්යාලය",
@@ -97,21 +106,22 @@ const copy = {
       external: "බාහිර ආයතන",
       audit: "විගණන හා ගුණාත්මකභාවය",
     },
-    warning: "මෙය පොදු demo ගිණුම් වේ. සැබෑ ගමන් බලපත්‍ර, හැඳුනුම්, බැංකු හෝ මුදල් යැවීමේ දත්ත ඇතුළත් නොකරන්න.",
+    warning:
+      "මෙය පොදු demo ගිණුම් වේ. සැබෑ ගමන් බලපත්‍ර, හැඳුනුම්, බැංකු හෝ මුදල් යැවීමේ දත්ත ඇතුළත් නොකරන්න.",
   },
 } as const
-
-const groupOrder: StayCareDemoGroup[] = ["worker", "sejoong", "operator", "external", "audit"]
 
 function DemoAccountCard({
   account,
   language,
   loading,
+  disabled,
   onLogin,
 }: {
   account: StayCareDemoAccount
   language: StayCarePreferredLanguage
   loading: boolean
+  disabled: boolean
   onLogin: (account: StayCareDemoAccount) => void
 }) {
   const Icon = groupIcons[account.group]
@@ -124,18 +134,28 @@ function DemoAccountCard({
           <Icon className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1">
-          <h4 className="font-black text-slate-950">{account.label[language]}</h4>
-          <p className="mt-1 break-all text-xs font-semibold text-[#bb271a]">{account.email}</p>
+          <h4 className="font-black text-slate-950">
+            {account.label[language]}
+          </h4>
+          <p className="mt-1 break-all text-xs font-semibold text-[#bb271a]">
+            {account.email}
+          </p>
         </div>
       </div>
-      <p className="mt-3 flex-1 text-xs leading-6 text-slate-600">{account.description[language]}</p>
+      <p className="mt-3 flex-1 text-xs leading-6 text-slate-600">
+        {account.description[language]}
+      </p>
       <button
         type="button"
-        disabled={loading}
+        disabled={disabled}
         onClick={() => onLogin(account)}
         className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-slate-950 px-4 py-3 text-sm font-black text-white transition hover:bg-[#bb271a] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <KeyRound className="mr-2 h-4 w-4" />}
+        {loading ? (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <KeyRound className="mr-2 h-4 w-4" />
+        )}
         {loading ? text.signingIn : text.signIn}
       </button>
     </article>
@@ -143,43 +163,33 @@ function DemoAccountCard({
 }
 
 export default function StayCareDemoLogin({ locale }: { locale: string }) {
-  const initialLanguage: StayCarePreferredLanguage = locale === "en" ? "en" : "ko"
+  const initialLanguage: StayCarePreferredLanguage =
+    locale === "en" ? "en" : "ko"
   const { language } = useStayCareLanguage(initialLanguage)
   const text = copy[language]
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [error, setError] = useState("")
   const [captchaToken, setCaptchaToken] = useState("")
-  const captchaContainer = useRef<HTMLDivElement>(null)
-  const widgetId = useRef<string>()
+  const turnstileRef = useRef<StayCareTurnstileHandle | null>(null)
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
   const groups = useMemo(
-    () => groupOrder.map((group) => ({
-      group,
-      accounts: stayCareDemoAccounts.filter((account) => account.group === group),
-    })),
+    () =>
+      groupOrder.map((group) => ({
+        group,
+        accounts: stayCareDemoAccounts.filter(
+          (account) => account.group === group
+        ),
+      })),
     []
   )
-
-  const renderCaptcha = () => {
-    if (!siteKey || !window.turnstile || !captchaContainer.current || widgetId.current) return
-    widgetId.current = window.turnstile.render(captchaContainer.current, {
-      sitekey: siteKey,
-      theme: "light",
-      callback: (token: string) => setCaptchaToken(token),
-      "expired-callback": () => setCaptchaToken(""),
-      "error-callback": () => setCaptchaToken(""),
-    })
-  }
-
-  useEffect(() => {
-    renderCaptcha()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [siteKey])
+  const handleCaptchaToken = useCallback((token: string) => {
+    setCaptchaToken(token)
+  }, [])
 
   if (!isStayCareDemoLoginEnabled()) return null
 
   const resetCaptcha = () => {
-    if (window.turnstile && widgetId.current) window.turnstile.reset(widgetId.current)
+    turnstileRef.current?.reset()
     setCaptchaToken("")
   }
 
@@ -199,9 +209,12 @@ export default function StayCareDemoLogin({ locale }: { locale: string }) {
         options: captchaToken ? { captchaToken } : undefined,
       })
       if (authError) throw authError
-      window.location.href = getStayCareDemoTargetPath(account, locale, language)
+      window.location.assign(
+        getStayCareDemoTargetPath(account, locale, language)
+      )
     } catch (caught) {
-      const detail = caught instanceof Error ? caught.message : "Unknown error"
+      const detail =
+        caught instanceof Error ? caught.message : "Unknown authentication error"
       setError(`${text.failed} (${detail})`)
       resetCaptcha()
     } finally {
@@ -211,28 +224,37 @@ export default function StayCareDemoLogin({ locale }: { locale: string }) {
 
   return (
     <div className="bg-[#f5f5f3] px-4 pb-16">
-      {siteKey ? (
-        <Script
-          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-          strategy="afterInteractive"
-          onLoad={renderCaptcha}
-        />
-      ) : null}
-
       <section className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-50 shadow-sm">
         <div className="border-b border-slate-200 bg-white p-5 sm:p-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-[#bb271a]">{text.eyebrow}</p>
-              <h2 className="mt-2 text-2xl font-black text-slate-950">{text.title}</h2>
-              <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">{text.description}</p>
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-[#bb271a]">
+                {text.eyebrow}
+              </p>
+              <h2 className="mt-2 text-2xl font-black text-slate-950">
+                {text.title}
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
+                {text.description}
+              </p>
             </div>
             <div className="shrink-0 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
-              <p className="text-[11px] font-black uppercase tracking-[0.12em] text-amber-700">{text.password}</p>
-              <p className="mt-1 font-mono text-sm font-black text-amber-950">{stayCareDemoPassword}</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.12em] text-amber-700">
+                {text.password}
+              </p>
+              <p className="mt-1 font-mono text-sm font-black text-amber-950">
+                {stayCareDemoPassword}
+              </p>
             </div>
           </div>
-          {siteKey ? <div ref={captchaContainer} className="mt-5 min-h-[65px]" /> : null}
+
+          <StayCareTurnstile
+            ref={turnstileRef}
+            siteKey={siteKey}
+            action="staycare_demo_login"
+            onToken={handleCaptchaToken}
+            className="mt-5 min-h-[65px]"
+          />
         </div>
 
         <div className="space-y-7 p-5 sm:p-7">
@@ -243,7 +265,9 @@ export default function StayCareDemoLogin({ locale }: { locale: string }) {
                 <div className="mb-3 flex items-center gap-2 text-sm font-black text-slate-700">
                   <Icon className="h-4 w-4 text-[#bb271a]" />
                   {text.groups[group]}
-                  <span className="rounded-full bg-white px-2 py-0.5 text-[11px] text-slate-400">{accounts.length}</span>
+                  <span className="rounded-full bg-white px-2 py-0.5 text-[11px] text-slate-400">
+                    {accounts.length}
+                  </span>
                 </div>
                 <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                   {accounts.map((account) => (
@@ -252,6 +276,7 @@ export default function StayCareDemoLogin({ locale }: { locale: string }) {
                       account={account}
                       language={language}
                       loading={loadingId === account.id}
+                      disabled={Boolean(loadingId)}
                       onLogin={login}
                     />
                   ))}
@@ -261,19 +286,17 @@ export default function StayCareDemoLogin({ locale }: { locale: string }) {
           })}
 
           {error ? (
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-900">
+            <p
+              role="alert"
+              className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold leading-6 text-red-700"
+            >
               {error}
-            </div>
+            </p>
           ) : null}
 
-          <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-6 text-amber-950">
-            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" />
-            <div>
-              <p className="font-black">{text.warning}</p>
-              <p className="mt-1 flex items-center gap-2 text-amber-800">
-                <BadgeCheck className="h-4 w-4" /> sejoong-staycare-demo tenant · synthetic data only
-              </p>
-            </div>
+          <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-6 text-amber-900">
+            <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0" />
+            {text.warning}
           </div>
         </div>
       </section>
