@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { getWorkerContext } from "@/lib/staycare/auth"
-import { requireTrustedOrigin } from "@/lib/security/request"
+import { getRequestIp, requireTrustedOrigin } from "@/lib/security/request"
+import { rateLimit, rateLimitFailureResponse } from "@/lib/security/rate-limit"
 import { getServiceClient } from "@/lib/supabase/service"
 
 const createSchema = z.object({
@@ -57,6 +58,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Worker account required" }, { status: 401 })
     }
 
+    const limited = await rateLimit({
+      key: `support-ticket:${context.user.id}:${getRequestIp(request)}`,
+      limit: 10,
+      windowSeconds: 3600,
+    })
+    if (!limited.allowed) {
+      return rateLimitFailureResponse(limited, "Support request limit exceeded")
+    }
+
     const body = createSchema.parse(await request.json())
     // The current database enum supports P0-P3. A worker-facing P4 information
     // request is normalized to the standard P3 queue while the requested level
@@ -79,12 +89,18 @@ export async function POST(request: NextRequest) {
         status: "open",
         intake_channel: "app",
         description: body.description,
-        first_response_due_at: new Date(now + firstResponseHours * 60 * 60 * 1000).toISOString(),
-        resolution_due_at: new Date(now + resolutionHours * 60 * 60 * 1000).toISOString(),
+        first_response_due_at: new Date(
+          now + firstResponseHours * 60 * 60 * 1000
+        ).toISOString(),
+        resolution_due_at: new Date(
+          now + resolutionHours * 60 * 60 * 1000
+        ).toISOString(),
         worker_visible_summary: "Your request was received and is waiting for assignment.",
         created_by: context.user.id,
       })
-      .select("id, ticket_no, title, category, priority, status, worker_visible_summary, created_at")
+      .select(
+        "id, ticket_no, title, category, priority, status, worker_visible_summary, created_at"
+      )
       .single()
 
     if (error || !ticket) throw error || new Error("Unable to create ticket")
@@ -121,12 +137,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ticket }, { status: 201 })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: "Invalid support request", details: error.flatten() }, { status: 400 })
+      return NextResponse.json(
+        { error: "Invalid support request", details: error.flatten() },
+        { status: 400 }
+      )
     }
     if (error instanceof Error && error.name === "UntrustedOriginError") {
       return NextResponse.json({ error: error.message }, { status: 403 })
     }
-    console.error("StayCare ticket creation failed", error instanceof Error ? error.message : "unknown")
+    console.error(
+      "StayCare ticket creation failed",
+      error instanceof Error ? error.message : "unknown"
+    )
     return NextResponse.json({ error: "Unable to create support request" }, { status: 500 })
   }
 }
