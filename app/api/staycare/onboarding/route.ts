@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { getServiceClient } from "@/lib/supabase/service"
 import { journeySteps } from "@/lib/staycare/lifecycle-model"
 import { getRequestIp, requireTrustedOrigin } from "@/lib/security/request"
-import { rateLimit } from "@/lib/security/rate-limit"
+import { rateLimit, rateLimitFailureResponse } from "@/lib/security/rate-limit"
 
 export const runtime = "nodejs"
 
@@ -28,14 +28,12 @@ function memberNumber() {
 }
 
 export async function POST(request: NextRequest) {
+  let createdWorkerId: string | null = null
+  let createdTenantId: string | null = null
+  let authenticatedUserId: string | null = null
+
   try {
     requireTrustedOrigin(request)
-    const ip = getRequestIp(request)
-    const limited = await rateLimit({ key: `onboarding:${ip}`, limit: 8, windowSeconds: 3600 })
-    if (!limited.allowed) {
-      return NextResponse.json({ error: "Too many onboarding attempts" }, { status: 429 })
-    }
-
     const supabase = await createClient()
     const {
       data: { user },
@@ -44,6 +42,16 @@ export async function POST(request: NextRequest) {
 
     if (authError || !user) {
       return NextResponse.json({ error: "Authentication required" }, { status: 401 })
+    }
+    authenticatedUserId = user.id
+
+    const limited = await rateLimit({
+      key: `onboarding:${user.id}:${getRequestIp(request)}`,
+      limit: 8,
+      windowSeconds: 3600,
+    })
+    if (!limited.allowed) {
+      return rateLimitFailureResponse(limited, "Too many onboarding attempts")
     }
 
     const body = schema.parse(await request.json())
@@ -56,7 +64,10 @@ export async function POST(request: NextRequest) {
       .eq("slug", tenantSlug)
       .single()
 
-    if (tenantError || !tenant) throw tenantError || new Error("StayCare tenant not found")
+    if (tenantError || !tenant) {
+      throw tenantError || new Error("StayCare tenant not found")
+    }
+    createdTenantId = tenant.id
 
     const { data: existing } = await admin
       .from("staycare_workers")
@@ -82,12 +93,17 @@ export async function POST(request: NextRequest) {
         status: body.visaType ? "pre_departure" : "preparing",
         current_phase: body.visaType ? "pre_departure" : "prepare",
         profile_completion: body.visaType ? 50 : 30,
-        next_action: body.visaType ? "Complete the pre-departure profile" : "Confirm the official recruitment and visa stage",
+        next_action: body.visaType
+          ? "Complete the pre-departure profile"
+          : "Confirm the official recruitment and visa stage",
       })
       .select("id, tenant_id, member_no")
       .single()
 
-    if (workerError || !worker) throw workerError || new Error("Unable to create worker")
+    if (workerError || !worker) {
+      throw workerError || new Error("Unable to create worker")
+    }
+    createdWorkerId = worker.id
 
     const { error: membershipError } = await admin.from("staycare_memberships").insert({
       tenant_id: tenant.id,
@@ -110,7 +126,9 @@ export async function POST(request: NextRequest) {
       .select("id")
       .single()
 
-    if (journeyError || !journey) throw journeyError || new Error("Unable to create journey")
+    if (journeyError || !journey) {
+      throw journeyError || new Error("Unable to create journey")
+    }
 
     const stepRows = journeySteps.map((step) => ({
       tenant_id: tenant.id,
@@ -137,7 +155,9 @@ export async function POST(request: NextRequest) {
       },
     }))
 
-    const { error: stepsError } = await admin.from("staycare_journey_steps").insert(stepRows)
+    const { error: stepsError } = await admin
+      .from("staycare_journey_steps")
+      .insert(stepRows)
     if (stepsError) throw stepsError
 
     await admin.from("staycare_audit_events").insert({
@@ -150,16 +170,36 @@ export async function POST(request: NextRequest) {
       metadata: { memberNo: worker.member_no, source: "self_service" },
     })
 
+    createdWorkerId = null
     return NextResponse.json({ worker }, { status: 201 })
   } catch (error) {
+    if (createdWorkerId && createdTenantId && authenticatedUserId) {
+      const admin = getServiceClient()
+      // Worker deletion cascades journey instances and journey steps. Membership
+      // is user/tenant based, so remove it explicitly to avoid a half-onboarded role.
+      await admin
+        .from("staycare_memberships")
+        .delete()
+        .eq("tenant_id", createdTenantId)
+        .eq("user_id", authenticatedUserId)
+        .eq("role", "worker")
+      await admin.from("staycare_workers").delete().eq("id", createdWorkerId)
+    }
+
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: "Invalid onboarding data", details: error.flatten() }, { status: 400 })
+      return NextResponse.json(
+        { error: "Invalid onboarding data", details: error.flatten() },
+        { status: 400 }
+      )
     }
     if (error instanceof Error && error.name === "UntrustedOriginError") {
       return NextResponse.json({ error: error.message }, { status: 403 })
     }
 
-    console.error("StayCare onboarding failed", error instanceof Error ? error.message : "unknown")
+    console.error(
+      "StayCare onboarding failed",
+      error instanceof Error ? error.message : "unknown"
+    )
     return NextResponse.json({ error: "Unable to complete onboarding" }, { status: 500 })
   }
 }
