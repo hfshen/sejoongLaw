@@ -42,13 +42,16 @@ describe("StayCare commercial hardening", () => {
     expect(download).toContain("safeDownloadName")
   })
 
-  it("applies browser hardening headers to StayCare surfaces", () => {
+  it("applies browser hardening headers and rotates auth cookies in middleware", () => {
     const middleware = source("middleware.ts")
     expect(middleware).toContain("applyStayCareSecurityHeaders")
     expect(middleware).toContain("X-Content-Type-Options")
     expect(middleware).toContain("X-Frame-Options")
     expect(middleware).toContain("Permissions-Policy")
     expect(middleware).toContain("Strict-Transport-Security")
+    expect(middleware).toContain("createServerClient")
+    expect(middleware).toContain("supabase.auth.getUser")
+    expect(middleware).toContain("response.cookies.set")
   })
 
   it("enforces strict environment and dependency release gates in CI", () => {
