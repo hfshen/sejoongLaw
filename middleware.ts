@@ -1,4 +1,5 @@
 import createIntlMiddleware from "next-intl/middleware"
+import { createServerClient } from "@supabase/ssr"
 import { NextRequest, NextResponse } from "next/server"
 import { routing } from "./lib/routing"
 
@@ -8,6 +9,13 @@ const intlMiddleware = createIntlMiddleware({
   localePrefix: routing.localePrefix,
   localeDetection: true,
 })
+
+function localeFromPath(pathname: string) {
+  const first = pathname.split("/").filter(Boolean)[0]
+  return routing.locales.includes(first as (typeof routing.locales)[number])
+    ? first
+    : routing.defaultLocale
+}
 
 function safeOrigin(value?: string) {
   if (!value) return null
@@ -80,7 +88,7 @@ function applyStayCareSecurityHeaders(
   return response
 }
 
-export default function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   if (pathname.startsWith("/api/staycare")) {
@@ -89,9 +97,14 @@ export default function middleware(request: NextRequest) {
     })
   }
 
-  const response = pathname.startsWith("/admin")
+  let response = pathname.startsWith("/admin")
     ? NextResponse.next({ request })
     : intlMiddleware(request)
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   const protectedStayCare =
     pathname.includes("/staycare/app") ||
@@ -100,11 +113,41 @@ export default function middleware(request: NextRequest) {
   const loginPath = pathname.includes("/staycare/login")
   const stayCarePath = pathname.includes("/staycare")
 
-  // Authentication and role authorization are deliberately performed in the
-  // destination server component through requireWorkerContext,
-  // requireStaffContext or requireExternalPortalContext. This avoids bundling
-  // the full Supabase client into the Edge runtime while preserving a fresh,
-  // server-verified session and tenant-role check on every protected request.
+  if (!supabaseUrl || !supabaseKey) {
+    return stayCarePath ? applyStayCareSecurityHeaders(response) : response
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll()
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+        cookiesToSet.forEach(({ name, value, options }) =>
+          response.cookies.set(name, value, options)
+        )
+      },
+    },
+  })
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (protectedStayCare && !user) {
+    const locale = localeFromPath(pathname)
+    const loginUrl = request.nextUrl.clone()
+    loginUrl.pathname = `/${locale}/staycare/login`
+    loginUrl.searchParams.set("next", pathname)
+    return applyStayCareSecurityHeaders(NextResponse.redirect(loginUrl), {
+      privateData: true,
+    })
+  }
+
+  // The server component performs the authoritative role and tenant check.
+  // Middleware is retained here to rotate Supabase auth cookies, which server
+  // components cannot reliably write after a token refresh.
   if (protectedStayCare || loginPath) {
     return applyStayCareSecurityHeaders(response, { privateData: true })
   }
