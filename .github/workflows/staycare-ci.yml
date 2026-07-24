@@ -52,8 +52,10 @@ jobs:
       GOOGLE_VERIFICATION: test
       NAVER_VERIFICATION: test
     steps:
-      - name: Checkout
+      - name: Checkout PR head
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
