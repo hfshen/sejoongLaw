@@ -42,4 +42,18 @@ describe("admin user API hardening", () => {
     expect(inviteRoute).toContain("rollbackInvitation")
     expect(inviteRoute).toContain("deleteUser")
   })
+
+  test("user management pages have a server-side admin boundary", () => {
+    const usersLayout = source("app/admin/users/layout.tsx")
+    expect(usersLayout).toContain("requireAdmin")
+    expect(usersLayout).toContain("insufficient_permissions")
+  })
+
+  test("the shared backoffice shell filters navigation and direct paths by role", () => {
+    const adminLayout = source("app/admin/layout.tsx")
+    expect(adminLayout).toContain("canAccessPath")
+    expect(adminLayout).toContain("roleHome")
+    expect(adminLayout).toContain('href: "/admin/users"')
+    expect(adminLayout).toContain('roles: ["admin"]')
+  })
 })
