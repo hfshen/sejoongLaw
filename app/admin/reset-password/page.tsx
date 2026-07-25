@@ -1,296 +1,293 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Lock, Key, Mail } from "lucide-react"
+import { KeyRound, Loader2, Lock, Mail, ShieldCheck } from "lucide-react"
 import Button from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { classifyAuthFailure } from "@/lib/auth/redirects"
 import { createClient } from "@/lib/supabase/client"
+
+function recoveryMessage(reason: string | null) {
+  if (reason === "otp_expired") {
+    return "비밀번호 재설정 링크가 만료되었거나 이미 사용되었습니다. 새 링크를 요청해 주세요."
+  }
+  if (reason === "auth_callback_failed") {
+    return "비밀번호 재설정 인증을 완료하지 못했습니다. 새 링크를 요청해 주세요."
+  }
+  return "유효한 비밀번호 재설정 세션을 확인할 수 없습니다."
+}
 
 export default function ResetPasswordPage() {
   const router = useRouter()
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [email, setEmail] = useState("")
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
+  const [checkingSession, setCheckingSession] = useState(true)
+  const [hasRecoverySession, setHasRecoverySession] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [accessToken, setAccessToken] = useState<string | null>(null)
-  const [email, setEmail] = useState("")
-  const [showResendLink, setShowResendLink] = useState(false)
   const [resendLoading, setResendLoading] = useState(false)
   const [resendSuccess, setResendSuccess] = useState(false)
 
   useEffect(() => {
-    // URL 해시에서 access_token 또는 에러 추출
-    if (typeof window !== "undefined") {
-      const hash = window.location.hash
-      const params = new URLSearchParams(hash.substring(1))
-      const token = params.get("access_token")
-      const error = params.get("error")
-      const errorDescription = params.get("error_description")
-      
-      if (error) {
-        // 에러가 있는 경우
-        if (error === "access_denied" && errorDescription?.includes("expired")) {
-          setError("비밀번호 재설정 링크가 만료되었습니다. 새로운 링크를 요청해주세요.")
+    let active = true
+
+    const initialize = async () => {
+      const query = new URLSearchParams(window.location.search)
+      const hash = new URLSearchParams(window.location.hash.slice(1))
+      const reason =
+        query.get("reason") ||
+        classifyAuthFailure({
+          error: query.get("error") || hash.get("error"),
+          code: query.get("error_code") || hash.get("error_code"),
+          description:
+            query.get("error_description") || hash.get("error_description"),
+        })
+
+      if (reason) {
+        if (!active) return
+        setError(recoveryMessage(reason))
+        setHasRecoverySession(false)
+        setCheckingSession(false)
+        window.history.replaceState({}, "", window.location.pathname)
+        return
+      }
+
+      try {
+        const supabase = createClient()
+        const {
+          data: { user },
+          error: userError,
+        } = await supabase.auth.getUser()
+
+        if (!active) return
+        if (userError || !user) {
+          setError(recoveryMessage(null))
+          setHasRecoverySession(false)
         } else {
-          setError(errorDescription || "비밀번호 재설정 링크가 유효하지 않습니다.")
+          setHasRecoverySession(true)
+          setError("")
         }
-      } else if (token) {
-        setAccessToken(token)
-      } else {
-        setError("유효하지 않은 비밀번호 재설정 링크입니다.")
-        setShowResendLink(true)
+      } catch {
+        if (!active) return
+        setError("인증 세션 확인 중 오류가 발생했습니다.")
+        setHasRecoverySession(false)
+      } finally {
+        if (active) {
+          setCheckingSession(false)
+          window.history.replaceState({}, "", window.location.pathname)
+        }
       }
-      
-      // 에러가 있으면 재전송 링크 표시
-      if (error) {
-        setShowResendLink(true)
-      }
+    }
+
+    void initialize()
+    return () => {
+      active = false
     }
   }, [])
 
   const handleResendLink = async () => {
-    if (!email) {
-      setError("이메일을 입력해주세요.")
+    const normalizedEmail = email.trim().toLowerCase()
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      setError("올바른 이메일 주소를 입력해 주세요.")
       return
     }
 
     setResendLoading(true)
     setError("")
+    setResendSuccess(false)
 
     try {
       const supabase = createClient()
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/admin/reset-password`,
-      })
+      const redirectTo = `${window.location.origin}/auth/callback?flow=recovery&next=${encodeURIComponent(
+        "/admin/reset-password"
+      )}`
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+        normalizedEmail,
+        { redirectTo }
+      )
 
-      if (resetError) {
-        setError(resetError.message || "비밀번호 재설정 링크 전송에 실패했습니다.")
-      } else {
-        setResendSuccess(true)
-        setError("")
-      }
-    } catch (err) {
-      setError("비밀번호 재설정 링크 전송 중 오류가 발생했습니다.")
-      console.error("Resend link error:", err)
+      if (resetError) throw resetError
+      setResendSuccess(true)
+    } catch (caught) {
+      const message = caught instanceof Error ? caught.message.toLowerCase() : ""
+      setError(
+        message.includes("rate limit") || message.includes("too many")
+          ? "재설정 메일 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요."
+          : "비밀번호 재설정 메일을 보내지 못했습니다. 이메일 설정을 확인해 주세요."
+      )
+    } finally {
+      setResendLoading(false)
     }
-
-    setResendLoading(false)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     setError("")
-    setSuccess(false)
 
-    if (!password || !confirmPassword) {
-      setError("비밀번호를 입력해주세요.")
+    if (password.length < 8) {
+      setError("비밀번호는 8자 이상이어야 합니다.")
       return
     }
-
-    if (password.length < 6) {
-      setError("비밀번호는 최소 6자 이상이어야 합니다.")
-      return
-    }
-
     if (password !== confirmPassword) {
       setError("비밀번호가 일치하지 않습니다.")
       return
     }
-
-    if (!accessToken) {
-      setError("유효하지 않은 토큰입니다.")
+    if (!hasRecoverySession) {
+      setError(recoveryMessage(null))
       return
     }
 
     setLoading(true)
-
     try {
       const supabase = createClient()
-      
-      // 세션 설정
-      const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: "",
-      })
+      const { error: updateError } = await supabase.auth.updateUser({ password })
+      if (updateError) throw updateError
 
-      if (sessionError) {
-        setError("세션 설정에 실패했습니다. 링크가 만료되었을 수 있습니다.")
-        setLoading(false)
-        return
-      }
-
-      // 비밀번호 업데이트
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: password,
-      })
-
-      if (updateError) {
-        setError(updateError.message || "비밀번호 변경에 실패했습니다.")
-        setLoading(false)
-        return
-      }
-
-      // 성공
       setSuccess(true)
-      
-      // 2초 후 로그인 페이지로 이동
-      setTimeout(() => {
-        router.push("/admin/login")
-      }, 2000)
-    } catch (err) {
-      setError("비밀번호 변경 중 오류가 발생했습니다.")
-      console.error("Reset password error:", err)
+      await supabase.auth.signOut()
+      window.setTimeout(() => {
+        router.replace("/auth/login?password_reset=success")
+        router.refresh()
+      }, 1200)
+    } catch (caught) {
+      const message = caught instanceof Error ? caught.message.toLowerCase() : ""
+      setError(
+        message.includes("session") || message.includes("token")
+          ? "재설정 세션이 만료되었습니다. 새 링크를 요청해 주세요."
+          : "비밀번호 변경에 실패했습니다. 다시 시도해 주세요."
+      )
+      if (message.includes("session") || message.includes("token")) {
+        setHasRecoverySession(false)
+      }
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
-  if (!accessToken && !error) {
+  if (checkingSession) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6">
-            <div className="text-center">로딩 중...</div>
-          </CardContent>
-        </Card>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+        <div className="flex items-center gap-3 text-sm font-semibold text-gray-600">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          재설정 세션을 확인하고 있습니다.
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 flex items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-            <Key className="w-8 h-8 text-primary" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            {hasRecoverySession ? (
+              <KeyRound className="h-8 w-8 text-primary" />
+            ) : (
+              <Mail className="h-8 w-8 text-primary" />
+            )}
           </div>
           <CardTitle className="text-2xl font-bold text-secondary">
-            비밀번호 재설정
+            {hasRecoverySession ? "새 비밀번호 설정" : "재설정 링크 다시 받기"}
           </CardTitle>
-          <p className="text-sm text-text-secondary mt-2">
-            새로운 비밀번호를 입력해주세요
+          <p className="mt-2 text-sm text-text-secondary">
+            {hasRecoverySession
+              ? "새 비밀번호를 입력해 계정을 보호하세요."
+              : "등록된 이메일로 새로운 재설정 링크를 보내드립니다."}
           </p>
         </CardHeader>
         <CardContent>
           {success ? (
-            <div className="text-center space-y-4">
-              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-                비밀번호가 성공적으로 변경되었습니다. 로그인 페이지로 이동합니다...
+            <div className="space-y-4 text-center">
+              <ShieldCheck className="mx-auto h-10 w-10 text-emerald-600" />
+              <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                비밀번호가 변경되었습니다. 로그인 페이지로 이동합니다.
               </div>
             </div>
-          ) : showResendLink ? (
-            <div className="space-y-4">
-              {resendSuccess ? (
-                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-                  비밀번호 재설정 링크가 이메일로 전송되었습니다. 이메일을 확인해주세요.
-                </div>
-              ) : (
-                <>
-                  {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                      {error}
-                    </div>
-                  )}
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-secondary mb-2">
-                      이메일 주소
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="등록된 이메일을 입력하세요"
-                      required
-                      autoComplete="email"
-                    />
-                  </div>
-                  <Button
-                    onClick={handleResendLink}
-                    className="w-full"
-                    disabled={resendLoading}
-                  >
-                    {resendLoading ? (
-                      "전송 중..."
-                    ) : (
-                      <>
-                        <Mail className="w-4 h-4 mr-2" />
-                        비밀번호 재설정 링크 재전송
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => router.push("/admin/login")}
-                    className="w-full"
-                  >
-                    로그인 페이지로 돌아가기
-                  </Button>
-                </>
-              )}
-            </div>
-          ) : (
+          ) : hasRecoverySession ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-secondary mb-2">
+                <label htmlFor="password" className="mb-2 block text-sm font-medium text-secondary">
                   새 비밀번호
                 </label>
                 <input
                   id="password"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="새 비밀번호를 입력하세요 (최소 6자)"
+                  onChange={(event) => setPassword(event.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-primary"
+                  placeholder="8자 이상 입력하세요"
                   required
-                  minLength={6}
+                  minLength={8}
                   autoComplete="new-password"
                 />
               </div>
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-secondary mb-2">
+                <label htmlFor="confirmPassword" className="mb-2 block text-sm font-medium text-secondary">
                   비밀번호 확인
                 </label>
                 <input
                   id="confirmPassword"
                   type="password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="비밀번호를 다시 입력하세요"
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-primary"
+                  placeholder="한 번 더 입력하세요"
                   required
-                  minLength={6}
+                  minLength={8}
                   autoComplete="new-password"
                 />
               </div>
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              {error ? (
+                <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                   {error}
                 </div>
-              )}
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading}
-              >
-                {loading ? (
-                  "비밀번호 변경 중..."
-                ) : (
-                  <>
-                    <Lock className="w-4 h-4 mr-2" />
-                    비밀번호 변경
-                  </>
-                )}
+              ) : null}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Lock className="mr-2 h-4 w-4" />}
+                {loading ? "변경 중..." : "비밀번호 변경"}
               </Button>
             </form>
+          ) : (
+            <div className="space-y-4">
+              {resendSuccess ? (
+                <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm leading-6 text-green-700">
+                  재설정 메일을 보냈습니다. 가장 최근에 받은 메일의 링크를 사용해 주세요.
+                </div>
+              ) : null}
+              {error ? (
+                <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700">
+                  {error}
+                </div>
+              ) : null}
+              <div>
+                <label htmlFor="email" className="mb-2 block text-sm font-medium text-secondary">
+                  이메일 주소
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-primary"
+                  placeholder="등록된 이메일을 입력하세요"
+                  required
+                  autoComplete="email"
+                />
+              </div>
+              <Button onClick={handleResendLink} className="w-full" disabled={resendLoading}>
+                {resendLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Mail className="mr-2 h-4 w-4" />}
+                {resendLoading ? "전송 중..." : "재설정 링크 보내기"}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => router.replace("/auth/login")} className="w-full">
+                로그인 페이지로 돌아가기
+              </Button>
+            </div>
           )}
         </CardContent>
       </Card>
     </div>
   )
 }
-
