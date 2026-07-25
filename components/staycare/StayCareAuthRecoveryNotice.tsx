@@ -1,6 +1,7 @@
 "use client"
 
 import { AlertTriangle, RefreshCcw } from "lucide-react"
+import { normalizeStayCareLocale } from "@/lib/auth/redirects"
 
 const copy = {
   ko: {
@@ -13,6 +14,11 @@ const copy = {
     body: "The link has expired or was already used. Enter your email address or phone number below to request a new six-digit verification code.",
     action: "Request a new code",
   },
+  si: {
+    title: "පිවිසුම් සබැඳිය කල් ඉකුත් වී ඇත",
+    body: "මෙම සබැඳිය කල් ඉකුත් වී හෝ දැනටමත් භාවිත කර ඇත. නවතම අංක 6ක තහවුරු කිරීමේ කේතයක් ලබා ගැනීමට පහතින් ඔබගේ විද්‍යුත් තැපෑල හෝ දුරකථන අංකය නැවත ඇතුළත් කරන්න.",
+    action: "නව කේතයක් ඉල්ලන්න",
+  },
 } as const
 
 export default function StayCareAuthRecoveryNotice({
@@ -24,7 +30,7 @@ export default function StayCareAuthRecoveryNotice({
 }) {
   if (reason !== "otp_expired") return null
 
-  const text = locale === "en" ? copy.en : copy.ko
+  const text = copy[normalizeStayCareLocale(locale)]
 
   const focusLoginForm = () => {
     const field = document.querySelector<HTMLInputElement>(
@@ -38,6 +44,7 @@ export default function StayCareAuthRecoveryNotice({
     <div className="mx-auto max-w-5xl px-4 pt-8">
       <div
         role="alert"
+        aria-live="assertive"
         className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-amber-950 shadow-sm"
       >
         <div className="flex items-start gap-3">
@@ -48,7 +55,7 @@ export default function StayCareAuthRecoveryNotice({
             <button
               type="button"
               onClick={focusLoginForm}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-amber-950 px-4 py-2 text-sm font-black text-white transition hover:bg-amber-900"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-amber-950 px-4 py-2 text-sm font-black text-white transition hover:bg-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-950 focus:ring-offset-2"
             >
               <RefreshCcw className="h-4 w-4" />
               {text.action}
