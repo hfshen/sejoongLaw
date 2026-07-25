@@ -1,51 +1,81 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
-import { isAdminAuthenticated } from "@/lib/admin/auth"
+import { getAuthenticatedBackofficeProfile } from "@/lib/admin/auth"
+import {
+  caseUpdateSchema,
+  firstCaseValidationMessage,
+  UUID_PATTERN,
+} from "@/lib/admin/case-validation"
 import { updateDocumentFromCase } from "@/lib/documents/case-mapper"
-import { createNextErrorResponse } from "@/lib/utils/error-handler"
-import { createSuccessResponse } from "@/lib/utils/api-response"
-import logger from "@/lib/logger"
-import type { CaseData } from "@/lib/types/admin"
 import type { DocumentType } from "@/lib/documents/templates"
+import logger from "@/lib/logger"
+import { requireTrustedOrigin } from "@/lib/security/request"
+import { getServiceClient } from "@/lib/supabase/service"
+import type { CaseData } from "@/lib/types/admin"
+import { createSuccessResponse } from "@/lib/utils/api-response"
+import { createNextErrorResponse } from "@/lib/utils/error-handler"
+
+const CASE_ROLES = ["admin", "korea_agent"] as const
+
+function forbidden() {
+  const response = NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  return response
+}
+
+function badRequest(message: string) {
+  return NextResponse.json({ error: message }, { status: 400 })
+}
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    const actor = await getAuthenticatedBackofficeProfile(CASE_ROLES)
+    if (!actor) return forbidden()
 
     const { id } = await params
-    const supabase = await createClient()
+    if (!UUID_PATTERN.test(id)) return badRequest("올바른 케이스 ID가 필요합니다.")
 
-    const { data: caseRecord, error } = await supabase
-      .from("cases")
-      .select("*")
-      .eq("id", id)
-      .single()
+    const supabase = getServiceClient()
+    const [{ data: caseRecord, error }, { data: documents, error: documentsError }] =
+      await Promise.all([
+        supabase.from("cases").select("*").eq("id", id).single(),
+        supabase
+          .from("documents")
+          .select("*")
+          .eq("case_id", id)
+          .order("created_at", { ascending: false }),
+      ])
 
-    if (error) {
+    if (error || !caseRecord) {
       return createNextErrorResponse(
         NextResponse,
-        error,
+        error || new Error("Case not found"),
         "케이스를 찾을 수 없습니다.",
         404
       )
     }
+    if (documentsError) {
+      return createNextErrorResponse(
+        NextResponse,
+        documentsError,
+        "연결된 서류를 불러오는데 실패했습니다.",
+        500
+      )
+    }
 
-    // 연결된 서류들도 함께 조회
-    const { data: documents } = await supabase
-      .from("documents")
-      .select("*")
-      .eq("case_id", id)
-      .order("created_at", { ascending: false })
-
-    logger.info("Case fetched", { caseId: id, documentCount: documents?.length || 0 })
-    return createSuccessResponse({ case: caseRecord, documents: documents || [] })
+    logger.info("Case fetched", {
+      actorUserId: actor.id,
+      caseId: id,
+      documentCount: documents?.length || 0,
+    })
+    return createSuccessResponse({
+      case: caseRecord,
+      documents: documents || [],
+    })
   } catch (error) {
+    logger.error("Error fetching case", { error })
     return createNextErrorResponse(
       NextResponse,
       error,
@@ -60,26 +90,42 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    requireTrustedOrigin(request)
+    const actor = await getAuthenticatedBackofficeProfile(CASE_ROLES)
+    if (!actor) return forbidden()
 
     const { id } = await params
-    const supabase = await createClient()
-    const body = await request.json()
+    if (!UUID_PATTERN.test(id)) return badRequest("올바른 케이스 ID가 필요합니다.")
 
-    const { case_number, case_name, case_data, update_linked_documents = true } = body
+    const parsed = caseUpdateSchema.safeParse(await request.json())
+    if (!parsed.success) return badRequest(firstCaseValidationMessage(parsed.error))
 
-    // 케이스 업데이트
-    const updateData: Partial<{
-      case_number: string | null
-      case_name: string
-      case_data: CaseData
-    }> = {}
-    if (case_number !== undefined) updateData.case_number = case_number
-    if (case_name !== undefined) updateData.case_name = case_name
-    if (case_data !== undefined) updateData.case_data = case_data as CaseData
+    const { update_linked_documents, ...updateData } = parsed.data
+    const supabase = getServiceClient()
+    const { data: previousCase, error: previousCaseError } = await supabase
+      .from("cases")
+      .select("*")
+      .eq("id", id)
+      .single()
+
+    if (previousCaseError || !previousCase) {
+      return NextResponse.json({ error: "케이스를 찾을 수 없습니다." }, { status: 404 })
+    }
+
+    const { data: linkedDocuments, error: linkedDocumentsError } = await supabase
+      .from("documents")
+      .select("id, data, document_type")
+      .eq("case_id", id)
+      .eq("is_case_linked", true)
+
+    if (linkedDocumentsError) {
+      return createNextErrorResponse(
+        NextResponse,
+        linkedDocumentsError,
+        "연결된 서류를 확인하지 못했습니다.",
+        500
+      )
+    }
 
     const { data: updatedCase, error: updateError } = await supabase
       .from("cases")
@@ -88,49 +134,70 @@ export async function PUT(
       .select()
       .single()
 
-    if (updateError) {
+    if (updateError || !updatedCase) {
       return createNextErrorResponse(
         NextResponse,
-        updateError,
+        updateError || new Error("Updated case was not returned"),
         "케이스 수정에 실패했습니다.",
         500
       )
     }
 
-    // 연결된 서류들도 업데이트 (옵션)
-    if (update_linked_documents && case_data) {
-      const { data: linkedDocuments } = await supabase
-        .from("documents")
-        .select("*")
-        .eq("case_id", id)
-        .eq("is_case_linked", true)
-
-      if (linkedDocuments && linkedDocuments.length > 0) {
-        const updatePromises = linkedDocuments.map(async (doc) => {
+    if (update_linked_documents && parsed.data.case_data && linkedDocuments?.length) {
+      const results = await Promise.all(
+        linkedDocuments.map((document) => {
           const updatedData = updateDocumentFromCase(
-            doc.data,
-            case_data as CaseData,
-            doc.document_type as DocumentType
+            document.data,
+            parsed.data.case_data as CaseData,
+            document.document_type as DocumentType
           )
-
           return supabase
             .from("documents")
             .update({ data: updatedData })
-            .eq("id", doc.id)
+            .eq("id", document.id)
         })
+      )
 
-        const results = await Promise.all(updatePromises)
-        const errors = results.filter(r => r.error)
-        
-        if (errors.length > 0) {
-          // 일부 서류 업데이트 실패는 경고로 처리 (케이스 업데이트는 성공)
-        }
+      if (results.some((result) => result.error)) {
+        await Promise.all([
+          supabase
+            .from("cases")
+            .update({
+              case_number: previousCase.case_number,
+              case_name: previousCase.case_name,
+              case_data: previousCase.case_data,
+            })
+            .eq("id", id),
+          ...linkedDocuments.map((document) =>
+            supabase
+              .from("documents")
+              .update({ data: document.data })
+              .eq("id", document.id)
+          ),
+        ])
+
+        logger.error("Rolled back case after linked document update failed", {
+          actorUserId: actor.id,
+          caseId: id,
+        })
+        return NextResponse.json(
+          { error: "연결 서류 동기화에 실패하여 케이스 수정을 취소했습니다." },
+          { status: 500 }
+        )
       }
     }
 
-    logger.info("Case updated", { caseId: id })
+    logger.info("Case updated", {
+      actorUserId: actor.id,
+      caseId: id,
+      changedFields: Object.keys(updateData),
+    })
     return createSuccessResponse({ case: updatedCase }, "케이스가 수정되었습니다.")
   } catch (error) {
+    if (error instanceof Error && error.name === "UntrustedOriginError") {
+      return forbidden()
+    }
+    logger.error("Error updating case", { error })
     return createNextErrorResponse(
       NextResponse,
       error,
@@ -145,17 +212,25 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    requireTrustedOrigin(request)
+    const admin = await getAuthenticatedBackofficeProfile(["admin"])
+    if (!admin) return forbidden()
 
     const { id } = await params
-    const supabase = await createClient()
+    if (!UUID_PATTERN.test(id)) return badRequest("올바른 케이스 ID가 필요합니다.")
 
-    // 케이스 삭제 (연결된 서류들의 case_id는 NULL로 설정됨 - ON DELETE SET NULL)
+    const supabase = getServiceClient()
+    const { data: existing, error: lookupError } = await supabase
+      .from("cases")
+      .select("id")
+      .eq("id", id)
+      .single()
+
+    if (lookupError || !existing) {
+      return NextResponse.json({ error: "케이스를 찾을 수 없습니다." }, { status: 404 })
+    }
+
     const { error } = await supabase.from("cases").delete().eq("id", id)
-
     if (error) {
       return createNextErrorResponse(
         NextResponse,
@@ -165,9 +240,16 @@ export async function DELETE(
       )
     }
 
-    logger.info("Case deleted", { caseId: id })
+    logger.info("Case deleted", {
+      actorUserId: admin.id,
+      caseId: id,
+    })
     return createSuccessResponse({ success: true }, "케이스가 삭제되었습니다.")
   } catch (error) {
+    if (error instanceof Error && error.name === "UntrustedOriginError") {
+      return forbidden()
+    }
+    logger.error("Error deleting case", { error })
     return createNextErrorResponse(
       NextResponse,
       error,
@@ -176,4 +258,3 @@ export async function DELETE(
     )
   }
 }
-
