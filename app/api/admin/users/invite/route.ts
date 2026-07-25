@@ -1,216 +1,241 @@
+import crypto from "crypto"
 import { NextRequest, NextResponse } from "next/server"
-import { getServiceClient } from "@/lib/supabase/service"
-import { isAdminAuthenticated } from "@/lib/admin/auth"
-import { createNextErrorResponse } from "@/lib/utils/error-handler"
-import { createSuccessResponse } from "@/lib/utils/api-response"
+import { getAuthenticatedBackofficeProfile } from "@/lib/admin/auth"
 import { sendInviteEmail } from "@/lib/email/templates/invite-foreign-lawyer"
 import logger from "@/lib/logger"
-import crypto from "crypto"
+import { requireTrustedOrigin } from "@/lib/security/request"
+import { getServiceClient } from "@/lib/supabase/service"
+import { createNextErrorResponse } from "@/lib/utils/error-handler"
+import { createSuccessResponse } from "@/lib/utils/api-response"
 
-const VALID_ROLES = ["korea_agent", "translator", "foreign_lawyer", "family_viewer", "admin"] as const
+const VALID_ROLES = [
+  "korea_agent",
+  "translator",
+  "foreign_lawyer",
+  "family_viewer",
+  "admin",
+] as const
 const TOKEN_EXPIRY_DAYS = 7
+
+type ManagedRole = (typeof VALID_ROLES)[number]
+
+function forbidden() {
+  const response = NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  return response
+}
+
+function badRequest(message: string) {
+  return NextResponse.json({ error: message }, { status: 400 })
+}
+
+function siteOrigin() {
+  const configured =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    "http://localhost:3000"
+  try {
+    return new URL(configured).origin
+  } catch {
+    return "http://localhost:3000"
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    requireTrustedOrigin(request)
+    const admin = await getAuthenticatedBackofficeProfile(["admin"])
+    if (!admin) return forbidden()
+
+    const body = await request.json()
+    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : ""
+    const name = typeof body.name === "string" ? body.name.trim().slice(0, 100) : ""
+    const role = body.role as ManagedRole | undefined
+    const country =
+      typeof body.country === "string" ? body.country.trim().slice(0, 100) || null : null
+    const organization =
+      typeof body.organization === "string"
+        ? body.organization.trim().slice(0, 200) || null
+        : null
+
+    if (!email || !name || !role) {
+      return badRequest("이메일, 이름, 역할은 필수입니다.")
     }
-
-    // Get admin user ID
-    const { createClient } = await import("@/lib/supabase/server")
-    const regularClient = await createClient()
-    const {
-      data: { user: adminUser },
-    } = await regularClient.auth.getUser()
-
-    if (!adminUser) {
-      return NextResponse.json({ error: "Admin user not found" }, { status: 401 })
+    if (email.length > 320 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return badRequest("올바른 이메일 형식이 아닙니다.")
+    }
+    if (!VALID_ROLES.includes(role)) {
+      return badRequest(`올바른 역할이 아닙니다. 허용된 역할: ${VALID_ROLES.join(", ")}`)
     }
 
     const supabase = getServiceClient()
-    const body = await request.json()
+    const { data: existingProfile, error: profileLookupError } = await supabase
+      .from("profiles")
+      .select("id")
+      .ilike("email", email)
+      .maybeSingle()
 
-    const { email, name, role, country, organization } = body
-
-    // Validation
-    if (!email || !name || !role) {
-      return NextResponse.json(
-        { error: "이메일, 이름, 역할은 필수입니다." },
-        { status: 400 }
-      )
+    if (profileLookupError) {
+      throw profileLookupError
+    }
+    if (existingProfile) {
+      return badRequest("이미 등록된 이메일입니다.")
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: "올바른 이메일 형식이 아닙니다." },
-        { status: 400 }
-      )
-    }
-
-    // Validate role
-    if (!VALID_ROLES.includes(role as any)) {
-      return NextResponse.json(
-        { error: `올바른 역할이 아닙니다. 허용된 역할: ${VALID_ROLES.join(", ")}` },
-        { status: 400 }
-      )
-    }
-
-    // Check if user already exists
-      const { data: existingUser } = await (supabase.auth.admin as any).getUserByEmail(email)
-    if (existingUser?.user) {
-      return NextResponse.json(
-        { error: "이미 등록된 이메일입니다." },
-        { status: 400 }
-      )
-    }
-
-    // Check if invitation already exists and is not expired
-    const { data: existingInvitation } = await supabase
+    const { data: existingInvitation, error: invitationLookupError } = await supabase
       .from("user_invitations")
-      .select("*")
+      .select("id")
       .eq("email", email)
       .is("accepted_at", null)
       .gt("expires_at", new Date().toISOString())
-      .single()
+      .maybeSingle()
 
+    if (invitationLookupError) {
+      throw invitationLookupError
+    }
     if (existingInvitation) {
-      return NextResponse.json(
-        { error: "이미 발송된 초대가 있습니다. 만료 후 다시 시도해주세요." },
-        { status: 400 }
-      )
+      return badRequest("이미 유효한 초대가 있습니다. 기존 초대를 확인해 주세요.")
     }
 
-    // Generate invitation token
     const token = crypto.randomBytes(32).toString("hex")
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + TOKEN_EXPIRY_DAYS)
 
-    // Invite user via Supabase Auth
-    const { data: invitedUser, error: inviteError } = await supabase.auth.admin.inviteUserByEmail(
-      email,
-      {
+    const redirectTo = `${siteOrigin()}/accept-invite/${token}`
+    const { data: invitedUser, error: inviteError } =
+      await supabase.auth.admin.inviteUserByEmail(email, {
         data: {
           name,
           role,
-          country: country || null,
-          organization: organization || null,
+          country,
+          organization,
         },
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/accept-invite/${token}`,
-      }
-    )
+        redirectTo,
+      })
 
-    if (inviteError) {
+    if (inviteError || !invitedUser.user) {
       logger.error("Failed to invite user via Supabase Auth", {
         error: inviteError,
-        email,
+        actorUserId: admin.id,
       })
       return createNextErrorResponse(
         NextResponse,
-        inviteError,
+        inviteError || new Error("Supabase did not return an invited user"),
         "사용자 초대에 실패했습니다.",
         500
       )
     }
 
-    // Save invitation record
-    const { data: invitation, error: invitationError } = await (supabase as any)
+    const invitedUserId = invitedUser.user.id
+    const rollbackInvitation = async () => {
+      await supabase.from("user_invitations").delete().eq("user_id", invitedUserId)
+      await supabase.auth.admin.deleteUser(invitedUserId)
+    }
+
+    const { data: invitation, error: invitationError } = await supabase
       .from("user_invitations")
-      .insert([
-        {
-          email,
-          token,
-          role,
-          country: country || null,
-          organization: organization || null,
-          invited_by: adminUser.id,
-          expires_at: expiresAt.toISOString(),
-          user_id: invitedUser?.user?.id || null,
-        },
-      ])
+      .insert({
+        email,
+        token,
+        role,
+        country,
+        organization,
+        invited_by: admin.id,
+        expires_at: expiresAt.toISOString(),
+        user_id: invitedUserId,
+      })
       .select()
       .single()
 
-    if (invitationError) {
+    if (invitationError || !invitation) {
+      await rollbackInvitation()
       logger.error("Failed to save invitation record", {
         error: invitationError,
-        email,
+        actorUserId: admin.id,
+        invitedUserId,
       })
-      // Don't fail the request - user is already invited
-    }
-
-    // Update profile if user was created
-    if (invitedUser?.user?.id) {
-      const { error: profileError } = await (supabase as any).from("profiles").upsert(
-        {
-          id: invitedUser.user.id,
-          email: invitedUser.user.email || email,
-          name,
-          role,
-          country: country || null,
-          organization: organization || null,
-          status: "pending",
-          invited_by: adminUser.id,
-          invited_at: new Date().toISOString(),
-        },
-        {
-          onConflict: "id",
-        }
+      return createNextErrorResponse(
+        NextResponse,
+        invitationError || new Error("Invitation record was not created"),
+        "사용자 초대 정보를 저장하지 못했습니다.",
+        500
       )
-
-      if (profileError) {
-        logger.error("Failed to update profile", {
-          error: profileError,
-          userId: invitedUser.user.id,
-        })
-        // Don't fail the request
-      }
     }
 
-    // Send invitation email
+    const { error: profileError } = await supabase.from("profiles").upsert(
+      {
+        id: invitedUserId,
+        email: invitedUser.user.email || email,
+        name,
+        role,
+        country,
+        organization,
+        status: "pending",
+        invited_by: admin.id,
+        invited_at: new Date().toISOString(),
+      },
+      { onConflict: "id" }
+    )
+
+    if (profileError) {
+      await rollbackInvitation()
+      logger.error("Failed to create invited profile", {
+        error: profileError,
+        actorUserId: admin.id,
+        invitedUserId,
+      })
+      return createNextErrorResponse(
+        NextResponse,
+        profileError,
+        "초대 사용자 프로필을 만들지 못했습니다.",
+        500
+      )
+    }
+
     try {
       const emailResult = await sendInviteEmail({
         email,
         name,
         role,
-        country: country || null,
-        organization: organization || null,
+        country,
+        organization,
         inviteToken: token,
-        invitedBy: adminUser.email || undefined,
+        invitedBy: admin.email || undefined,
       })
 
       if (!emailResult.success) {
-        logger.warn("Failed to send invitation email", {
+        logger.warn("Custom invitation email delivery failed", {
           error: emailResult.error,
-          email,
+          actorUserId: admin.id,
+          invitedUserId,
         })
-        // Don't fail the request - user is already invited
       }
     } catch (emailError) {
-      logger.error("Error sending invitation email", {
+      logger.error("Custom invitation email delivery threw", {
         error: emailError,
-        email,
+        actorUserId: admin.id,
+        invitedUserId,
       })
-      // Don't fail the request
     }
 
     logger.info("User invited successfully", {
-      email,
+      actorUserId: admin.id,
+      invitedUserId,
       role,
-      invitedBy: adminUser.id,
     })
 
     return createSuccessResponse(
       {
-        user: invitedUser?.user || null,
-        invitation: invitation || null,
+        user: invitedUser.user,
+        invitation,
       },
       "사용자 초대가 완료되었습니다.",
       201
     )
   } catch (error) {
+    if (error instanceof Error && error.name === "UntrustedOriginError") {
+      return forbidden()
+    }
     logger.error("Error inviting user", { error })
     return createNextErrorResponse(
       NextResponse,
