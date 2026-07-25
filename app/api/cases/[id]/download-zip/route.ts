@@ -1,76 +1,70 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
-import { isAdminAuthenticated } from "@/lib/admin/auth"
-import JSZip from "jszip"
+import { getAuthenticatedBackofficeProfile } from "@/lib/admin/auth"
+import { UUID_PATTERN } from "@/lib/admin/case-validation"
+import logger from "@/lib/logger"
+import { getServiceClient } from "@/lib/supabase/service"
+
+const CASE_ROLES = ["admin", "korea_agent"] as const
+
+function jsonNoStore(body: unknown, init?: ResponseInit) {
+  const response = NextResponse.json(body, init)
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  response.headers.set("Content-Disposition", "inline")
+  return response
+}
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    const actor = await getAuthenticatedBackofficeProfile(CASE_ROLES)
+    if (!actor) return jsonNoStore({ error: "Forbidden" }, { status: 403 })
 
     const { id } = await params
-    const supabase = await createClient()
+    if (!UUID_PATTERN.test(id)) {
+      return jsonNoStore({ error: "올바른 케이스 ID가 필요합니다." }, { status: 400 })
+    }
 
-    // 케이스 정보 가져오기
-    const { data: caseRecord, error: caseError } = await supabase
-      .from("cases")
-      .select("*")
-      .eq("id", id)
-      .single()
+    const supabase = getServiceClient()
+    const [{ data: caseRecord, error: caseError }, { data: documents, error: docsError }] =
+      await Promise.all([
+        supabase.from("cases").select("*").eq("id", id).single(),
+        supabase
+          .from("documents")
+          .select("*")
+          .eq("case_id", id)
+          .eq("is_case_linked", true)
+          .order("created_at", { ascending: false }),
+      ])
 
     if (caseError || !caseRecord) {
-      return NextResponse.json(
-        { error: "Case not found" },
-        { status: 404 }
-      )
+      return jsonNoStore({ error: "케이스를 찾을 수 없습니다." }, { status: 404 })
     }
-
-    // 연결된 서류들 가져오기
-    const { data: documents, error: docsError } = await supabase
-      .from("documents")
-      .select("*")
-      .eq("case_id", id)
-      .eq("is_case_linked", true)
-      .order("created_at", { ascending: false })
-
     if (docsError) {
-      return NextResponse.json(
-        { error: "Failed to fetch documents" },
-        { status: 500 }
-      )
+      logger.error("Failed to fetch documents for case export", {
+        error: docsError,
+        actorUserId: actor.id,
+        caseId: id,
+      })
+      return jsonNoStore({ error: "서류를 불러오는데 실패했습니다." }, { status: 500 })
+    }
+    if (!documents?.length) {
+      return jsonNoStore({ error: "내보낼 서류가 없습니다." }, { status: 404 })
     }
 
-    if (!documents || documents.length === 0) {
-      return NextResponse.json(
-        { error: "No documents found" },
-        { status: 404 }
-      )
-    }
-
-    // 클라이언트 사이드에서 이미지 생성이 필요하므로
-    // 여기서는 문서 정보만 반환하고, 실제 ZIP 생성은 클라이언트에서 처리
-    // 또는 서버 사이드에서 Puppeteer 등을 사용하여 이미지 생성 가능
-    // 현재는 클라이언트 사이드에서 처리하는 것이 더 간단
-
-    return NextResponse.json(
-      { 
-        case: caseRecord,
-        documents: documents,
-        message: "Use client-side ZIP generation"
-      },
-      { status: 200 }
-    )
-  } catch (error: any) {
-    console.error("Download ZIP API error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+    logger.info("Case export payload fetched", {
+      actorUserId: actor.id,
+      caseId: id,
+      documentCount: documents.length,
+    })
+    return jsonNoStore({
+      case: caseRecord,
+      documents,
+      message: "Generate the ZIP in the authenticated client.",
+    })
+  } catch (error) {
+    logger.error("Case export payload failed", { error })
+    return jsonNoStore({ error: "케이스 내보내기에 실패했습니다." }, { status: 500 })
   }
 }
-
