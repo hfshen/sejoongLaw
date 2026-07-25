@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
 import { notFound } from "next/navigation"
 import AnalyticsProvider from "@/components/analytics/AnalyticsProvider"
+import AuthHashRecovery from "@/components/auth/AuthHashRecovery"
 import LocaleAttributes from "@/components/layout/LocaleAttributes"
 import { StructuredData } from "@/components/seo/StructuredData"
 import WeChatMeta from "@/components/seo/WeChatMeta"
@@ -111,6 +112,7 @@ export default async function LocaleLayout({
 
   return (
     <>
+      <AuthHashRecovery locale={locale} />
       <StructuredData type="Organization" locale={locale} />
       <StructuredData type="LegalService" locale={locale} />
       <StructuredData type="WebSite" locale={locale} />
