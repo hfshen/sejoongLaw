@@ -1,341 +1,234 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
-import { getServiceClient } from "@/lib/supabase/service"
-import { isAdminAuthenticated } from "@/lib/admin/auth"
-import { createNextErrorResponse, handleApiError } from "@/lib/utils/error-handler"
-import { createSuccessResponse } from "@/lib/utils/api-response"
-import logger from "@/lib/logger"
+import { getAuthenticatedBackofficeProfile } from "@/lib/admin/auth"
+import {
+  CASE_SORT_COLUMNS,
+  caseCreateSchema,
+  firstCaseValidationMessage,
+  normalizeCaseSearch,
+  type CaseSortColumn,
+} from "@/lib/admin/case-validation"
 import type { DocumentType } from "@/lib/documents/templates"
+import logger from "@/lib/logger"
+import { requireTrustedOrigin } from "@/lib/security/request"
+import { getServiceClient } from "@/lib/supabase/service"
+import { createSuccessResponse } from "@/lib/utils/api-response"
+import { createNextErrorResponse } from "@/lib/utils/error-handler"
+
+const CASE_ROLES = ["admin", "korea_agent"] as const
+
+function forbidden() {
+  const response = NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  return response
+}
+
+async function ensureCaseOperator() {
+  return getAuthenticatedBackofficeProfile(CASE_ROLES)
+}
+
+function isConnectionError(error: unknown) {
+  if (!(error instanceof Error)) return false
+  const message = error.message.toLowerCase()
+  return (
+    message.includes("timeout") ||
+    message.includes("connecttimeouterror") ||
+    message.includes("fetch failed")
+  )
+}
 
 export async function GET(request: NextRequest) {
   try {
-    // 환경 변수 확인
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      logger.error("Supabase environment variables are not set")
-      return createNextErrorResponse(
-        NextResponse,
-        new Error("데이터베이스 설정이 올바르지 않습니다."),
-        "데이터베이스 설정 오류",
-        500
-      )
-    }
-
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    let supabase
-    try {
-      supabase = await createClient()
-    } catch (clientError) {
-      logger.error("Failed to create Supabase client", { error: clientError })
-      return createNextErrorResponse(
-        NextResponse,
-        clientError,
-        "데이터베이스 연결에 실패했습니다.",
-        500
-      )
-    }
+    const actor = await ensureCaseOperator()
+    if (!actor) return forbidden()
 
     const { searchParams } = new URL(request.url)
-    
-    const caseNumber = searchParams.get("case_number")
-    const caseName = searchParams.get("case_name")
-    const sortBy = searchParams.get("sortBy") || "created_at"
-    const sortOrder = searchParams.get("sortOrder") || "desc"
-    const search = searchParams.get("search")
+    const caseNumber = normalizeCaseSearch(searchParams.get("case_number"), 100)
+    const caseName = normalizeCaseSearch(searchParams.get("case_name"), 200)
+    const search = normalizeCaseSearch(searchParams.get("search"))
+    const requestedSort = searchParams.get("sortBy")
+    const sortBy: CaseSortColumn = CASE_SORT_COLUMNS.includes(
+      requestedSort as CaseSortColumn
+    )
+      ? (requestedSort as CaseSortColumn)
+      : "created_at"
+    const ascending = searchParams.get("sortOrder") === "asc"
 
-    let query = supabase.from("cases").select("*")
+    const supabase = getServiceClient()
+    let query = supabase.from("cases").select("*").limit(500)
 
-    // 필터 적용
-    if (caseNumber) {
-      query = query.ilike("case_number", `%${caseNumber}%`)
-    }
-    if (caseName) {
-      query = query.ilike("case_name", `%${caseName}%`)
-    }
+    if (caseNumber) query = query.ilike("case_number", `%${caseNumber}%`)
+    if (caseName) query = query.ilike("case_name", `%${caseName}%`)
     if (search) {
-      query = query.or(`case_name.ilike.%${search}%,case_number.ilike.%${search}%,case_data::text.ilike.%${search}%`)
+      const pattern = `%${search}%`
+      query = query.or(`case_name.ilike.${pattern},case_number.ilike.${pattern}`)
     }
 
-    // 정렬
-    query = query.order(sortBy, { ascending: sortOrder === "asc" })
-
-    const { data, error } = await query
-
+    const { data, error } = await query.order(sortBy, { ascending })
     if (error) {
-      logger.error("Failed to fetch cases", { 
-        error: error.message || error,
-        code: error.code,
-        details: error.details,
-        hint: error.hint
+      logger.error("Failed to fetch cases", {
+        error,
+        actorUserId: actor.id,
       })
-      
-      // 타임아웃 에러 처리
-      if (error.message?.includes("timeout") || error.message?.includes("ConnectTimeoutError")) {
-        return createNextErrorResponse(
-          NextResponse,
-          error,
-          "데이터베이스 연결 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.",
-          503
-        )
-      }
-      
       return createNextErrorResponse(
         NextResponse,
         error,
-        "케이스 목록을 불러오는데 실패했습니다.",
-        500
+        isConnectionError(error)
+          ? "데이터베이스 연결 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요."
+          : "케이스 목록을 불러오는데 실패했습니다.",
+        isConnectionError(error) ? 503 : 500
       )
     }
 
-    logger.info("Cases fetched successfully", { count: data?.length || 0 })
+    logger.info("Cases fetched successfully", {
+      actorUserId: actor.id,
+      count: data?.length || 0,
+    })
     return createSuccessResponse({ cases: data || [] })
   } catch (error) {
-    logger.error("Error fetching cases", { 
-      error: error instanceof Error ? {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
-      } : error
-    })
-    
-    // 타임아웃 에러 처리
-    if (error instanceof Error && (
-      error.message.includes("timeout") || 
-      error.message.includes("ConnectTimeoutError") ||
-      error.message.includes("fetch failed")
-    )) {
-      return createNextErrorResponse(
-        NextResponse,
-        error,
-        "데이터베이스 연결 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.",
-        503
-      )
-    }
-    
+    logger.error("Error fetching cases", { error })
     return createNextErrorResponse(
       NextResponse,
       error,
-      "케이스 목록을 불러오는데 실패했습니다.",
-      500
+      isConnectionError(error)
+        ? "데이터베이스 연결 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요."
+        : "케이스 목록을 불러오는데 실패했습니다.",
+      isConnectionError(error) ? 503 : 500
     )
   }
 }
 
 export async function POST(request: NextRequest) {
+  let createdCaseId: string | null = null
+
   try {
-    // 환경 변수 확인
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      logger.error("Supabase environment variables are not set")
-      return createNextErrorResponse(
-        NextResponse,
-        new Error("데이터베이스 설정이 올바르지 않습니다."),
-        "데이터베이스 설정 오류",
-        500
-      )
-    }
+    requireTrustedOrigin(request)
+    const actor = await ensureCaseOperator()
+    if (!actor) return forbidden()
 
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    // Always use service role client to bypass RLS
-    // We've already verified admin_session cookie, so this is safe
-    let supabase: any
-    let user = null
-    
-    try {
-      supabase = getServiceClient()
-      logger.info("Using service role client for case creation")
-      
-      // Try to get user from regular client for created_by field
-      try {
-        const regularClient = await createClient()
-        const { data: { user: authUser } } = await regularClient.auth.getUser()
-        user = authUser
-      } catch {
-        // No Supabase session, user will be null (created_by will be null)
-        logger.info("No Supabase auth session, created_by will be null")
-      }
-    } catch (serviceError) {
-      logger.error("Failed to get service client", { error: serviceError })
+    const parsed = caseCreateSchema.safeParse(await request.json())
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "서버 설정 오류", details: "Service Role Key가 설정되지 않았습니다." },
-        { status: 500 }
-      )
-    }
-
-    const body = await request.json()
-
-    const { case_number, case_name, case_data, document_types } = body
-
-    if (!case_name || !case_data) {
-      return NextResponse.json(
-        { error: "Missing required fields: case_name, case_data" },
+        { error: firstCaseValidationMessage(parsed.error) },
         { status: 400 }
       )
     }
 
-    // 케이스 생성
-    const { data: caseRecord, error: caseError } = await (supabase as any)
+    const { case_number, case_name, case_data, document_types } = parsed.data
+    const supabase = getServiceClient()
+    const { data: caseRecord, error: caseError } = await supabase
       .from("cases")
-      .insert([
-        {
-          case_number: case_number || null,
-          case_name,
-          case_data: case_data || {},
-          created_by: user?.id || null,
-        },
-      ])
+      .insert({
+        case_number,
+        case_name,
+        case_data,
+        created_by: actor.id,
+      })
       .select()
       .single()
 
-    if (caseError) {
+    if (caseError || !caseRecord) {
       logger.error("Failed to create case", {
         error: caseError,
-        errorCode: caseError.code,
-        errorMessage: caseError.message,
-        errorDetails: caseError.details,
-        errorHint: caseError.hint,
-        case_name: body.case_name,
-        userId: user?.id,
+        actorUserId: actor.id,
       })
-      
-      // RLS 정책 위반 에러인 경우 더 자세한 메시지
-      if (caseError.code === "42501") {
-        logger.error("RLS policy violation", {
-          errorCode: caseError.code,
-          errorMessage: caseError.message,
-          errorDetails: caseError.details,
-          errorHint: caseError.hint,
-          userId: user?.id,
-          case_name: body.case_name,
-        })
-        return NextResponse.json(
-          {
-            error: "권한이 없습니다. RLS 정책을 확인하세요.",
-            details: caseError.message,
-            hint: caseError.hint || "사용자 역할이 올바르게 설정되었는지 확인하세요. 015_fix_rls_permissive.sql 마이그레이션을 실행하세요.",
-            code: caseError.code,
-          },
-          { status: 403 }
-        )
-      }
-      
       return createNextErrorResponse(
         NextResponse,
-        caseError,
-        caseError.message || "케이스 생성에 실패했습니다.",
+        caseError || new Error("Created case was not returned"),
+        "케이스 생성에 실패했습니다.",
         500
       )
     }
+    createdCaseId = caseRecord.id
 
-    // 선택된 서류 타입이 있으면 자동 생성
-    if (document_types && Array.isArray(document_types) && document_types.length > 0) {
-      const { mapCaseToDocument } = await import("@/lib/documents/case-mapper")
-      
-      logger.info("Creating documents for case", { caseId: caseRecord.id, documentTypes: document_types })
-      
-      const documentsToInsert = document_types.map((docType: string) => {
-        // 통합 폼에서 받은 데이터를 그대로 사용하되, mapCaseToDocument로 매핑 보완
-        // 통합 폼 데이터에는 이미 모든 필드가 포함되어 있으므로, 매핑은 추가 필드(날짜 등)만 보완
-        const mappedData = mapCaseToDocument(case_data, docType as DocumentType, case_data)
-        
-        // 통합 폼 데이터와 매핑된 데이터 병합 (통합 폼 데이터 우선)
-        const documentData = {
-          ...mappedData,
-          ...case_data, // 통합 폼 데이터로 덮어쓰기
-        }
-        
-        logger.debug(`Mapped data for ${docType}`, { docType, dataKeys: Object.keys(documentData) })
-        
-        return {
-          document_type: docType,
-          name: case_name,
-          date: new Date().toISOString().split("T")[0],
-          data: documentData,
-          locale: "ko",
-          case_id: caseRecord.id,
-          is_case_linked: true,
-        }
+    if (document_types.length === 0) {
+      logger.info("Case created successfully", {
+        actorUserId: actor.id,
+        caseId: caseRecord.id,
       })
-
-      logger.debug("Documents to insert", { 
-        count: documentsToInsert.length,
-        documentTypes: documentsToInsert.map(d => d.document_type)
-      })
-
-      const { data: createdDocuments, error: docsError } = await (supabase as any)
-        .from("documents")
-        .insert(documentsToInsert)
-        .select()
-
-      if (docsError) {
-        logger.warn("Case created but some documents failed", { 
-          caseId: caseRecord.id, 
-          error: docsError,
-          document_types 
-        })
-        // 케이스는 생성되었지만 서류 생성 실패 - 케이스는 반환하되 경고 포함
-        return NextResponse.json(
-          { 
-            case: caseRecord,
-            warning: "케이스는 생성되었지만 일부 서류 생성에 실패했습니다.",
-            error: handleApiError(docsError)
-          },
-          { status: 201 }
-        )
-      }
-
-      logger.info("Case and documents created successfully", { 
-        caseId: caseRecord.id, 
-        documentCount: createdDocuments?.length || 0 
-      })
-      
       return createSuccessResponse(
-        { 
-          case: caseRecord,
-          documents: createdDocuments 
-        }, 
-        `케이스와 ${createdDocuments?.length || 0}개의 서류가 생성되었습니다.`, 
+        { case: caseRecord },
+        "케이스가 생성되었습니다.",
         201
       )
     }
 
-    logger.info("Case created successfully", { caseId: caseRecord.id, case_name })
-    return createSuccessResponse({ case: caseRecord }, "케이스가 생성되었습니다.", 201)
-  } catch (error) {
-    logger.error("Error creating case", { 
-      error: error instanceof Error ? {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
-      } : error
+    const { mapCaseToDocument } = await import("@/lib/documents/case-mapper")
+    const documentsToInsert = document_types.map((documentType) => {
+      const mappedData = mapCaseToDocument(
+        case_data,
+        documentType as DocumentType,
+        case_data
+      )
+
+      return {
+        document_type: documentType,
+        name: case_name,
+        date: new Date().toISOString().split("T")[0],
+        data: { ...mappedData, ...case_data },
+        locale: "ko",
+        case_id: caseRecord.id,
+        is_case_linked: true,
+      }
     })
-    
-    // 타임아웃 에러 처리
-    if (error instanceof Error && (
-      error.message.includes("timeout") || 
-      error.message.includes("ConnectTimeoutError") ||
-      error.message.includes("fetch failed")
-    )) {
+
+    const { data: createdDocuments, error: documentsError } = await supabase
+      .from("documents")
+      .insert(documentsToInsert)
+      .select()
+
+    if (documentsError) {
+      await supabase.from("cases").delete().eq("id", caseRecord.id)
+      createdCaseId = null
+      logger.error("Rolled back case after document creation failed", {
+        error: documentsError,
+        actorUserId: actor.id,
+        caseId: caseRecord.id,
+        documentCount: documentsToInsert.length,
+      })
       return createNextErrorResponse(
         NextResponse,
-        error,
-        "데이터베이스 연결 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.",
-        503
+        documentsError,
+        "서류 생성에 실패하여 케이스 생성도 취소되었습니다.",
+        500
       )
     }
-    
+
+    logger.info("Case and documents created successfully", {
+      actorUserId: actor.id,
+      caseId: caseRecord.id,
+      documentCount: createdDocuments?.length || 0,
+    })
+    return createSuccessResponse(
+      {
+        case: caseRecord,
+        documents: createdDocuments || [],
+      },
+      `케이스와 ${createdDocuments?.length || 0}개의 서류가 생성되었습니다.`,
+      201
+    )
+  } catch (error) {
+    if (createdCaseId) {
+      try {
+        await getServiceClient().from("cases").delete().eq("id", createdCaseId)
+      } catch (rollbackError) {
+        logger.error("Failed to roll back case after unexpected error", {
+          error: rollbackError,
+          caseId: createdCaseId,
+        })
+      }
+    }
+
+    if (error instanceof Error && error.name === "UntrustedOriginError") {
+      return forbidden()
+    }
+    logger.error("Error creating case", { error })
     return createNextErrorResponse(
       NextResponse,
       error,
-      "케이스 생성에 실패했습니다.",
-      500
+      isConnectionError(error)
+        ? "데이터베이스 연결 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요."
+        : "케이스 생성에 실패했습니다.",
+      isConnectionError(error) ? 503 : 500
     )
   }
 }
-
