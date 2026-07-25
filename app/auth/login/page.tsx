@@ -9,31 +9,16 @@ import Button from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { toast } from "@/components/ui/Toast"
 import { safeInternalPath } from "@/lib/auth/redirects"
-import { createClient } from "@/lib/supabase/client"
 
 type LoginFormData = {
   email: string
   password: string
 }
 
-type BackofficeRole =
-  | "admin"
-  | "korea_agent"
-  | "translator"
-  | "foreign_lawyer"
-  | "family_viewer"
-
-function dashboardForRole(role: BackofficeRole) {
-  switch (role) {
-    case "admin":
-      return "/admin/dashboard"
-    case "korea_agent":
-      return "/admin/cases"
-    case "translator":
-    case "foreign_lawyer":
-    case "family_viewer":
-      return "/admin/documents"
-  }
+type LoginResponse = {
+  success?: boolean
+  redirectTo?: string
+  error?: string
 }
 
 function friendlyLoginError(message: string) {
@@ -43,6 +28,15 @@ function friendlyLoginError(message: string) {
   }
   if (normalized.includes("email not confirmed")) {
     return "이메일 인증이 완료되지 않았습니다. 받은편지함을 확인해 주세요."
+  }
+  if (normalized.includes("account suspended")) {
+    return "정지된 계정입니다. 관리자에게 문의하세요."
+  }
+  if (normalized.includes("account inactive")) {
+    return "아직 활성화되지 않은 계정입니다. 관리자에게 문의하세요."
+  }
+  if (normalized.includes("insufficient permissions")) {
+    return "워크플로우 시스템 접근 권한이 없습니다."
   }
   if (normalized.includes("rate limit") || normalized.includes("too many")) {
     return "로그인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요."
@@ -77,37 +71,24 @@ function LoginForm() {
     setError(null)
 
     try {
-      const supabase = createClient()
-      const { data: authData, error: authError } =
-        await supabase.auth.signInWithPassword({
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({
           email: form.email.trim().toLowerCase(),
           password: form.password,
-        })
+          next: requestedNext || undefined,
+        }),
+      })
+      const result = (await response.json()) as LoginResponse
 
-      if (authError) throw authError
-      if (!authData.user) throw new Error("로그인 사용자를 확인할 수 없습니다.")
-
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("status, role")
-        .eq("id", authData.user.id)
-        .single()
-
-      if (profileError || !profile) {
-        await supabase.auth.signOut()
-        throw new Error("사용자 권한 정보가 없습니다. 관리자에게 문의하세요.")
+      if (!response.ok || !result.success || !result.redirectTo) {
+        throw new Error(result.error || "로그인에 실패했습니다.")
       }
-      if (profile.status !== "active") {
-        await supabase.auth.signOut()
-        throw new Error("계정이 비활성화되었습니다. 관리자에게 문의하세요.")
-      }
-
-      const role = profile.role as BackofficeRole
-      const fallback = dashboardForRole(role)
-      const destination = role === "admin" && requestedNext ? requestedNext : fallback
 
       toast.success("로그인되었습니다.")
-      router.replace(destination)
+      router.replace(result.redirectTo)
       router.refresh()
     } catch (caught) {
       const message = friendlyLoginError(
@@ -148,13 +129,18 @@ function LoginForm() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="mb-2 block text-sm font-medium">
+              <label htmlFor="email" className="mb-2 block text-sm font-medium">
                 이메일 <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <input
+                  id="email"
                   {...register("email", {
                     required: "이메일은 필수입니다.",
+                    maxLength: {
+                      value: 320,
+                      message: "이메일이 너무 깁니다.",
+                    },
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                       message: "올바른 이메일 형식이 아닙니다.",
@@ -173,13 +159,18 @@ function LoginForm() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium">
+              <label htmlFor="password" className="mb-2 block text-sm font-medium">
                 비밀번호 <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <input
+                  id="password"
                   {...register("password", {
                     required: "비밀번호는 필수입니다.",
+                    maxLength: {
+                      value: 200,
+                      message: "비밀번호가 너무 깁니다.",
+                    },
                   })}
                   type="password"
                   autoComplete="current-password"
