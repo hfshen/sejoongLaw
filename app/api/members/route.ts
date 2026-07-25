@@ -3,7 +3,7 @@ import { getAuthenticatedBackofficeProfile } from "@/lib/admin/auth"
 import {
   firstZodMessage,
   MEMBER_ORDER_COLUMNS,
-  memberPayloadSchema,
+  memberCreateSchema,
   type MemberOrderColumn,
 } from "@/lib/admin/member-validation"
 import logger from "@/lib/logger"
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     const admin = await ensureAdmin()
     if (!admin) return forbidden()
 
-    const parsed = memberPayloadSchema.safeParse(await request.json())
+    const parsed = memberCreateSchema.safeParse(await request.json())
     if (!parsed.success) {
       return NextResponse.json(
         { error: firstZodMessage(parsed.error) },
