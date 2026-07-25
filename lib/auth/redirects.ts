@@ -32,6 +32,31 @@ export function safeInternalPath(
   }
 }
 
+/**
+ * Supabase Auth must always return to the non-localized server route.
+ * next-intl may otherwise turn /auth/callback into /ko/auth/callback, which
+ * prevents the PKCE code exchange route from running.
+ */
+export function canonicalAuthCallbackPath(
+  pathname: string,
+  locales: readonly string[]
+): "/auth/callback" | null {
+  const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname
+  if (normalized === "/auth/callback") return "/auth/callback"
+
+  const segments = normalized.split("/").filter(Boolean)
+  if (
+    segments.length === 3 &&
+    locales.includes(segments[0]) &&
+    segments[1] === "auth" &&
+    segments[2] === "callback"
+  ) {
+    return "/auth/callback"
+  }
+
+  return null
+}
+
 export function classifyAuthFailure({
   error,
   code,

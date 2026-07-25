@@ -1,4 +1,5 @@
 import {
+  canonicalAuthCallbackPath,
   classifyAuthFailure,
   isStayCareDestination,
   normalizeStayCareLocale,
@@ -22,6 +23,24 @@ describe("auth redirect safety", () => {
     expect(safeInternalPath("/admin\nset-cookie:x", "/fallback")).toBe(
       "/fallback"
     )
+  })
+
+  test("keeps the Supabase callback outside locale routing", () => {
+    const locales = ["ko", "en", "zh-CN"] as const
+    expect(canonicalAuthCallbackPath("/auth/callback", locales)).toBe(
+      "/auth/callback"
+    )
+    expect(canonicalAuthCallbackPath("/auth/callback/", locales)).toBe(
+      "/auth/callback"
+    )
+    expect(canonicalAuthCallbackPath("/ko/auth/callback", locales)).toBe(
+      "/auth/callback"
+    )
+    expect(canonicalAuthCallbackPath("/zh-CN/auth/callback/", locales)).toBe(
+      "/auth/callback"
+    )
+    expect(canonicalAuthCallbackPath("/si/auth/callback", locales)).toBeNull()
+    expect(canonicalAuthCallbackPath("/ko/auth/callback/extra", locales)).toBeNull()
   })
 
   test("classifies expired and denied auth callbacks", () => {
