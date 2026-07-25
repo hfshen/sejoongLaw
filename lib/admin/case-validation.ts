@@ -14,14 +14,24 @@ export const DOCUMENT_TYPES = [
   "insurance_consent_old",
 ] as const satisfies readonly DocumentType[]
 
+const caseNumberSchema = z
+  .union([z.string().trim().max(100), z.null()])
+  .transform((value) => (value === "" ? null : value))
+const caseNameSchema = z.string().trim().min(1, "케이스명은 필수입니다.").max(200)
+const caseDataSchema = z.record(z.string(), z.unknown()).superRefine((value, context) => {
+  if (JSON.stringify(value).length > 1_000_000) {
+    context.addIssue({
+      code: "custom",
+      message: "케이스 데이터가 너무 큽니다.",
+    })
+  }
+})
+
 export const caseCreateSchema = z
   .object({
-    case_number: z
-      .union([z.string().trim().max(100), z.null()])
-      .optional()
-      .transform((value) => (value === "" ? null : value)),
-    case_name: z.string().trim().min(1, "케이스명은 필수입니다.").max(200),
-    case_data: z.record(z.string(), z.unknown()),
+    case_number: caseNumberSchema.optional().default(null),
+    case_name: caseNameSchema,
+    case_data: caseDataSchema,
     document_types: z
       .array(z.enum(DOCUMENT_TYPES))
       .max(DOCUMENT_TYPES.length)
@@ -36,16 +46,22 @@ export const caseCreateSchema = z
         message: "중복된 서류 유형이 있습니다.",
       })
     }
-
-    const serialized = JSON.stringify(value.case_data)
-    if (serialized.length > 1_000_000) {
-      context.addIssue({
-        code: "custom",
-        path: ["case_data"],
-        message: "케이스 데이터가 너무 큽니다.",
-      })
-    }
   })
+
+export const caseUpdateSchema = z
+  .object({
+    case_number: caseNumberSchema.optional(),
+    case_name: caseNameSchema.optional(),
+    case_data: caseDataSchema.optional(),
+    update_linked_documents: z.boolean().optional().default(true),
+  })
+  .refine(
+    (value) =>
+      value.case_number !== undefined ||
+      value.case_name !== undefined ||
+      value.case_data !== undefined,
+    { message: "변경할 케이스 필드를 지정해 주세요." }
+  )
 
 export const CASE_SORT_COLUMNS = [
   "created_at",
@@ -54,6 +70,9 @@ export const CASE_SORT_COLUMNS = [
   "case_number",
 ] as const
 export type CaseSortColumn = (typeof CASE_SORT_COLUMNS)[number]
+
+export const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
 export function normalizeCaseSearch(value: string | null, maxLength = 120) {
   return (value || "")
