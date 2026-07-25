@@ -1,17 +1,17 @@
-import { redirect } from "next/navigation"
-import { isAdminAuthenticated } from "@/lib/admin/auth"
+import { requireRole } from "@/lib/auth/role-guard"
 
 export default async function DocumentsLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const isAdmin = await isAdminAuthenticated()
-
-  if (!isAdmin) {
-    redirect("/admin/login")
-  }
+  await requireRole([
+    "admin",
+    "korea_agent",
+    "translator",
+    "foreign_lawyer",
+    "family_viewer",
+  ])
 
   return <>{children}</>
 }
-
