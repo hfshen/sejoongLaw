@@ -1,81 +1,97 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
-import { getServiceClient } from "@/lib/supabase/service"
-import { isAdminAuthenticated } from "@/lib/admin/auth"
-import { createNextErrorResponse } from "@/lib/utils/error-handler"
-import { createSuccessResponse } from "@/lib/utils/api-response"
+import {
+  DOCUMENT_LOCALES,
+  DOCUMENT_SORT_COLUMNS,
+  documentCreateSchema,
+  firstDocumentValidationMessage,
+  normalizeDocumentSearch,
+  type DocumentLocale,
+  type DocumentSortColumn,
+} from "@/lib/admin/document-validation"
+import { DOCUMENT_TYPES } from "@/lib/admin/case-validation"
+import {
+  accessibleDocumentIds,
+  DOCUMENT_OPERATOR_ROLES,
+  getDocumentActor,
+} from "@/lib/documents/access"
+import { extractReadableText } from "@/lib/documents/text-extractor"
+import type { DocumentType } from "@/lib/documents/templates"
 import logger from "@/lib/logger"
+import { requireTrustedOrigin } from "@/lib/security/request"
+import { getServiceClient } from "@/lib/supabase/service"
+import { createSuccessResponse } from "@/lib/utils/api-response"
+import { createNextErrorResponse } from "@/lib/utils/error-handler"
+
+function forbidden() {
+  const response = NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  return response
+}
+
+function noStore<T extends NextResponse>(response: T): T {
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  return response
+}
+
+function isDocumentType(value: string | null): value is DocumentType {
+  return DOCUMENT_TYPES.includes(value as DocumentType)
+}
+
+function isDocumentLocale(value: string | null): value is DocumentLocale {
+  return DOCUMENT_LOCALES.includes(value as DocumentLocale)
+}
 
 export async function GET(request: NextRequest) {
   try {
-    // 관리자 인증 확인
-    let isAdmin = false
-    try {
-      isAdmin = await isAdminAuthenticated()
-    } catch (authError) {
-      logger.error("Admin authentication check failed", { error: authError })
-      // 인증 확인 실패 시에도 401 반환
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    const actor = await getDocumentActor()
+    if (!actor) return forbidden()
+
+    const allowedIds = await accessibleDocumentIds(actor, "view")
+    if (allowedIds && allowedIds.length === 0) {
+      return noStore(createSuccessResponse({ documents: [] }))
     }
 
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    // Use service role client to bypass RLS
-    let supabase
-    try {
-      supabase = getServiceClient()
-    } catch (serviceError) {
-      logger.warn("Failed to get service client, using regular client", { error: serviceError })
-      supabase = await createClient()
-    }
-    
     const { searchParams } = new URL(request.url)
-    
-    const documentType = searchParams.get("type")
-    const name = searchParams.get("name")
-    const date = searchParams.get("date")
-    const locale = searchParams.get("locale") || "ko"
-    const sortBy = searchParams.get("sortBy") || "created_at"
-    const sortOrder = searchParams.get("sortOrder") || "desc"
-    const search = searchParams.get("search")
+    const requestedType = searchParams.get("type")
+    const requestedLocale = searchParams.get("locale")
+    const documentType = isDocumentType(requestedType) ? requestedType : null
+    const locale = isDocumentLocale(requestedLocale) ? requestedLocale : "ko"
+    const name = normalizeDocumentSearch(searchParams.get("name"), 200)
+    const search = normalizeDocumentSearch(searchParams.get("search"))
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(searchParams.get("date") || "")
+      ? searchParams.get("date")
+      : null
     const caseLinked = searchParams.get("case_linked")
+    const requestedSort = searchParams.get("sortBy")
+    const sortBy: DocumentSortColumn = DOCUMENT_SORT_COLUMNS.includes(
+      requestedSort as DocumentSortColumn
+    )
+      ? (requestedSort as DocumentSortColumn)
+      : "created_at"
+    const ascending = searchParams.get("sortOrder") === "asc"
 
-    // sortBy 유효성 검사 (SQL injection 방지)
-    const validSortColumns = ["created_at", "updated_at", "name", "date", "document_type", "locale"]
-    const safeSortBy = validSortColumns.includes(sortBy) ? sortBy : "created_at"
-    const safeSortOrder = sortOrder === "asc" ? "asc" : "desc"
-
+    const supabase = getServiceClient()
     let query = supabase
       .from("documents")
       .select("*")
       .eq("locale", locale)
+      .limit(500)
 
-    // 필터 적용
-    if (documentType) {
-      query = query.eq("document_type", documentType)
-    }
-    if (name) {
-      query = query.ilike("name", `%${name}%`)
-    }
-    if (date) {
-      query = query.eq("date", date)
-    }
-    if (search) {
-      query = query.or(`name.ilike.%${search}%,data::text.ilike.%${search}%`)
-    }
-    if (caseLinked !== null && caseLinked !== "") {
+    if (allowedIds) query = query.in("id", allowedIds)
+    if (documentType) query = query.eq("document_type", documentType)
+    if (name) query = query.ilike("name", `%${name}%`)
+    if (date) query = query.eq("date", date)
+    if (search) query = query.ilike("name", `%${search}%`)
+    if (caseLinked === "true" || caseLinked === "false") {
       query = query.eq("is_case_linked", caseLinked === "true")
     }
 
-    // 정렬
-    query = query.order(safeSortBy, { ascending: safeSortOrder === "asc" })
-
-    const { data, error } = await query
-
+    const { data, error } = await query.order(sortBy, { ascending })
     if (error) {
-      logger.error("Failed to fetch documents", { error, filters: { documentType, name, date, locale } })
+      logger.error("Failed to fetch documents", {
+        error,
+        actorUserId: actor.id,
+      })
       return createNextErrorResponse(
         NextResponse,
         error,
@@ -84,8 +100,12 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    logger.info("Documents fetched successfully", { count: data?.length || 0 })
-    return createSuccessResponse({ documents: data || [] })
+    logger.info("Documents fetched", {
+      actorUserId: actor.id,
+      role: actor.role,
+      count: data?.length || 0,
+    })
+    return noStore(createSuccessResponse({ documents: data || [] }))
   } catch (error) {
     logger.error("Error fetching documents", { error })
     return createNextErrorResponse(
@@ -98,323 +118,132 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  let documentId: string | null = null
+  let storagePath: string | null = null
+
   try {
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      logger.warn("Admin authentication failed", {
-        hasCookie: !!request.cookies.get("admin_session"),
-      })
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    requireTrustedOrigin(request)
+    const actor = await getDocumentActor(DOCUMENT_OPERATOR_ROLES)
+    if (!actor) return forbidden()
 
-    // Always use service role client to bypass RLS
-    // We've already verified admin_session cookie, so this is safe
-    // This ensures documents can be created even without Supabase auth session
-    let supabase
-    let user = null
-    
-    try {
-      supabase = getServiceClient()
-      logger.info("Using service role client for document creation")
-      
-      // Try to get user from regular client for created_by field
-      try {
-        const regularClient = await createClient()
-        const { data: { user: authUser } } = await regularClient.auth.getUser()
-        user = authUser
-      } catch {
-        // No Supabase session, user will be null (created_by will be null)
-        logger.info("No Supabase auth session, created_by will be null")
-      }
-    } catch (serviceError) {
-      logger.error("Failed to get service client", { error: serviceError })
+    const parsed = documentCreateSchema.safeParse(await request.json())
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "서버 설정 오류", details: "Service Role Key가 설정되지 않았습니다." },
-        { status: 500 }
-      )
-    }
-    
-    const body = await request.json()
-
-    const { document_type, name, date, data, locale = "ko" } = body
-
-    if (!document_type || !name || !date) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: firstDocumentValidationMessage(parsed.error) },
         { status: 400 }
       )
     }
 
-    const { data: document, error } = await (supabase as any)
+    const supabase = getServiceClient()
+    const { data: document, error } = await supabase
       .from("documents")
-      .insert([
-        {
-          document_type,
-          name,
-          date,
-          data: data || {},
-          locale,
-          created_by: user?.id || null,
-        },
-      ])
+      .insert({
+        ...parsed.data,
+        source_lang: parsed.data.locale,
+        created_by: actor.id,
+      })
       .select()
       .single()
 
-    if (error) {
-      logger.error("Failed to create document", {
-        error,
-        errorCode: error.code,
-        errorMessage: error.message,
-        errorDetails: error.details,
-        errorHint: error.hint,
-        document_type,
-        name,
-        userId: user?.id,
-      })
-      
-      // RLS 정책 위반 에러인 경우 더 자세한 메시지
-      if (error.code === "42501") {
-        logger.error("RLS policy violation", {
-          errorCode: error.code,
-          errorMessage: error.message,
-          errorDetails: error.details,
-          errorHint: error.hint,
-          userId: user?.id,
-          document_type,
-          name,
-        })
-        return NextResponse.json(
-          {
-            error: "권한이 없습니다. RLS 정책을 확인하세요.",
-            details: error.message,
-            hint: error.hint || "사용자 역할이 올바르게 설정되었는지 확인하세요. 015_fix_rls_permissive.sql 마이그레이션을 실행하세요.",
-            code: error.code,
-          },
-          { status: 403 }
-        )
-      }
-      
+    if (error || !document) {
       return createNextErrorResponse(
         NextResponse,
-        error,
-        error.message || "서류 생성에 실패했습니다.",
+        error || new Error("Created document was not returned"),
+        "서류 생성에 실패했습니다.",
         500
       )
     }
+    documentId = document.id
 
-    // Create initial version (version 1) - always create version
-    try {
-      const { createDocumentVersion } = await import("@/lib/documents/versioning")
-      const { createVersionSegments } = await import("@/lib/documents/segmentation")
-      const { logAuditEvent, AuditActions } = await import("@/lib/audit/events")
+    const documentText = JSON.stringify(parsed.data, null, 2)
+    const fileContent = Buffer.from(documentText, "utf-8")
+    storagePath = `documents/${document.id}/v1_${Date.now()}.txt`
 
-      // Create text representation of document data
-      const documentText = JSON.stringify(
-        {
-          document_type,
-          name,
-          date,
-          data: data || {},
-          locale,
-        },
-        null,
-        2
-      )
-
-      const fileContent = Buffer.from(documentText, "utf-8")
-      const storagePath = `documents/${document.id}/v1_${Date.now()}.txt`
-
-      // Upload file to storage first (optional, can fail)
-      try {
-        const { error: uploadError } = await supabase.storage
-          .from("documents")
-          .upload(storagePath, fileContent, {
-            contentType: "text/plain",
-            upsert: false,
-          })
-
-        if (uploadError) {
-          logger.warn("Failed to upload document to storage", {
-            error: uploadError,
-            storagePath,
-            documentId: document.id,
-          })
-          // Continue without storage upload
-        }
-      } catch (storageError) {
-        logger.warn("Storage upload error", {
-          error: storageError,
-          storagePath,
-          documentId: document.id,
-        })
-        // Continue without storage upload
-      }
-
-      // Create version (user can be null, created_by will be null)
-      const version = await createDocumentVersion({
-        documentId: document.id,
-        storagePath,
-        fileContent,
-        createdBy: user?.id || null,
+    const { error: uploadError } = await supabase.storage
+      .from("documents")
+      .upload(storagePath, fileContent, {
+        contentType: "text/plain; charset=utf-8",
+        upsert: false,
       })
+    if (uploadError) throw uploadError
 
-      // Update document's current_version_id to the new version
-      await (supabase as any)
-        .from("documents")
-        .update({ current_version_id: version.id })
-        .eq("id", document.id)
+    const { createDocumentVersion } = await import("@/lib/documents/versioning")
+    const { createVersionSegments } = await import("@/lib/documents/segmentation")
+    const version = await createDocumentVersion({
+      documentId: document.id,
+      storagePath,
+      fileContent,
+      createdBy: actor.id,
+    })
 
-      // Create segments from readable document text
-      try {
-        // Extract readable text from document data instead of raw JSON
-        const { extractReadableText } = await import("@/lib/documents/text-extractor")
-        const readableText = extractReadableText(
-          document_type as any,
-          data || {},
-          (locale as "ko" | "en" | "zh-CN" | "si" | "ta") || "ko"
-        )
-        
-        const createdSegments = await createVersionSegments(version.id, readableText)
-        logger.info("Segments created successfully", {
-          versionId: version.id,
-          documentId: document.id,
-          segmentCount: createdSegments.length,
-        })
+    const readableText = extractReadableText(
+      parsed.data.document_type,
+      parsed.data.data,
+      parsed.data.locale
+    )
+    const segments = await createVersionSegments(version.id, readableText)
 
-        // Auto-translate to target languages (en, si, ta)
-        if (createdSegments.length > 0) {
-          const targetLangs: Array<"en" | "si" | "ta"> = ["en", "si", "ta"]
-          const translationResults: Array<{ lang: string; success: boolean }> = []
+    await supabase.from("audit_events").insert({
+      case_id: null,
+      entity_type: "document",
+      entity_id: document.id,
+      action: "created",
+      actor: actor.id,
+      meta: {
+        document_type: parsed.data.document_type,
+        locale: parsed.data.locale,
+        version_id: version.id,
+      },
+    })
 
-          for (const targetLang of targetLangs) {
-            try {
-              const { translateVersion } = await import("@/lib/documents/translation")
-              await translateVersion(version.id, "ko", targetLang, user?.id)
-              translationResults.push({ lang: targetLang, success: true })
-              logger.info("Auto-translation completed", {
-                versionId: version.id,
-                targetLang,
-              })
-            } catch (transError: any) {
-              logger.error("Auto-translation failed", {
-                error: transError,
-                versionId: version.id,
-                targetLang,
-              })
-              translationResults.push({ lang: targetLang, success: false })
-            }
-          }
-
-          // Notify foreign lawyers if translations were successful
-          if (translationResults.some((r) => r.success)) {
-            try {
-              const { getServiceClient } = await import("@/lib/supabase/service")
-              const serviceSupabase = getServiceClient()
-
-              // Get foreign lawyers (all active foreign lawyers for now)
-              const { data: foreignLawyers } = await serviceSupabase
-                .from("profiles")
-                .select("id, email, name, country")
-                .eq("role", "foreign_lawyer")
-                .eq("status", "active")
-
-              if (foreignLawyers && foreignLawyers.length > 0) {
-                const { sendTranslationReadyEmail } = await import(
-                  "@/lib/email/templates/translation-ready"
-                )
-
-                const successfulLangs = translationResults
-                  .filter((r) => r.success)
-                  .map((r) => r.lang.toUpperCase())
-
-                  for (const lawyer of foreignLawyers as any[]) {
-                  if (lawyer.email) {
-                    await sendTranslationReadyEmail({
-                      lawyerEmail: lawyer.email,
-                      lawyerName: lawyer.name || "Lawyer",
-                      documentName: name,
-                      documentId: document.id,
-                      versionId: version.id,
-                      languages: successfulLangs,
-                    })
-                    logger.info("Translation ready email sent to lawyer", {
-                      lawyerEmail: lawyer.email,
-                      documentId: document.id,
-                    })
-                  }
-                }
-              }
-            } catch (notifyError: any) {
-              logger.error("Failed to notify lawyers", {
-                error: notifyError,
-                documentId: document.id,
-              })
-              // Don't fail the request if notification fails
-            }
-          }
-        }
-      } catch (segError: any) {
-        logger.error("Failed to create segments", {
-          error: segError,
-          errorMessage: segError?.message,
-          errorStack: segError?.stack,
-          versionId: version.id,
-          documentId: document.id,
-        })
-        // Don't fail if segments creation fails, but log the error
-      }
-
-      // Log audit event (only if user exists)
-      if (user) {
+    // Translation generation is a best-effort post-create enhancement. The
+    // document, version and source segments are already complete at this point.
+    if (segments.length > 0 && parsed.data.locale === "ko") {
+      const targetLanguages = ["en", "si", "ta"] as const
+      const { translateVersion } = await import("@/lib/documents/translation")
+      for (const targetLanguage of targetLanguages) {
         try {
-          await logAuditEvent({
-            caseId: null,
-            entityType: "document",
-            entityId: document.id,
-            action: AuditActions.DOCUMENT_CREATED,
-            meta: { document_type, name },
-            actor: user.id,
-          })
-        } catch (auditError) {
-          logger.error("Failed to log audit event", {
-            error: auditError,
+          await translateVersion(version.id, "ko", targetLanguage, actor.id)
+        } catch (translationError) {
+          logger.warn("Automatic document translation failed", {
+            error: translationError,
+            actorUserId: actor.id,
             documentId: document.id,
+            versionId: version.id,
+            targetLanguage,
           })
-          // Don't fail if audit logging fails
         }
       }
-
-      logger.info("Document version created automatically", {
-        documentId: document.id,
-        versionId: version.id,
-        versionNo: version.version_no,
-      })
-    } catch (versionError: any) {
-      // Don't fail document creation if version creation fails, but log the error
-      logger.error("Failed to create initial version", {
-        error: versionError,
-        errorMessage: versionError?.message,
-        errorStack: versionError?.stack,
-        documentId: document.id,
-      })
-      // Continue - document is already created
     }
 
-    logger.info("Document created successfully", { documentId: document.id, document_type, name })
-    return createSuccessResponse({ document }, "서류가 생성되었습니다.", 201)
-  } catch (error: any) {
-    logger.error("Error creating document", {
-      error,
-      errorMessage: error?.message,
-      errorStack: error?.stack,
-      errorCode: error?.code,
+    logger.info("Document created", {
+      actorUserId: actor.id,
+      documentId: document.id,
+      versionId: version.id,
     })
+    return noStore(
+      createSuccessResponse(
+        { document: { ...document, current_version_id: version.id } },
+        "서류가 생성되었습니다.",
+        201
+      )
+    )
+  } catch (error) {
+    if (documentId) {
+      const supabase = getServiceClient()
+      await supabase.from("documents").delete().eq("id", documentId)
+      if (storagePath) await supabase.storage.from("documents").remove([storagePath])
+    }
+
+    if (error instanceof Error && error.name === "UntrustedOriginError") {
+      return forbidden()
+    }
+    logger.error("Error creating document", { error })
     return createNextErrorResponse(
       NextResponse,
       error,
-      error?.message || "서류 생성에 실패했습니다.",
+      "서류 생성에 실패했습니다.",
       500
     )
   }
 }
-
