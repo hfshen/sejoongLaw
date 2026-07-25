@@ -2,6 +2,7 @@ import createIntlMiddleware from "next-intl/middleware"
 import { createServerClient } from "@supabase/ssr"
 import { NextRequest, NextResponse } from "next/server"
 import {
+  canonicalAuthCallbackPath,
   classifyAuthFailure,
   shouldRecoverStayCareAuthFailure,
   stayCareLoginRecoveryPath,
@@ -93,8 +94,32 @@ function applyStayCareSecurityHeaders(
   return response
 }
 
+function authCallbackResponse(request: NextRequest, pathname: string) {
+  const canonicalPath = canonicalAuthCallbackPath(pathname, routing.locales)
+  if (!canonicalPath) return null
+
+  if (pathname === canonicalPath || pathname === `${canonicalPath}/`) {
+    const response = NextResponse.next({ request })
+    response.headers.set("Cache-Control", "private, no-store, max-age=0")
+    response.headers.set("Referrer-Policy", "no-referrer")
+    return response
+  }
+
+  const callbackUrl = request.nextUrl.clone()
+  callbackUrl.pathname = canonicalPath
+  const response = NextResponse.redirect(callbackUrl, 307)
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  response.headers.set("Referrer-Policy", "no-referrer")
+  return response
+}
+
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
+
+  // Supabase PKCE callbacks are server routes and must never receive a locale
+  // prefix. Also recover previously generated /ko/auth/callback-style URLs.
+  const callbackResponse = authCallbackResponse(request, pathname)
+  if (callbackResponse) return callbackResponse
 
   if (pathname.startsWith("/api/staycare")) {
     return applyStayCareSecurityHeaders(NextResponse.next(), {
