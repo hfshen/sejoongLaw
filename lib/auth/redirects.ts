@@ -1,6 +1,11 @@
 export type AuthFailureReason = "otp_expired" | "auth_callback_failed"
+export type StayCareLocale = "ko" | "en" | "si"
 
 const CONTROL_CHARACTERS = /[\u0000-\u001F\u007F]/
+
+export function normalizeStayCareLocale(value: string | null | undefined): StayCareLocale {
+  return value === "en" || value === "si" ? value : "ko"
+}
 
 export function safeInternalPath(
   value: string | null | undefined,
@@ -36,18 +41,42 @@ export function classifyAuthFailure({
   code?: string | null
   description?: string | null
 }): AuthFailureReason | null {
+  const normalizedError = (error || "").toLowerCase()
+  const normalizedCode = (code || "").toLowerCase()
   const normalizedDescription = (description || "").toLowerCase()
 
-  if (!error && !code && !normalizedDescription) return null
+  if (!normalizedError && !normalizedCode && !normalizedDescription) return null
   if (
-    code === "otp_expired" ||
+    normalizedError === "otp_expired" ||
+    normalizedCode === "otp_expired" ||
+    normalizedCode === "link_expired" ||
     normalizedDescription.includes("expired") ||
-    normalizedDescription.includes("invalid")
+    normalizedDescription.includes("invalid") ||
+    normalizedDescription.includes("already been used")
   ) {
     return "otp_expired"
   }
 
-  return error === "access_denied" ? "auth_callback_failed" : null
+  return normalizedError === "access_denied" || normalizedError === "auth_callback_failed"
+    ? "auth_callback_failed"
+    : null
+}
+
+export function isStayCareDestination(value: string | null | undefined): boolean {
+  const destination = safeInternalPath(value, "")
+  return /^\/(ko|en|si)\/staycare\/(app|admin|portal)(?:[/?#]|$)/.test(destination)
+}
+
+export function shouldRecoverStayCareAuthFailure(
+  pathname: string,
+  locale: string
+): boolean {
+  const normalizedLocale = normalizeStayCareLocale(locale)
+  const localeRoot = pathname === "/" || pathname === `/${normalizedLocale}`
+  const stayCarePath = pathname === `/${normalizedLocale}/staycare` ||
+    pathname.startsWith(`/${normalizedLocale}/staycare/`)
+
+  return localeRoot || stayCarePath
 }
 
 export function stayCareLoginRecoveryPath({
@@ -59,13 +88,16 @@ export function stayCareLoginRecoveryPath({
   reason: AuthFailureReason
   next?: string | null
 }) {
-  const fallback = `/${locale}/staycare/app`
-  const destination = safeInternalPath(next, fallback)
+  const normalizedLocale = normalizeStayCareLocale(locale)
+  const fallback = `/${normalizedLocale}/staycare/app`
+  const destination = isStayCareDestination(next)
+    ? safeInternalPath(next, fallback)
+    : fallback
   const params = new URLSearchParams({
     error: reason,
     reason,
     next: destination,
   })
 
-  return `/${locale}/staycare/login?${params.toString()}#auth-recovery`
+  return `/${normalizedLocale}/staycare/login?${params.toString()}#auth-recovery`
 }
