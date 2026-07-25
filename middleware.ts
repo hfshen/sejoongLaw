@@ -1,6 +1,11 @@
 import createIntlMiddleware from "next-intl/middleware"
 import { createServerClient } from "@supabase/ssr"
 import { NextRequest, NextResponse } from "next/server"
+import {
+  classifyAuthFailure,
+  shouldRecoverStayCareAuthFailure,
+  stayCareLoginRecoveryPath,
+} from "./lib/auth/redirects"
 import { routing } from "./lib/routing"
 
 const intlMiddleware = createIntlMiddleware({
@@ -15,24 +20,6 @@ function localeFromPath(pathname: string) {
   return routing.locales.includes(first as (typeof routing.locales)[number])
     ? first
     : routing.defaultLocale
-}
-
-function authFailureReason(request: NextRequest) {
-  const error = request.nextUrl.searchParams.get("error")
-  const code = request.nextUrl.searchParams.get("error_code")
-  const description = (
-    request.nextUrl.searchParams.get("error_description") || ""
-  ).toLowerCase()
-
-  if (!error && !code) return null
-  if (
-    code === "otp_expired" ||
-    description.includes("expired") ||
-    description.includes("invalid")
-  ) {
-    return "otp_expired"
-  }
-  return error === "access_denied" ? "auth_callback_failed" : null
 }
 
 function safeOrigin(value?: string) {
@@ -115,18 +102,25 @@ export default async function middleware(request: NextRequest) {
     })
   }
 
-  const authFailure = authFailureReason(request)
-  if (authFailure && !pathname.includes("/staycare/login")) {
-    const locale = localeFromPath(pathname)
-    const loginUrl = request.nextUrl.clone()
-    loginUrl.pathname = `/${locale}/staycare/login`
-    loginUrl.search = ""
-    loginUrl.searchParams.set("error", "auth_callback_failed")
-    loginUrl.searchParams.set("reason", authFailure)
-    loginUrl.searchParams.set("next", `/${locale}/staycare/app`)
-    // An explicit replacement fragment prevents the browser from inheriting
-    // Supabase's original #error=... fragment across the redirect.
-    loginUrl.hash = "auth-recovery"
+  const locale = localeFromPath(pathname)
+  const authFailure = classifyAuthFailure({
+    error: request.nextUrl.searchParams.get("error"),
+    code: request.nextUrl.searchParams.get("error_code"),
+    description: request.nextUrl.searchParams.get("error_description"),
+  })
+  if (
+    authFailure &&
+    shouldRecoverStayCareAuthFailure(pathname, locale) &&
+    !pathname.includes("/staycare/login")
+  ) {
+    const loginUrl = new URL(
+      stayCareLoginRecoveryPath({
+        locale,
+        reason: authFailure,
+        next: `/${locale}/staycare/app`,
+      }),
+      request.url
+    )
     return applyStayCareSecurityHeaders(NextResponse.redirect(loginUrl), {
       privateData: true,
     })
@@ -171,9 +165,9 @@ export default async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   if (protectedStayCare && !user) {
-    const locale = localeFromPath(pathname)
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = `/${locale}/staycare/login`
+    loginUrl.search = ""
     loginUrl.searchParams.set("next", pathname)
     return applyStayCareSecurityHeaders(NextResponse.redirect(loginUrl), {
       privateData: true,

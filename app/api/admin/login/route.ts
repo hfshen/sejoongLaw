@@ -1,128 +1,127 @@
 import { NextRequest, NextResponse } from "next/server"
-import { cookies } from "next/headers"
+import { BACKOFFICE_ROLES } from "@/lib/admin/auth"
+import { getDashboardUrl, type UserRole } from "@/lib/auth/role-guard"
+import { safeInternalPath } from "@/lib/auth/redirects"
+import { requireTrustedOrigin } from "@/lib/security/request"
 import { createClient } from "@/lib/supabase/server"
+import { getServiceClient } from "@/lib/supabase/service"
+
+function jsonNoStore(body: unknown, init?: ResponseInit) {
+  const response = NextResponse.json(body, init)
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  return response
+}
+
+function allowedDestination(role: UserRole, requestedNext: string) {
+  const fallback = getDashboardUrl(role)
+  if (!requestedNext || !requestedNext.startsWith("/admin")) return fallback
+  if (role === "admin") return requestedNext
+
+  if (role === "korea_agent") {
+    return requestedNext === "/admin/cases" || requestedNext.startsWith("/admin/cases/")
+      ? requestedNext
+      : fallback
+  }
+
+  if (["translator", "foreign_lawyer", "family_viewer"].includes(role)) {
+    return requestedNext === "/admin/documents" || requestedNext.startsWith("/admin/documents/")
+      ? requestedNext
+      : fallback
+  }
+
+  return fallback
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    requireTrustedOrigin(request)
 
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: "이메일과 비밀번호를 입력해주세요." },
+    const body = await request.json()
+    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : ""
+    const password = typeof body.password === "string" ? body.password : ""
+    const requestedNext = safeInternalPath(
+      typeof body.next === "string" ? body.next : null,
+      ""
+    )
+
+    if (
+      !email ||
+      !password ||
+      email.length > 320 ||
+      password.length > 200 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    ) {
+      return jsonNoStore(
+        { error: "이메일과 비밀번호를 올바르게 입력해 주세요." },
         { status: 400 }
       )
     }
 
-    // 환경 변수에서 관리자 이메일/비밀번호 확인
-    // .env.local의 13-14번째 줄: GMAIL_USER와 GMAIL_APP_PASSWORD 사용
-    const adminEmail = process.env.GMAIL_USER
-    const adminPassword = process.env.GMAIL_APP_PASSWORD
-
-    // 환경 변수가 설정되어 있으면 직접 인증 사용
-    if (adminEmail && adminPassword) {
-      const trimmedEmail = email.trim()
-      const emailMatch = trimmedEmail === adminEmail || trimmedEmail.toLowerCase() === adminEmail.toLowerCase()
-      const passwordMatch = password === adminPassword
-      
-      // 디버깅을 위한 로그 (개발 환경에서만)
-      if (process.env.NODE_ENV === "development") {
-        console.log("Login attempt:", {
-          providedEmail: trimmedEmail,
-          expectedEmail: adminEmail,
-          emailMatch,
-          passwordMatch: passwordMatch ? "matched" : "not matched",
-          hasAdminEmail: !!adminEmail,
-          hasAdminPassword: !!adminPassword,
-        })
-      }
-      
-      if (emailMatch && passwordMatch) {
-        // 로그인 성공 - 세션 쿠키 설정
-        const cookieStore = await cookies()
-        cookieStore.set("admin_session", "authenticated", {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          maxAge: 60 * 60 * 24 * 7, // 7일
-          path: "/",
-        })
-
-        return NextResponse.json({ 
-          success: true, 
-          user: {
-            email: adminEmail,
-          }
-        })
-      } else {
-        return NextResponse.json(
-          { error: "Invalid login credentials" },
-          { status: 401 }
-        )
-      }
-    } else {
-      // 환경 변수가 없으면 콘솔에 경고
-      if (process.env.NODE_ENV === "development") {
-        console.warn("Admin login: GMAIL_USER or GMAIL_APP_PASSWORD not set, falling back to Supabase auth")
-      }
-    }
-
-    // Supabase 인증 확인 (환경 변수가 없을 경우)
     const supabase = await createClient()
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
+      email,
       password,
     })
 
-    if (signInError) {
-      // 에러 메시지를 더 자세히 반환
-      let errorMessage = "로그인에 실패했습니다."
-      
-      if (signInError.message.includes("Invalid login credentials")) {
-        errorMessage = "Invalid login credentials"
-      } else if (signInError.message.includes("Email not confirmed")) {
-        errorMessage = "Email not confirmed"
-      } else if (signInError.message.includes("User not found")) {
-        errorMessage = "User not found"
-      } else {
-        errorMessage = signInError.message
-      }
-
-      return NextResponse.json(
-        { error: errorMessage },
+    if (signInError || !data.user) {
+      const message = signInError?.message.toLowerCase() || ""
+      return jsonNoStore(
+        {
+          error: message.includes("email not confirmed")
+            ? "Email not confirmed"
+            : "Invalid login credentials",
+        },
         { status: 401 }
       )
     }
 
-    if (!data.user) {
-      return NextResponse.json(
-        { error: "사용자 정보를 찾을 수 없습니다." },
-        { status: 401 }
+    const serviceClient = getServiceClient()
+    const { data: profile, error: profileError } = await serviceClient
+      .from("profiles")
+      .select("id, email, name, role, status")
+      .eq("id", data.user.id)
+      .single()
+
+    const role = profile?.role as UserRole | undefined
+    if (
+      profileError ||
+      !profile ||
+      profile.status !== "active" ||
+      !role ||
+      !BACKOFFICE_ROLES.includes(role)
+    ) {
+      await supabase.auth.signOut()
+      return jsonNoStore(
+        {
+          error:
+            profile?.status === "suspended"
+              ? "Account suspended"
+              : profile?.status === "pending"
+                ? "Account inactive"
+                : "Insufficient permissions",
+        },
+        { status: 403 }
       )
     }
 
-    // 로그인 성공 - 세션 쿠키 설정
-    const cookieStore = await cookies()
-    cookieStore.set("admin_session", "authenticated", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7일
-      path: "/",
-    })
-
-    return NextResponse.json({ 
-      success: true, 
+    return jsonNoStore({
+      success: true,
+      redirectTo: allowedDestination(role, requestedNext),
       user: {
         id: data.user.id,
         email: data.user.email,
-      }
+        name: profile.name,
+        role,
+      },
     })
   } catch (error) {
-    console.error("Login error:", error)
-    return NextResponse.json(
+    if (error instanceof Error && error.name === "UntrustedOriginError") {
+      return jsonNoStore({ error: "허용되지 않은 요청입니다." }, { status: 403 })
+    }
+
+    return jsonNoStore(
       { error: "서버 오류가 발생했습니다." },
       { status: 500 }
     )
   }
 }
-

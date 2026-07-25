@@ -1,11 +1,20 @@
 import { NextResponse } from "next/server"
-import { cookies } from "next/headers"
+import { getAuthenticatedBackofficeProfile } from "@/lib/admin/auth"
 
 export async function GET() {
-  const cookieStore = await cookies()
-  const session = cookieStore.get("admin_session")
-  const isAuthenticated = session?.value === "authenticated"
+  const profile = await getAuthenticatedBackofficeProfile()
+  const response = NextResponse.json({
+    authenticated: Boolean(profile),
+    user: profile
+      ? {
+          id: profile.id,
+          email: profile.email,
+          name: profile.name,
+          role: profile.role,
+        }
+      : null,
+  })
 
-  return NextResponse.json({ authenticated: isAuthenticated })
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  return response
 }
-
