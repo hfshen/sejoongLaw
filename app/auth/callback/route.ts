@@ -2,12 +2,22 @@ import { NextRequest, NextResponse } from "next/server"
 import { getDashboardUrl, type UserRole } from "@/lib/auth/role-guard"
 import {
   classifyAuthFailure,
+  isStayCareDestination,
+  normalizeStayCareLocale,
   safeInternalPath,
   stayCareLoginRecoveryPath,
 } from "@/lib/auth/redirects"
 import logger from "@/lib/logger"
 import { createClient } from "@/lib/supabase/server"
 import { getServiceClient } from "@/lib/supabase/service"
+
+const BACKOFFICE_ROLES: readonly UserRole[] = [
+  "admin",
+  "korea_agent",
+  "translator",
+  "foreign_lawyer",
+  "family_viewer",
+]
 
 function redirectNoStore(url: URL) {
   const response = NextResponse.redirect(url)
@@ -18,7 +28,7 @@ function redirectNoStore(url: URL) {
 
 function localeFromDestination(destination: string) {
   const locale = destination.split("/").filter(Boolean)[0]
-  return locale === "en" ? "en" : "ko"
+  return normalizeStayCareLocale(locale)
 }
 
 function failureDestination({
@@ -39,7 +49,7 @@ function failureDestination({
     return url
   }
 
-  if (next.includes("/staycare/")) {
+  if (isStayCareDestination(next)) {
     const locale = localeFromDestination(next)
     return new URL(
       stayCareLoginRecoveryPath({ locale, reason, next }),
@@ -51,6 +61,26 @@ function failureDestination({
   url.searchParams.set("error", "session_error")
   if (next) url.searchParams.set("next", next)
   return url
+}
+
+function allowedBackofficeDestination(role: UserRole, requestedNext: string) {
+  const fallback = getDashboardUrl(role)
+  if (!requestedNext || !requestedNext.startsWith("/admin")) return fallback
+  if (role === "admin") return requestedNext
+
+  if (role === "korea_agent") {
+    return requestedNext === "/admin/cases" || requestedNext.startsWith("/admin/cases/")
+      ? requestedNext
+      : fallback
+  }
+
+  if (["translator", "foreign_lawyer", "family_viewer"].includes(role)) {
+    return requestedNext === "/admin/documents" || requestedNext.startsWith("/admin/documents/")
+      ? requestedNext
+      : fallback
+  }
+
+  return fallback
 }
 
 export async function GET(request: NextRequest) {
@@ -66,12 +96,7 @@ export async function GET(request: NextRequest) {
 
   if (callbackFailure) {
     return redirectNoStore(
-      failureDestination({
-        request,
-        flow,
-        next,
-        reason: callbackFailure,
-      })
+      failureDestination({ request, flow, next, reason: callbackFailure })
     )
   }
 
@@ -93,17 +118,17 @@ export async function GET(request: NextRequest) {
     logger.warn("Auth callback session exchange failed", {
       message: error?.message,
       flow,
-      next,
     })
     return redirectNoStore(
       failureDestination({
         request,
         flow,
         next,
-        reason: classifyAuthFailure({
-          error: error ? "access_denied" : null,
-          description: error?.message,
-        }) || "auth_callback_failed",
+        reason:
+          classifyAuthFailure({
+            error: error ? "access_denied" : null,
+            description: error?.message,
+          }) || "auth_callback_failed",
       })
     )
   }
@@ -112,7 +137,9 @@ export async function GET(request: NextRequest) {
     return redirectNoStore(new URL("/admin/reset-password?ready=1", request.url))
   }
 
-  if (next) {
+  // StayCare pages perform their authoritative tenant and role checks in the
+  // destination server component. The callback only exchanges the auth code.
+  if (isStayCareDestination(next)) {
     return redirectNoStore(new URL(next, request.url))
   }
 
@@ -129,6 +156,7 @@ export async function GET(request: NextRequest) {
         userId: data.user.id,
         message: profileError?.message,
       })
+      await supabase.auth.signOut()
       return redirectNoStore(
         new URL("/auth/login?error=profile_missing", request.url)
       )
@@ -141,14 +169,22 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    return redirectNoStore(
-      new URL(getDashboardUrl(profile.role as UserRole), request.url)
-    )
+    const role = profile.role as UserRole
+    if (!BACKOFFICE_ROLES.includes(role)) {
+      await supabase.auth.signOut()
+      return redirectNoStore(
+        new URL("/auth/login?error=insufficient_permissions", request.url)
+      )
+    }
+
+    const destination = allowedBackofficeDestination(role, next)
+    return redirectNoStore(new URL(destination, request.url))
   } catch (profileError) {
     logger.error("Auth callback profile resolution failed", {
       error: profileError,
       userId: data.user.id,
     })
+    await supabase.auth.signOut()
     return redirectNoStore(new URL("/auth/login?error=session_error", request.url))
   }
 }
