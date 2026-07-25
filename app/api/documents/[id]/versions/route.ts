@@ -1,186 +1,244 @@
+import { randomUUID } from "crypto"
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
-import { getServiceClient } from "@/lib/supabase/service"
-import { isAdminAuthenticated } from "@/lib/admin/auth"
-import { createNextErrorResponse } from "@/lib/utils/error-handler"
-import { createSuccessResponse } from "@/lib/utils/api-response"
-import logger from "@/lib/logger"
 import {
-  createDocumentVersion,
-  getVersionHistory,
-  calculateSHA256,
-} from "@/lib/documents/versioning"
-import { createVersionSegments } from "@/lib/documents/segmentation"
-import { logAuditEvent, AuditActions } from "@/lib/audit/events"
+  DOCUMENT_OPERATOR_ROLES,
+  DOCUMENT_UUID_PATTERN,
+  getDocumentActor,
+  hasDocumentPermission,
+} from "@/lib/documents/access"
+import logger from "@/lib/logger"
+import { requireTrustedOrigin } from "@/lib/security/request"
+import { getServiceClient } from "@/lib/supabase/service"
+import { createSuccessResponse } from "@/lib/utils/api-response"
+import { createNextErrorResponse } from "@/lib/utils/error-handler"
+
+const MAX_VERSION_BYTES = 10 * 1024 * 1024
 
 interface RouteParams {
   params: Promise<{ id: string }>
 }
 
+function forbidden() {
+  const response = NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  return response
+}
+
+function noStore<T extends NextResponse>(response: T): T {
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  return response
+}
+
+function validText(buffer: Buffer) {
+  try {
+    new TextDecoder("utf-8", { fatal: true }).decode(buffer)
+    return true
+  } catch {
+    return false
+  }
+}
+
+function detectVersionFile(buffer: Buffer, declaredType: string) {
+  if (buffer.length >= 5 && buffer.subarray(0, 5).toString("ascii") === "%PDF-") {
+    return declaredType && declaredType !== "application/pdf"
+      ? null
+      : { contentType: "application/pdf", extension: "pdf" }
+  }
+
+  if (validText(buffer)) {
+    return declaredType && !declaredType.startsWith("text/")
+      ? null
+      : { contentType: "text/plain; charset=utf-8", extension: "txt" }
+  }
+
+  return null
+}
+
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    const actor = await getDocumentActor()
+    if (!actor) return forbidden()
 
-    const { id } = await params
-    const { searchParams } = new URL(request.url)
-    const versionId = searchParams.get("versionId")
-
-    // Use service role client to bypass RLS
-    let supabase
-    try {
-      supabase = getServiceClient()
-    } catch (serviceError) {
-      logger.warn("Failed to get service client, using regular client", { error: serviceError })
-      supabase = await createClient()
+    const { id: documentId } = await params
+    if (!DOCUMENT_UUID_PATTERN.test(documentId)) {
+      return NextResponse.json({ error: "올바른 문서 ID가 필요합니다." }, { status: 400 })
     }
+    if (!(await hasDocumentPermission(actor, documentId, "view"))) return forbidden()
+
+    const versionId = request.nextUrl.searchParams.get("versionId")
+    const supabase = getServiceClient()
 
     if (versionId) {
-      // Get segments for specific version
-      const { getVersionSegments } = await import("@/lib/documents/segmentation")
-      try {
-        const segments = await getVersionSegments(versionId)
-        logger.info("Fetched segments for version", {
-          versionId,
-          segmentCount: segments.length,
-        })
-        return createSuccessResponse({ segments })
-      } catch (error: any) {
-        logger.error("Failed to fetch segments", {
-          error,
-          errorMessage: error?.message,
-          versionId,
-        })
-        // Return empty array instead of failing
-        return createSuccessResponse({ segments: [] })
+      if (!DOCUMENT_UUID_PATTERN.test(versionId)) {
+        return NextResponse.json({ error: "올바른 버전 ID가 필요합니다." }, { status: 400 })
       }
-    } else {
-      // Get all versions
-      const versions = await getVersionHistory(id)
-      return createSuccessResponse({ versions })
+
+      const { data: version, error: versionError } = await supabase
+        .from("document_versions")
+        .select("id")
+        .eq("id", versionId)
+        .eq("document_id", documentId)
+        .single()
+      if (versionError || !version) {
+        return NextResponse.json({ error: "문서 버전을 찾을 수 없습니다." }, { status: 404 })
+      }
+
+      const { data: segments, error } = await supabase
+        .from("version_segments")
+        .select("*")
+        .eq("version_id", versionId)
+        .order("seq", { ascending: true })
+      if (error) {
+        return createNextErrorResponse(
+          NextResponse,
+          error,
+          "문서 세그먼트를 불러오지 못했습니다.",
+          500
+        )
+      }
+      return noStore(createSuccessResponse({ segments: segments || [] }))
     }
+
+    const { data: versions, error } = await supabase
+      .from("document_versions")
+      .select("*")
+      .eq("document_id", documentId)
+      .order("version_no", { ascending: false })
+    if (error) {
+      return createNextErrorResponse(
+        NextResponse,
+        error,
+        "문서 버전을 불러오지 못했습니다.",
+        500
+      )
+    }
+    return noStore(createSuccessResponse({ versions: versions || [] }))
   } catch (error) {
     logger.error("Error fetching document versions", { error })
     return createNextErrorResponse(
       NextResponse,
       error,
-      "Failed to fetch document versions",
+      "문서 버전을 불러오지 못했습니다.",
       500
     )
   }
 }
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
+  let storagePath: string | null = null
+  let versionId: string | null = null
+
   try {
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    requireTrustedOrigin(request)
+    const actor = await getDocumentActor(DOCUMENT_OPERATOR_ROLES)
+    if (!actor) return forbidden()
 
     const { id: documentId } = await params
-    const supabase = await createClient()
-
-    // Get current user
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!DOCUMENT_UUID_PATTERN.test(documentId)) {
+      return NextResponse.json({ error: "올바른 문서 ID가 필요합니다." }, { status: 400 })
     }
+    if (!(await hasDocumentPermission(actor, documentId, "view"))) return forbidden()
 
-    // Parse form data (file upload)
     const formData = await request.formData()
-    const file = formData.get("file") as File
-    const sourceText = formData.get("sourceText") as string | null
+    const candidate = formData.get("file")
+    const sourceTextValue = formData.get("sourceText")
+    const sourceText = typeof sourceTextValue === "string" ? sourceTextValue.trim() : ""
 
-    if (!file && !sourceText) {
+    if (!(candidate instanceof File) && !sourceText) {
       return NextResponse.json(
-        { error: "File or sourceText is required" },
+        { error: "PDF·텍스트 파일 또는 원문 텍스트가 필요합니다." },
         { status: 400 }
       )
     }
 
     let fileContent: Buffer
-    let storagePath: string
+    let contentType: string
+    let extension: string
 
-    if (file) {
-      // Upload file to Supabase Storage
-      const fileBuffer = Buffer.from(await file.arrayBuffer())
-      const fileName = `${Date.now()}_${file.name}`
-      storagePath = `documents/${documentId}/${fileName}`
-
-      const { error: uploadError } = await supabase.storage
-        .from("documents")
-        .upload(storagePath, fileBuffer, {
-          contentType: file.type,
-          upsert: false,
-        })
-
-      if (uploadError) {
-        logger.error("Failed to upload file", { error: uploadError })
-        return createNextErrorResponse(
-          NextResponse,
-          uploadError,
-          "Failed to upload file",
-          500
+    if (candidate instanceof File) {
+      if (candidate.size <= 0 || candidate.size > MAX_VERSION_BYTES) {
+        return NextResponse.json(
+          { error: "버전 파일은 0바이트보다 크고 10MB 이하여야 합니다." },
+          { status: 400 }
         )
       }
-
-      fileContent = fileBuffer
+      fileContent = Buffer.from(await candidate.arrayBuffer())
+      const format = detectVersionFile(fileContent, candidate.type)
+      if (!format) {
+        return NextResponse.json(
+          { error: "실제 파일 형식이 PDF 또는 UTF-8 텍스트가 아닙니다." },
+          { status: 400 }
+        )
+      }
+      contentType = format.contentType
+      extension = format.extension
     } else {
-      // Use sourceText
-      fileContent = Buffer.from(sourceText!, "utf-8")
-      storagePath = `documents/${documentId}/${Date.now()}_text.txt`
+      if (Buffer.byteLength(sourceText, "utf8") > MAX_VERSION_BYTES) {
+        return NextResponse.json({ error: "원문 텍스트가 너무 큽니다." }, { status: 400 })
+      }
+      fileContent = Buffer.from(sourceText, "utf8")
+      contentType = "text/plain; charset=utf-8"
+      extension = "txt"
     }
 
-    // Create version
+    const supabase = getServiceClient()
+    storagePath = `documents/${documentId}/${randomUUID()}.${extension}`
+    const { error: uploadError } = await supabase.storage
+      .from("documents")
+      .upload(storagePath, fileContent, {
+        contentType,
+        upsert: false,
+      })
+    if (uploadError) throw uploadError
+
+    const { createDocumentVersion } = await import("@/lib/documents/versioning")
     const version = await createDocumentVersion({
       documentId,
       storagePath,
       fileContent,
-      createdBy: user.id,
+      createdBy: actor.id,
+    })
+    versionId = version.id
+
+    if (sourceText) {
+      const { createVersionSegments } = await import("@/lib/documents/segmentation")
+      await createVersionSegments(version.id, sourceText)
+    }
+
+    const { data: document } = await supabase
+      .from("documents")
+      .select("case_id")
+      .eq("id", documentId)
+      .single()
+    await supabase.from("audit_events").insert({
+      case_id: document?.case_id || null,
+      entity_type: "version",
+      entity_id: version.id,
+      action: "created",
+      actor: actor.id,
+      meta: {
+        document_id: documentId,
+        version_no: version.version_no,
+        content_type: contentType,
+      },
     })
 
-    // Create segments if sourceText is provided
-    if (sourceText) {
-      try {
-        await createVersionSegments(version.id, sourceText)
-      } catch (error) {
-        logger.error("Failed to create segments", { error, versionId: version.id })
-        // Don't fail the request if segmentation fails
-      }
-    }
-
-    // Log audit event
-    try {
-      const { data: document } = await supabase
-        .from("documents")
-        .select("case_id")
-        .eq("id", documentId)
-        .single()
-
-      await logAuditEvent({
-        caseId: document?.case_id || null,
-        entityType: "version",
-        entityId: version.id,
-        action: AuditActions.VERSION_CREATED,
-        meta: { version_no: version.version_no, storage_path: storagePath },
-        actor: user.id,
-      })
-    } catch (error) {
-      logger.error("Failed to log audit event", { error })
-      // Don't fail the request
-    }
-
-    return createSuccessResponse({ version }, "Version created successfully", 201)
+    return noStore(
+      createSuccessResponse({ version }, "문서 버전이 생성되었습니다.", 201)
+    )
   } catch (error) {
+    const supabase = getServiceClient()
+    if (versionId) await supabase.from("document_versions").delete().eq("id", versionId)
+    if (storagePath) await supabase.storage.from("documents").remove([storagePath])
+
+    if (error instanceof Error && error.name === "UntrustedOriginError") {
+      return forbidden()
+    }
     logger.error("Error creating document version", { error })
     return createNextErrorResponse(
       NextResponse,
       error,
-      "Failed to create document version",
+      "문서 버전 생성에 실패했습니다.",
       500
     )
   }
