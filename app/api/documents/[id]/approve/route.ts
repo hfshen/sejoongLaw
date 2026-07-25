@@ -1,56 +1,98 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
-import { isAdminAuthenticated } from "@/lib/admin/auth"
-import { createNextErrorResponse } from "@/lib/utils/error-handler"
-import { createSuccessResponse } from "@/lib/utils/api-response"
-import logger from "@/lib/logger"
+import { z } from "zod"
+import type { UserRole } from "@/lib/auth/role-guard"
 import {
-  createApproval,
-  checkApprovalStatus,
-  getApprovalChain,
+  DOCUMENT_UUID_PATTERN,
+  getDocumentActor,
+  hasDocumentPermission,
+} from "@/lib/documents/access"
+import logger from "@/lib/logger"
+import { requireTrustedOrigin } from "@/lib/security/request"
+import { getServiceClient } from "@/lib/supabase/service"
+import { createSuccessResponse } from "@/lib/utils/api-response"
+import { createNextErrorResponse } from "@/lib/utils/error-handler"
+import {
   canUserApprove,
+  checkApprovalStatus,
+  createApproval,
+  getApprovalChain,
   isVersionReadyForExport,
 } from "@/lib/workflow/approval"
-import { getVersion } from "@/lib/documents/versioning"
-import { updateVersionStatus } from "@/lib/documents/versioning"
-import { logAuditEvent, AuditActions } from "@/lib/audit/events"
+
+const APPROVER_ROLES: readonly UserRole[] = [
+  "admin",
+  "korea_agent",
+  "translator",
+  "foreign_lawyer",
+]
+const TARGET_LANGUAGES = ["source", "en", "si", "ta"] as const
+const approvalSchema = z.object({
+  versionId: z.string().uuid(),
+  targetLang: z.enum(TARGET_LANGUAGES).optional().default("source"),
+  decision: z.enum(["approved", "rejected"]),
+  comment: z.string().trim().max(2000).optional().nullable(),
+})
 
 interface RouteParams {
   params: Promise<{ id: string }>
 }
 
+function forbidden() {
+  const response = NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  return response
+}
+
+function noStore<T extends NextResponse>(response: T): T {
+  response.headers.set("Cache-Control", "private, no-store, max-age=0")
+  return response
+}
+
+async function versionBelongsToDocument(versionId: string, documentId: string) {
+  const supabase = getServiceClient()
+  const { data, error } = await supabase
+    .from("document_versions")
+    .select("id, document_id")
+    .eq("id", versionId)
+    .eq("document_id", documentId)
+    .single()
+  return error || !data ? null : data
+}
+
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    const actor = await getDocumentActor()
+    if (!actor) return forbidden()
 
     const { id: documentId } = await params
-    const { searchParams } = new URL(request.url)
-    const versionId = searchParams.get("versionId")
-    const targetLang = searchParams.get("targetLang") || "source"
-
-    if (!versionId) {
-      return NextResponse.json({ error: "versionId is required" }, { status: 400 })
+    const versionId = request.nextUrl.searchParams.get("versionId") || ""
+    const targetLang = request.nextUrl.searchParams.get("targetLang") || "source"
+    if (
+      !DOCUMENT_UUID_PATTERN.test(documentId) ||
+      !DOCUMENT_UUID_PATTERN.test(versionId) ||
+      !TARGET_LANGUAGES.includes(targetLang as (typeof TARGET_LANGUAGES)[number])
+    ) {
+      return NextResponse.json(
+        { error: "문서, 버전, 승인 언어를 확인해 주세요." },
+        { status: 400 }
+      )
+    }
+    if (!(await hasDocumentPermission(actor, documentId, "view"))) return forbidden()
+    if (!(await versionBelongsToDocument(versionId, documentId))) {
+      return NextResponse.json({ error: "문서 버전을 찾을 수 없습니다." }, { status: 404 })
     }
 
-    // Verify version belongs to document
-    const version = await getVersion(versionId)
-    if (!version || version.document_id !== documentId) {
-      return NextResponse.json({ error: "Version not found" }, { status: 404 })
-    }
-
-    const status = await checkApprovalStatus(versionId, targetLang)
-    const chain = await getApprovalChain(versionId)
-
-    return createSuccessResponse({ status, chain })
+    const [status, chain] = await Promise.all([
+      checkApprovalStatus(versionId, targetLang),
+      getApprovalChain(versionId),
+    ])
+    return noStore(createSuccessResponse({ status, chain }))
   } catch (error) {
     logger.error("Error fetching approval status", { error })
     return createNextErrorResponse(
       NextResponse,
       error,
-      "Failed to fetch approval status",
+      "승인 상태를 불러오지 못했습니다.",
       500
     )
   }
@@ -58,148 +100,94 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
-    const isAdmin = await isAdminAuthenticated()
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    requireTrustedOrigin(request)
+    const actor = await getDocumentActor(APPROVER_ROLES)
+    if (!actor) return forbidden()
 
     const { id: documentId } = await params
-    const supabase = await createClient()
-
-    // Get current user
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!DOCUMENT_UUID_PATTERN.test(documentId)) {
+      return NextResponse.json({ error: "올바른 문서 ID가 필요합니다." }, { status: 400 })
     }
 
-    // Get user role
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single()
-
-    const userRole = (profile?.role || "family_viewer") as
-      | "korea_agent"
-      | "translator"
-      | "foreign_lawyer"
-      | "family_viewer"
-      | "admin"
-
-    const body = await request.json()
-    const { versionId, targetLang = "source", decision, comment } = body
-
-    if (!versionId || !decision) {
+    const parsed = approvalSchema.safeParse(await request.json())
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "versionId and decision are required" },
+        { error: parsed.error.issues[0]?.message || "승인 요청을 확인해 주세요." },
         { status: 400 }
       )
     }
-
-    if (decision !== "approved" && decision !== "rejected") {
-      return NextResponse.json(
-        { error: "decision must be 'approved' or 'rejected'" },
-        { status: 400 }
-      )
+    if (!(await hasDocumentPermission(actor, documentId, "approve"))) return forbidden()
+    if (!(await versionBelongsToDocument(parsed.data.versionId, documentId))) {
+      return NextResponse.json({ error: "문서 버전을 찾을 수 없습니다." }, { status: 404 })
     }
+    if (!canUserApprove(actor.role, parsed.data.targetLang)) return forbidden()
 
-    // Verify version belongs to document
-    const version = await getVersion(versionId)
-    if (!version || version.document_id !== documentId) {
-      return NextResponse.json({ error: "Version not found" }, { status: 404 })
-    }
+    const forwardedFor = request.headers.get("x-forwarded-for")
+    const ipAddress = forwardedFor?.split(",")[0]?.trim() || request.headers.get("x-real-ip")
+    const userAgent = request.headers.get("user-agent")?.slice(0, 500) || null
 
-    // Check if user can approve
-    if (!canUserApprove(userRole, targetLang)) {
-      return NextResponse.json(
-        { error: "User does not have permission to approve this document" },
-        { status: 403 }
-      )
-    }
-
-    // Get IP address and user agent
-    const ipAddress =
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
-      null
-    const userAgent = request.headers.get("user-agent") || null
-
-    // Create approval
     const approval = await createApproval({
-      versionId,
-      targetLang,
-      approvedBy: user.id,
-      role: userRole,
-      decision,
-      comment,
+      versionId: parsed.data.versionId,
+      targetLang: parsed.data.targetLang,
+      approvedBy: actor.id,
+      role: actor.role as Exclude<UserRole, "system">,
+      decision: parsed.data.decision,
+      comment: parsed.data.comment || undefined,
       ipAddress,
       userAgent,
     })
 
-    // Update version status if approved
-    if (decision === "approved") {
-      // Check if all required approvals are obtained
-      // Default target languages: en, si, ta
-      const targetLangs = ["en", "si", "ta"]
-      const isReadyForExport = await isVersionReadyForExport(versionId, targetLangs)
-
-      if (isReadyForExport) {
-        // All approvals received - mark as approved and ready for export
-        await updateVersionStatus(versionId, "approved")
-        logger.info("Version approved and ready for export", {
-          versionId,
-          documentId,
-        })
-      } else {
-        // Still waiting for more approvals
-        await updateVersionStatus(versionId, "pending_approval")
-        logger.info("Version partially approved, waiting for more approvals", {
-          versionId,
-          documentId,
-          targetLang,
-        })
-      }
+    const supabase = getServiceClient()
+    if (parsed.data.decision === "approved") {
+      const ready = await isVersionReadyForExport(parsed.data.versionId, ["en", "si", "ta"])
+      await supabase
+        .from("document_versions")
+        .update({ status: ready ? "approved" : "pending_approval" })
+        .eq("id", parsed.data.versionId)
     } else {
-      // Rejected - keep in pending_approval or revert to draft
-      await updateVersionStatus(versionId, "pending_approval")
+      await supabase
+        .from("document_versions")
+        .update({ status: "pending_approval" })
+        .eq("id", parsed.data.versionId)
     }
 
-    // Log audit event
-    try {
-      const { data: document } = await supabase
-        .from("documents")
-        .select("case_id")
-        .eq("id", documentId)
-        .single()
+    const { data: document } = await supabase
+      .from("documents")
+      .select("case_id")
+      .eq("id", documentId)
+      .single()
+    await supabase.from("audit_events").insert({
+      case_id: document?.case_id || null,
+      entity_type: "approval",
+      entity_id: approval.id,
+      action: parsed.data.decision === "approved" ? "approved" : "rejected",
+      actor: actor.id,
+      meta: {
+        document_id: documentId,
+        version_id: parsed.data.versionId,
+        target_lang: parsed.data.targetLang,
+        role: actor.role,
+      },
+    })
 
-      await logAuditEvent({
-        caseId: document?.case_id || null,
-        entityType: "approval",
-        entityId: approval.id,
-        action:
-          decision === "approved"
-            ? AuditActions.APPROVAL_CREATED
-            : AuditActions.APPROVAL_REJECTED,
-        meta: { target_lang: targetLang, role: userRole },
-        actor: user.id,
-      })
-    } catch (error) {
-      logger.error("Failed to log audit event", { error })
-    }
-
-    return createSuccessResponse(
-      { approval },
-      decision === "approved" ? "Document approved" : "Document rejected",
-      201
+    return noStore(
+      createSuccessResponse(
+        { approval },
+        parsed.data.decision === "approved"
+          ? "문서를 승인했습니다."
+          : "문서를 반려했습니다.",
+        201
+      )
     )
   } catch (error) {
+    if (error instanceof Error && error.name === "UntrustedOriginError") {
+      return forbidden()
+    }
     logger.error("Error creating approval", { error })
     return createNextErrorResponse(
       NextResponse,
       error,
-      "Failed to create approval",
+      "문서 승인 처리에 실패했습니다.",
       500
     )
   }
