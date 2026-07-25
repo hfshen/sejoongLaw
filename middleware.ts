@@ -17,6 +17,24 @@ function localeFromPath(pathname: string) {
     : routing.defaultLocale
 }
 
+function authFailureReason(request: NextRequest) {
+  const error = request.nextUrl.searchParams.get("error")
+  const code = request.nextUrl.searchParams.get("error_code")
+  const description = (
+    request.nextUrl.searchParams.get("error_description") || ""
+  ).toLowerCase()
+
+  if (!error && !code) return null
+  if (
+    code === "otp_expired" ||
+    description.includes("expired") ||
+    description.includes("invalid")
+  ) {
+    return "otp_expired"
+  }
+  return error === "access_denied" ? "auth_callback_failed" : null
+}
+
 function safeOrigin(value?: string) {
   if (!value) return null
   try {
@@ -93,6 +111,23 @@ export default async function middleware(request: NextRequest) {
 
   if (pathname.startsWith("/api/staycare")) {
     return applyStayCareSecurityHeaders(NextResponse.next(), {
+      privateData: true,
+    })
+  }
+
+  const authFailure = authFailureReason(request)
+  if (authFailure && !pathname.includes("/staycare/login")) {
+    const locale = localeFromPath(pathname)
+    const loginUrl = request.nextUrl.clone()
+    loginUrl.pathname = `/${locale}/staycare/login`
+    loginUrl.search = ""
+    loginUrl.searchParams.set("error", "auth_callback_failed")
+    loginUrl.searchParams.set("reason", authFailure)
+    loginUrl.searchParams.set("next", `/${locale}/staycare/app`)
+    // An explicit replacement fragment prevents the browser from inheriting
+    // Supabase's original #error=... fragment across the redirect.
+    loginUrl.hash = "auth-recovery"
+    return applyStayCareSecurityHeaders(NextResponse.redirect(loginUrl), {
       privateData: true,
     })
   }
