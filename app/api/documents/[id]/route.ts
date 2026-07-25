@@ -16,6 +16,16 @@ import { getServiceClient } from "@/lib/supabase/service"
 import { createSuccessResponse } from "@/lib/utils/api-response"
 import { createNextErrorResponse } from "@/lib/utils/error-handler"
 
+type DocumentSnapshot = {
+  document_type: string
+  name: string
+  date: string
+  data: Record<string, unknown>
+  locale: string
+  source_lang: string | null
+  current_version_id: string | null
+}
+
 function forbidden() {
   const response = NextResponse.json({ error: "Forbidden" }, { status: 403 })
   response.headers.set("Cache-Control", "private, no-store, max-age=0")
@@ -25,6 +35,58 @@ function forbidden() {
 function noStore<T extends NextResponse>(response: T): T {
   response.headers.set("Cache-Control", "private, no-store, max-age=0")
   return response
+}
+
+async function rollbackDocumentUpdate({
+  documentId,
+  previous,
+  versionId,
+  storagePath,
+}: {
+  documentId: string
+  previous: DocumentSnapshot | null
+  versionId: string | null
+  storagePath: string | null
+}) {
+  const supabase = getServiceClient()
+
+  if (versionId) {
+    const { error } = await supabase
+      .from("document_versions")
+      .delete()
+      .eq("id", versionId)
+    if (error) {
+      logger.error("Failed to remove partial document version", {
+        error,
+        documentId,
+        versionId,
+      })
+    }
+  }
+
+  if (storagePath) {
+    const { error } = await supabase.storage.from("documents").remove([storagePath])
+    if (error) {
+      logger.error("Failed to remove partial document storage object", {
+        error,
+        documentId,
+        storagePath,
+      })
+    }
+  }
+
+  if (previous) {
+    const { error } = await supabase
+      .from("documents")
+      .update(previous)
+      .eq("id", documentId)
+    if (error) {
+      logger.error("Failed to restore document after versioning error", {
+        error,
+        documentId,
+      })
+    }
+  }
 }
 
 export async function GET(
@@ -77,6 +139,8 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  let documentId: string | null = null
+  let previousSnapshot: DocumentSnapshot | null = null
   let storagePath: string | null = null
   let versionId: string | null = null
 
@@ -86,6 +150,7 @@ export async function PUT(
     if (!actor) return forbidden()
 
     const { id } = await params
+    documentId = id
     if (!DOCUMENT_UUID_PATTERN.test(id)) {
       return NextResponse.json({ error: "올바른 문서 ID가 필요합니다." }, { status: 400 })
     }
@@ -110,6 +175,16 @@ export async function PUT(
       return NextResponse.json({ error: "서류를 찾을 수 없습니다." }, { status: 404 })
     }
 
+    previousSnapshot = {
+      document_type: previous.document_type,
+      name: previous.name,
+      date: previous.date,
+      data: previous.data || {},
+      locale: previous.locale,
+      source_lang: previous.source_lang || null,
+      current_version_id: previous.current_version_id || null,
+    }
+
     const updateData = { ...parsed.data }
     if (previous.is_case_linked && previous.case_id) {
       const { data: caseRecord, error: caseError } = await supabase
@@ -127,6 +202,7 @@ export async function PUT(
       }
       updateData.name = caseRecord.case_name
     }
+    if (updateData.locale) updateData.source_lang = updateData.locale
 
     const { data: document, error: updateError } = await supabase
       .from("documents")
@@ -144,18 +220,20 @@ export async function PUT(
       )
     }
 
-    const documentText = JSON.stringify(
-      {
-        document_type: document.document_type,
-        name: document.name,
-        date: document.date,
-        data: document.data,
-        locale: document.locale,
-      },
-      null,
-      2
+    const fileContent = Buffer.from(
+      JSON.stringify(
+        {
+          document_type: document.document_type,
+          name: document.name,
+          date: document.date,
+          data: document.data,
+          locale: document.locale,
+        },
+        null,
+        2
+      ),
+      "utf-8"
     )
-    const fileContent = Buffer.from(documentText, "utf-8")
     storagePath = `documents/${id}/v_${Date.now()}.txt`
 
     const { error: uploadError } = await supabase.storage
@@ -225,28 +303,13 @@ export async function PUT(
       )
     )
   } catch (error) {
-    const actor = await getDocumentActor(DOCUMENT_OPERATOR_ROLES)
-    const { id } = await params
-    if (actor && DOCUMENT_UUID_PATTERN.test(id)) {
-      const supabase = getServiceClient()
-      if (versionId) await supabase.from("document_versions").delete().eq("id", versionId)
-      if (storagePath) await supabase.storage.from("documents").remove([storagePath])
-
-      // Restore the previously committed document state when versioning fails.
-      const { data: latest } = await supabase.from("documents").select("*").eq("id", id).single()
-      if (latest) {
-        const { data: previousVersion } = await supabase
-          .from("document_versions")
-          .select("id")
-          .eq("document_id", id)
-          .order("version_no", { ascending: false })
-          .limit(1)
-          .maybeSingle()
-        await supabase
-          .from("documents")
-          .update({ current_version_id: previousVersion?.id || null })
-          .eq("id", id)
-      }
+    if (documentId) {
+      await rollbackDocumentUpdate({
+        documentId,
+        previous: previousSnapshot,
+        versionId,
+        storagePath,
+      })
     }
 
     if (error instanceof Error && error.name === "UntrustedOriginError") {
