@@ -1,3 +1,5 @@
+jest.mock("server-only", () => ({}))
+
 import {
   generateInviteCode,
   normalizeContactIdentity,
