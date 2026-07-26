@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
-import StayCareOnboarding from "@/components/staycare/StayCareOnboarding"
+import StayCarePurposeNote from "@/components/staycare/StayCarePurposeNote"
 import StayCareWorkerWorkspace, {
   type WorkerWorkspaceApplication,
   type WorkerWorkspaceDocument,
@@ -44,17 +44,8 @@ export default async function StayCareAppPage({
   const preferredLanguage =
     queryLanguage ||
     cookieLanguage ||
-    normalizeStayCareLanguage(context.worker?.preferred_language) ||
+    normalizeStayCareLanguage(context.worker.preferred_language) ||
     (locale === "en" ? "en" : "ko")
-
-  if (!context.worker) {
-    return (
-      <StayCareOnboarding
-        locale={preferredLanguage}
-        email={context.user.email}
-      />
-    )
-  }
 
   const [
     stepsResult,
@@ -137,27 +128,35 @@ export default async function StayCareAppPage({
   } as WorkerWorkspaceWorker
 
   return (
-    <StayCareWorkerWorkspace
-      locale={locale}
-      userEmail={context.user.email}
-      worker={worker}
-      initialSteps={(stepsResult.data || []) as WorkerWorkspaceStep[]}
-      services={(servicesResult.data || []) as WorkerWorkspaceService[]}
-      initialDocuments={
-        (documentsResult.data || []) as WorkerWorkspaceDocument[]
-      }
-      initialApplications={
-        (applicationsResult.data || []) as unknown as WorkerWorkspaceApplication[]
-      }
-      initialNotifications={
-        (notificationsResult.data || []) as WorkerWorkspaceNotification[]
-      }
-      initialTickets={
-        (ticketsResult.data || []) as unknown as WorkerWorkspaceTicket[]
-      }
-      returnPlan={
-        (returnPlanResult.data || null) as WorkerWorkspaceReturnPlan | null
-      }
-    />
+    <>
+      <StayCarePurposeNote
+        compact
+        title="근로자 생애주기 앱"
+        purpose="공식 선발 이후 출국 준비, 입국, 초기 90일 정착, 근로·체류, 사고·민원, 장기체류 준비와 귀국까지 개인별 다음 행동을 관리합니다."
+        boundary="정부·EPS의 승인과 법률·의료 판단을 대신하지 않습니다. 공식기관 상태, 세중 지원, 고용주 의무와 제휴서비스 책임을 구분해 표시합니다."
+        items={[
+          { label: "오늘 할 일", description: "기한과 위험도에 따라 우선순위 표시" },
+          { label: "내 서류", description: "여권·비자·계약·등록·보험 검수" },
+          { label: "상담·사고", description: "P0~P3 티켓과 사람 검토 연결" },
+          { label: "계정 연속성", description: "+94에서 +82 번호로 연락수단 승계" },
+        ]}
+        links={[
+          { href: `/${locale}/staycare/account`, label: "전화번호·복구수단 관리" },
+          { href: `/${locale}/staycare/notes`, label: "전체 화면 용도 보기" },
+        ]}
+      />
+      <StayCareWorkerWorkspace
+        locale={locale}
+        userEmail={context.user.email}
+        worker={worker}
+        initialSteps={(stepsResult.data || []) as WorkerWorkspaceStep[]}
+        services={(servicesResult.data || []) as WorkerWorkspaceService[]}
+        initialDocuments={(documentsResult.data || []) as WorkerWorkspaceDocument[]}
+        initialApplications={(applicationsResult.data || []) as unknown as WorkerWorkspaceApplication[]}
+        initialNotifications={(notificationsResult.data || []) as WorkerWorkspaceNotification[]}
+        initialTickets={(ticketsResult.data || []) as unknown as WorkerWorkspaceTicket[]}
+        returnPlan={(returnPlanResult.data || null) as WorkerWorkspaceReturnPlan | null}
+      />
+    </>
   )
 }
