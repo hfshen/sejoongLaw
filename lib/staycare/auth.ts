@@ -98,7 +98,13 @@ export async function requireWorkerContext(locale = "ko") {
   const context = await getWorkerContext()
   if (!context) redirect(`/${locale}/staycare/login`)
   if (!context.worker) redirect(`/${locale}/staycare/claim`)
-  return context
+
+  // Rebuild the object after the guard so callers receive a non-null worker in
+  // both runtime behavior and TypeScript inference.
+  return {
+    ...context,
+    worker: context.worker,
+  }
 }
 
 export async function getStaffContext() {
