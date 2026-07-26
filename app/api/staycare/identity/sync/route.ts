@@ -45,14 +45,27 @@ export async function POST(request: NextRequest) {
     const countryCode = phone.startsWith("+82") ? "KR" : "LK"
 
     if (body.purpose === "korea_active") {
-      await admin
+      // The permanent worker ID survives authentication changes. Clear the prior
+      // primary flag regardless of provider, while preserving email/Google as
+      // active recovery identities. Only obsolete phone rows are superseded.
+      const { error: primaryError } = await admin
         .from("staycare_worker_identities")
-        .update({ is_primary: false, status: "superseded", updated_at: now })
+        .update({ is_primary: false, updated_at: now })
         .eq("worker_id", context.worker.id)
-        .eq("provider", "phone")
         .eq("is_primary", true)
         .neq("identity_hash", hash)
-      await admin
+      if (primaryError) throw primaryError
+
+      const { error: previousPhoneError } = await admin
+        .from("staycare_worker_identities")
+        .update({ status: "superseded", updated_at: now })
+        .eq("worker_id", context.worker.id)
+        .eq("provider", "phone")
+        .eq("status", "active")
+        .neq("identity_hash", hash)
+      if (previousPhoneError) throw previousPhoneError
+
+      const { error: previousContactError } = await admin
         .from("staycare_worker_contacts")
         .update({ status: "superseded", valid_until: now, updated_at: now })
         .eq("worker_id", context.worker.id)
@@ -60,6 +73,7 @@ export async function POST(request: NextRequest) {
         .eq("purpose", "korea_active")
         .eq("status", "active")
         .neq("value_hash", hash)
+      if (previousContactError) throw previousContactError
     }
 
     const { error: identityError } = await admin.from("staycare_worker_identities").upsert(
@@ -71,7 +85,12 @@ export async function POST(request: NextRequest) {
         identity_hash: hash,
         display_hint: maskedIdentity(phone),
         country_code: countryCode,
-        purpose: body.purpose === "recovery" ? "recovery" : body.purpose === "korea_active" ? "korea_active" : "predeparture",
+        purpose:
+          body.purpose === "recovery"
+            ? "recovery"
+            : body.purpose === "korea_active"
+              ? "korea_active"
+              : "predeparture",
         verified_at: now,
         is_primary: body.purpose === "korea_active",
         status: "active",
