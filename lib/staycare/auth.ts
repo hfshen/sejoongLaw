@@ -34,12 +34,16 @@ export async function resolveStayCareDestination(locale = "ko") {
 
   const { data: worker, error: workerError } = await context.supabase
     .from("staycare_workers")
-    .select("id")
+    .select("id, status")
     .eq("auth_user_id", context.user.id)
     .maybeSingle()
 
   if (workerError) throw workerError
-  if (worker) return `/${locale}/staycare/app`
+  if (worker) {
+    return worker.status === "closed"
+      ? `/${locale}/staycare/app?mode=closed`
+      : `/${locale}/staycare/app`
+  }
 
   const { data: memberships, error: membershipError } = await context.supabase
     .from("staycare_memberships")
@@ -58,7 +62,10 @@ export async function resolveStayCareDestination(locale = "ko") {
     return `/${locale}/staycare/portal`
   }
 
-  return `/${locale}/staycare/app`
+  // An authenticated account without a worker or organization membership must
+  // claim a pre-registered roster entry. It is never treated as a worker merely
+  // because Supabase Auth created an account.
+  return `/${locale}/staycare/claim`
 }
 
 export async function requireAuthenticatedUser(locale = "ko") {
@@ -90,7 +97,14 @@ export async function getWorkerContext() {
 export async function requireWorkerContext(locale = "ko") {
   const context = await getWorkerContext()
   if (!context) redirect(`/${locale}/staycare/login`)
-  return context
+  if (!context.worker) redirect(`/${locale}/staycare/claim`)
+
+  // Rebuild the object after the guard so callers receive a non-null worker in
+  // both runtime behavior and TypeScript inference.
+  return {
+    ...context,
+    worker: context.worker,
+  }
 }
 
 export async function getStaffContext() {
