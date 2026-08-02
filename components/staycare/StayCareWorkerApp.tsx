@@ -211,6 +211,52 @@ const ui = {
     emergencyNotice: "හදිසි අනතුරක් නම් යෙදුමට පෙර 112 හෝ 119 අමතන්න.",
     returnTitle: "කොරියාවෙන් යාමට පෙර අමතක නොකළ යුතු දේ",
   },
+  ta: {
+    appName: "Sejoong கொரியா வாழ்க்கை ஒரே இட சேவை",
+    appSubtitle: "இலங்கை → கொரியா",
+    home: "முகப்பு",
+    journey: "என் பயணம்",
+    services: "ஒரே இட சேவைகள்",
+    documents: "ஆவணங்கள்",
+    money: "சம்பளம் மற்றும் பணஅனுப்பு",
+    ai: "AI மொழிபெயர்ப்பாளர்",
+    help: "உதவி மற்றும் அவசரம்",
+    return: "தாயகம் திரும்புதல்",
+    welcome: "வணக்கம், Nimal",
+    status: "தற்போதைய கட்டம்",
+    currentPhase: "விசா கிடைத்த பின், புறப்படுவதற்கு முன்",
+    nextActions: "இப்போது செய்ய வேண்டியது",
+    allJourney: "முழுப் பயணம்",
+    governmentBoundary: "அதிகாரிகள் கையாளும் அதிகாரப்பூர்வ நடைமுறைகள்",
+    sejoongBoundary: "Sejoong ஒருங்கிணைக்கும் வாழ்க்கை மற்றும் நிர்வாக சேவைகள்",
+    open: "திறக்கவும்",
+    start: "விண்ணப்பிக்கவும்",
+    continue: "தொடரவும்",
+    complete: "முடிந்ததாக குறிக்கவும்",
+    details: "விவரங்கள்",
+    search: "சேவைகளைத் தேடவும்",
+    noPrice: "உரிமம் பெற்ற வழங்குநர் இணைந்த பிறகே நேரடி விலை மற்றும் மாற்று விகிதம் காட்டப்படும்.",
+    privacy: "கடவுச்சீட்டு, பதிவெண் அல்லது அட்டை எண்களை AI-இல் உள்ளிட வேண்டாம்.",
+    submit: "சமர்ப்பிக்கவும்",
+    cancel: "மூடவும்",
+    saved: "கோரிக்கை வரைவாக சேமிக்கப்பட்டது. உண்மையான செயல்படுத்தல், பணஅனுப்பு அல்லது தாக்கல் அதிகாரப்பூர்வ நிறுவனம் அல்லது உரிமம் பெற்ற வழங்குநர் இணைப்புக்குப் பிறகே நடைபெறும்.",
+    official: "அதிகாரப்பூர்வ நடைமுறை",
+    oneStop: "Sejoong ஒரே இட சேவை",
+    partner: "உரிமம் பெற்ற வழங்குநர்",
+    required: "கட்டாயம்",
+    optional: "விருப்பம்",
+    progress: "மொத்தத் தயார்நிலை",
+    documentWallet: "டிஜிட்டல் ஆவணப் பெட்டி",
+    documentNotice: "உற்பத்தி சேவையில் தனிப்பட்ட Storage, காலாவதியாகும் URL, மறைப்பு மற்றும் அணுகல் தணிக்கை பதிவுகள் பயன்படுத்தப்படும்.",
+    translate: "மொழிபெயர்ப்பு",
+    guide: "வாழ்க்கை வழிகாட்டி",
+    aiPlaceholder: "உதாரணம்: விமான நிலையத்தில் SIM எங்கே பெறுவது?",
+    aiRun: "AI இயக்கவும்",
+    listen: "குரல் உள்ளீடு",
+    speak: "முடிவை வாசிக்கவும்",
+    emergencyNotice: "உடனடி ஆபத்தில் பயன்பாட்டு உதவிக்கு முன் 112 அல்லது 119 அழைக்கவும்.",
+    returnTitle: "கொரியாவை விட்டு புறப்படும் முன் தவறவிடக்கூடாத பணிகள்",
+  },
 } as const
 
 const navItems: Array<{ id: WorkerView; icon: typeof Home; label: keyof typeof ui.ko }> = [
@@ -249,10 +295,10 @@ const initialStatuses: Record<string, StepStatus> = Object.fromEntries(
 )
 
 const sampleDocuments = [
-  { id: "passport", title: { ko: "여권", en: "Passport", si: "ගමන් බලපත්‍රය" }, status: "approved", expiry: "2031-02-18", mask: "N•••••482" },
-  { id: "visa", title: { ko: "대한민국 비자", en: "Korean visa", si: "කොරියානු වීසා" }, status: "approved", expiry: "2028-07-26", mask: "E-7" },
-  { id: "contract", title: { ko: "근로계약서", en: "Employment contract", si: "සේවා ගිවිසුම" }, status: "review", expiry: "2028-07-26", mask: "PDF" },
-  { id: "medical", title: { ko: "건강검진", en: "Medical examination", si: "වෛද්‍ය පරීක්ෂණය" }, status: "approved", expiry: "2026-10-10", mask: "PDF" },
+  { id: "passport", title: { ko: "여권", en: "Passport", si: "ගමන් බලපත්‍රය", ta: "கடவுச்சீட்டு" }, status: "approved", expiry: "2031-02-18", mask: "N•••••482" },
+  { id: "visa", title: { ko: "대한민국 비자", en: "Korean visa", si: "කොරියානු වීසා", ta: "கொரியா விசா" }, status: "approved", expiry: "2028-07-26", mask: "E-7" },
+  { id: "contract", title: { ko: "근로계약서", en: "Employment contract", si: "සේවා ගිවිසුම", ta: "வேலை ஒப்பந்தம்" }, status: "review", expiry: "2028-07-26", mask: "PDF" },
+  { id: "medical", title: { ko: "건강검진", en: "Medical examination", si: "වෛද්‍ය පරීක්ෂණය", ta: "மருத்துவ பரிசோதனை" }, status: "approved", expiry: "2026-10-10", mask: "PDF" },
 ]
 
 interface SpeechRecognitionResultEventLike {
@@ -274,6 +320,7 @@ type SpeechRecognitionConstructor = new () => SpeechRecognitionLike
 function languageSpeechCode(language: StayCareLanguage) {
   if (language === "ko") return "ko-KR"
   if (language === "si") return "si-LK"
+  if (language === "ta") return "ta-LK"
   return "en-US"
 }
 
@@ -644,7 +691,13 @@ export default function StayCareWorkerApp({ initialLocale = "ko" }: { initialLoc
 
   const renderAi = () => (
     <div className="space-y-5">
-      <section className="rounded-[2rem] bg-slate-950 p-6 text-white sm:p-8"><div className="flex items-center gap-3"><span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-400/15 text-violet-300"><Bot className="h-7 w-7" /></span><div><p className="text-xs font-black uppercase tracking-[0.18em] text-violet-300">AI language layer</p><h1 className="mt-1 text-3xl font-black">{copy.ai}</h1></div></div><p className="mt-5 max-w-3xl text-sm leading-7 text-slate-300">{language === "ko" ? "한국어·영어·싱할라어를 번역하고 공항·사업장·병원·은행·출입국·숙소·송금 상황의 다음 행동을 안내합니다." : language === "si" ? "කොරියානු, ඉංග්‍රීසි හා සිංහල පරිවර්තනය කර ගුවන් තොටුපළ, වැඩ, රෝහල්, බැංකු, ආගමන, නවාතැන් හා මුදල් යැවීමේ ඊළඟ පියවර කියාදෙයි." : "Translate Korean, English and Sinhala and explain next actions for airport, workplace, hospital, bank, immigration, housing and remittance situations."}</p></section>
+      <section className="rounded-[2rem] bg-slate-950 p-6 text-white sm:p-8"><div className="flex items-center gap-3"><span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-400/15 text-violet-300"><Bot className="h-7 w-7" /></span><div><p className="text-xs font-black uppercase tracking-[0.18em] text-violet-300">AI language layer</p><h1 className="mt-1 text-3xl font-black">{copy.ai}</h1></div></div><p className="mt-5 max-w-3xl text-sm leading-7 text-slate-300">{language === "ko"
+                ? "한국어·영어·싱할라어·타밀어를 번역하고 공항·사업장·병원·은행·출입국·숙소·송금 상황의 다음 행동을 안내합니다."
+                : language === "si"
+                  ? "කොරියානු, ඉංග්‍රීසි, සිංහල හා දෙමළ පරිවර්තනය කර ගුවන් තොටුපළ, වැඩ, රෝහල්, බැංකු, ආගමන, නවාතැන් හා මුදල් යැවීමේ ඊළඟ පියවර කියාදෙයි."
+                  : language === "ta"
+                    ? "கொரிய, ஆங்கில, சிங்கள மற்றும் தமிழ் மொழிகளை மொழிபெயர்த்து விமான நிலையம், வேலைத்தளம், மருத்துவமனை, வங்கி, குடிவரவு, வீடு மற்றும் பணஅனுப்பு சூழல்களின் அடுத்த நடவடிக்கையை விளக்குகிறது."
+                    : "Translate Korean, English, Sinhala and Tamil and explain next actions for airport, workplace, hospital, bank, immigration, housing and remittance situations."}</p></section>
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
         <Panel title={language === "ko" ? "입력" : language === "si" ? "ඇතුළත් කිරීම" : "Input"} description={copy.privacy}>
           <div className="space-y-4 p-5">

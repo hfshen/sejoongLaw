@@ -75,6 +75,9 @@ jobs:
       - name: Validate commercial environment contract
         run: npm run check:staycare-env:strict 2>&1 | tee staycare-env.log
 
+      - name: Validate four-language coverage
+        run: npm run check:staycare-i18n 2>&1 | tee staycare-i18n.log
+
       - name: Lint application
         run: |
           set -o pipefail
@@ -126,6 +129,7 @@ jobs:
           path: |
             npm-audit.log
             staycare-env.log
+            staycare-i18n.log
             lint.log
             typecheck.log
             staycare-tests.log

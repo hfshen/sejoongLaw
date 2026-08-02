@@ -28,7 +28,7 @@ const submittedDataSchema = z.record(
 
 const createSchema = z.object({
   serviceCode: z.string().trim().min(2).max(80),
-  language: z.enum(["ko", "en", "si"]).default("si"),
+  language: z.enum(["ko", "en", "si", "ta"]).default("si"),
   submittedData: submittedDataSchema.default({}),
   sharedDocumentIds: z.array(z.string().uuid()).max(20).default([]),
 })

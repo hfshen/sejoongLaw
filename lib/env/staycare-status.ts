@@ -135,6 +135,29 @@ function providerRow(
   }
 }
 
+function emailRow(): StayCareEnvironmentItem {
+  const provider = process.env.EMAIL_PROVIDER?.trim() || "resend"
+  const resendKeys = ["RESEND_API_KEY", "RESEND_FROM_EMAIL"]
+  const smtpKeys = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASSWORD", "SMTP_FROM_EMAIL"]
+  const keys = provider === "smtp" ? smtpKeys : resendKeys
+  const configured = provider !== "disabled" && hasAll(keys)
+  return {
+    id: "email",
+    label: provider === "smtp" ? "SMTP 이메일" : "Resend 이메일",
+    keys: ["EMAIL_PROVIDER", ...keys],
+    group: "production",
+    required: true,
+    state: configured ? "configured" : "missing",
+    detail: provider === "smtp"
+      ? "신청·보완·완료 알림용 SMTP. Supabase Auth SMTP는 Dashboard에서 별도 설정"
+      : "신청·보완·완료 알림. Supabase Auth SMTP는 Dashboard에서 별도 설정",
+    publicValue:
+      provider === "smtp"
+        ? safePublicValue("SMTP_FROM_EMAIL")
+        : safePublicValue("RESEND_FROM_EMAIL"),
+  }
+}
+
 export function getStayCareEnvironmentReport(): StayCareEnvironmentReport {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || ""
   const tenantSlug = process.env.STAYCARE_TENANT_SLUG?.trim() || ""
@@ -263,7 +286,7 @@ export function getStayCareEnvironmentReport(): StayCareEnvironmentReport {
       keys: ["OPENAI_API_KEY"],
       group: "production",
       required: true,
-      detail: "한국어·영어·싱할라어 AI 지원",
+      detail: "한국어·영어·싱할라어·타밀어 AI 지원",
     }),
     row({
       id: "rate-limit",
@@ -281,15 +304,7 @@ export function getStayCareEnvironmentReport(): StayCareEnvironmentReport {
       configured: process.env.STAYCARE_RATE_LIMIT_FAIL_CLOSED !== "false",
       detail: "분산 제한기 장애 시 상용 API가 무제한 우회되지 않음",
     }),
-    row({
-      id: "email",
-      label: "Resend 이메일",
-      keys: ["RESEND_API_KEY", "RESEND_FROM_EMAIL"],
-      group: "production",
-      required: true,
-      detail: "신청·보완·완료 알림",
-      publicKey: "RESEND_FROM_EMAIL",
-    }),
+    emailRow(),
     row({
       id: "turnstile",
       label: "Cloudflare Turnstile",

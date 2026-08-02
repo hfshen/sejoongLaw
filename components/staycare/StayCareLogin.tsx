@@ -99,6 +99,31 @@ const copy = {
     callbackError:
       "පිවිසුම් සබැඳිය සම්පූර්ණ කළ නොහැකි විය. Supabase redirect URL සහ email template පරීක්ෂා කරන්න.",
   },
+  ta: {
+    title: "உங்கள் StayCare கணக்குடன் தொடங்குங்கள்",
+    description:
+      "இலங்கையில் செய்யும் தயாரிப்பிலிருந்து கொரிய வாழ்க்கை மற்றும் தங்கும் சேவைகள் வரை ஒரே கணக்கில் தொடருங்கள்.",
+    email: "மின்னஞ்சல்",
+    phone: "மொபைல் தொலைபேசி",
+    emailPlaceholder: "name@example.com",
+    phonePlaceholder: "+94 அல்லது +82 நாட்டுக் குறியீட்டைச் சேர்க்கவும்",
+    send: "உள்நுழைவு குறியீட்டை அனுப்பவும்",
+    verify: "சரிபார்த்து உள்நுழையவும்",
+    code: "6 இலக்க சரிபார்ப்பு குறியீடு",
+    codeHint:
+      "மின்னஞ்சல் அல்லது SMS-ல் வந்த ஆறு இலக்க குறியீட்டை உள்ளிடவும்; மின்னஞ்சலிலுள்ள உள்நுழைவு இணைப்பையும் பயன்படுத்தலாம்.",
+    sent: "உள்நுழைவு மின்னஞ்சல் அல்லது சரிபார்ப்பு குறியீடு அனுப்பப்பட்டது. இன்பாக்ஸ் மற்றும் ஸ்பாம் கோப்புறையைச் சரிபார்க்கவும்.",
+    change: "வேறு மின்னஞ்சல் அல்லது எண்ணைப் பயன்படுத்தவும்",
+    back: "StayCare அறிமுகத்திற்குத் திரும்பவும்",
+    privacy:
+      "உள்நுழைவு செய்யும்போது கடவுச்சீட்டு எண் அல்லது வெளிநாட்டவர் பதிவு எண்ணை உள்ளிட வேண்டாம்.",
+    captcha: "பாதுகாப்புச் சரிபார்ப்பை முடிக்கவும்.",
+    invalidIdentity:
+      "சரியான மின்னஞ்சல் முகவரி அல்லது நாட்டுக் குறியீட்டுடன் மொபைல் எண்ணை உள்ளிடவும்.",
+    invalidCode: "சரிபார்ப்பு குறியீடு தவறானது அல்லது காலாவதியானது. புதிய குறியீட்டைக் கோரவும்.",
+    callbackError:
+      "உள்நுழைவு இணைப்பை முடிக்க முடியவில்லை. Supabase redirect URL-களையும் மின்னஞ்சல் வார்ப்புருவையும் சரிபார்க்கவும்.",
+  },
 } as const
 
 type LoginMode = "email" | "phone"
@@ -113,28 +138,36 @@ function friendlyAuthError(
       ? "Supabase Auth에 Custom SMTP를 연결해야 외부 이메일 주소로 로그인 메일을 보낼 수 있습니다."
       : language === "si"
         ? "බාහිර email ලිපින සඳහා Supabase Auth Custom SMTP සකස් කළ යුතුය."
-        : "Configure Custom SMTP in Supabase Auth to deliver login mail to external addresses."
+        : language === "ta"
+          ? "வெளிப்புற மின்னஞ்சல் முகவரிகளுக்கு உள்நுழைவு மின்னஞ்சல் அனுப்ப Supabase Auth-இல் Custom SMTP அமைக்க வேண்டும்."
+          : "Configure Custom SMTP in Supabase Auth to deliver login mail to external addresses."
   }
   if (normalized.includes("rate limit") || normalized.includes("too many")) {
     return language === "ko"
       ? "인증 요청 한도를 초과했습니다. 잠시 기다린 뒤 다시 시도하세요."
       : language === "si"
         ? "ඉල්ලීම් සීමාව ඉක්මවා ඇත. ටික වේලාවකට පසු නැවත උත්සාහ කරන්න."
-        : "The authentication request limit was reached. Wait and try again."
+        : language === "ta"
+          ? "அங்கீகார கோரிக்கை வரம்பு எட்டப்பட்டுள்ளது. சிறிது நேரம் கழித்து மீண்டும் முயற்சிக்கவும்."
+          : "The authentication request limit was reached. Wait and try again."
   }
   if (normalized.includes("captcha")) {
     return language === "ko"
       ? "Turnstile 검증에 실패했습니다. 보안 확인을 다시 완료해 주세요."
       : language === "si"
         ? "Turnstile තහවුරු කිරීම අසාර්ථකයි. නැවත ආරක්ෂක පරීක්ෂාව සම්පූර්ණ කරන්න."
-        : "Turnstile verification failed. Complete the security check again."
+        : language === "ta"
+          ? "Turnstile சரிபார்ப்பு தோல்வியடைந்தது. பாதுகாப்புச் சரிபார்ப்பை மீண்டும் முடிக்கவும்."
+          : "Turnstile verification failed. Complete the security check again."
   }
   if (normalized.includes("supabase browser environment")) {
     return language === "ko"
       ? "Vercel의 Supabase 공개 환경값을 확인해 주세요."
       : language === "si"
         ? "Vercel හි Supabase public environment values පරීක්ෂා කරන්න."
-        : "Check the public Supabase environment values in Vercel."
+        : language === "ta"
+          ? "Vercel-இல் Supabase பொது சூழல் மதிப்புகளைச் சரிபார்க்கவும்."
+          : "Check the public Supabase environment values in Vercel."
   }
   return message
 }
@@ -157,7 +190,7 @@ function normalizedPhone(value: string) {
 
 export default function StayCareLogin({ locale }: { locale: string }) {
   const initialLanguage: StayCarePreferredLanguage =
-    locale === "en" ? "en" : "ko"
+    locale === "en" ? "en" : locale === "si" ? "si" : locale === "ta" ? "ta" : "ko"
   const { language, setLanguage } = useStayCareLanguage(initialLanguage)
   const text = copy[language]
   const searchParams = useSearchParams()

@@ -298,6 +298,7 @@ export default async function StayCareAdminPage({
 
   return (
     <StayCareStaffWorkspace
+      locale={locale}
       role={safeRole}
       capabilities={capabilities}
       userEmail={context.user.email}

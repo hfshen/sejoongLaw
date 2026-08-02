@@ -49,10 +49,23 @@ const copy = {
     submit: "මගේ StayCare ආරම්භ කරන්න",
     consent: "මෙම තොරතුරු මගේ පුද්ගලික ගමන සහ StayCare සේවා සඳහා භාවිත කිරීමට එකඟ වෙමි.",
   },
+  ta: {
+    title: "உங்கள் கொரிய வாழ்க்கைப் பயணத்தைத் தொடங்குங்கள்",
+    description: "அடிப்படை தகவலை பதிவு செய்தால், உங்கள் தனிப்பட்ட தயாரிப்பு பட்டியலும் ஒருங்கிணைந்த சேவைகளும் உருவாக்கப்படும்.",
+    name: "முழுப் பெயர்",
+    englishName: "கடவுச்சீட்டில் உள்ள ஆங்கிலப் பெயர்",
+    language: "விருப்ப மொழி",
+    visa: "விசா வகை",
+    occupation: "எதிர்பார்க்கப்படும் தொழில்",
+    arrival: "எதிர்பார்க்கப்படும் வருகை தேதி",
+    optional: "இன்னும் உறுதியாகாத தகவல்களை காலியாக விடலாம்.",
+    submit: "என் StayCare-ஐ தொடங்கவும்",
+    consent: "இந்த தகவல் எனது தனிப்பட்ட பயணத்தை உருவாக்கவும் StayCare சேவைகளை இயக்கவும் பயன்படுத்தப்படுவதற்கு நான் ஒப்புக்கொள்கிறேன்.",
+  },
 } as const
 
 export default function StayCareOnboarding({ locale, email }: { locale: string; email?: string }) {
-  const initialLanguage: StayCarePreferredLanguage = locale === "en" ? "en" : locale === "si" ? "si" : "ko"
+  const initialLanguage: StayCarePreferredLanguage = locale === "en" ? "en" : locale === "si" ? "si" : locale === "ta" ? "ta" : "ko"
   const { language, setLanguage } = useStayCareLanguage(initialLanguage)
   const text = copy[language]
   const router = useRouter()
@@ -117,6 +130,7 @@ export default function StayCareOnboarding({ locale, email }: { locale: string; 
               <span className="text-sm font-black">{text.language}</span>
               <select value={language} onChange={(event) => setLanguage(event.target.value as StayCarePreferredLanguage)} className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3.5">
                 <option value="si">සිංහල</option>
+                <option value="ta">தமிழ்</option>
                 <option value="en">English</option>
                 <option value="ko">한국어</option>
               </select>
@@ -143,7 +157,12 @@ export default function StayCareOnboarding({ locale, email }: { locale: string; 
           </label>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            {["Private Storage", "Role-based access", "Consent history", "Audit log"].map((item) => (
+            {({
+              ko: ["비공개 문서함", "역할별 접근", "동의 이력", "감사기록"],
+              en: ["Private storage", "Role-based access", "Consent history", "Audit log"],
+              si: ["පුද්ගලික ගබඩාව", "භූමිකා ප්‍රවේශය", "අනුමැති ඉතිහාසය", "විගණන සටහන"],
+              ta: ["தனிப்பட்ட ஆவண சேமிப்பு", "பங்கு அடிப்படையிலான அணுகல்", "ஒப்புதல் வரலாறு", "தணிக்கை பதிவு"],
+            }[language]).map((item) => (
               <div key={item} className="flex items-center gap-3 rounded-xl bg-emerald-50 p-3 text-xs font-bold text-emerald-900">
                 <CheckCircle2 className="h-4 w-4" /> {item}
               </div>

@@ -22,17 +22,27 @@ describe("StayCare Sri Lanka-to-Korea lifecycle", () => {
     expect(journeyPhases.map((phase) => phase.order)).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
   })
 
-  it("provides Korean, English and Sinhala for every phase and step", () => {
+  it("provides Korean, English, Sinhala and Tamil for every phase, step and service", () => {
     for (const phase of journeyPhases) {
       expect(t(phase.title, "ko")).toBeTruthy()
       expect(t(phase.title, "en")).toBeTruthy()
       expect(t(phase.title, "si")).toBeTruthy()
+      expect(t(phase.title, "ta")).toBeTruthy()
     }
 
     for (const step of journeySteps) {
       expect(t(step.title, "ko")).toBeTruthy()
       expect(t(step.title, "en")).toBeTruthy()
       expect(t(step.title, "si")).toBeTruthy()
+      expect(t(step.title, "ta")).toBeTruthy()
+    }
+
+    for (const service of oneStopServices) {
+      expect(t(service.title, "ko")).toBeTruthy()
+      expect(t(service.title, "en")).toBeTruthy()
+      expect(t(service.title, "si")).toBeTruthy()
+      expect(t(service.title, "ta")).toBeTruthy()
+      expect(t(service.description, "ta")).toBeTruthy()
     }
   })
 

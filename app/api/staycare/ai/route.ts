@@ -10,8 +10,8 @@ export const runtime = "nodejs"
 
 const requestSchema = z.object({
   text: z.string().trim().min(1).max(3000),
-  sourceLanguage: z.enum(["ko", "en", "si"]).default("si"),
-  targetLanguage: z.enum(["ko", "en", "si"]).default("ko"),
+  sourceLanguage: z.enum(["ko", "en", "si", "ta"]).default("si"),
+  targetLanguage: z.enum(["ko", "en", "si", "ta"]).default("ko"),
   mode: z.enum(["translate", "guide"]).default("translate"),
   context: z
     .enum([
@@ -31,6 +31,7 @@ const languageName = {
   ko: "Korean",
   en: "English",
   si: "Sinhala",
+  ta: "Tamil",
 } as const
 
 function containsLikelySensitiveIdentifier(text: string) {

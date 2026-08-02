@@ -62,12 +62,23 @@ const productionSafety = [
   ["Field encryption key is strong", lengthAtLeast("STAYCARE_FIELD_ENCRYPTION_KEY", 32)],
 ]
 
+const emailProvider = value("EMAIL_PROVIDER") || "resend"
+const emailConfigured =
+  emailProvider === "resend"
+    ? has("RESEND_API_KEY") && has("RESEND_FROM_EMAIL")
+    : emailProvider === "smtp"
+      ? has("SMTP_HOST") &&
+        integerInRange("SMTP_PORT", 1, 65535) &&
+        has("SMTP_USER") &&
+        has("SMTP_PASSWORD") &&
+        has("SMTP_FROM_EMAIL")
+      : false
+
 const recommended = [
   ["OPENAI_API_KEY", has("OPENAI_API_KEY")],
   ["UPSTASH_REDIS_REST_URL", validUrl("UPSTASH_REDIS_REST_URL", { https: true })],
   ["UPSTASH_REDIS_REST_TOKEN", has("UPSTASH_REDIS_REST_TOKEN")],
-  ["RESEND_API_KEY", has("RESEND_API_KEY")],
-  ["RESEND_FROM_EMAIL", has("RESEND_FROM_EMAIL")],
+  [`Email provider (${emailProvider})`, emailConfigured],
   ["NEXT_PUBLIC_TURNSTILE_SITE_KEY", has("NEXT_PUBLIC_TURNSTILE_SITE_KEY")],
   ["TURNSTILE_SECRET_KEY", has("TURNSTILE_SECRET_KEY")],
   ["NEXT_PUBLIC_SENTRY_DSN", validUrl("NEXT_PUBLIC_SENTRY_DSN", { https: true })],

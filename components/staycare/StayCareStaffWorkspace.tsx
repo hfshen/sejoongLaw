@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   AlertTriangle,
@@ -32,6 +32,9 @@ import {
 import { createClient } from "@/lib/supabase/client"
 import type { StayCareRole, StayCareRoleCapabilities } from "@/lib/staycare/role-capabilities"
 import { getStayCareRoleLabel } from "@/lib/staycare/role-capabilities"
+import StayCareLanguageSwitcher from "@/components/staycare/StayCareLanguageSwitcher"
+import { useStayCareLanguage, type StayCarePreferredLanguage } from "@/lib/staycare/language-preference"
+import { translateStayCareTamil } from "@/lib/staycare/tamil-translations"
 
 type View = "overview" | "applications" | "workers" | "documents" | "tickets" | "immigration" | "audit" | "environment"
 
@@ -151,6 +154,7 @@ export interface StaffAuditEvent {
 }
 
 interface Props {
+  locale: string
   role: StayCareRole
   capabilities: StayCareRoleCapabilities
   userEmail?: string
@@ -164,16 +168,19 @@ interface Props {
   databaseStatus: { connected: boolean; tenantCount: number }
 }
 
-function localized(value: Record<string, string> | string | undefined) {
+function localizedValue(value: Record<string, string> | string | undefined, language: StayCarePreferredLanguage) {
   if (!value) return "Service"
   if (typeof value === "string") return value
-  return value.ko || value.en || value.si || "Service"
+  if (language === "ta") return value.ta || translateStayCareTamil(value.en || value.ko || "Service")
+  return value[language] || value.en || value.ko || value.si || "Service"
 }
 
-function formatDate(value: string | null | undefined) {
+const dateLocale: Record<StayCarePreferredLanguage, string> = { ko: "ko-KR", en: "en-US", si: "si-LK", ta: "ta-LK" }
+
+function formatLocalizedDate(value: string | null | undefined, language: StayCarePreferredLanguage) {
   if (!value) return "—"
   try {
-    return new Intl.DateTimeFormat("ko-KR", { year: "numeric", month: "short", day: "numeric", hour: value.includes("T") ? "2-digit" : undefined, minute: value.includes("T") ? "2-digit" : undefined }).format(new Date(value))
+    return new Intl.DateTimeFormat(dateLocale[language], { year: "numeric", month: "short", day: "numeric", hour: value.includes("T") ? "2-digit" : undefined, minute: value.includes("T") ? "2-digit" : undefined }).format(new Date(value))
   } catch {
     return value
   }
@@ -207,6 +214,7 @@ const roleFocus: Record<StayCareRole, { title: string; description: string; defa
 }
 
 export default function StayCareStaffWorkspace({
+  locale,
   role,
   capabilities,
   userEmail,
@@ -219,7 +227,11 @@ export default function StayCareStaffWorkspace({
   environment,
   databaseStatus,
 }: Props) {
+  const initialLanguage: StayCarePreferredLanguage = locale === "en" ? "en" : locale === "si" ? "si" : locale === "ta" ? "ta" : "ko"
+  const { language, setLanguage } = useStayCareLanguage(initialLanguage)
   const router = useRouter()
+  const localized = (value: Record<string, string> | string | undefined) => localizedValue(value, language)
+  const formatDate = (value: string | null | undefined) => formatLocalizedDate(value, language)
   const focus = roleFocus[role]
   const [view, setView] = useState<View>(focus.defaultView)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -235,11 +247,11 @@ export default function StayCareStaffWorkspace({
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
 
-  const filteredApplications = useMemo(() => applications.filter((item) => {
+  const filteredApplications = applications.filter((item) => {
     const haystack = `${item.application_no} ${item.worker?.member_no || ""} ${item.worker?.full_name_en || item.worker?.full_name || ""} ${localized(item.service?.name)} ${item.status}`.toLowerCase()
     const roleRelevant = role === "sejoong_lawyer" ? ["immigration", "labor", "legal", "human_rights"].includes(item.service?.category || "") : role === "immigration_manager" ? item.service?.category === "immigration" : true
     return roleRelevant && haystack.includes(query.toLowerCase())
-  }), [applications, query, role])
+  })
 
   const filteredWorkers = workers.filter((item) => `${item.member_no} ${item.full_name} ${item.full_name_en || ""} ${item.visa_type || ""} ${item.employer?.name || ""}`.toLowerCase().includes(query.toLowerCase()))
   const filteredDocuments = documents.filter((item) => `${item.original_filename} ${item.document_type} ${item.worker?.member_no || ""} ${item.worker?.full_name_en || item.worker?.full_name || ""}`.toLowerCase().includes(query.toLowerCase()))
@@ -251,7 +263,7 @@ export default function StayCareStaffWorkspace({
 
   const signOut = async () => {
     await createClient().auth.signOut()
-    window.location.href = "/ko/staycare/login"
+    window.location.href = `/${locale}/staycare/login`
   }
 
   const updateApplication = async (form: FormData) => {
@@ -321,7 +333,7 @@ export default function StayCareStaffWorkspace({
     [AlertTriangle, "P0/P1 티켓", tickets.filter((item) => ["P0", "P1"].includes(item.priority) && !["resolved", "closed"].includes(item.status)).length],
   ] as const
 
-  const renderOverview = () => <div className="space-y-6"><section className="overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white sm:p-8"><div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end"><div><p className="text-xs font-black uppercase tracking-[0.18em] text-red-300">{getStayCareRoleLabel(role)}</p><h1 className="mt-3 text-3xl font-black">{focus.title}</h1><p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">{focus.description}</p></div><div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300"><p className="font-black text-white">{userEmail}</p><p className="mt-2">Tenant {databaseStatus.tenantCount} · {capabilities.readOnly ? "읽기 전용" : "처리 권한"}</p></div></div></section><section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{metrics.map(([Icon, label, value]) => <article key={label} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100"><Icon className="h-5 w-5" /></span><span className="text-3xl font-black">{value}</span></div><p className="mt-4 text-sm font-bold text-slate-500">{label}</p></article>)}</section><div className="grid gap-6 xl:grid-cols-2"><Panel title="우선 처리 신청"><div className="divide-y divide-slate-100">{filteredApplications.slice(0, 6).map((item) => <button key={item.id} onClick={() => setSelectedApplication(item)} className="flex w-full items-center gap-3 p-4 text-left"><div className="min-w-0 flex-1"><p className="font-black">{localized(item.service?.name)}</p><p className="mt-1 text-xs text-slate-500">{item.application_no} · {item.worker?.member_no}</p></div><Badge value={item.status} /></button>)}{!filteredApplications.length ? <p className="p-5 text-sm text-slate-500">처리할 신청이 없습니다.</p> : null}</div></Panel><Panel title="긴급·지연 티켓"><div className="divide-y divide-slate-100">{filteredTickets.slice(0, 6).map((item) => <button key={item.id} onClick={() => setSelectedTicket(item)} className="flex w-full items-center gap-3 p-4 text-left"><div className="min-w-0 flex-1"><p className="font-black">{item.title}</p><p className="mt-1 text-xs text-slate-500">{item.ticket_no} · {item.worker?.member_no}</p></div><Badge value={item.priority} /></button>)}{!filteredTickets.length ? <p className="p-5 text-sm text-slate-500">처리할 티켓이 없습니다.</p> : null}</div></Panel></div></div>
+  const renderOverview = () => <div className="space-y-6"><section className="overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white sm:p-8"><div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end"><div><p className="text-xs font-black uppercase tracking-[0.18em] text-red-300">{getStayCareRoleLabel(role, language)}</p><h1 className="mt-3 text-3xl font-black">{focus.title}</h1><p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">{focus.description}</p></div><div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300"><p className="font-black text-white">{userEmail}</p><p className="mt-2">Tenant {databaseStatus.tenantCount} · {capabilities.readOnly ? "읽기 전용" : "처리 권한"}</p></div></div></section><section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{metrics.map(([Icon, label, value]) => <article key={label} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100"><Icon className="h-5 w-5" /></span><span className="text-3xl font-black">{value}</span></div><p className="mt-4 text-sm font-bold text-slate-500">{label}</p></article>)}</section><div className="grid gap-6 xl:grid-cols-2"><Panel title="우선 처리 신청"><div className="divide-y divide-slate-100">{filteredApplications.slice(0, 6).map((item) => <button key={item.id} onClick={() => setSelectedApplication(item)} className="flex w-full items-center gap-3 p-4 text-left"><div className="min-w-0 flex-1"><p className="font-black">{localized(item.service?.name)}</p><p className="mt-1 text-xs text-slate-500">{item.application_no} · {item.worker?.member_no}</p></div><Badge value={item.status} /></button>)}{!filteredApplications.length ? <p className="p-5 text-sm text-slate-500">처리할 신청이 없습니다.</p> : null}</div></Panel><Panel title="긴급·지연 티켓"><div className="divide-y divide-slate-100">{filteredTickets.slice(0, 6).map((item) => <button key={item.id} onClick={() => setSelectedTicket(item)} className="flex w-full items-center gap-3 p-4 text-left"><div className="min-w-0 flex-1"><p className="font-black">{item.title}</p><p className="mt-1 text-xs text-slate-500">{item.ticket_no} · {item.worker?.member_no}</p></div><Badge value={item.priority} /></button>)}{!filteredTickets.length ? <p className="p-5 text-sm text-slate-500">처리할 티켓이 없습니다.</p> : null}</div></Panel></div></div>
 
   const renderApplications = () => <Panel title="서비스 신청 처리함" description="접수부터 기관·제휴사 전달, 보완, 완료까지 같은 상태체계로 관리합니다."><div className="overflow-x-auto"><table className="min-w-full text-left text-sm"><thead className="bg-slate-50 text-xs uppercase text-slate-500"><tr><th className="px-5 py-3">신청</th><th className="px-5 py-3">근로자</th><th className="px-5 py-3">서비스</th><th className="px-5 py-3">접수일</th><th className="px-5 py-3">상태</th><th className="px-5 py-3">처리</th></tr></thead><tbody className="divide-y divide-slate-100">{filteredApplications.map((item) => <tr key={item.id}><td className="px-5 py-4 font-black">{item.application_no}</td><td className="px-5 py-4"><p className="font-bold">{item.worker?.full_name_en || item.worker?.full_name}</p><p className="text-xs text-slate-400">{item.worker?.member_no}</p></td><td className="px-5 py-4"><p className="font-bold">{localized(item.service?.name)}</p><p className="text-xs text-slate-400">{item.service?.category}</p></td><td className="px-5 py-4 text-slate-500">{formatDate(item.submitted_at)}</td><td className="px-5 py-4"><Badge value={item.status} /></td><td className="px-5 py-4"><button onClick={() => setSelectedApplication(item)} className="rounded-xl bg-slate-950 px-4 py-2 text-xs font-black text-white">{capabilities.canManageApplications ? "처리" : "보기"}</button></td></tr>)}{!filteredApplications.length ? <tr><td colSpan={6} className="p-10 text-center text-slate-500">검색 결과가 없습니다.</td></tr> : null}</tbody></table></div></Panel>
 
@@ -348,7 +360,7 @@ export default function StayCareStaffWorkspace({
     return renderEnvironment()
   }
 
-  return <div className="min-h-screen bg-[#f4f5f7] text-slate-950"><aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-slate-950 text-white transition-transform lg:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}><div className="flex h-20 items-center justify-between border-b border-white/10 px-5"><div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#bb271a] font-black">S</span><div><p className="font-black">StayCare Staff</p><p className="text-[11px] text-slate-400">{getStayCareRoleLabel(role)}</p></div></div><button onClick={() => setMobileOpen(false)} className="lg:hidden"><X className="h-5 w-5" /></button></div><nav className="space-y-1 overflow-y-auto p-3 pb-24">{navigation.filter((item) => item.show).map((item) => { const Icon = item.icon; return <button key={item.id} onClick={() => { setView(item.id); setMobileOpen(false) }} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold ${view === item.id ? "bg-[#bb271a]" : "text-slate-300 hover:bg-white/5"}`}><Icon className="h-5 w-5" />{item.label}</button> })}</nav><button onClick={signOut} className="absolute inset-x-3 bottom-3 flex items-center rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-sm font-bold text-slate-300"><LogOut className="mr-3 h-5 w-5" />로그아웃</button></aside><div className="lg:pl-72"><header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur"><div className="flex min-h-20 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"><div className="flex items-center gap-3"><button onClick={() => setMobileOpen(true)} className="rounded-xl border p-2 lg:hidden"><Menu className="h-5 w-5" /></button><div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#bb271a]">Sejoong StayCare</p><h1 className="mt-1 text-lg font-black">{navigation.find((item) => item.id === view)?.label}</h1></div></div><div className="flex items-center gap-2"><div className="relative hidden sm:block"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="회원·신청·티켓 검색" className="w-72 rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-sm" /></div><button onClick={() => router.refresh()} className="rounded-xl border p-2.5"><RefreshCw className="h-5 w-5" /></button></div></div></header><main className="p-4 sm:p-6 lg:p-8">{error ? <div className="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">{error}</div> : null}{capabilities.readOnly ? <div className="mb-5 flex gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950"><Eye className="h-5 w-5" /><div><p className="font-black">읽기 전용 계정</p><p className="mt-1">데이터와 감사기록을 조회할 수 있지만 상태·문서·티켓은 변경할 수 없습니다.</p></div></div> : null}{renderView()}</main></div>
+  return <div className="min-h-screen bg-[#f4f5f7] text-slate-950"><aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-slate-950 text-white transition-transform lg:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}><div className="flex h-20 items-center justify-between border-b border-white/10 px-5"><div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#bb271a] font-black">S</span><div><p className="font-black">StayCare Staff</p><p className="text-[11px] text-slate-400">{getStayCareRoleLabel(role, language)}</p></div></div><button onClick={() => setMobileOpen(false)} className="lg:hidden"><X className="h-5 w-5" /></button></div><nav className="space-y-1 overflow-y-auto p-3 pb-24">{navigation.filter((item) => item.show).map((item) => { const Icon = item.icon; return <button key={item.id} onClick={() => { setView(item.id); setMobileOpen(false) }} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold ${view === item.id ? "bg-[#bb271a]" : "text-slate-300 hover:bg-white/5"}`}><Icon className="h-5 w-5" />{item.label}</button> })}</nav><button onClick={signOut} className="absolute inset-x-3 bottom-3 flex items-center rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-sm font-bold text-slate-300"><LogOut className="mr-3 h-5 w-5" />로그아웃</button></aside><div className="lg:pl-72"><header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur"><div className="flex min-h-20 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"><div className="flex items-center gap-3"><button onClick={() => setMobileOpen(true)} className="rounded-xl border p-2 lg:hidden"><Menu className="h-5 w-5" /></button><div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#bb271a]">Sejoong StayCare</p><h1 className="mt-1 text-lg font-black">{navigation.find((item) => item.id === view)?.label}</h1></div></div><div className="flex items-center gap-2"><StayCareLanguageSwitcher value={language} onChange={setLanguage} compact /><div className="relative hidden sm:block"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="회원·신청·티켓 검색" className="w-72 rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-sm" /></div><button onClick={() => router.refresh()} className="rounded-xl border p-2.5"><RefreshCw className="h-5 w-5" /></button></div></div></header><main className="p-4 sm:p-6 lg:p-8">{error ? <div className="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">{error}</div> : null}{capabilities.readOnly ? <div className="mb-5 flex gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950"><Eye className="h-5 w-5" /><div><p className="font-black">읽기 전용 계정</p><p className="mt-1">데이터와 감사기록을 조회할 수 있지만 상태·문서·티켓은 변경할 수 없습니다.</p></div></div> : null}{renderView()}</main></div>
 
   {selectedApplication ? <Drawer title={selectedApplication.application_no} onClose={() => setSelectedApplication(null)}><div className="space-y-5"><div className="rounded-2xl bg-slate-950 p-5 text-white"><p className="font-black">{localized(selectedApplication.service?.name)}</p><p className="mt-2 text-sm text-slate-300">{selectedApplication.worker?.full_name_en || selectedApplication.worker?.full_name} · {selectedApplication.worker?.member_no}</p><div className="mt-3"><Badge value={selectedApplication.status} /></div></div><pre className="max-h-64 overflow-auto whitespace-pre-wrap rounded-2xl bg-slate-50 p-4 text-xs leading-6">{JSON.stringify(selectedApplication.submitted_data || {}, null, 2)}</pre>{capabilities.canManageApplications ? <form action={updateApplication} className="space-y-4"><select name="status" defaultValue={selectedApplication.status === "submitted" ? "reviewing" : selectedApplication.status} className="w-full rounded-xl border px-4 py-3"><option value="reviewing">reviewing</option><option value="waiting_worker">waiting_worker</option><option value="waiting_authority">waiting_authority</option><option value="waiting_provider">waiting_provider</option><option value="approved">approved</option><option value="fulfilled">fulfilled</option><option value="rejected">rejected</option><option value="cancelled">cancelled</option></select><input name="externalReference" defaultValue={selectedApplication.external_reference || ""} placeholder="기관·제휴사 참조번호" className="w-full rounded-xl border px-4 py-3" /><textarea name="workerVisibleMessage" placeholder="근로자에게 보일 안내" className="min-h-28 w-full rounded-xl border px-4 py-3" /><textarea name="rejectionReason" placeholder="반려 사유" className="min-h-24 w-full rounded-xl border px-4 py-3" /><SubmitButton busy={busy} label="저장 및 근로자 통지" /></form> : null}</div></Drawer> : null}
 

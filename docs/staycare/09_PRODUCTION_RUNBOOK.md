@@ -165,7 +165,7 @@ GET https://sejoonglaw.kr/api/health/staycare
 
 ### 온보딩
 
-- 한국어·영어·싱할라어 전환
+- 한국어·영어·싱할라어·타밀어 전환
 - 기본정보 등록
 - worker·membership·journey·step 생성
 - 중복가입 시 기존 계정 반환
@@ -191,7 +191,7 @@ GET https://sejoonglaw.kr/api/health/staycare
 
 ### AI
 
-- 한국어·영어·싱할라어
+- 한국어·영어·싱할라어·타밀어
 - 60회/시간 rate limit
 - 여권·등록·계좌·카드번호 차단
 - 법률·의료·출입국 중요상황의 사람 검토 안내

@@ -4,10 +4,11 @@ import {
 } from "@/lib/staycare/language"
 
 describe("StayCare language preference", () => {
-  it("accepts the three supported languages", () => {
+  it("accepts the four supported languages", () => {
     expect(normalizeStayCareLanguage("ko")).toBe("ko")
     expect(normalizeStayCareLanguage("en")).toBe("en")
     expect(normalizeStayCareLanguage("si")).toBe("si")
+    expect(normalizeStayCareLanguage("ta")).toBe("ta")
   })
 
   it("rejects unsupported or empty values", () => {
@@ -21,6 +22,7 @@ describe("StayCare language preference", () => {
       ko: "한국어",
       en: "English",
       si: "සිංහල",
+      ta: "தமிழ்",
     })
   })
 })
