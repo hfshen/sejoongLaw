@@ -11,7 +11,7 @@ export const runtime = "nodejs"
 const schema = z.object({
   fullName: z.string().trim().min(2).max(120),
   fullNameEn: z.string().trim().max(120).optional().or(z.literal("")),
-  preferredLanguage: z.enum(["ko", "en", "si"]).default("si"),
+  preferredLanguage: z.enum(["ko", "en", "si", "ta"]).default("si"),
   nationalityCode: z.string().trim().length(2).default("LK"),
   visaType: z.string().trim().max(30).optional().or(z.literal("")),
   occupation: z.string().trim().max(120).optional().or(z.literal("")),

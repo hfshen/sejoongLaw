@@ -1,5 +1,8 @@
-export type StayCareLanguage = "ko" | "en" | "si"
-export type LocalizedText = Record<StayCareLanguage, string>
+import { translateStayCareTamil } from "@/lib/staycare/tamil-translations"
+
+export type StayCareBaseLanguage = "ko" | "en" | "si"
+export type StayCareLanguage = StayCareBaseLanguage | "ta"
+export type LocalizedText = Record<StayCareBaseLanguage, string> & { ta?: string }
 export type JourneyPhaseId =
   | "prepare"
   | "official"
@@ -29,6 +32,7 @@ export const languageLabels: Record<StayCareLanguage, string> = {
   ko: "한국어",
   en: "English",
   si: "සිංහල",
+  ta: "தமிழ்",
 }
 
 export const responsibilityLabels: Record<Responsibility, LocalizedText> = {
@@ -453,8 +457,8 @@ export const journeySteps: JourneyStep[] = [
   {
     id: "ai-interpreter",
     phaseId: "living",
-    title: { ko: "AI 한국어·영어·싱할라어 통역", en: "AI Korean-English-Sinhala interpreter", si: "AI කොරියානු-ඉංග්‍රීසි-සිංහල පරිවර්තකය" },
-    description: { ko: "텍스트와 음성을 한국어·영어·싱할라어로 실시간 변환하고 병원·은행·사업장 상황별 문장을 제공합니다.", en: "Translate text and speech among Korean, English and Sinhala and provide context-specific phrases for hospitals, banks and workplaces.", si: "කොරියානු, ඉංග්‍රීසි සහ සිංහල අතර පෙළ හා හඬ පරිවර්තනය කර රෝහල්, බැංකු හා සේවා ස්ථාන සඳහා වාක්‍ය ලබාදෙයි." },
+    title: { ko: "AI 한국어·영어·싱할라어·타밀어 통역", en: "AI Korean-English-Sinhala-Tamil interpreter", si: "AI කොරියානු-ඉංග්‍රීසි-සිංහල පරිවර්තකය" },
+    description: { ko: "텍스트와 음성을 한국어·영어·싱할라어·타밀어로 실시간 변환하고 병원·은행·사업장 상황별 문장을 제공합니다.", en: "Translate text and speech among Korean, English, Sinhala and Tamil and provide context-specific phrases for hospitals, banks and workplaces.", si: "කොරියානු, ඉංග්‍රීසි, සිංහල සහ දෙමළ අතර පෙළ හා හඬ පරිවර්තනය කර රෝහල්, බැංකු හා සේවා ස්ථාන සඳහා වාක්‍ය ලබාදෙයි." },
     responsibility: ["worker", "sejoong"],
     actions: ["apply"],
     serviceCategory: "translation",
@@ -603,7 +607,7 @@ export const oneStopServices: OneStopService[] = [
     id: "ai-language",
     category: "translation",
     title: { ko: "AI 생활 통역·가이드", en: "AI life interpreter and guide", si: "AI ජීවිත පරිවර්තකය හා මාර්ගෝපදේශය" },
-    description: { ko: "한국어·영어·싱할라어 텍스트와 브라우저 음성을 변환하고 상황별 다음 행동을 안내합니다.", en: "Translate Korean, English and Sinhala text or browser-captured speech and explain the next action for the situation.", si: "කොරියානු, ඉංග්‍රීසි හා සිංහල පෙළ හෝ බ්‍රවුසරයෙන් ලබාගත් හඬ පරිවර්තනය කර ඊළඟ ක්‍රියාව පැහැදිලි කරයි." },
+    description: { ko: "한국어·영어·싱할라어·타밀어 텍스트와 브라우저 음성을 변환하고 상황별 다음 행동을 안내합니다.", en: "Translate Korean, English, Sinhala and Tamil text or browser-captured speech and explain the next action for the situation.", si: "කොරියානු, ඉංග්‍රීසි හා සිංහල පෙළ හෝ බ්‍රවුසරයෙන් ලබාගත් හඬ පරිවර්තනය කර ඊළඟ ක්‍රියාව පැහැදිලි කරයි." },
     availableFrom: "prepare",
     ownership: ["worker", "sejoong"],
     deliveryModes: ["digital"],
@@ -644,6 +648,7 @@ export const statusLabels: Record<StepStatus, LocalizedText> = {
 }
 
 export function t(value: LocalizedText, language: StayCareLanguage) {
+  if (language === "ta") return value.ta || translateStayCareTamil(value.en) || value.en
   return value[language] || value.en
 }
 

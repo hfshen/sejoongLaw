@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { BadgeCheck, KeyRound, Loader2, ShieldCheck } from "lucide-react"
 import StayCarePurposeNote from "@/components/staycare/StayCarePurposeNote"
+import { useStayCareLanguage } from "@/lib/staycare/language-preference"
 
 type ClaimLanguage = "ko" | "en" | "si" | "ta"
 
@@ -65,8 +66,8 @@ const copy: Record<ClaimLanguage, {
 }
 
 export default function StayCareWorkerClaim({ locale }: { locale: string }) {
-  const initialLanguage: ClaimLanguage = locale === "en" ? "en" : locale === "si" ? "si" : "ko"
-  const [language, setLanguage] = useState<ClaimLanguage>(initialLanguage)
+  const initialLanguage: ClaimLanguage = locale === "en" ? "en" : locale === "si" ? "si" : locale === "ta" ? "ta" : "ko"
+  const { language, setLanguage } = useStayCareLanguage(initialLanguage)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [completed, setCompleted] = useState(false)
@@ -106,14 +107,15 @@ export default function StayCareWorkerClaim({ locale }: { locale: string }) {
   return (
     <main className="min-h-screen bg-slate-100 text-slate-950">
       <StayCarePurposeNote
-        title="근로자 명부 Claim 페이지"
-        purpose="2,000명 지정 인원 중 실제 공식 명부에 등록된 근로자만 StayCare 계정과 연결하는 본인확인 단계입니다."
-        boundary="이 화면은 채용, 비자승인 또는 근로계약을 결정하지 않습니다. 운영기관이 사전에 등록한 명부와 로그인한 본인을 연결합니다."
+        initialLanguage={initialLanguage}
+        title={{ ko: "근로자 명부 Claim 페이지", en: "Worker roster claim", si: "සේවක ලැයිස්තු Claim පිටුව", ta: "தொழிலாளர் பட்டியல் Claim பக்கம்" }}
+        purpose={{ ko: "2,000명 지정 인원 중 실제 공식 명부에 등록된 근로자만 StayCare 계정과 연결하는 본인확인 단계입니다.", en: "An identity-verification step that links only workers on the approved 2,000-person roster to StayCare accounts.", si: "අනුමත 2,000 දෙනාගේ ලැයිස්තුවේ සිටින සේවකයින් පමණක් StayCare ගිණුම් සමඟ සම්බන්ධ කරන අනන්‍යතා තහවුරු කිරීමේ පියවරකි.", ta: "அங்கீகரிக்கப்பட்ட 2,000 பேர் பட்டியலில் உள்ள தொழிலாளர்களை மட்டும் StayCare கணக்குகளுடன் இணைக்கும் அடையாளச் சரிபார்ப்பு கட்டமாகும்." }}
+        boundary={{ ko: "이 화면은 채용, 비자승인 또는 근로계약을 결정하지 않습니다. 운영기관이 사전에 등록한 명부와 로그인한 본인을 연결합니다.", en: "This screen does not decide recruitment, visa approval or employment contracts. It links the signed-in person to the roster registered by the operator.", si: "මෙම තිරය බඳවාගැනීම, වීසා අනුමැතිය හෝ රැකියා ගිවිසුම තීරණය නොකරයි. එය පිවිසුණු පුද්ගලයා මෙහෙයුම්කරු ලියාපදිංචි කළ ලැයිස්තුවට සම්බන්ධ කරයි.", ta: "இந்தத் திரை ஆட்சேர்ப்பு, விசா அங்கீகாரம் அல்லது வேலை ஒப்பந்தத்தைத் தீர்மானிக்காது. உள்நுழைந்த நபரை செயல்பாட்டாளர் பதிவு செய்த பட்டியலுடன் இணைக்கிறது." }}
         items={[
-          { label: "입력", description: "초대코드, 여권 영문명, 생년월일" },
-          { label: "결과", description: "기존 근로자 ID와 로그인 계정 연결" },
-          { label: "보안", description: "8회 실패 잠금, 요청 제한, 감사로그" },
-          { label: "다음 단계", description: "개인별 준비·입국·정착 여정 생성" },
+          { label: { ko: "입력", en: "Input", si: "ආදානය", ta: "உள்ளீடு" }, description: { ko: "초대코드, 여권 영문명, 생년월일", en: "Invitation code, passport English name and date of birth", si: "ආරාධනා කේතය, ගමන් බලපත්‍ර ඉංග්‍රීසි නම සහ උපන් දිනය", ta: "அழைப்புக் குறியீடு, கடவுச்சீட்டு ஆங்கிலப் பெயர் மற்றும் பிறந்த தேதி" } },
+          { label: { ko: "결과", en: "Result", si: "ප්‍රතිඵලය", ta: "முடிவு" }, description: { ko: "기존 근로자 ID와 로그인 계정 연결", en: "Link the existing worker ID and login account", si: "පවතින සේවක ID සහ පිවිසුම් ගිණුම සම්බන්ධ කිරීම", ta: "உள்ள தொழிலாளர் ID மற்றும் உள்நுழைவு கணக்கை இணைத்தல்" } },
+          { label: { ko: "보안", en: "Security", si: "ආරක්ෂාව", ta: "பாதுகாப்பு" }, description: { ko: "8회 실패 잠금, 요청 제한, 감사로그", en: "Lock after eight failures, rate limits and audit logs", si: "අසාර්ථක උත්සාහ 8කට පසු අගුළු දැමීම, ඉල්ලීම් සීමා සහ විගණන සටහන්", ta: "8 தோல்விகளுக்குப் பிறகு பூட்டு, கோரிக்கை வரம்புகள் மற்றும் தணிக்கைப் பதிவுகள்" } },
+          { label: { ko: "다음 단계", en: "Next step", si: "ඊළඟ පියවර", ta: "அடுத்த படி" }, description: { ko: "개인별 준비·입국·정착 여정 생성", en: "Create the individual preparation, arrival and settlement journey", si: "පුද්ගලික සූදානම්, පැමිණීම සහ පදිංචි ගමන සාදන්න", ta: "தனிப்பட்ட தயாரிப்பு, வருகை மற்றும் குடியேற்றப் பயணத்தை உருவாக்கவும்" } },
         ]}
       />
 

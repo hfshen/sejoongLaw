@@ -41,6 +41,7 @@ import {
   X,
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
+import { translateStayCareTamil } from "@/lib/staycare/tamil-translations"
 import StayCareLanguageSwitcher from "@/components/staycare/StayCareLanguageSwitcher"
 import {
   useStayCareLanguage,
@@ -314,9 +315,47 @@ const copy = {
     profileHelp: "ඔබගේ සම්බන්ධතා සහ කැමති භාෂාව යාවත්කාලීනව තබන්න.",
     privacy: "සැබෑ ගමන් බලපත්‍ර, ලියාපදිංචි, බැංකු හෝ කාඩ් අංක AI වෙත ඇතුළත් නොකරන්න.",
   },
+  ta: {
+    overview: "முகப்பு",
+    journey: "என் தயாரிப்பு பயணம்",
+    applications: "விண்ணப்ப நிலை",
+    services: "ஒரே இட சேவைகள்",
+    documents: "என் ஆவணங்கள்",
+    support: "ஆலோசனை மற்றும் உதவி",
+    ai: "AI மொழி உதவி",
+    profile: "என் தகவல்",
+    welcome: "கொரியா வாழ்க்கை தயார்நிலை",
+    nextAction: "இப்போது செய்ய வேண்டியது",
+    due: "காலக்கெடு",
+    progress: "மொத்தத் தயார்நிலை",
+    completed: "முடிந்தது",
+    openRequests: "நடைபெறும் கோரிக்கைகள்",
+    documentsReady: "அங்கீகரிக்கப்பட்ட ஆவணங்கள்",
+    unread: "புதிய அறிவிப்புகள்",
+    viewAll: "அனைத்தையும் காண்க",
+    noData: "இன்னும் எந்த தகவலும் பதிவு செய்யப்படவில்லை.",
+    official: "அதிகாரப்பூர்வ சேனலைத் திறக்கவும்",
+    complete: "முடிந்ததாக குறிக்கவும்",
+    apply: "விண்ணப்பிக்கவும்",
+    close: "மூடவும்",
+    submit: "சமர்ப்பிக்கவும்",
+    upload: "ஆவணத்தைப் பதிவேற்றவும்",
+    save: "சேமிக்கவும்",
+    saving: "சேமிக்கிறது",
+    signOut: "வெளியேறு",
+    refresh: "புதுப்பிக்கவும்",
+    markRead: "அனைத்தையும் வாசித்ததாக குறிக்கவும்",
+    applicationDetail: "விண்ணப்ப விவரம்",
+    timeline: "செயலாக்க வரலாறு",
+    requestSupport: "புதிய உதவி கோரிக்கை",
+    emergency: "உடனடி ஆபத்தில் முதலில் பொது அவசர சேவைகளைத் தொடர்புகொள்ளவும்.",
+    readOnlyOfficial: "அரசு நடைமுறைகளை StayCare அங்கீகரிக்காது. அதிகாரப்பூர்வ சேனலில் நிலையைச் சரிபார்க்கவும்; Sejoong அடுத்த தயாரிப்பை ஆதரிக்கும்.",
+    profileHelp: "உங்கள் தொடர்பு விவரங்களையும் விருப்ப மொழியையும் புதுப்பித்த நிலையில் வைத்திருக்கவும்.",
+    privacy: "உண்மையான கடவுச்சீட்டு, பதிவெண், வங்கி கணக்கு அல்லது அட்டை எண்களை AI-இல் உள்ளிட வேண்டாம்.",
+  },
 } as const
 
-const phaseLabels: Record<string, Record<StayCarePreferredLanguage, string>> = {
+const phaseLabels: Record<string, Partial<Record<StayCarePreferredLanguage, string>>> = {
   prepare: { ko: "스리랑카 현지 준비", en: "Prepare in Sri Lanka", si: "ශ්‍රී ලංකාවේ සූදානම" },
   official: { ko: "정부·EPS 절차", en: "Government / EPS", si: "රජයේ / EPS ක්‍රියාවලිය" },
   pre_departure: { ko: "비자 후 출국 준비", en: "Pre-departure", si: "පිටත්වීමේ සූදානම" },
@@ -327,7 +366,7 @@ const phaseLabels: Record<string, Record<StayCarePreferredLanguage, string>> = {
   return: { ko: "귀국·재정착", en: "Return home", si: "ආපසු යාම" },
 }
 
-const statusLabels: Record<string, Record<StayCarePreferredLanguage, string>> = {
+const statusLabels: Record<string, Partial<Record<StayCarePreferredLanguage, string>>> = {
   not_started: { ko: "시작 전", en: "Not started", si: "ආරම්භ කර නැත" },
   ready: { ko: "진행 가능", en: "Ready", si: "සූදානම්" },
   in_progress: { ko: "진행 중", en: "In progress", si: "ක්‍රියාත්මකයි" },
@@ -370,7 +409,7 @@ function localized(value: LocalizedValue, language: StayCarePreferredLanguage) {
 function formatDate(value: string | null | undefined, language: StayCarePreferredLanguage) {
   if (!value) return "—"
   try {
-    return new Intl.DateTimeFormat(language === "ko" ? "ko-KR" : language === "si" ? "si-LK" : "en-US", {
+    return new Intl.DateTimeFormat(language === "ko" ? "ko-KR" : language === "si" ? "si-LK" : language === "ta" ? "ta-LK" : "en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -382,12 +421,22 @@ function formatDate(value: string | null | undefined, language: StayCarePreferre
   }
 }
 
+function localizedLabel(
+  values: Partial<Record<StayCarePreferredLanguage, string>> | undefined,
+  language: StayCarePreferredLanguage,
+  fallback: string
+) {
+  if (!values) return fallback
+  if (language === "ta") return values.ta || translateStayCareTamil(values.en || fallback)
+  return values[language] || values.en || values.ko || values.si || fallback
+}
+
 function StatusBadge({ status, language }: { status: string; language: StayCarePreferredLanguage }) {
   const positive = ["completed", "fulfilled", "approved", "resolved", "closed", "active"].includes(status)
   const danger = ["attention", "rejected", "failed", "cancelled", "expired"].includes(status)
   return (
     <span className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] font-black ${positive ? "border-emerald-200 bg-emerald-50 text-emerald-700" : danger ? "border-red-200 bg-red-50 text-red-700" : "border-amber-200 bg-amber-50 text-amber-700"}`}>
-      {statusLabels[status]?.[language] || status.replaceAll("_", " ")}
+      {localizedLabel(statusLabels[status], language, status.replaceAll("_", " "))}
     </span>
   )
 }
@@ -417,7 +466,7 @@ export default function StayCareWorkerWorkspace({
   returnPlan,
 }: Props) {
   const router = useRouter()
-  const { language, setLanguage } = useStayCareLanguage(worker.preferred_language || (locale === "en" ? "en" : "ko"))
+  const { language, setLanguage } = useStayCareLanguage(worker.preferred_language || (locale === "en" ? "en" : locale === "si" ? "si" : locale === "ta" ? "ta" : "ko"))
   const text = copy[language]
   const [view, setView] = useState<WorkspaceView>("overview")
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -680,7 +729,7 @@ export default function StayCareWorkerWorkspace({
   const renderJourney = () => (
     <div className="space-y-5">
       <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm leading-7 text-blue-950"><Landmark className="mb-2 h-5 w-5" />{text.readOnlyOfficial}</div>
-      {stepsByPhase.map(({ phase, steps: phaseSteps }, index) => <Panel key={phase} title={`${index + 1}. ${phaseLabels[phase]?.[language] || phase}`} description={`${phaseSteps.filter((step) => step.status === "completed").length}/${phaseSteps.length}`}><div className="divide-y divide-slate-100">{phaseSteps.map((step) => <article key={step.id} className="flex flex-col gap-4 p-5 lg:flex-row lg:items-start"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${step.official_process ? "bg-blue-50 text-blue-700" : "bg-red-50 text-[#bb271a]"}`}>{step.official_process ? <Landmark className="h-5 w-5" /> : <Sparkles className="h-5 w-5" />}</span><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-black">{localized(step.title, language)}</h3>{step.required ? <span className="rounded-full bg-red-50 px-2 py-1 text-[11px] font-black text-red-700">Required</span> : null}</div><p className="mt-2 text-sm leading-7 text-slate-600">{localized(step.description, language)}</p><div className="mt-3 flex flex-wrap gap-2">{step.responsibility.map((owner) => <span key={owner} className="rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-500">{owner}</span>)}{step.due_at ? <span className="rounded-lg bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700">{text.due} {formatDate(step.due_at, language)}</span> : null}</div></div><div className="flex shrink-0 items-center gap-2 lg:w-52 lg:flex-col lg:items-stretch"><StatusBadge status={step.status} language={language} />{step.status !== "completed" ? <button onClick={() => step.official_process && step.official_reference_url ? window.open(step.official_reference_url, "_blank") : completeStep(step)} className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white">{step.official_process ? text.official : text.complete}</button> : null}</div></article>)}{!phaseSteps.length ? <p className="p-5 text-sm text-slate-500">{text.noData}</p> : null}</div></Panel>)}
+      {stepsByPhase.map(({ phase, steps: phaseSteps }, index) => <Panel key={phase} title={`${index + 1}. ${localizedLabel(phaseLabels[phase], language, phase)}`} description={`${phaseSteps.filter((step) => step.status === "completed").length}/${phaseSteps.length}`}><div className="divide-y divide-slate-100">{phaseSteps.map((step) => <article key={step.id} className="flex flex-col gap-4 p-5 lg:flex-row lg:items-start"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${step.official_process ? "bg-blue-50 text-blue-700" : "bg-red-50 text-[#bb271a]"}`}>{step.official_process ? <Landmark className="h-5 w-5" /> : <Sparkles className="h-5 w-5" />}</span><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-black">{localized(step.title, language)}</h3>{step.required ? <span className="rounded-full bg-red-50 px-2 py-1 text-[11px] font-black text-red-700">Required</span> : null}</div><p className="mt-2 text-sm leading-7 text-slate-600">{localized(step.description, language)}</p><div className="mt-3 flex flex-wrap gap-2">{step.responsibility.map((owner) => <span key={owner} className="rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-500">{owner}</span>)}{step.due_at ? <span className="rounded-lg bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700">{text.due} {formatDate(step.due_at, language)}</span> : null}</div></div><div className="flex shrink-0 items-center gap-2 lg:w-52 lg:flex-col lg:items-stretch"><StatusBadge status={step.status} language={language} />{step.status !== "completed" ? <button onClick={() => step.official_process && step.official_reference_url ? window.open(step.official_reference_url, "_blank") : completeStep(step)} className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white">{step.official_process ? text.official : text.complete}</button> : null}</div></article>)}{!phaseSteps.length ? <p className="p-5 text-sm text-slate-500">{text.noData}</p> : null}</div></Panel>)}
       {returnPlan ? <Panel title={phaseLabels.return[language]} description={`${text.due}: ${formatDate(returnPlan.expected_return_date, language)}`}><div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-3">{Object.entries(returnPlan).filter(([key]) => key.endsWith("_status")).map(([key, value]) => <div key={key} className="rounded-2xl border border-slate-200 p-4"><p className="text-xs font-bold text-slate-500">{key.replaceAll("_", " ")}</p><div className="mt-2"><StatusBadge status={String(value || "not_started")} language={language} /></div></div>)}</div></Panel> : null}
     </div>
   )

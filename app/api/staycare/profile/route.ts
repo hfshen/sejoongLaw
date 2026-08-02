@@ -5,7 +5,7 @@ import { requireTrustedOrigin } from "@/lib/security/request"
 import { getServiceClient } from "@/lib/supabase/service"
 
 const schema = z.object({
-  preferredLanguage: z.enum(["ko", "en", "si"]),
+  preferredLanguage: z.enum(["ko", "en", "si", "ta"]),
   phoneNumber: z.string().trim().max(40).optional().or(z.literal("")),
   accommodationSummary: z.string().trim().max(500).optional().or(z.literal("")),
 })

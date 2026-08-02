@@ -2,6 +2,7 @@
 
 import { AlertTriangle, RefreshCcw } from "lucide-react"
 import { normalizeStayCareLocale } from "@/lib/auth/redirects"
+import { useStayCareLanguage } from "@/lib/staycare/language-preference"
 
 const copy = {
   ko: {
@@ -19,6 +20,11 @@ const copy = {
     body: "මෙම සබැඳිය කල් ඉකුත් වී හෝ දැනටමත් භාවිත කර ඇත. නවතම අංක 6ක තහවුරු කිරීමේ කේතයක් ලබා ගැනීමට පහතින් ඔබගේ විද්‍යුත් තැපෑල හෝ දුරකථන අංකය නැවත ඇතුළත් කරන්න.",
     action: "නව කේතයක් ඉල්ලන්න",
   },
+  ta: {
+    title: "உள்நுழைவு இணைப்பு காலாவதியாகிவிட்டது",
+    body: "இந்த இணைப்பு காலாவதியாகியிருக்கலாம் அல்லது ஏற்கனவே பயன்படுத்தப்பட்டிருக்கலாம். புதிய ஆறு இலக்க சரிபார்ப்பு குறியீட்டைப் பெற கீழே உங்கள் மின்னஞ்சல் அல்லது தொலைபேசி எண்ணை மீண்டும் உள்ளிடவும்.",
+    action: "புதிய குறியீட்டைக் கோரவும்",
+  },
 } as const
 
 export default function StayCareAuthRecoveryNotice({
@@ -30,7 +36,9 @@ export default function StayCareAuthRecoveryNotice({
 }) {
   if (reason !== "otp_expired") return null
 
-  const text = copy[normalizeStayCareLocale(locale)]
+  const initialLanguage = normalizeStayCareLocale(locale)
+  const { language } = useStayCareLanguage(initialLanguage)
+  const text = copy[language]
 
   const focusLoginForm = () => {
     const field = document.querySelector<HTMLInputElement>(

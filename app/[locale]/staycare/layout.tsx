@@ -20,9 +20,12 @@ import {
   Zap,
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
+import { readStayCareLanguage } from "@/lib/staycare/language-preference"
+import { translateStayCareTamil } from "@/lib/staycare/tamil-translations"
+import StayCareRuntimeTranslator from "@/components/staycare/StayCareRuntimeTranslator"
 
 type Surface = "worker" | "staff" | "partner"
-type Language = "ko" | "en" | "si"
+type Language = "ko" | "en" | "si" | "ta"
 type Priority = "critical" | "high" | "normal" | "waiting"
 type Tab = "today" | "timeline" | "automation"
 type Row = Record<string, unknown>
@@ -162,11 +165,41 @@ const messages = {
       "ආරක්ෂිත ස්වයංක්‍රීය සුරැකීම",
     ],
   },
+  ta: {
+    label: "StayCare தானியக்கம்",
+    checking: "உங்கள் தற்போதைய நிலையும் அடுத்த பணியும் தானாகச் சரிபார்க்கப்படுகிறது",
+    today: "இன்றைய செயல்கள்",
+    timeline: "ஒருங்கிணைந்த காலவரிசை",
+    automation: "தானியக்க நிலை",
+    noTask: "இப்போது நீங்கள் நேரடியாகச் செய்ய வேண்டிய பணி இல்லை.",
+    noTaskDetail: "Sejoong, அதிகாரிகள் மற்றும் வழங்குநர்களின் பணியை StayCare தொடர்ந்து கண்காணிக்கிறது.",
+    urgent: "அவசரம் / காலக்கெடு நெருங்குகிறது",
+    waiting: "மற்றவர்களின் செயலுக்காக காத்திருக்கிறது",
+    checked: "தானியக்கச் சோதனைகள்",
+    open: "தானியக்க மையத்தைத் திறக்கவும்",
+    act: "செயலைத் திறக்கவும்",
+    refresh: "மீண்டும் சரிபார்க்கவும்",
+    due: "காலக்கெடு",
+    saved: "உள்ளீடு தானாகச் சேமிக்கப்பட்டது",
+    saving: "உள்ளீடு சேமிக்கப்படுகிறது",
+    draft: "தொடர்வதற்கான சேமித்த வரைவு உள்ளது",
+    restore: "வரைவை மீட்டெடுக்கவும்",
+    clear: "வரைவை நீக்கவும்",
+    online: "ஆன்லைன் · மாற்றங்கள் தானாகச் சேமிக்கப்படும்",
+    offline: "ஆஃப்லைன் · இந்த சாதனத்தில் தற்காலிகமாகச் சேமிக்கப்பட்டது",
+    active: "கண்காணிப்பு செயலில் உள்ளது",
+    rules: [
+      "காலக்கெடு மற்றும் காலாவதி கண்டறிதல்",
+      "விண்ணப்பம் மற்றும் ஆவண நிலை கண்காணிப்பு",
+      "SLA மற்றும் ஒதுக்கப்படாத பணி கண்டறிதல்",
+      "பாதுகாப்பான படிவ தானியக்கச் சேமிப்பு",
+    ],
+  },
 } as const
 
 const navLabels: Record<string, string[]> = {
-  overview: ["홈", "현황", "Home", "Overview", "මුල් පිටුව", "සාරාංශය"],
-  journey: ["내 준비과정", "My journey", "මගේ ගමන"],
+  overview: ["홈", "현황", "Home", "Overview", "මුල් පිටුව", "සාරාංශය", "முகப்பு", "மேலோட்டம்"],
+  journey: ["내 준비과정", "My journey", "මගේ ගමන", "என் தயாரிப்பு பயணம்", "என் பயணம்"],
   applications: [
     "신청현황",
     "신청",
@@ -175,18 +208,21 @@ const navLabels: Record<string, string[]> = {
     "Service queue",
     "අයදුම්",
     "සේවා ඉල්ලීම්",
+    "விண்ணப்ப நிலை",
+    "சேவை செயலாக்கம்",
   ],
-  services: ["원스톱 서비스", "One-stop services", "එක්-තැනක සේවා"],
-  documents: ["내 서류", "서류", "Documents", "ලේඛන"],
-  support: ["상담·도움", "상담", "Support", "සහාය"],
-  profile: ["내 정보", "Profile", "මගේ තොරතුරු"],
-  workers: ["근로자", "대상 근로자", "Workers", "සේවකයින්"],
-  tickets: ["티켓", "상담", "Tickets"],
-  audit: ["감사", "Audit"],
+  services: ["원스톱 서비스", "One-stop services", "එක්-තැනක සේවා", "ஒரே இட சேவைகள்"],
+  documents: ["내 서류", "서류", "Documents", "ලේඛන", "என் ஆவணங்கள்", "ஆவணங்கள்"],
+  support: ["상담·도움", "상담", "Support", "සහාය", "ஆலோசனை மற்றும் உதவி", "உதவி"],
+  profile: ["내 정보", "Profile", "මගේ තොරතුරු", "என் தகவல்"],
+  workers: ["근로자", "대상 근로자", "Workers", "සේවකයින්", "தொழிலாளர்கள்"],
+  tickets: ["티켓", "상담", "Tickets", "கோரிக்கைகள்"],
+  audit: ["감사", "Audit", "தணிக்கை"],
   coordination: [
     "세중 협업요청",
     "Coordinate with Sejoong",
     "Sejoong සමඟ සම්බන්ධ වීම",
+    "Sejoong உடன் ஒருங்கிணைப்பு",
   ],
 }
 
@@ -219,27 +255,27 @@ function days(value: unknown) {
     : null
 }
 
-function localeText(language: Language, values: Record<Language, string>) {
-  return values[language]
+function localeText(
+  language: Language,
+  values: Partial<Record<Language, string>> & Pick<Record<Language, string>, "en">
+) {
+  if (language === "ta") return values.ta || translateStayCareTamil(values.en)
+  return values[language] || values.en
 }
 
 function localized(value: unknown, language: Language, fallback: string) {
   if (typeof value === "string") return value
   const source = row(value)
-  return source
-    ? str(source[language]) ||
-        str(source.en) ||
-        str(source.ko) ||
-        str(source.si) ||
-        fallback
-    : fallback
+  if (!source) return fallback
+  if (language === "ta") return str(source.ta) || translateStayCareTamil(str(source.en, fallback))
+  return str(source[language]) || str(source.en) || str(source.ko) || str(source.si) || fallback
 }
 
 function format(value: string | null | undefined, language: Language) {
   if (!value) return "—"
   try {
     return new Intl.DateTimeFormat(
-      language === "ko" ? "ko-KR" : language === "si" ? "si-LK" : "en-US",
+      language === "ko" ? "ko-KR" : language === "si" ? "si-LK" : language === "ta" ? "ta-LK" : "en-US",
       {
         year: "numeric",
         month: "short",
@@ -342,14 +378,22 @@ export default function StayCareAutomationLayout({
   const t = messages[language]
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("staycare_language")
-    setLanguage(
-      stored === "en" || stored === "si"
-        ? stored
-        : pathname.startsWith("/en/")
-          ? "en"
-          : "ko"
-    )
+    const syncLanguage = () => {
+      const stored = readStayCareLanguage()
+      setLanguage(
+        stored ||
+          (pathname.startsWith("/en/")
+            ? "en"
+            : pathname.startsWith("/si/")
+              ? "si"
+              : pathname.startsWith("/ta/")
+                ? "ta"
+                : "ko")
+      )
+    }
+    syncLanguage()
+    window.addEventListener("staycare-language-change", syncLanguage)
+    return () => window.removeEventListener("staycare-language-change", syncLanguage)
   }, [pathname])
 
   const loadWorker = useCallback(
@@ -948,7 +992,7 @@ export default function StayCareAutomationLayout({
     )
   }
 
-  if (!surface) return <>{children}</>
+  if (!surface) return <StayCareRuntimeTranslator language={language}>{children}</StayCareRuntimeTranslator>
 
   const urgent = snapshot.actions.filter(
     (item) => item.priority === "critical" || item.priority === "high"
@@ -1011,7 +1055,7 @@ export default function StayCareAutomationLayout({
           </button>
         </div>
       </div>
-      {children}
+      <StayCareRuntimeTranslator language={language}>{children}</StayCareRuntimeTranslator>
 
       {open ? (
         <div

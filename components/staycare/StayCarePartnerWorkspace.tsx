@@ -24,6 +24,7 @@ import {
 } from "lucide-react"
 import StayCareLanguageSwitcher from "@/components/staycare/StayCareLanguageSwitcher"
 import { createClient } from "@/lib/supabase/client"
+import { translateStayCareTamil } from "@/lib/staycare/tamil-translations"
 import {
   useStayCareLanguage,
   type StayCarePreferredLanguage,
@@ -165,6 +166,22 @@ const copy = {
     privacy:
       "භූමිකාවට සහ ආයතනයට අනුමත මෙහෙයුම් දත්ත පමණක් පෙන්වයි. පුද්ගලික නීති, වෛද්‍ය, මානව හිමිකම් සහ මුදල් යැවීමේ විස්තර නොපෙන්වයි.",
   },
+  ta: {
+    overview: "மேலோட்டம்",
+    workers: "தொழிலாளர்கள்",
+    applications: "சேவை செயலாக்கம்",
+    coordination: "Sejoong உடன் ஒருங்கிணைப்பு",
+    signOut: "வெளியேறு",
+    search: "தொழிலாளர் அல்லது விண்ணப்பத்தைத் தேடவும்",
+    visibleWorkers: "காணக்கூடிய தொழிலாளர்கள்",
+    readyWorkers: "80% மேல் தயார்நிலை",
+    openApplications: "நடைபெறும் விண்ணப்பங்கள்",
+    openTickets: "ஒருங்கிணைப்பு கோரிக்கைகள்",
+    noData: "தற்போதைய பங்கு மற்றும் நிறுவனத்திற்கு காணக்கூடிய உருப்படிகள் இல்லை.",
+    submit: "ஒருங்கிணைப்பு கோரிக்கையைச் சமர்ப்பிக்கவும்",
+    providerSave: "சேவை முடிவைச் சேமிக்கவும்",
+    privacy: "பங்கு மற்றும் நிறுவனத்திற்கு அனுமதிக்கப்பட்ட செயல்பாட்டு தகவல்கள் மட்டுமே காட்டப்படும். தனிப்பட்ட சட்ட, மருத்துவ, மனித உரிமை மற்றும் பணஅனுப்பு விவரங்கள் காட்டப்படாது.",
+  },
 } as const
 
 const roleCopy: Record<
@@ -193,6 +210,11 @@ const roleCopy: Record<
         "අදාළ සේවකයින්ගේ පැමිණීම, පදිංචිය සහ රැකියා සූදානම බලන්න.",
       workerFocus: "සේවායෝජකයාට පෙනෙන සූදානම",
     },
+    ta: {
+      title: "முதலாளி குடியேற்ற ஆதரவு போர்டல்",
+      description: "ஒதுக்கப்பட்ட தொழிலாளர்களின் வருகை, குடியேற்றம் மற்றும் வேலை தயார்நிலையை மதிப்பாய்வு செய்து Sejoong உடன் ஒருங்கிணைக்கவும்.",
+      workerFocus: "முதலாளிக்கு காணக்கூடிய தயார்நிலை மற்றும் அடுத்த நடவடிக்கைகள்",
+    },
   },
   institution_admin: {
     ko: {
@@ -212,6 +234,11 @@ const roleCopy: Record<
       description:
         "අපේක්ෂක පුහුණුව, ලේඛන සහ පිටත්වීමේ සූදානම බලන්න.",
       workerFocus: "ආයතනයට පෙනෙන පුහුණු හා පිටත්වීමේ තත්ත්වය",
+    },
+    ta: {
+      title: "இலங்கை தயாரிப்பு போர்டல்",
+      description: "வேட்பாளர் பயிற்சி, ஆவணங்கள் மற்றும் புறப்படுவதற்கு முன் தயார்நிலையை கண்காணித்து கொரியா ஒப்படைப்பை ஒருங்கிணைக்கவும்.",
+      workerFocus: "நிறுவனத்திற்கு காணக்கூடிய பயிற்சி மற்றும் புறப்பாட்டு தயார்நிலை",
     },
   },
   provider_agent: {
@@ -233,6 +260,11 @@ const roleCopy: Record<
         "Sejoong විසින් පවරන ලද සේවා ඉල්ලීම් පමණක් ක්‍රියාත්මක කර ප්‍රතිඵල යවන්න.",
       workerFocus: "පවරන ලද සේවාව සඳහා අවම තොරතුරු",
     },
+    ta: {
+      title: "சேவை வழங்குநர் போர்டல்",
+      description: "Sejoong ஒதுக்கிய தொலைத்தொடர்பு, விநியோகம் அல்லது நிதி கோரிக்கைகளை மட்டும் செயலாக்கி முடிவுகளைத் திருப்பி அனுப்பவும்.",
+      workerFocus: "ஒதுக்கப்பட்ட சேவையை நிறைவேற்ற தேவையான குறைந்தபட்ச தகவல்",
+    },
   },
 }
 
@@ -240,8 +272,9 @@ function localized(
   value: LocalizedValue,
   language: StayCarePreferredLanguage
 ) {
-  if (!value) return "Service"
+  if (!value) return language === "ta" ? "சேவை" : "Service"
   if (typeof value === "string") return value
+  if (language === "ta") return value.ta || translateStayCareTamil(value.en || value.ko || "Service")
   return value[language] || value.en || value.ko || value.si || "Service"
 }
 
@@ -252,7 +285,7 @@ function formatDate(
   if (!value) return "—"
   try {
     return new Intl.DateTimeFormat(
-      language === "ko" ? "ko-KR" : language === "si" ? "si-LK" : "en-US",
+      language === "ko" ? "ko-KR" : language === "si" ? "si-LK" : language === "ta" ? "ta-LK" : "en-US",
       { year: "numeric", month: "short", day: "numeric" }
     ).format(new Date(value))
   } catch {
@@ -350,7 +383,7 @@ export default function StayCarePartnerWorkspace({
   initialTickets,
 }: Props) {
   const router = useRouter()
-  const initialLanguage: StayCarePreferredLanguage = locale === "en" ? "en" : "ko"
+  const initialLanguage: StayCarePreferredLanguage = locale === "en" ? "en" : locale === "si" ? "si" : locale === "ta" ? "ta" : "ko"
   const { language, setLanguage } = useStayCareLanguage(initialLanguage)
   const text = copy[language]
   const roleText = roleCopy[role][language]

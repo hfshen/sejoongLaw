@@ -1,5 +1,6 @@
 import "server-only"
 import CoolSMS from "coolsms-node-sdk"
+import nodemailer from "nodemailer"
 import { getServiceClient } from "@/lib/supabase/service"
 
 interface NotificationRow {
@@ -8,7 +9,7 @@ interface NotificationRow {
   worker_id: string | null
   user_id: string | null
   channel: "in_app" | "sms" | "email" | "push"
-  language: "ko" | "en" | "si"
+  language: "ko" | "en" | "si" | "ta"
   template_code: string
   subject: string | null
   body: string
@@ -50,6 +51,41 @@ async function resolveRecipient(notification: NotificationRow): Promise<Recipien
 }
 
 async function sendEmail(notification: NotificationRow, email: string) {
+  const provider = process.env.EMAIL_PROVIDER || "resend"
+  const subject = notification.subject || "Sejoong StayCare"
+
+  if (provider === "disabled") {
+    throw new Error("EMAIL_PROVIDER is disabled")
+  }
+
+  if (provider === "smtp") {
+    const host = process.env.SMTP_HOST
+    const port = Number(process.env.SMTP_PORT || "587")
+    const secure = process.env.SMTP_SECURE === "true"
+    const user = process.env.SMTP_USER
+    const pass = process.env.SMTP_PASSWORD
+    const from = process.env.SMTP_FROM_EMAIL
+    if (!host || !user || !pass || !from) {
+      throw new Error("SMTP_HOST, SMTP_USER, SMTP_PASSWORD or SMTP_FROM_EMAIL is missing")
+    }
+
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure,
+      auth: { user, pass },
+      requireTLS: !secure,
+    })
+    const result = await transporter.sendMail({
+      from,
+      to: email,
+      subject,
+      text: notification.body,
+      headers: { "X-StayCare-Notification-Id": notification.id },
+    })
+    return result.messageId || `smtp-${notification.id}`
+  }
+
   const apiKey = process.env.RESEND_API_KEY
   const from = process.env.RESEND_FROM_EMAIL
   if (!apiKey || !from) throw new Error("RESEND_API_KEY or RESEND_FROM_EMAIL is missing")
@@ -64,7 +100,7 @@ async function sendEmail(notification: NotificationRow, email: string) {
     body: JSON.stringify({
       from,
       to: [email],
-      subject: notification.subject || "Sejoong StayCare",
+      subject,
       text: notification.body,
     }),
     cache: "no-store",

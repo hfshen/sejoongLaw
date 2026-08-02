@@ -6,6 +6,13 @@ import {
   type StayCarePreferredLanguage,
 } from "@/lib/staycare/language-preference"
 
+const switcherLabels: Record<StayCarePreferredLanguage, string> = {
+  ko: "언어",
+  en: "Language",
+  si: "භාෂාව",
+  ta: "மொழி",
+}
+
 export default function StayCareLanguageSwitcher({
   value,
   onChange,
@@ -26,9 +33,9 @@ export default function StayCareLanguageSwitcher({
       }`}
     >
       <Languages className="h-4 w-4 shrink-0" />
-      {!compact ? <span className="hidden sm:inline">Language</span> : null}
+      {!compact ? <span className="hidden sm:inline">{switcherLabels[value]}</span> : null}
       <select
-        aria-label="StayCare language"
+        aria-label={switcherLabels[value]}
         value={value}
         onChange={(event) =>
           onChange(event.target.value as StayCarePreferredLanguage)

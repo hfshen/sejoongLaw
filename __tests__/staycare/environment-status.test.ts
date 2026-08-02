@@ -26,6 +26,7 @@ describe("StayCare environment readiness", () => {
       OPENAI_API_KEY: "openai-key",
       UPSTASH_REDIS_REST_URL: "https://example.upstash.io",
       UPSTASH_REDIS_REST_TOKEN: "redis-token",
+      EMAIL_PROVIDER: "resend",
       RESEND_API_KEY: "resend-key",
       RESEND_FROM_EMAIL: "staycare@sejoonglaw.kr",
       NEXT_PUBLIC_TURNSTILE_SITE_KEY: "site-key",
@@ -74,6 +75,28 @@ describe("StayCare environment readiness", () => {
     expect(providers).toHaveLength(4)
     expect(providers.every((item) => item.state === "manual")).toBe(true)
     expect(report.summary.releaseState).toBe("limited-production")
+  })
+
+  it("accepts SMTP as the application notification provider", async () => {
+    process.env.EMAIL_PROVIDER = "smtp"
+    process.env.SMTP_HOST = "smtp.improvmx.com"
+    process.env.SMTP_PORT = "587"
+    process.env.SMTP_USER = "staycare@sejoonglaw.kr"
+    process.env.SMTP_PASSWORD = "smtp-password"
+    process.env.SMTP_FROM_EMAIL = "Sejoong StayCare <staycare@sejoonglaw.kr>"
+    delete process.env.RESEND_API_KEY
+    delete process.env.RESEND_FROM_EMAIL
+
+    const { getStayCareEnvironmentReport } = await import(
+      "@/lib/env/staycare-status"
+    )
+    const email = getStayCareEnvironmentReport().items.find(
+      (item) => item.id === "email"
+    )
+
+    expect(email?.label).toBe("SMTP 이메일")
+    expect(email?.state).toBe("configured")
+    expect(email?.publicValue).toBe("Sejoong StayCare <staycare@sejoonglaw.kr>")
   })
 
   it("blocks production readiness when public demo access is enabled", async () => {

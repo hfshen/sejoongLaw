@@ -38,7 +38,7 @@ function canTransition(current: string, next: string) {
   return current === next || Boolean(ticketTransitions[current]?.includes(next))
 }
 
-function preferredLanguage(value: unknown): "ko" | "en" | "si" {
+function preferredLanguage(value: unknown): "ko" | "en" | "si" | "ta" {
   if (value && typeof value === "object") {
     const language = (value as { preferred_language?: unknown }).preferred_language
     if (language === "ko" || language === "en" || language === "si") return language

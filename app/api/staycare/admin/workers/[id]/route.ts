@@ -66,8 +66,8 @@ const phaseForStatus: Record<string, string> = {
   returned: "return",
 }
 
-function preferredLanguage(value: unknown): "ko" | "en" | "si" {
-  return value === "ko" || value === "en" || value === "si" ? value : "en"
+function preferredLanguage(value: unknown): "ko" | "en" | "si" | "ta" {
+  return value === "ko" || value === "en" || value === "si" || value === "ta" ? value : "en"
 }
 
 export async function PATCH(

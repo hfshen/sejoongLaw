@@ -86,7 +86,7 @@ async function main() {
         type: "sejoong",
         name: organizationName,
         country_code: "KR",
-        supported_languages: ["ko", "en", "si"],
+        supported_languages: ["ko", "en", "si", "ta"],
         status: "active",
       })
       .select("id, name")

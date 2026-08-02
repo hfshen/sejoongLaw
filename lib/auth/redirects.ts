@@ -1,10 +1,10 @@
 export type AuthFailureReason = "otp_expired" | "auth_callback_failed"
-export type StayCareLocale = "ko" | "en" | "si"
+export type StayCareLocale = "ko" | "en" | "si" | "ta"
 
 const CONTROL_CHARACTERS = /[\u0000-\u001F\u007F]/
 
 export function normalizeStayCareLocale(value: string | null | undefined): StayCareLocale {
-  return value === "en" || value === "si" ? value : "ko"
+  return value === "en" || value === "si" || value === "ta" ? value : "ko"
 }
 
 export function safeInternalPath(
@@ -89,7 +89,7 @@ export function classifyAuthFailure({
 
 export function isStayCareDestination(value: string | null | undefined): boolean {
   const destination = safeInternalPath(value, "")
-  return /^\/(ko|en|si)\/staycare\/(app|admin|portal)(?:[/?#]|$)/.test(destination)
+  return /^\/(ko|en|si|ta)\/staycare\/(app|admin|portal)(?:[/?#]|$)/.test(destination)
 }
 
 export function shouldRecoverStayCareAuthFailure(

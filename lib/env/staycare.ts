@@ -7,7 +7,7 @@ const booleanString = z.enum(["true", "false"])
 const serverSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.string().url(),
   STAYCARE_TENANT_SLUG: z.string().min(2).default("sejoong-staycare"),
-  STAYCARE_DEFAULT_LOCALE: z.enum(["ko", "en", "si"]).default("ko"),
+  STAYCARE_DEFAULT_LOCALE: z.enum(["ko", "en", "si", "ta"]).default("ko"),
   STAYCARE_SUPPORT_EMAIL: z.string().email(),
   STAYCARE_SUPPORT_PHONE: optionalString,
   STAYCARE_ALLOWED_ORIGINS: optionalString,
@@ -36,6 +36,12 @@ const serverSchema = z.object({
   EMAIL_PROVIDER: z.enum(["resend", "smtp", "disabled"]).default("resend"),
   RESEND_API_KEY: optionalString,
   RESEND_FROM_EMAIL: optionalString,
+  SMTP_HOST: optionalString,
+  SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(587),
+  SMTP_SECURE: booleanString.default("false"),
+  SMTP_USER: optionalString,
+  SMTP_PASSWORD: optionalString,
+  SMTP_FROM_EMAIL: optionalString,
 
   COOLSMS_API_KEY: optionalString,
   COOLSMS_API_SECRET: optionalString,
@@ -134,7 +140,12 @@ export function productionReadiness() {
     documentRetention:
       env.STAYCARE_DOCUMENT_RETENTION_DAYS >= 30 &&
       env.STAYCARE_DOCUMENT_RETENTION_DAYS <= 3650,
-    email: Boolean(env.RESEND_API_KEY && env.RESEND_FROM_EMAIL),
+    email:
+      env.EMAIL_PROVIDER === "disabled"
+        ? false
+        : env.EMAIL_PROVIDER === "smtp"
+          ? Boolean(env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASSWORD && env.SMTP_FROM_EMAIL)
+          : Boolean(env.RESEND_API_KEY && env.RESEND_FROM_EMAIL),
     botProtection: Boolean(
       env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY
     ),

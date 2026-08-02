@@ -48,14 +48,16 @@ describe("StayCare demo accounts", () => {
     )
   })
 
-  it("provides Korean, English and Sinhala labels for every account", () => {
+  it("provides Korean, English, Sinhala and Tamil labels for every account", () => {
     for (const account of stayCareDemoAccounts) {
       expect(account.label.ko).toBeTruthy()
       expect(account.label.en).toBeTruthy()
       expect(account.label.si).toBeTruthy()
+      expect(account.label.ta).toBeTruthy()
       expect(account.description.ko).toBeTruthy()
       expect(account.description.en).toBeTruthy()
       expect(account.description.si).toBeTruthy()
+      expect(account.description.ta).toBeTruthy()
     }
   })
 

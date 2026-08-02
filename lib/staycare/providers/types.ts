@@ -8,7 +8,7 @@ export interface ProviderApplicationCommand {
   tenantId: string
   workerId: string
   serviceCode: string
-  language: "ko" | "en" | "si"
+  language: "ko" | "en" | "si" | "ta"
   submittedData: Record<string, unknown>
   callbackUrl: string
 }

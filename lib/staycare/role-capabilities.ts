@@ -201,18 +201,18 @@ export function getStayCareRoleCapabilities(value: unknown): StayCareRoleCapabil
   return isStayCareRole(value) ? capabilities[value] : capabilities.worker
 }
 
-export function getStayCareRoleLabel(role: StayCareRole, language: "ko" | "en" | "si" = "ko") {
-  const labels: Record<StayCareRole, Record<"ko" | "en" | "si", string>> = {
-    worker: { ko: "근로자", en: "Worker", si: "සේවකයා" },
-    sejoong_admin: { ko: "세중 총괄 관리자", en: "Sejoong administrator", si: "Sejoong පරිපාලක" },
-    sejoong_lawyer: { ko: "세중 변호사", en: "Sejoong lawyer", si: "Sejoong නීතිඥ" },
-    immigration_manager: { ko: "출입국 업무 관리자", en: "Immigration manager", si: "ආගමන කළමනාකරු" },
-    operator_manager: { ko: "운영사 매니저", en: "Operations manager", si: "මෙහෙයුම් කළමනාකරු" },
-    operator_agent: { ko: "운영사 담당자", en: "Operations agent", si: "මෙහෙයුම් නිලධාරියා" },
-    employer_admin: { ko: "고용주 담당자", en: "Employer administrator", si: "සේවායෝජක පරිපාලක" },
-    institution_admin: { ko: "스리랑카 현지기관", en: "Sri Lanka institution", si: "ශ්‍රී ලංකා ආයතනය" },
-    provider_agent: { ko: "제휴 서비스사", en: "Service provider", si: "සේවා සපයන්නා" },
-    auditor: { ko: "감사·품질관리", en: "Auditor", si: "විගණක" },
+export function getStayCareRoleLabel(role: StayCareRole, language: "ko" | "en" | "si" | "ta" = "ko") {
+  const labels: Record<StayCareRole, Record<"ko" | "en" | "si" | "ta", string>> = {
+    worker: { ko: "근로자", en: "Worker", si: "සේවකයා", ta: "தொழிலாளர்" },
+    sejoong_admin: { ko: "세중 총괄 관리자", en: "Sejoong administrator", si: "Sejoong පරිපාලක", ta: "Sejoong நிர்வாகி" },
+    sejoong_lawyer: { ko: "세중 변호사", en: "Sejoong lawyer", si: "Sejoong නීතිඥ", ta: "Sejoong வழக்கறிஞர்" },
+    immigration_manager: { ko: "출입국 업무 관리자", en: "Immigration manager", si: "ආගමන කළමනාකරු", ta: "குடிவரவு மேலாளர்" },
+    operator_manager: { ko: "운영사 매니저", en: "Operations manager", si: "මෙහෙයුම් කළමනාකරු", ta: "செயல்பாட்டு மேலாளர்" },
+    operator_agent: { ko: "운영사 담당자", en: "Operations agent", si: "මෙහෙයුම් නිලධාරියා", ta: "செயல்பாட்டு அலுவலர்" },
+    employer_admin: { ko: "고용주 담당자", en: "Employer administrator", si: "සේවායෝජක පරිපාලක", ta: "முதலாளி நிர்வாகி" },
+    institution_admin: { ko: "스리랑카 현지기관", en: "Sri Lanka institution", si: "ශ්‍රී ලංකා ආයතනය", ta: "இலங்கை நிறுவனம்" },
+    provider_agent: { ko: "제휴 서비스사", en: "Service provider", si: "සේවා සපයන්නා", ta: "சேவை வழங்குநர்" },
+    auditor: { ko: "감사·품질관리", en: "Auditor", si: "විගණක", ta: "தணிக்கையாளர்" },
   }
   return labels[role][language]
 }
