@@ -34,10 +34,10 @@ export default function StayCareAuthRecoveryNotice({
   locale: string
   reason?: string | null
 }) {
-  if (reason !== "otp_expired") return null
-
   const initialLanguage = normalizeStayCareLocale(locale)
   const { language } = useStayCareLanguage(initialLanguage)
+
+  if (reason !== "otp_expired") return null
   const text = copy[language]
 
   const focusLoginForm = () => {

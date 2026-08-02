@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   AlertTriangle,
@@ -247,11 +247,11 @@ export default function StayCareStaffWorkspace({
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
 
-  const filteredApplications = useMemo(() => applications.filter((item) => {
+  const filteredApplications = applications.filter((item) => {
     const haystack = `${item.application_no} ${item.worker?.member_no || ""} ${item.worker?.full_name_en || item.worker?.full_name || ""} ${localized(item.service?.name)} ${item.status}`.toLowerCase()
     const roleRelevant = role === "sejoong_lawyer" ? ["immigration", "labor", "legal", "human_rights"].includes(item.service?.category || "") : role === "immigration_manager" ? item.service?.category === "immigration" : true
     return roleRelevant && haystack.includes(query.toLowerCase())
-  }), [applications, query, role])
+  })
 
   const filteredWorkers = workers.filter((item) => `${item.member_no} ${item.full_name} ${item.full_name_en || ""} ${item.visa_type || ""} ${item.employer?.name || ""}`.toLowerCase().includes(query.toLowerCase()))
   const filteredDocuments = documents.filter((item) => `${item.original_filename} ${item.document_type} ${item.worker?.member_no || ""} ${item.worker?.full_name_en || item.worker?.full_name || ""}`.toLowerCase().includes(query.toLowerCase()))
