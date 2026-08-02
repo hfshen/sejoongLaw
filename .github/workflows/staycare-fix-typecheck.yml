@@ -1,0 +1,51 @@
+name: Fix StayCare typecheck
+
+on:
+  push:
+    branches:
+      - agent/staycare-four-language
+    paths:
+      - .staycare-fix-trigger
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/staycare-four-language
+          fetch-depth: 0
+      - name: Apply final TypeScript fixes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          ai = Path('app/api/staycare/ai/route.ts')
+          text = ai.read_text()
+          text = text.replace(
+              '  si: "Sinhala",\n} as const',
+              '  si: "Sinhala",\n  ta: "Tamil",\n} as const',
+          )
+          ai.write_text(text)
+
+          worker = Path('components/staycare/StayCareWorkerWorkspace.tsx')
+          text = worker.read_text()
+          text = text.replace(
+              'title={phaseLabels.return[language]}',
+              'title={localizedLabel(phaseLabels.return, language, "Return")}',
+          )
+          worker.write_text(text)
+          PY
+      - name: Commit final source only
+        run: |
+          rm -f .staycare-fix-trigger
+          rm -f .github/workflows/staycare-fix-typecheck.yml
+          git config user.name 'StayCare Release Bot'
+          git config user.email 'staycare-release@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'fix: complete StayCare four-language type safety'
+          git push origin HEAD:agent/staycare-four-language
