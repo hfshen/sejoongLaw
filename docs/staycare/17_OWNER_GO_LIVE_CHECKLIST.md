@@ -122,6 +122,11 @@ Production 로그:
 
 ## K. 최종 승인
 
+- [ ] GitHub StayCare CI의 환경검사·4개 언어 검사·Lint·TypeScript·Jest·Production Build가 모두 통과했다.
+- [ ] Vercel Preview가 Ready이고 주요 4개 언어 경로를 직접 확인했다.
+- [ ] 임시 릴리스 파일·트리거·자체삭제 워크플로가 최종 변경 목록에 남지 않았다.
+- [ ] `main` 반영 커밋과 롤백 기준 커밋을 기록했다.
+
 ```text
 기술 승인자:
 운영 승인자:
