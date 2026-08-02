@@ -31,6 +31,7 @@ const languageName = {
   ko: "Korean",
   en: "English",
   si: "Sinhala",
+  ta: "Tamil",
 } as const
 
 function containsLikelySensitiveIdentifier(text: string) {
