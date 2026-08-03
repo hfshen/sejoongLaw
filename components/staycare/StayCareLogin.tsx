@@ -12,6 +12,7 @@ import {
   LockKeyhole,
   Mail,
   Phone,
+  RefreshCw,
   ShieldCheck,
 } from "lucide-react"
 import StayCareLanguageSwitcher from "@/components/staycare/StayCareLanguageSwitcher"
@@ -33,20 +34,28 @@ const copy = {
     phone: "휴대전화",
     emailPlaceholder: "name@example.com",
     phonePlaceholder: "+94 또는 +82 국가번호 포함",
-    send: "로그인 코드 보내기",
+    sendEmail: "로그인 링크 받기",
+    sendPhone: "로그인 코드 받기",
     verify: "인증하고 로그인",
-    code: "6자리 인증코드",
-    codeHint:
-      "메일 또는 문자에 표시된 6자리 코드를 입력하세요. 이메일의 로그인 링크를 눌러도 됩니다.",
-    sent: "로그인 메일 또는 인증코드를 보냈습니다. 받은편지함과 스팸함을 확인하세요.",
-    change: "이메일·번호 다시 입력",
+    phoneCodeTitle: "6자리 인증코드",
+    phoneCodeHint: "문자에 표시된 6자리 코드를 입력하세요.",
+    phoneCodeSent: "휴대전화로 인증코드를 보냈습니다. 문자메시지를 확인하세요.",
+    emailSentTitle: "로그인 링크를 보냈습니다",
+    emailSentDescription:
+      "받은편지함에서 ‘StayCare 바로 로그인’ 버튼을 누르면 이 브라우저에서 자동으로 로그인됩니다.",
+    emailSentHint:
+      "메일이 보이지 않으면 스팸함을 확인하세요. 링크는 한 번만 사용할 수 있고 잠시 후 만료됩니다.",
+    resendEmail: "로그인 링크 다시 보내기",
+    changeEmail: "다른 이메일 입력",
+    changePhone: "휴대전화 번호 다시 입력",
     back: "StayCare 소개로 돌아가기",
     privacy: "로그인 과정에서 여권번호나 외국인등록번호를 입력하지 않습니다.",
     captcha: "보안 확인을 완료해 주세요.",
     invalidIdentity: "올바른 이메일 또는 국가번호가 포함된 휴대전화 번호를 입력해 주세요.",
     invalidCode: "인증코드가 올바르지 않거나 만료되었습니다. 새 코드를 요청해 주세요.",
     callbackError:
-      "로그인 링크 처리에 실패했습니다. Supabase Redirect URL과 이메일 템플릿을 확인해 주세요.",
+      "로그인 링크 처리에 실패했습니다. 새 로그인 링크를 요청해 주세요.",
+    languages: "한국어 · English · සිංහල · தமிழ்",
   },
   en: {
     title: "Start with your StayCare account",
@@ -56,13 +65,20 @@ const copy = {
     phone: "Mobile phone",
     emailPlaceholder: "name@example.com",
     phonePlaceholder: "Include +94 or +82 country code",
-    send: "Send login code",
+    sendEmail: "Send sign-in link",
+    sendPhone: "Send login code",
     verify: "Verify and sign in",
-    code: "6-digit verification code",
-    codeHint:
-      "Enter the six-digit code from your email or SMS, or use the sign-in link in the email.",
-    sent: "A login email or verification code was sent. Check your inbox and spam folder.",
-    change: "Use a different email or number",
+    phoneCodeTitle: "6-digit verification code",
+    phoneCodeHint: "Enter the six-digit code shown in the SMS.",
+    phoneCodeSent: "A verification code was sent to your phone. Check your messages.",
+    emailSentTitle: "Your sign-in link is on its way",
+    emailSentDescription:
+      "Open the email and select ‘Sign in to StayCare’ to sign in automatically in this browser.",
+    emailSentHint:
+      "Check your spam folder if the message is missing. The link is single-use and expires shortly.",
+    resendEmail: "Send the sign-in link again",
+    changeEmail: "Use a different email",
+    changePhone: "Use a different phone number",
     back: "Back to StayCare",
     privacy:
       "Do not enter a passport or foreigner-registration number during login.",
@@ -72,7 +88,8 @@ const copy = {
     invalidCode:
       "The verification code is invalid or expired. Request a new code.",
     callbackError:
-      "The sign-in link could not be completed. Check Supabase redirect URLs and the email template.",
+      "The sign-in link could not be completed. Request a new sign-in link.",
+    languages: "한국어 · English · සිංහල · தமிழ்",
   },
   si: {
     title: "ඔබගේ StayCare ගිණුමෙන් ආරම්භ කරන්න",
@@ -82,13 +99,20 @@ const copy = {
     phone: "ජංගම දුරකථනය",
     emailPlaceholder: "name@example.com",
     phonePlaceholder: "+94 හෝ +82 රට කේතය ඇතුළත් කරන්න",
-    send: "පිවිසුම් කේතය යවන්න",
+    sendEmail: "පිවිසුම් සබැඳිය ලබාගන්න",
+    sendPhone: "පිවිසුම් කේතය ලබාගන්න",
     verify: "තහවුරු කර පිවිසෙන්න",
-    code: "අංක 6ක තහවුරු කිරීමේ කේතය",
-    codeHint:
-      "විද්‍යුත් තැපෑලෙන් හෝ SMS එකෙන් ලැබුණු අංක 6ක කේතය ඇතුළත් කරන්න.",
-    sent: "පිවිසුම් විද්‍යුත් තැපෑල හෝ කේතය යවා ඇත. Inbox සහ spam folder බලන්න.",
-    change: "වෙනත් විද්‍යුත් තැපෑලක් හෝ අංකයක් භාවිත කරන්න",
+    phoneCodeTitle: "අංක 6ක තහවුරු කිරීමේ කේතය",
+    phoneCodeHint: "SMS පණිවිඩයේ අංක 6ක කේතය ඇතුළත් කරන්න.",
+    phoneCodeSent: "දුරකථනයට තහවුරු කිරීමේ කේතයක් යවා ඇත. SMS පරීක්ෂා කරන්න.",
+    emailSentTitle: "පිවිසුම් සබැඳිය යවා ඇත",
+    emailSentDescription:
+      "විද්‍යුත් තැපෑල විවෘත කර ‘StayCare වෙත පිවිසෙන්න’ බොත්තම ඔබන්න. එවිට ස්වයංක්‍රීයව පිවිසේ.",
+    emailSentHint:
+      "පණිවිඩය නොපෙනේ නම් spam folder පරීක්ෂා කරන්න. සබැඳිය එක් වරක් පමණක් භාවිත කළ හැකි අතර ඉක්මනින් කල් ඉකුත් වේ.",
+    resendEmail: "පිවිසුම් සබැඳිය නැවත යවන්න",
+    changeEmail: "වෙනත් email ලිපිනයක් භාවිත කරන්න",
+    changePhone: "වෙනත් දුරකථන අංකයක් භාවිත කරන්න",
     back: "StayCare වෙත ආපසු",
     privacy:
       "පිවිසීමේදී ගමන් බලපත්‍ර හෝ විදේශික ලියාපදිංචි අංක ඇතුළත් නොකරන්න.",
@@ -97,7 +121,8 @@ const copy = {
       "නිවැරදි email ලිපිනයක් හෝ රටේ කේතය සමඟ දුරකථන අංකයක් ඇතුළත් කරන්න.",
     invalidCode: "කේතය වැරදි හෝ කල් ඉකුත් වී ඇත. නව කේතයක් ඉල්ලන්න.",
     callbackError:
-      "පිවිසුම් සබැඳිය සම්පූර්ණ කළ නොහැකි විය. Supabase redirect URL සහ email template පරීක්ෂා කරන්න.",
+      "පිවිසුම් සබැඳිය සම්පූර්ණ කළ නොහැකි විය. නව සබැඳියක් ඉල්ලන්න.",
+    languages: "한국어 · English · සිංහල · தமிழ்",
   },
   ta: {
     title: "உங்கள் StayCare கணக்குடன் தொடங்குங்கள்",
@@ -107,13 +132,20 @@ const copy = {
     phone: "மொபைல் தொலைபேசி",
     emailPlaceholder: "name@example.com",
     phonePlaceholder: "+94 அல்லது +82 நாட்டுக் குறியீட்டைச் சேர்க்கவும்",
-    send: "உள்நுழைவு குறியீட்டை அனுப்பவும்",
+    sendEmail: "உள்நுழைவு இணைப்பைப் பெறவும்",
+    sendPhone: "உள்நுழைவு குறியீட்டைப் பெறவும்",
     verify: "சரிபார்த்து உள்நுழையவும்",
-    code: "6 இலக்க சரிபார்ப்பு குறியீடு",
-    codeHint:
-      "மின்னஞ்சல் அல்லது SMS-ல் வந்த ஆறு இலக்க குறியீட்டை உள்ளிடவும்; மின்னஞ்சலிலுள்ள உள்நுழைவு இணைப்பையும் பயன்படுத்தலாம்.",
-    sent: "உள்நுழைவு மின்னஞ்சல் அல்லது சரிபார்ப்பு குறியீடு அனுப்பப்பட்டது. இன்பாக்ஸ் மற்றும் ஸ்பாம் கோப்புறையைச் சரிபார்க்கவும்.",
-    change: "வேறு மின்னஞ்சல் அல்லது எண்ணைப் பயன்படுத்தவும்",
+    phoneCodeTitle: "6 இலக்க சரிபார்ப்பு குறியீடு",
+    phoneCodeHint: "SMS-ல் காட்டப்பட்ட ஆறு இலக்க குறியீட்டை உள்ளிடவும்.",
+    phoneCodeSent: "உங்கள் தொலைபேசிக்கு சரிபார்ப்பு குறியீடு அனுப்பப்பட்டது. SMS-ஐ பார்க்கவும்.",
+    emailSentTitle: "உள்நுழைவு இணைப்பு அனுப்பப்பட்டது",
+    emailSentDescription:
+      "மின்னஞ்சலைத் திறந்து ‘StayCare-இல் உள்நுழையவும்’ பொத்தானை அழுத்துங்கள். இந்த உலாவியில் தானாக உள்நுழைவீர்கள்.",
+    emailSentHint:
+      "மின்னஞ்சல் தெரியவில்லை என்றால் spam கோப்புறையைச் சரிபார்க்கவும். இணைப்பை ஒருமுறை மட்டுமே பயன்படுத்த முடியும்; அது விரைவில் காலாவதியாகும்.",
+    resendEmail: "உள்நுழைவு இணைப்பை மீண்டும் அனுப்பவும்",
+    changeEmail: "வேறு மின்னஞ்சலைப் பயன்படுத்தவும்",
+    changePhone: "வேறு தொலைபேசி எண்ணைப் பயன்படுத்தவும்",
     back: "StayCare அறிமுகத்திற்குத் திரும்பவும்",
     privacy:
       "உள்நுழைவு செய்யும்போது கடவுச்சீட்டு எண் அல்லது வெளிநாட்டவர் பதிவு எண்ணை உள்ளிட வேண்டாம்.",
@@ -122,7 +154,8 @@ const copy = {
       "சரியான மின்னஞ்சல் முகவரி அல்லது நாட்டுக் குறியீட்டுடன் மொபைல் எண்ணை உள்ளிடவும்.",
     invalidCode: "சரிபார்ப்பு குறியீடு தவறானது அல்லது காலாவதியானது. புதிய குறியீட்டைக் கோரவும்.",
     callbackError:
-      "உள்நுழைவு இணைப்பை முடிக்க முடியவில்லை. Supabase redirect URL-களையும் மின்னஞ்சல் வார்ப்புருவையும் சரிபார்க்கவும்.",
+      "உள்நுழைவு இணைப்பை முடிக்க முடியவில்லை. புதிய இணைப்பைக் கோரவும்.",
+    languages: "한국어 · English · සිංහල · தமிழ்",
   },
 } as const
 
@@ -212,6 +245,7 @@ export default function StayCareLogin({ locale }: { locale: string }) {
     () => safeDestination(searchParams.get("next"), locale, language),
     [language, locale, searchParams]
   )
+
   const handleCaptchaToken = useCallback((token: string) => {
     setCaptchaToken(token)
   }, [])
@@ -221,16 +255,20 @@ export default function StayCareLogin({ locale }: { locale: string }) {
     setCaptchaToken("")
   }
 
-  const changeMode = (nextMode: LoginMode) => {
-    setMode(nextMode)
-    setIdentity("")
+  const resetFlow = ({ clearIdentity }: { clearIdentity: boolean }) => {
+    if (clearIdentity) setIdentity("")
     setOtp("")
     setSent(false)
     setError("")
     resetCaptcha()
   }
 
-  const requestCode = async (event: FormEvent<HTMLFormElement>) => {
+  const changeMode = (nextMode: LoginMode) => {
+    setMode(nextMode)
+    resetFlow({ clearIdentity: true })
+  }
+
+  const requestAccess = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError("")
 
@@ -240,6 +278,7 @@ export default function StayCareLogin({ locale }: { locale: string }) {
       mode === "email"
         ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
         : /^\+[1-9]\d{7,14}$/.test(phone)
+
     if (!valid) {
       setError(text.invalidIdentity)
       return
@@ -276,7 +315,7 @@ export default function StayCareLogin({ locale }: { locale: string }) {
       resetCaptcha()
     } catch (caught) {
       const message =
-        caught instanceof Error ? caught.message : "Unable to send the login code."
+        caught instanceof Error ? caught.message : "Unable to send authentication."
       setError(friendlyAuthError(message, language))
       resetCaptcha()
     } finally {
@@ -284,7 +323,7 @@ export default function StayCareLogin({ locale }: { locale: string }) {
     }
   }
 
-  const verifyCode = async (event: FormEvent<HTMLFormElement>) => {
+  const verifyPhoneCode = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!/^\d{6}$/.test(otp.trim())) {
       setError(text.invalidCode)
@@ -295,18 +334,11 @@ export default function StayCareLogin({ locale }: { locale: string }) {
     setError("")
     try {
       const supabase = createClient()
-      const result =
-        mode === "email"
-          ? await supabase.auth.verifyOtp({
-              email: identity.trim().toLowerCase(),
-              token: otp.trim(),
-              type: "email",
-            })
-          : await supabase.auth.verifyOtp({
-              phone: normalizedPhone(identity),
-              token: otp.trim(),
-              type: "sms",
-            })
+      const result = await supabase.auth.verifyOtp({
+        phone: normalizedPhone(identity),
+        token: otp.trim(),
+        type: "sms",
+      })
       if (result.error) throw result.error
       window.location.assign(destination)
     } catch (caught) {
@@ -348,7 +380,7 @@ export default function StayCareLogin({ locale }: { locale: string }) {
 
           <div className="mt-10 space-y-4">
             {[
-              "한국어 · English · සිංහල",
+              text.languages,
               "Private document storage",
               "Government / Sejoong / provider responsibility",
               "AI language and Korea-life support",
@@ -387,7 +419,7 @@ export default function StayCareLogin({ locale }: { locale: string }) {
                 </button>
               </div>
 
-              <form onSubmit={requestCode} className="mt-8 space-y-5">
+              <form onSubmit={requestAccess} className="mt-8 space-y-5">
                 <label className="block">
                   <span className="text-sm font-black">
                     {mode === "email" ? text.email : text.phone}
@@ -438,26 +470,71 @@ export default function StayCareLogin({ locale }: { locale: string }) {
                   ) : (
                     <ArrowRight className="mr-2 h-5 w-5" />
                   )}
-                  {text.send}
+                  {mode === "email" ? text.sendEmail : text.sendPhone}
                 </button>
               </form>
             </>
+          ) : mode === "email" ? (
+            <div className="space-y-6" aria-live="polite">
+              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+                <Mail className="h-7 w-7" />
+              </span>
+              <div>
+                <h2 className="text-2xl font-black">{text.emailSentTitle}</h2>
+                <p className="mt-3 text-sm leading-7 text-slate-600">
+                  {text.emailSentDescription}
+                </p>
+                <p className="mt-2 break-all text-sm font-black text-[#bb271a]">
+                  {identity}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-sm leading-7 text-emerald-950">
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-emerald-700" />
+                  <p>{text.emailSentHint}</p>
+                </div>
+              </div>
+
+              {error ? (
+                <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold leading-6 text-red-700">
+                  {error}
+                </p>
+              ) : null}
+
+              <button
+                type="button"
+                onClick={() => resetFlow({ clearIdentity: false })}
+                className="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-4 font-black text-slate-800 transition hover:border-[#bb271a] hover:text-[#bb271a]"
+              >
+                <RefreshCw className="mr-2 h-5 w-5" />
+                {text.resendEmail}
+              </button>
+              <button
+                type="button"
+                onClick={() => resetFlow({ clearIdentity: true })}
+                className="inline-flex w-full items-center justify-center gap-2 py-2 text-sm font-black text-slate-500 hover:text-slate-950"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                {text.changeEmail}
+              </button>
+            </div>
           ) : (
-            <form onSubmit={verifyCode} className="space-y-5">
+            <form onSubmit={verifyPhoneCode} className="space-y-5">
               <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
                 <KeyRound className="h-7 w-7" />
               </span>
               <div>
-                <h2 className="text-2xl font-black">{text.code}</h2>
+                <h2 className="text-2xl font-black">{text.phoneCodeTitle}</h2>
                 <p className="mt-3 text-sm leading-7 text-slate-600">
-                  {text.sent}
+                  {text.phoneCodeSent}
                 </p>
                 <p className="mt-2 break-all text-sm font-black text-[#bb271a]">
                   {identity}
                 </p>
               </div>
               <label className="block">
-                <span className="sr-only">{text.code}</span>
+                <span className="sr-only">{text.phoneCodeTitle}</span>
                 <input
                   type="text"
                   inputMode="numeric"
@@ -473,7 +550,7 @@ export default function StayCareLogin({ locale }: { locale: string }) {
                   className="w-full rounded-2xl border border-slate-200 px-5 py-4 text-center font-mono text-2xl tracking-[0.4em] outline-none transition focus:border-[#bb271a] focus:ring-4 focus:ring-red-100"
                 />
               </label>
-              <p className="text-xs leading-6 text-slate-500">{text.codeHint}</p>
+              <p className="text-xs leading-6 text-slate-500">{text.phoneCodeHint}</p>
 
               {error ? (
                 <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold leading-6 text-red-700">
@@ -495,11 +572,11 @@ export default function StayCareLogin({ locale }: { locale: string }) {
               </button>
               <button
                 type="button"
-                onClick={() => changeMode(mode)}
+                onClick={() => resetFlow({ clearIdentity: true })}
                 className="inline-flex w-full items-center justify-center gap-2 py-2 text-sm font-black text-slate-500 hover:text-slate-950"
               >
                 <ArrowLeft className="h-4 w-4" />
-                {text.change}
+                {text.changePhone}
               </button>
             </form>
           )}
